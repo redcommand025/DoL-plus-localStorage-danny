@@ -105,6 +105,7 @@ This work of fiction is only intended for an adult audience. It contains themes 
 <<variablesStart2>>
 
 Welcome to the alpha of Degrees of Lewdity Plus!
+<br><<plusNeedsIntroTip>>
 <br><br>
 
 If you want to avoid trouble, <span class="gold">keep your allure low</span> by dressing modestly and sticking to safe, well-lit areas. Nights are particularly dangerous. Dressing lewd will attract attention, both good and bad, and the more vulnerable you look, the more danger you are in. Be careful!
@@ -187,3 +188,5 @@ If you want to avoid trouble, <span class="gold">keep your allure low</span> by 
 	<<link [[Unlock Avery's mansion at Valentines's|Mansion Intro Orphanage]]>><<cheatAveryMansion>><<npc Bailey 2>><<set Time.startDate to new DateTime(2022, 2, 12, 7)>><</link>>
 
 <</if>>
+
+<<run plusIncontinentStart()>>

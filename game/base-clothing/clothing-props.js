@@ -36,6 +36,7 @@ window.propLevels = propLevels;
 
 /* primary prop colour may be specified in _args[1], secondary in _args[2]. if the item has colour or accColour options provided in setup, but no colour is specified, one will be randomised. otherwise, prop is assumed to be non-recolourable. */
 function wearProp(prop, colour, accColour) {
+	if (typeof window.plusNeedsProp === "function") window.plusNeedsProp(prop);
 	const key = normaliseKey(removeDiacritics(prop));
 	const tendingItem = key.replace("_gift", "").replace("_basket", "");
 	const tending = setup.foodstuff[tendingItem];

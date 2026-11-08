@@ -590,6 +590,8 @@
 			<<relation-box-simple _businessFameBoxConfig>>
 			<<relation-box-simple _socialFameBoxConfig>>
 			<<relation-box-simple _overallFameBoxConfig>>
+			<<plusContRepFame>>
+			<<plusFlatSocial>>
 
 			<div class="relation-box" @style="(_boxConfig.style || '')">
 				<div class="relation-description">

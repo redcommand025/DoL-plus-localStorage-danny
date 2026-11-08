@@ -69,7 +69,9 @@ const secondsMapper = {
 function passTime(time = 0, type = "min") {
 	if (!Number.isInteger(time)) return Errors.report("Invalid time to pass: " + time, Utils.GetStack());
 	const multiplier = secondsMapper[type] || 1;
+	window.plusNeedsPassTotal = (time * multiplier) / 60;
 	Time.pass(time * multiplier);
+	window.plusNeedsPassTotal = 0;
 }
 Macro.add("pass", {
 	handler() {

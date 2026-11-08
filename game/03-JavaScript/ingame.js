@@ -1288,6 +1288,7 @@ window.clothesIndex = clothesIndex;
  */
 function currentSkillValue(skill, disableModifiers = 0, disableStatNerf = 0) {
 	let result = V[skill];
+	if (skill === "seductionskill" && typeof window.plusDirtSeductionMul === "function") result *= window.plusDirtSeductionMul();
 	if (disableStatNerf === 0) {
 		result *= V.options.statNerf / 100;
 	}

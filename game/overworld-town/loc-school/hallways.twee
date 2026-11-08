@@ -195,10 +195,12 @@
 		<</if>>
 		<<schoolicon "infirmary">><<link [[Infirmary (0:02)|School Infirmary]]>><<pass 2>><<set $phase to 0>><</link>>
 		<br>
+		<<plusDrinkLink "fountain">>
 		<<bathroomicon "toilet">><<link [[Toilets (0:02)|School Toilets]]>><<pass 2>><</link>>
 		<br><br>
 		Classrooms
 		<br>
+		<<plusFindPlaceLink>>
 		<<scienceicon>><<link [[Science classroom (0:01)|Science Classroom]]>><<set $justEntered to true>><<pass 1>><</link>>
 		<br>
 		<<mathicon>><<link [[Maths classroom (0:01)|Maths Classroom]]>><<set $justEntered to true>><<pass 1>><</link>>

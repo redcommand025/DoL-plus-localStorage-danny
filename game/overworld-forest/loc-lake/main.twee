@@ -241,7 +241,7 @@ You are at the shore of the <<= Weather.isFrozen("lake") ? "frozen lake" : "lake
 		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
 	<<else>>
 		<<bike>><br>
-		<<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
+		<<plusDrinkLink "lake">><<plusOutdoorToiletLink "lake">><<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
 	<</if>>
 	<br>
 	<<set $eventskip to 0>>
@@ -608,7 +608,7 @@ You are at the waterfall.
 	<<if $earSlime.forcedCommando isnot undefined and !$worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 3) and $hypnosis_traits?.silence isnot 1>>
 		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
 	<<else>>
-		<<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
+		<<plusDrinkLink "lake">><<plusOutdoorToiletLink "lake">><<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
 	<</if>>
 	<br>
 	<<set $eventskip to 0>>
@@ -872,7 +872,7 @@ You are at the campsite.
 	<<if $earSlime.forcedCommando isnot undefined and !$worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 3) and $hypnosis_traits?.silence isnot 1>>
 		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
 	<<else>>
-		<<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
+		<<plusDrinkLink "lake">><<plusOutdoorToiletLink "lake">><<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
 	<</if>>
 	<br>
 	<<set $eventskip to 0>>

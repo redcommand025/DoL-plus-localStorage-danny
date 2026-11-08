@@ -2649,6 +2649,7 @@ function initUnderLower() {
 		These items should have a `modder` variable with the modder's name in a short string.
 	*/
 	setup.moddedClothes.under_lower = [];
+	if (typeof window.plusDiaperItems === "function") setup.moddedClothes.under_lower.push(...window.plusDiaperItems());
 
 	setup.moddedClothes.under_lower.forEach((x, i) => (x.index = setup.clothes.under_lower.length + i));
 	setup.clothes.under_lower.push(...setup.moddedClothes.under_lower);

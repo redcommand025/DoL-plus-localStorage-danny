@@ -1339,6 +1339,8 @@
 				<br>
 				<label><mouse class="tooltip"><span class="lewd">Dendrophile</span> <<checkbox "$background.plantlover" false true autocheck>> - Plants are everything to you.<span class="green">You're addicted to nectar. You're more vulnerable to aphrodisiacs and alcohol. Plantpeople and plant-based tentacles no longer require hallucinations to encounter. You get a bonus to Tending as your Trauma increases.</span></mouse>
 				</label>
+				<br>
+				<label><span class="purple">Incontinent</span> <<checkbox "$background.incontinent" false true autocheck>> - You've always struggled to hold it. <span class="green">You start with Leaky continence and wear pull-ups.</span></label>
 			</div>
 		</div>
 		<hr>

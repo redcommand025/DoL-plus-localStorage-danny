@@ -1074,7 +1074,7 @@
 			<<set _wornItem to $worn[_wardrobe_list]>>
 			<<set _wornItemData to setup.clothes[_wardrobe_list][clothesIndex(_wardrobe_list,_wornItem)]>>
 			<<clothingicon _wornItem _wardrobe_list>>
-			<<print _wornItemData.name_cap>>
+			<<print _wornItemData.name_cap>><<print plusDiaperFillLabel(_wornItem)>>
 			<<if _wornItem.colour and _wornItem.colour isnot 0>>
 				<span @class="_wornItem.colour?.replace(' ','-')">
 					<<if _wornItem.pattern and ![0, "plain"].includes(_wornItem.pattern) and _wornItemData.pattern_options?.length gt 1>>
@@ -1761,7 +1761,10 @@
 <<widget "wardrobeExits">>
 	<!-- Note: Don't use $_ in this widget, because this widget gets <<replace>>'d into the passage body -->
 	<!-- this widget doesn't make sense because these links ALWAYS depend on the passage this widget is called from, so there's no reason to make it a widget -->
-	<<switch $passage>>
+	<<switch $passage>><<case "Plus Flat Wardrobe">>
+			<<link [[Close wardrobe|Plus Flat Bedroom]]>><<cleanupOnWardrobeExit>><</link>>
+		<<case "Plus Flat Wardrobe">>
+			<<link [[Close wardrobe|Plus Flat Bedroom]]>><<cleanupOnWardrobeExit>><</link>>
 		<<case "Wardrobe">>
 			<<link [[Close wardrobe|Bedroom]]>><<cleanupOnWardrobeExit>><</link>>
 		<<case "Changing Room">>
@@ -1902,7 +1905,7 @@
 <<wardrobeSelection>>
 You look in your wardrobe.
 <br><br>
-<div id="wardrobewear"><<wardrobewear>></div>
+<<plusClothesLines>><<plusCleanLink>><<plusDiaperChangeLink>><br><div id="wardrobewear"><<wardrobewear>></div>
 <div id="wardrobeExits"><<wardrobeExits>></div>
 
 <<wardrobe>>
@@ -1914,7 +1917,7 @@ You look in your wardrobe.
 <<wardrobeSelection>>
 You are in a small<<if $bus isnot "clothingshop">> wooden<</if>> changing room.
 <br><br>
-<div id="wardrobewear"><<wardrobewear>></div>
+<<plusClothesLines>><<plusCleanLink>><<plusDiaperChangeLink>><br><div id="wardrobewear"><<wardrobewear>></div>
 <div id="wardrobeExits"><<wardrobeExits>></div>
 <<wardrobe>>
 
@@ -1976,7 +1979,7 @@ You look through the rustic wardrobe.
 <<set _earSlimeEnableSwimwear to true>>
 You stand in front of your open locker.
 <br><br>
-<div id="wardrobewear"><<wardrobewear>></div>
+<<plusClothesLines>><<plusCleanLink>><<plusDiaperChangeLink>><br><div id="wardrobewear"><<wardrobewear>></div>
 <div id="wardrobeExits"><<wardrobeExits>></div>
 
 <<wardrobe>>

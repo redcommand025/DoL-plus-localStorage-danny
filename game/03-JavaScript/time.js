@@ -676,6 +676,7 @@ function dayPassed() {
 		V.deviancy = Math.max(V.deviancy - 1, 0);
 	}
 	if (V.locker_suspicion > 0) statChange.lockerSuspicion(-1);
+	if (typeof window.plusDirtBullyDaily === "function") window.plusDirtBullyDaily();
 	if (V.whitneyromance || C.npc.Whitney.dom >= 20) {
 		V.bullytimer += 20;
 		V.bullytimeroutside += 10;
@@ -1272,6 +1273,7 @@ function hourPassed(hours) {
 }
 
 function minutePassed(minutes) {
+	if (typeof window.plusNeedsTick === "function") window.plusNeedsTick(minutes);
 	// Stress
 	// decay/rise and crossdresser trait
 	const isCrossdresser = V.backgroundTraits.includes("crossdresser");

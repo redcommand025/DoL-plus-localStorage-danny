@@ -1531,7 +1531,7 @@ You rest a hand on <<his>> thigh as <<he>> explains something to you. <<His>> vo
 
 :: Asylum Breakfast
 
-<<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
+<<run plusNeedsConsume(800, 150)>><<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 You sit down and enjoy breakfast with the other patients.
 <<if pcAreArmsBound("both")>>
 	Your arms are bound, so

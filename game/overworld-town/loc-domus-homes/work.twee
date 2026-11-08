@@ -48,7 +48,7 @@ You walk up to one of the homes and knock on the door.
 	A <<person>> answers the door. "You're not—" <<he>> pauses. "Are you here for the life-modelling work?" <<he>> asks.
 	<br><br>
 
-	<<socialiseicon>><<link [[Nod|Domus Model Intro]]>><</link>>
+	<<socialiseicon>><<link [[Nod|Domus Model Intro]]>><</link>><<plusAskRestroomLink "Domus Street" "Domus Errand Intro">><<plusAskRestroomLink "Domus Street" "Domus Shy Intro">><<plusAskRestroomLink "Domus Street" "Domus Gutters Intro">><<plusAskRestroomLink "Domus Street" "Domus Lounge Intro">><<plusAskRestroomLink "Domus Street" "Domus Tech Support Intro">><<plusAskRestroomLink "Domus Street" "Domus Delivery Intro">><<plusAskRestroomLink "Domus Street" "Domus Babysitting Intro">><<plusAskRestroomLink "Domus Street" "Domus Painting Intro">><<plusAskRestroomLink "Domus Street" "Domus Homework Intro">>
 	<br>
 	<<domusicon>><<link [[Excuse yourself and knock on another door (0:01)|Domus House Knock]]>><<pass 1>><<endevent>><</link>>
 	<br>
@@ -257,7 +257,7 @@ You walk up to one of the homes and knock on the door.
 			<</if>>
 			<br><br>
 
-			<<socialiseicon "ask">><<link [[Ask for work|Domus Loft Intro]]>><</link>>
+			<<socialiseicon "ask">><<link [[Ask for work|Domus Loft Intro]]>><</link>><<plusAskRestroomLink "Domus Street" "Domus Loft Intro">>
 			<br>
 			<<domusicon>><<link [[Excuse yourself and knock on another door (0:01)|Domus House Knock]]>><<pass 1>><<endevent>><</link>>
 			<br>

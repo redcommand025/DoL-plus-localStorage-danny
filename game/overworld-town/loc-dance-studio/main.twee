@@ -96,7 +96,7 @@ You are in the dance studio. Here you can pay for lessons to improve your dancin
 			<br>
 		<</if>>
 	<<else>>
-		<<barbicon>><<link [[Leave|Barb Street]]>><</link>>
+		<<plusDrinkLink "cooler">><<barbicon>><<link [[Leave|Barb Street]]>><</link>>
 		<br><br>
 	<</if>>
 <</if>>
@@ -106,7 +106,7 @@ You are in the dance studio. Here you can pay for lessons to improve your dancin
 You are in the dance studio's changing room. Benches line the walls, with hooks for clothing hanging above.
 <br><br>
 <<dancingclothes>>
-<<getouticon>><<link [[Leave|Dance Studio]]>><</link>>
+<<plusToiletLink>><br><<getouticon>><<link [[Leave|Dance Studio]]>><</link>>
 
 :: Dance Studio Outside Exhibitionism
 <<effects>>

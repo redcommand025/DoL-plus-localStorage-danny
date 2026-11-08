@@ -677,6 +677,7 @@ function calculateallure() {
 
 	// Allure modifier
 	allure *= V.settings.allureModifier;
+	if (typeof window.plusDirtAllureMul === "function") allure *= window.plusDirtAllureMul();
 
 	allure = Math.clamp(allure, 0, 16000);
 	V.allure = Math.floor(allure);

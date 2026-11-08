@@ -269,6 +269,7 @@
 <</widget>>
 
 <<widget "wearoutfit">>
+	<<run plusOutfitPre()>>
 	/* Strip worn strap-on before equipping outfit */
 	<<if $wear_outfit isnot "none" and $worn.under_lower.type.includes("strap-on")>>
 		<<set _strap to $player.inventory.sextoys[$worn.under_lower.name].find(toy => toy.worn)>>
@@ -869,6 +870,7 @@
 	<</if>>
 	<<set $wear_outfit to "none">>
 	<<unset $storeLocation>>
+	<<run plusOutfitPost()>>
 <</widget>>
 
 <<widget "overwriteoutfit">>

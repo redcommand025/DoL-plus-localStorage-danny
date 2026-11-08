@@ -1890,7 +1890,7 @@ You are in the bathroom at the brothel. There are communal showers for the dance
 <<if $stress gte $stressmax>>
 <<passoutshop "brothel">>
 <<else>>
-	<<pregnancyTest "Brothel Bathroom">>
+	<<plusToiletLink>><<pregnancyTest "Brothel Bathroom">>
 	<<if hasSexStat("exhibitionism", 3)>>
 		<<bathroomicon "shower">><<link [[Have a shower (0:15)|Brothel Shower]]>><<strip>><<pass 15>><<stress -1>><<set $hygiene to 0>><</link>><<lstress>>
 		<br><br>

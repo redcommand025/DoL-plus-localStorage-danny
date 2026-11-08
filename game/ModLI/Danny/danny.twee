@@ -1,7 +1,7 @@
 :: Danny Room Door
 <<if $time gte 1260 or $time lt 420>>
 A note on the door: "Sleeping. Please don't wake me."
-<<link [[Wait until morning|Danny Room Door]]>><<set $time to 420>><</link>>
+<<link [[Wait until morning|Danny Room Door]]>><<passTimeUntil 7>><</link>>
 <<elseif $schoolDay and $time gte 480 and $time lt 900>>
 A note: "At school. Back later."
 <<link [[Leave|Bedroom]]>><</link>>
@@ -25,7 +25,7 @@ You enter Danny's room. <<npc "Danny">> looks up.
 :: Danny First Meeting Canteen
 In the canteen Danny nearly bumps into you.
 "S-sorry! I'm Danny. We both live at the orphanage, right?"
-<<link [[Continue|School Canteen]]>><<set $dannyIntro to 1>><</link>>
+<<link [[Continue|Canteen]]>><<set $dannyIntro to 1>><</link>>
 
 :: Widgets Danny [widget]
 <<widget "dannyroom_link">>

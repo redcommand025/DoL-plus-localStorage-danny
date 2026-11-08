@@ -28,7 +28,7 @@
 			<br><br>
 			"Oh hello! I wasn't expecting you," <<he>> says. "It seems you've found where I live. What can I do for you?"
 			<br><br>
-			<<socialiseicon "ask">><<link [[Ask for work|Flats Poppy Knock Ask]]>><</link>>
+			<<socialiseicon "ask">><<link [[Ask for work|Flats Poppy Knock Ask]]>><</link>><<plusAskRestroomLink "Flats" "Flats Poppy Knock Ask">>
 			<br>
 			<<dooricon>><<link [[Excuse yourself and knock on another door (0:01)|Flats Knock]]>><<endevent>><<handheldon>><<pass 1>><</link>>
 			<br>
@@ -56,7 +56,7 @@
 		<<generate1>><<person1>>
 		You approach one of the flats, and knock on the door. It swings open to reveal a <<person>>. <<He>> leans against the doorframe. "What a cute guest," <<he>> says. "What can I do for you?"
 		<br><br>
-		<<socialiseicon "ask">><<link [[Ask for work|Flats Lecherous Ask]]>><</link>>
+		<<socialiseicon "ask">><<link [[Ask for work|Flats Lecherous Ask]]>><</link>><<plusAskRestroomLink "Flats" "Flats Lecherous Ask">><<plusAskRestroomLink "Flats" "Flats Dog Ask">><<plusAskRestroomLink "Flats" "Flats Kitchen Ask">><<plusAskRestroomLink "Flats" "Flats Laundry Ask">><<plusAskRestroomLink "Flats" "Flats Pair Ask">>
 		<br>
 		<<dooricon>><<link [[Excuse yourself and knock on another door (0:01)|Flats Knock]]>><<endevent>><<pass 1>><</link>>
 		<br>

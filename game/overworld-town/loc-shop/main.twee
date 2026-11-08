@@ -554,7 +554,7 @@ Their bodies shudder in unison as they reach orgasm.
 			/*<<shopicon "closed">><<link [[Empty shop (0:01)|EmptyStore]]>><<pass 1>><</link>>
 			<br>*/
 			<br>
-			<<stairsicon "up">><<link [[Go upstairs (0:02)|Shopping Centre Top]]>><<pass 2>><</link>>
+			<<plusDrinkLink "fountain">><<plusToiletLink>><br><<stairsicon "up">><<link [[Go upstairs (0:02)|Shopping Centre Top]]>><<pass 2>><</link>>
 			<br>
 			<<highicon>><<link [[Go outside (0:02)|Shopping Centre Entrance Sneak]]>><<pass 2>><</link>>
 			<br>

@@ -175,7 +175,7 @@ You are inside the hospital foyer. <<if $harper_appointments.enabled>>You see a 
 		<</if>>
 		<br>
 
-		<<getouticon>><<link [[Go outside (0:01)|Hospital front]]>><<pass 1>><</link>>
+		<<plusDrinkLink "cooler">><<plusToiletLink>><<plusBladderExerciseLink>><br><<getouticon>><<link [[Go outside (0:01)|Hospital front]]>><<pass 1>><</link>>
 		<br>
 	<</if>>
 <</if>>

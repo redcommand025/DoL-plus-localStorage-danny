@@ -1,5 +1,4 @@
 :: Clothing Shop Categories [widget]
-<<plusDiaperShop "clothing">>
 
 <<widget "updateclothingshop">>
 	<<run new Wikifier(null, '<<replace "#clothingShop-div">><<' + $shopName + "Shop-main>><</replace>>")>>

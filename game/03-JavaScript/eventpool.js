@@ -134,6 +134,7 @@ Macro.add("runeventpool", {
 	skipArgs: true,
 	handler() {
 		let pick;
+		if (typeof window.plusKnockAdjustPool === "function") window.plusKnockAdjustPool();
 		if (V.eventPoolOverride !== undefined) {
 			pick = T.eventpool.find(e => e.name === V.eventPoolOverride);
 			delete V.eventPoolOverride;

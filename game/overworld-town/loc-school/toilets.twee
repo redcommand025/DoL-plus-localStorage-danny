@@ -393,7 +393,6 @@ You walk right up to the <<person>> and place your hand on <<his>> groin. "Silly
 <</if>>
 
 :: School Boy's Toilets
-<<plusToiletLink>>
 
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
 <<set $changingRoomGender to "boys">>
@@ -438,7 +437,7 @@ You are in the boys' toilets.
 		<</if>>
 		<<skinicon "masturbate">><<link [[Masturbate|School Boy's Toilets Masturbation]]>><<set $masturbationstart to 1>><</link>>
 		<br>
-		<<pregnancyTest "School Boy's Toilets">>
+		<<plusToiletLink>><<pregnancyTest "School Boy's Toilets">>
 		<<storeon "schoolboys" "check">>
 		<<if _store_check isnot 1>>
 			<<getouticon>><<link [[Leave (0:01)|Hallways]]>><<pass 1>><</link>>
@@ -455,7 +454,6 @@ You are in the boys' toilets.
 <<storecleanup>>
 
 :: School Girl's Toilets
-<<plusToiletLink>>
 
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
 <<set $changingRoomGender to "girls">>
@@ -500,7 +498,7 @@ You are in the girls' toilets.
 		<</if>>
 		<<skinicon "masturbate">><<link [[Masturbate|School Girl's Toilets Masturbation]]>><<set $masturbationstart to 1>><</link>>
 		<br>
-		<<pregnancyTest "School Girl's Toilets">>
+		<<plusToiletLink>><<pregnancyTest "School Girl's Toilets">>
 		<<storeon "schoolgirls" "check">>
 		<<if _store_check isnot 1>>
 			<<getouticon>><<link [[Leave (0:01)|Hallways]]>><<pass 1>><</link>>

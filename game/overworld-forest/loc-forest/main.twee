@@ -148,7 +148,7 @@
 		<<forestsearch>>
 		<br><br>
 
-		Leave the forest
+		<<plusOutdoorToiletLink "forest">><br>Leave the forest
 		<br>
 		<<danubeicon>><<link [[Danube Street (0:10)|Danube Street]]>><<pass 10>><<set $foresthunt to 0>><</link>>
 		<br>
@@ -215,7 +215,7 @@
 		<<forestsearch>>
 		<br><br>
 
-		<<forestlessdeep>>
+		<<plusOutdoorToiletLink "forest">><br><<forestlessdeep>>
 	<</if>>
 
 <<elseif $forest lte 50>>
@@ -335,7 +335,7 @@
 		<<forestsearch>>
 		<br><br>
 
-		<<forestlessdeep>>
+		<<plusOutdoorToiletLink "forest">><br><<forestlessdeep>>
 	<</if>>
 
 <<elseif $forest gte 100>>
@@ -356,7 +356,7 @@
 		<<forestsearch>>
 		<br><br>
 
-		<<forestlessdeep>>
+		<<plusOutdoorToiletLink "forest">><br><<forestlessdeep>>
 	<</if>>
 <</if>>
 

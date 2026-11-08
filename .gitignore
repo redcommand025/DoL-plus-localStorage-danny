@@ -81,3 +81,6 @@ id_rsa.pub
 /testbuild/*
 testbuild.ps1
 *.html
+
+# Isolated test output (hashes, copied sprites, migration reports)
+tests/artifacts/

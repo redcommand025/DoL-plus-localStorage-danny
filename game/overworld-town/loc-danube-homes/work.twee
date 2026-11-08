@@ -26,7 +26,7 @@ You walk up to one of the mansions and knock on the door.
 	<<if $danube_housekeeping is undefined>>
 		<<generate1>><<person1>>A <<person>> answers the door. "You're not one of the guests I'm expecting," <<he>> says. "What can I do for you?"
 		<br><br>
-		<<socialiseicon "ask">><<link [[Ask for work|Danube House Intro]]>><</link>>
+		<<socialiseicon "ask">><<link [[Ask for work|Danube House Intro]]>><</link>><<plusAskRestroomLink "Danube Street" "Danube House Intro">><<plusAskRestroomLink "Danube Street" "Danube Party Intro">><<plusAskRestroomLink "Danube Street" "Danube Attic Intro">><<plusAskRestroomLink "Danube Street" "Danube Tea Intro">><<plusAskRestroomLink "Danube Street" "Danube Garden Intro">><<plusAskRestroomLink "Danube Street" "Danube Doll Intro">><<plusAskRestroomLink "Danube Street" "Danube Tutor Intro">><<plusAskRestroomLink "Danube Street" "Danube Catperson Intro">>
 		<br>
 		<<danubeicon>><<link [[Excuse yourself and knock on another door (0:01)|Danube House Knock]]>><<pass 1>><<endevent>><</link>>
 		<br>
@@ -108,7 +108,7 @@ You walk up to one of the mansions and knock on the door.
 			<<generatef1>><<person1>>A <<person>> answers the door. <<Hes>> wearing nothing but a shirt and panties. "Can I help you?" <<he>> asks.
 			<br><br>
 
-			<<socialiseicon "ask">><<link [[Ask for work|Danube Breast Intro]]>><</link>>
+			<<socialiseicon "ask">><<link [[Ask for work|Danube Breast Intro]]>><</link>><<plusAskRestroomLink "Danube Street" "Danube Breast Intro">>
 			<br>
 			<<danubeicon>><<link [[Excuse yourself and knock on another door (0:01)|Danube House Knock]]>><<pass 1>><<endevent>><</link>>
 			<br>

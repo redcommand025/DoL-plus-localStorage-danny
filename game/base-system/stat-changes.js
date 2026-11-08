@@ -988,8 +988,8 @@ const statChange = (() => {
 	}
 
 	function insecurityPossible(type) {
-		if (!["penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy"].includes(type)) {
-			paramError("insecurity", "type", type, 'Expected values include "penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy"');
+		if (!["penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy", "diaper"].includes(type)) {
+			paramError("insecurity", "type", type, 'Expected values include "penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy", "diaper"');
 		}
 		if (V.player.gender === "m" && type === "breasts_small") type = "breasts_big";
 
@@ -1000,6 +1000,7 @@ const statChange = (() => {
 				breasts_small: V.player.gender === "f" && between(V.player.breastsize, 0, 4),
 				breasts_big: V.player.breastsize >= (V.player.gender === "m" ? 1 : 8),
 				pregnancy: playerBellySize() >= 8,
+				diaper: typeof window.plusDiaperInsecurityPossible === "function" && window.plusDiaperInsecurityPossible(),
 			}[type] && V["acceptance_" + type] < 1000,
 			type,
 		];
@@ -1054,8 +1055,8 @@ const statChange = (() => {
 	function acceptance(type, amount) {
 		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("acceptance", "amount", amount, "Expected a number.");
-		if (!["penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy"].includes(type)) {
-			paramError("acceptance", "type", type, 'Expected values include "penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy"');
+		if (!["penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy", "diaper"].includes(type)) {
+			paramError("acceptance", "type", type, 'Expected values include "penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy", "diaper"');
 			return;
 		}
 		amount = Number(amount);

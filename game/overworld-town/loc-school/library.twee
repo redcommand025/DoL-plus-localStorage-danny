@@ -329,7 +329,7 @@ Next to the shelf is a small basket with returned and not yet sorted books.
 		<</if>>
 	<br>
 	<</if>>
-<<getouticon>><<link [[Leave the library (0:01)|Hallways]]>><<pass 1>><</link>>
+<<plusDrinkLink "fountain">><<plusFindPlaceLink>><<getouticon>><<link [[Leave the library (0:01)|Hallways]]>><<pass 1>><</link>>
 <br>
 <</if>>
 

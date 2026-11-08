@@ -615,7 +615,7 @@ You butter your toast.
 <br>
 
 :: Whitney Home Dawn Breakfast Toast Eat
-<<effects>>
+<<run plusNeedsConsume(600, 100)>><<effects>>
 
 You eat your toast. Whitney's <<person2>><<mum>> remains fixated on <<his>> paper, yet you get the feeling <<hes>> examining you somehow.
 <br><br>

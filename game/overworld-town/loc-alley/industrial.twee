@@ -81,7 +81,7 @@ There's a ladder to your right; you think it will take you to the rooftops. The 
 				<br>
 			<</if>>
 		<<else>>
-			<<add_link "Travel<br>">><<hideDisplay>>
+			<<plusFindPlaceLink>><<add_link "Travel<br>">><<hideDisplay>>
 			<<oxford>>
 			<<mer>>
 			<<elk>>

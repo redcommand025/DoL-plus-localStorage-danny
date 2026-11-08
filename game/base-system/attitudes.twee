@@ -123,6 +123,7 @@
 			<</if>>
 			<br>
 
+			<<plusDiaperAttitudes>>
 			<<if $attitudesControl.unlockProstitution>>
 				<label><<checkbox "$uncomfortable.prostituting" false true autocheck>> Prostituting yourself to help avoid Bailey's torments
 				<br>
@@ -1185,6 +1186,8 @@
 		T.oldControl = clone(V.attitudesControl);
 		/* update available controls */
 		V.attitudesControl.unlockExhibitionismUnderwear = V.exhibitionism >= 35;
+		V.attitudesControl.unlockDiaperSeen = typeof window.plusDiaperUnlockAttitudes === "function" && window.plusDiaperUnlockAttitudes();
+		V.attitudesControl.unlockDiaperUse = V.attitudesControl.unlockDiaperSeen;
 		V.attitudesControl.unlockExhibitionismNude = V.exhibitionism >= 75;
 		V.attitudesControl.unlockExhibitionismUnderwearPublic = V.exhibitionism >= 55;
 		V.attitudesControl.unlockExhibitionismNudePublic = V.exhibitionism >= 95;

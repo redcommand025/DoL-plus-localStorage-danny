@@ -263,7 +263,7 @@ You are on Domus Street. The orphanage is here. The street is dominated by small
 
 			Places of interest
 			<br>
-			<<homeicon>><<link [[Go home (0:01)|Orphanage]]>><<pass 1>><</link>>
+			<<homeicon>><<link [[Go home (0:01)|Orphanage]]>><<pass 1>><</link>><<plusFlatDomusLink>>
 			<br>
 			<<if Time.dayState is "night">>
 				<<dooricon "domus">><<link [[Approach one of the houses (0:02)|Domus House Lock]]>><<pass 2>><</link>>
@@ -282,7 +282,7 @@ You are on Domus Street. The orphanage is here. The street is dominated by small
 			<</if>>
 			<<if (($exposed is 1 and $uncomfortable.underwearPublic) or ($exposed is 2 and $uncomfortable.nudePublic)) and Time.dayState isnot "night">>
 			<<else>>
-				<<add_link "Travel<br>">><<hideDisplay>>
+				<<plusFindPlaceLink>><<add_link "Travel<br>">><<hideDisplay>>
 				<<barb>>
 				<<danube>>
 				<<if $exposed lte 0>>

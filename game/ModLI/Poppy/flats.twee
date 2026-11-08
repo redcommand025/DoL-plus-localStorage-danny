@@ -1150,6 +1150,7 @@ You join Poppy in the kitchen, and offer to assist.
 <<link [[Eat with Poppy|Flats Poppy Eat Meal]]>><<handheldon>><</link>>
 
 :: Flats Poppy Eat Meal
+<<run plusNeedsConsume(900, 150)>>
 <<set $location to "flats">><<set $bus to "poppy_kitchen">><<set $outside to 0>><<effects>>
 You sit at the kitchen table as Poppy bustles around the kitchen. 
 <br><br>
@@ -1230,7 +1231,7 @@ You are in Poppy's bathroom. The shower rack is filled with Poppy's essential sh
 	<<bathroomicon "shave">><<link [[Groom pubic hair|Flats Poppy Shave]]>><</link>>
 	<br>
 <</if>>
-<<pregnancyTest "Flats Poppy Bathroom">>
+<<plusToiletLink>><<pregnancyTest "Flats Poppy Bathroom">>
 <br>
 <<poppyFlatContents>>
 <</if>>

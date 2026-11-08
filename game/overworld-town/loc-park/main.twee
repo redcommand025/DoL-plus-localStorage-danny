@@ -193,7 +193,6 @@ The <<beasttype>> whimpers and flees into a bush. <<tearful>> you gather yoursel
 <<destination>>
 
 :: Men's Toilets
-<<plusToiletLink>>
 <<set $outside to 0>><<set $location to "park">><<effects>><<set $bus to "parkmens">>
 
 You are in the men's toilets in the park.
@@ -260,7 +259,7 @@ You are in the men's toilets in the park.
 				<<bathroomicon "sink">><<link [[Rinse mouth (0:05)|Men's Toilets Rinse]]>><<pass 5>><</link>>
 				<br>
 			<</if>>
-			<<pregnancyTest "Men's Toilets">>
+			<<plusToiletLink>><<pregnancyTest "Men's Toilets">>
 			<<storeon "parkmens" "check">>
 			<<if _store_check isnot 1>>
 				<<getouticon>><<link [[Leave|Park]]>><</link>>
@@ -314,7 +313,6 @@ You bend over a sink and rinse out your mouth.
 <br>
 
 :: Women's Toilets
-<<plusToiletLink>>
 <<set $outside to 0>><<set $location to "park">><<effects>><<set $bus to "parkwomens">>
 
 You are in the women's toilets in the park.
@@ -382,7 +380,7 @@ You are in the women's toilets in the park.
 				<<bathroomicon "sink">><<link [[Rinse mouth (0:05)|Women's Toilets Rinse]]>><<pass 5>><</link>>
 				<br>
 			<</if>>
-			<<pregnancyTest "Women's Toilets">>
+			<<plusToiletLink>><<pregnancyTest "Women's Toilets">>
 			<<storeon "parkwomens" "check">>
 			<<if _store_check isnot 1>>
 				<<getouticon>><<link [[Leave|Park]]>><</link>>

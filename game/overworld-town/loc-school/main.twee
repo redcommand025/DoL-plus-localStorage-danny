@@ -93,7 +93,7 @@
 		<<else>>
 			<<entranceicon>><<link [[Enter the school (0:01)|Hallways]]>><<pass 1>><</link>>
 			<br>
-			<<schoolicon "courtyard">><<link [[Rear courtyard (0:02)|School Rear Courtyard]]>><<pass 2>><</link>>
+			<<plusFindPlaceLink>><<schoolicon "courtyard">><<link [[Rear courtyard (0:02)|School Rear Courtyard]]>><<pass 2>><</link>>
 			<br><br>
 			<<if $schoolstate is "afternoon" and $detention gte 1 and $daily.school.detentionAttended isnot 1 and $headnodetention isnot 1 and $pillory.tenant.special.name isnot "Leighton">>
 				<<oxfordicon>><<link [[Leave the school|School Leave Stop]]>><<schoolclothesreset>><</link>>
@@ -220,7 +220,7 @@
 			<</if>>
 			<<entranceicon>><<link [[Enter the school (0:01)|Hallways]]>><<pass 1>><</link>>
 			<br>
-			<<schoolicon "courtyard">><<link [[Front courtyard (0:02)|School Front Courtyard]]>><<pass 2>><</link>>
+			<<plusFindPlaceLink>><<schoolicon "courtyard">><<link [[Front courtyard (0:02)|School Front Courtyard]]>><<pass 2>><</link>>
 			<br><br>
 			<<fenceicon>><<link [[Climb over the fence to the industrial district (0:02)|School Rear Fence Exit]]>><<pass 2>><</link>>
 			<br>

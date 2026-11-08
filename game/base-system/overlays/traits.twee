@@ -116,6 +116,12 @@
 					text: "Plants are everything to you. Plantpeople and plant-based tentacles no longer require hallucinations to encounter. You get a bonus to tending as your trauma increases.",
 				},
 				{
+					name: "Incontinent",
+					colour: "purple",
+					has: $backgroundTraits.includes("incontinent"),
+					text: "You start with leaky continence and wear pull-ups. Keep spare clean ones in your wardrobe.",
+				},
+				{
 					name: "Nectar Addict",
 					colour: "red",
 					has: $backgroundTraits.includes("plantlover"),

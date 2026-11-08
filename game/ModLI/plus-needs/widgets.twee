@@ -51,6 +51,26 @@
 	<</if>>
 <</widget>>
 
+<<widget "plusCaptionExtras">>
+	<<plusdiaperbars>>
+	<<if $plusHunger lte 0 or $plusThirst lte 0>>
+		<span class="red">You feel weak.</span>
+	<</if>>
+	<<if $plusHunger lte 0>>
+		<span class="red">Your stomach aches with hunger.</span>
+	<</if>>
+	<<if $plusThirst lte 0>>
+		<span class="red">Your head pounds from thirst.</span>
+	<</if>>
+	<<if $plusFlat and $plusFlat.rented>>
+		<span class="teal"><<print plusFlatStatusLine()>></span>
+	<</if>>
+	<<set _pnVis to plusDiaperVisibility()>>
+	<<if _pnVis.visible>>
+		<<if _pnVis.conceal lt 0>><span class="red">Nothing covers your diaper. Anyone can see it.</span><<else>><span class="purple">Your diaper is visible under your clothes.</span><</if>>
+	<</if>>
+<</widget>>
+
 <<widget "plusneedscaption">>
 	<<run plusNeedsInit()>>
 	<<plusneedsbar "Hunger" $plusHunger "You feel well fed." "You could go for a snack." "You should eat something." "You're starving.">>

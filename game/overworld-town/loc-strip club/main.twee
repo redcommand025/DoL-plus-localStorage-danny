@@ -292,7 +292,8 @@ You are in the bathroom at the Strip Club. There are several private cubicles fo
 <<else>>
 	<<bathroomicon "shower">><<link [[Have a shower (0:20)|Strip Club Shower]]>><<strip>><<pass 20>><<stress -1>><<set $hygiene to 0>><</link>><<lstress>>
 	<br><br>
-	<<getouticon>><<link [[Back to the club (0:01)|Strip Club]]>><<pass 1>><</link>>
+	<<plusToiletLink>><br>
+<<getouticon>><<link [[Back to the club (0:01)|Strip Club]]>><<pass 1>><</link>>
 	<br>
 <</if>>
 

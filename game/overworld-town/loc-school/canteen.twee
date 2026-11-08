@@ -1,7 +1,10 @@
 :: Canteen
-<<plusCanteenLunch>>
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>><<sydneySchedule>>
 You are in the school canteen.
+<<if $dannyIntro isnot 1 and Time.schoolDay>>
+	<<link [[Meet Danny|Danny First Meeting Canteen]]>><</link>>
+	<br>
+<</if>>
 <<if Time.schoolDay>>
 	<<if $schoolstate is "early" or $schoolstate is "late">>
 		The room is empty.
@@ -185,7 +188,7 @@ You are in the school canteen.
 		<<link [[Wait until the coast is clear|Canteen Wait]]>><</link>>
 		<br>
 	<<else>>
-		<<getouticon>><<link [[Leave the canteen (0:01)|Hallways]]>><<pass 1>><</link>>
+		<<plusFindPlaceLink>><<getouticon>><<link [[Leave the canteen (0:01)|Hallways]]>><<pass 1>><</link>>
 		<br>
 	<</if>>
 <</if>>

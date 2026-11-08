@@ -2931,6 +2931,7 @@ Avery orders a salad for you, and a fish soup for <<himself>>.
 <</if>>
 
 :: Avery Date Cheap
+<<run plusNeedsConsume(850, 200)>>
 <<effects>>
 
 <<if ($speech_attitude is "meek" or $speech_attitude is "shy") or $speech_attitude_avery>>

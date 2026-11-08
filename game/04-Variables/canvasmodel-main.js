@@ -3897,7 +3897,12 @@ Renderer.CanvasModels.main = {
 
 			//ToDo: expand the existing bulk images by providing a small bulge when `calculatePenisBulge()` is less than 8 (max is 15). check against pregnancy belly
 			srcfn(options) {
-				return `img/clothes/under-lower/${options.worn.under_lower.setup.variable}/penis.png`;
+				let src = `img/clothes/under-lower/${options.worn.under_lower.setup.variable}/penis.png`;
+				if (typeof window !== "undefined" && typeof window.plusSagSrc === "function") {
+					const wornItem = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+					src = window.plusSagSrc(src, wornItem);
+				}
+				return src;
 			},
 			showfn(options) {
 				return options.show_clothes
@@ -5728,7 +5733,12 @@ function genlayer_clothing_main(slot, overrideOptions) {
 			const pattern = options.worn[slot].pattern && !["secondary", "tertiary"].includes(options.worn[slot].setup.pattern_layer) ? "-" + options.worn[slot].pattern?.replace(/ /g,"-") : '';
 
 			const end = isHoodDown ? '-down' : isAltPosition ? '-alt' : '';
-			return `img/clothes/${folder}/${setup.variable}/${options.worn[slot].integrity}${pattern}${end}.png`;
+			let src = `img/clothes/${folder}/${setup.variable}/${options.worn[slot].integrity}${pattern}${end}.png`;
+			if (typeof window !== "undefined" && typeof window.plusSagSrc === "function") {
+				const wornItem = typeof V !== "undefined" && V.worn ? V.worn[slot] : null;
+				src = window.plusSagSrc(src, wornItem);
+			}
+			return src;
 		},
 		masksrcfn(options) {
 			if (options.worn.over_upper.setup.name === "kaiju costume" && !slot.startsWith("over_"))

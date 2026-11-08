@@ -34,7 +34,6 @@
 <<link [[Next|Shopping Centre Top]]>><<set $tryOn.autoReset to true>><<endevent>><</link>>
 
 :: Clothing Shop Guard
-<<plusDiaperShop "clothing">>
 <<effects>>
 <<generateSecurity 1>><<person1>>
 A security guard watches the entrance and spots you. <<He>> says a few words to someone you can't see, then approaches you.

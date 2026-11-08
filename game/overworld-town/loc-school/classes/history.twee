@@ -303,7 +303,7 @@
 	<br>
 	<<socialiseicon>><<link [[Socialise with classmates|History Lesson Socialise]]>><</link>><<gcool>><<ltrauma>><<lstress>><<gharass>>
 	<br>
-	<<daydreamicon>><<link [[Daydream|History Lesson Daydream]]>><</link>><<lstress>><<ltiredness>><<lharass>>
+	<<plusClassAskLinks>><<daydreamicon>><<link [[Daydream|History Lesson Daydream]]>><</link>><<lstress>><<ltiredness>><<lharass>>
 	<br>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
 		<<bedicon "zzz">><<link [[Sleep at your desk|History Lesson Sleep]]>><</link>><<ltiredness>>

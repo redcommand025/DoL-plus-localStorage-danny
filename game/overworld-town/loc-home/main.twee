@@ -939,7 +939,7 @@ You are in the bathroom.
 <</if>>
 <br>
 <<personalUpkeep>>
-<<pregnancyTest "Bedroom">>
+<<plusToiletLink>><<pregnancyTest "Bedroom">>
 <br>
 
 <<bedicon>><<link [[Bedroom (0:01)|Bedroom]]>><<pass 1>><</link>>

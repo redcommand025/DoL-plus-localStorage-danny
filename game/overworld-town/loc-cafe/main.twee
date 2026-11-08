@@ -326,7 +326,7 @@ You are in the Ocean Breeze Cafe.
 <</if>>
 
 <br>
-<<clifficon>><<link [[Leave|Cliff Street]]>><</link>>
+<<plusDrinkLink "cafe">><<plusToiletLink>><br><<clifficon>><<link [[Leave|Cliff Street]]>><</link>>
 <br><br>
 
 <</if>>

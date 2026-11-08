@@ -556,7 +556,7 @@ You find somewhere to sit, and eat your soup.
 <</if>>
 
 :: Prison Dinner Kylar
-<<effects>>
+<<run plusNeedsConsume(750, 100)>><<effects>>
 
 You take a seat, and Kylar sits beside you. The inmate on the other side of <<him>> gives you a dirty look as <<he>> moves seats.
 <br><br>

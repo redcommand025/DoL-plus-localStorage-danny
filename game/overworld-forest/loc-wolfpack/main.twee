@@ -228,7 +228,7 @@ You are in the clearing outside the wolf cave. A stream runs by.
 		<<wolfcaveicon "wolf">><<link [[Challenge the hunters (0:20)|Wolf Cave Spar]]>><</link>><<gtiredness>><<gphysique>><<lstress>>
 		<br><br>
 	<</if>>
-	<<wolfcaveicon "inside">><<link [[Go inside|Wolf Cave]]>><</link>>
+	<<plusDrinkLink "stream">><<plusOutdoorToiletLink "wolfcave">><br><<wolfcaveicon "inside">><<link [[Go inside|Wolf Cave]]>><</link>>
 	<br><br>
 	<<bike>>
 	<<if $nextPassageCheck is "Forest">>

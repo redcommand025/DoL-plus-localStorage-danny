@@ -276,6 +276,7 @@
 			<<thirstcaption>>
 			<<bladdercaption>>
 			<<bowelscaption>>
+			<<plusCaptionExtras>>
 			<<if $innocencestate is 1>>
 				<<innocencecaption>>
 			<<else>>
