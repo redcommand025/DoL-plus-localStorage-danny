@@ -1010,7 +1010,7 @@
 	<</if>>
 
 	<<for _i to 0; _i lt $enemynomax; _i++>>
-		<<if $NPCList[_i].stance isnot "defeated">>
+		<<if $NPCList[_i] and $NPCList[_i].pronoun and $NPCList[_i].stance isnot "defeated">>
 			<<set $NPCList[_i].active to "active">>
 		<</if>>
 		<<if $NPCList[_i].fullDescription is "Avery">>

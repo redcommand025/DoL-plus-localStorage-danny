@@ -64,7 +64,8 @@
 
 	<<set $NPCList[_n].pregnancyAvoidance to random(0,100)>>
 
-	<<if $enemyno lt 6>><<set $enemyno += 1>><</if>>
+	<!-- $enemyno is the highest filled slot + 1, not a generateNPC call counter. -->
+	<<set $enemyno to Math.min(6, Math.max($enemyno || 0, _n + 1))>>
 
 	<<npcattribute _n _gender _lvl>>
 
