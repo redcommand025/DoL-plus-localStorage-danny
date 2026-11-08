@@ -1,0 +1,728 @@
+:: Widgets MiniMap [widget]
+
+<<widget "hawkhunting_map">>
+	<<silently>>
+		<<set _inHunt to ($bird isnot undefined and $bird.hunts isnot undefined)>>
+		<<set _playerN to (_inHunt ? $bird.hunts.distanceNorth : 0)>>
+		<<set _playerE to (_inHunt ? $bird.hunts.distanceEast  : 0)>>
+
+		/* mapSize 5 => 11x11 */
+		<<set _mapSize to 5>>
+
+		/* targets format: [{n:?, e:?, label:"X"}, ...]
+		   If don't set $hawkHuntTargets anywhere, it defaults to none. */
+		<<set _targets to ($hawkHuntTargets isnot undefined ? $hawkHuntTargets : [])>>
+
+		/* Cache targets by coordinate so the render loop does not scan the target list for every cell. */
+		<<set _targetByKey to {}>>
+		<<for _t range _targets>>
+			<<if _t and _t.n isnot undefined and _t.e isnot undefined>>
+				<<set _targetByKey[_t.n + "-" + _t.e] to (_t.label ? _t.label : "X")>>
+			<</if>>
+		<</for>>
+	<</silently>>
+
+	<<if _inHunt>>
+	<div class="hawkmap-wrap">
+		<div class="hawkmap-gridbox">
+			<div class="hawkmap-label hawkmap-n">N</div>
+			<div class="hawkmap-label hawkmap-s">S</div>
+			<div class="hawkmap-label hawkmap-e">E</div>
+			<div class="hawkmap-label hawkmap-w">W</div>
+			<div class="hawkmap-grid hawkmap-grid-11">
+				<<for _n to _mapSize; _n gte -_mapSize; _n-->>
+					<<for _e to -_mapSize; _e lte _mapSize; _e++>>
+						<<capture _n _e>>
+							<div class="hawkmap-cell">
+								<<if _n is _playerN and _e is _playerE>>
+									<span class="hawkmap-you">YOU</span>
+								<<else>>
+									<<set _targetLabel to _targetByKey[_n + "-" + _e]>>
+									<<if _targetLabel isnot undefined>>
+										<span class="hawkmap-target"><<print _targetLabel>></span>
+									<<else>>
+										<span class="hawkmap-dot"></span>
+									<</if>>
+								<</if>>
+							</div>
+						<</capture>>
+					<</for>>
+				<</for>>
+			</div>
+		</div>
+	</div>
+	<</if>>
+<</widget>>
+
+<<widget "catacombs_map">>
+	<<silently>>
+		/* DoLX: passage() is a string */
+		<<set _p to passage().toLowerCase()>>
+		<<set _loc to _p.replace(/^catacombs/i,"").trim()>>
+		<<if _loc is "">><<set _loc to "catacombs">><</if>>
+
+		/* loc -> "x-y" */
+		<<set _loc2coord to {
+			"compound":"6-0","statues":"6-1","museum":"6-2","engravings":"6-3",
+			"ridge":"0-4","prison":"1-4","catacombs":"2-4","sarcophagi":"3-4","chasm":"4-4","bores coax":"5-4","bores":"6-4",
+			"mud climb":"0-5","stalagmites climb":"6-5",
+			"ridge climb":"0-6","mud":"1-6","masonry":"2-6","barrow":"3-6","stream":"4-6","stalagmites":"5-6","bores climb":"6-6"
+		}>>
+
+		<<set _playerKey to _loc2coord[_loc]>>
+
+		/* active cells = real layout (no colors, just presence) */
+		<<set _active to {
+			"6-0":1,"6-1":1,"6-2":1,"6-3":1,
+			"0-4":1,"1-4":1,"2-4":1,"3-4":1,"4-4":1,"5-4":1,"6-4":1,
+			"0-5":1,"6-5":1,
+			"0-6":1,"1-6":1,"2-6":1,"3-6":1,"4-6":1,"5-6":1,"6-6":1
+		}>>
+	<</silently>>
+
+	<div class="catmap-wrap">
+		<div class="catmap-grid">
+			<<for _y to 0; _y lt 7; _y++>>
+				<<for _x to 0; _x lt 7; _x++>>
+					<<capture _x _y>>
+						<<set _key to _x + '-' + _y>>
+						<<set _isActive to (_active[_key] isnot undefined)>>
+						<<set _cls to "catmap-cell">>
+						<<if _isActive>><<set _cls += " catmap-active">><</if>>
+						<<if !_isActive>><<set _cls += " catmap-void">><</if>>
+						<div @class="_cls">
+							<<if _playerKey and _key is _playerKey>>
+								<span class="catmap-you">YOU</span>
+							<</if>>
+						</div>
+					<</capture>>
+				<</for>>
+			<</for>>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "oldSewers_minimap">>
+	<<silently>>
+		<<set _p to passage().toLowerCase()>>
+		<<set _loc to _p.replace(/^sewers\s+/,"").trim()>>
+		<<set _loc to _loc.replace(/\s+hide$/,"").trim()>>
+
+		<<set _pass2node to {
+			"residential":"litter",
+			"commercial":"rubbish",
+			"industrial":"detritus",
+			"waterfall":"wet",
+			"lake":"lake",
+
+			"rubble":"crumble",
+			"ruins":"ruined",
+			"hole":"breeze",
+			"wood":"wood",
+			"webs":"webs",
+
+			"algae":"algae",
+			"mud":"mud",
+			"scrap":"scrap",
+			"workshop":"sculpture",
+			"shrooms":"fungus",
+
+			"smuggler's pub":"pub"
+		}>>
+
+		<<set _hereNode to _pass2node[_loc]>>
+
+		<<set _label to {
+			"lake":"Lake",
+			"wet":"Wet","detritus":"Detritus","rubbish":"Rubbish","litter":"Litter",
+			"crumble":"Crumble","ruined":"Ruined","breeze":"Breeze","wood":"Wood","webs":"Webs",
+			"algae":"Algae","mud":"Mud","scrap":"Scrap","sculpture":"Sculpture","fungus":"Fungus",
+			"pub":"Smuggler&#39;s<br>Pub"
+		}>>
+
+		<<set _antiqueNode to {
+			"webs":     (!$weekly.sewers.antiqueCandlestick),
+			"lake":     (!$weekly.sewers.antiqueCrystal),
+			"fungus":   (!$weekly.sewers.antiqueDildo),
+			"breeze":   (!$weekly.sewers.antiqueHorn),
+			"sculpture":(!$weekly.sewers.antiqueWatch)
+		}>>
+
+		/* layout */
+		<<set _nodeAt to {
+			"7-2":"lake",
+			"7-3":"wet",
+			"7-5":"detritus",
+			"7-7":"rubbish",
+			"7-9":"litter",
+
+			"4-5":"crumble",
+			"5-7":"ruined",
+			"3-9":"breeze",
+			"5-10":"wood",
+			"3-11":"webs",
+
+			"9-5":"algae",
+			"9-7":"mud",
+			"9-9":"scrap",
+			"11-11":"sculpture",
+			"12-7":"fungus",
+
+			"12-1":"pub"
+		}>>
+
+		/* Reverse lookup avoids scanning the whole 15x15 map just to find the player. */
+		<<set _node2key to {
+			"lake":"7-2",
+			"wet":"7-3",
+			"detritus":"7-5",
+			"rubbish":"7-7",
+			"litter":"7-9",
+			"crumble":"4-5",
+			"ruined":"5-7",
+			"breeze":"3-9",
+			"wood":"5-10",
+			"webs":"3-11",
+			"algae":"9-5",
+			"mud":"9-7",
+			"scrap":"9-9",
+			"sculpture":"11-11",
+			"fungus":"12-7",
+			"pub":"12-1"
+		}>>
+
+		<<set _mainNodeKey to {"7-2":1,"7-3":1,"7-5":1,"7-7":1,"7-9":1}>>
+
+		<<set _corrH to {
+			"5-5":1,"6-5":1,"8-5":1,
+			"6-7":1,"8-7":1,
+			"10-7":1,"11-7":1,
+			"5-9":1,"6-9":1,"8-9":1,
+			"10-9":1,"11-9":1,
+			"4-11":1,"12-3":1,
+			"12-11":1,"3-7":1,"4-7":1
+		}>>
+
+		<<set _corrV to {
+			"3-8":1,
+			"7-4":1,"7-6":1,"7-8":1,
+			"9-6":1,"5-11":1,
+			"11-10":1,"12-2":1
+		}>>
+
+		<<set _mainCorrKey to {"7-2":1,"7-4":1,"7-6":1,"7-8":1}>>
+
+		/* dashed blue path:
+		- from Pub down to the Algae row, then left to Algae
+		- plus the existing fungus→down→sculpture-side path
+		*/
+		<<set _bluePathKey to {
+			/* pub -> algae */
+			"12-2":1,"12-3":1,"12-4":1,"12-5":1,
+			"10-5":1,"11-5":1,
+
+			/* fungus -> sculpture-side corridor */
+			"12-8":1,"12-9":1,"12-10":1,"12-11":1
+		}>>
+
+		/* make sure the bluePath tiles are also real corridor tiles */
+		<<set _corrV["12-3"] to 1>><<set _corrV["12-4"] to 1>><<set _corrV["12-5"] to 1>>
+		<<set _corrH["10-5"] to 1>><<set _corrH["11-5"] to 1>><<set _corrV["5-6"] to 1>>
+		<<set _corrV["12-8"] to 1>><<set _corrV["12-9"] to 1>><<set _corrV["12-10"] to 1>>
+		<<set _corrH["12-11"] to 1>>
+
+		/* player cell */
+		<<set _playerKey to (_hereNode ? _node2key[_hereNode] : "")>>
+
+		/* crop bounds to active tiles so border touches outermost active tiles
+		   Layout is static, so avoid scanning the full 15x15 map every render. */
+		<<set _minX to 3>><<set _maxX to 12>><<set _minY to 1>><<set _maxY to 11>>
+
+		<<set _w to (_maxX - _minX + 1)>>
+		<<set _h to (_maxY - _minY + 1)>>
+
+		/* inline style for dynamic grid sizing + aspect ratio */
+		<<set _gridStyle to
+			"grid-template-columns:repeat(" + _w + ", 1fr);" +
+			"grid-template-rows:repeat(" + _h + ", 1fr);" +
+			"aspect-ratio:" + _w + "/" + _h + ";"
+		>>
+	<</silently>>
+
+	<div class="sewmap-wrap">
+		<div class="sewmap-grid" @style="_gridStyle">
+			<<for _y to _minY; _y lte _maxY; _y++>>
+				<<for _x to _minX; _x lte _maxX; _x++>>
+					<<capture _x _y>>
+						<<set _key to _x + "-" + _y>>
+						<<set _cls to "sewmap-cell">>
+
+						<<if _nodeAt[_key]>>
+							<<set _cls += " sewmap-block sewmap-room">>
+							<<if _mainNodeKey[_key] isnot undefined>><<set _cls += " sewmap-main">><</if>>
+							<<if _playerKey and _key is _playerKey>><<set _cls += " sewmap-here">><</if>>
+
+							<div @class="_cls">
+								<<set _nid to _nodeAt[_key]>>
+								<<if _antiqueNode[_nid]>><span class="sewmap-dot"></span><</if>>
+
+								<<if _playerKey and _key is _playerKey>>
+									<span class="sewmap-you">YOU</span>
+								<<else>>
+									<<set _ncls to "sewmap-name">>
+									<<if _nid is "sculpture" or _nid is "pub">>
+										<<set _ncls += " sewmap-name-small">>
+									<</if>>
+									<span @class="_ncls"><<print (_label[_nid] is undefined ? _nid : _label[_nid])>></span>
+								<</if>>
+							</div>
+
+						<<elseif _corrH[_key] or _corrV[_key]>>
+							<<set _cls += " sewmap-block">>
+							<<if _mainCorrKey[_key] isnot undefined>><<set _cls += " sewmap-main">><</if>>
+							<<if _bluePathKey[_key] isnot undefined>><<set _cls += " sewmap-bluepath">><</if>>
+							<div @class="_cls"></div>
+
+						<<else>>
+							<<set _cls += " sewmap-void">>
+							<div @class="_cls"></div>
+						<</if>>
+					<</capture>>
+				<</for>>
+			<</for>>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "tentacleplains_map">>
+	<<silently>>
+		<<set _mapSize to 5>>
+		<<set _innerR  to 3>>
+
+		<<set _playerN to ($tentnorth is undefined ? 0 : $tentnorth)>>
+		<<set _playerE to ($tenteast  is undefined ? 0 : $tenteast)>>
+
+		<<set _squidN to -4>>
+		<<set _squidE to -4>>
+	<</silently>>
+
+	<div class="tplmap-wrap">
+		<div class="tplmap-gridbox">
+			<div class="tplmap-grid">
+
+				<<for _n = _mapSize; _n gte -_mapSize; _n-->>
+					<<for _e = -_mapSize; _e lte _mapSize; _e++>>
+						<<capture _n, _e>>
+							<<set _class to "tplmap-cell tplmap-outer">>
+
+							/* inner 7x7 (no abs needed) */
+							<<if _n gte -_innerR and _n lte _innerR and _e gte -_innerR and _e lte _innerR>>
+								<<set _class to "tplmap-cell tplmap-inner">>
+							<</if>>
+
+							/* core overrides */
+							<<if _n is 0 and _e is 0>>
+								<<set _class to "tplmap-cell tplmap-core">>
+							<</if>>
+
+							<div @class="_class">
+								<<if _n is _playerN and _e is _playerE>>
+									<span class="tplmap-you">YOU</span>
+
+								<<elseif _n is 4 and _e is 4 and $tentspray isnot 1>>
+									<span class="tplmap-icon"><<peppersprayicon>></span>
+
+								<<elseif _n is _squidN and _e is _squidE>>
+									<span class="tplmap-icon"><<exiticon>></span>
+								<</if>>
+							</div>
+						<</capture>>
+					<</for>>
+				<</for>>
+
+			</div>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "forest_map">>
+	<<silently>>
+		/* Forest progress uses $forest from 0 to 100 in steps of 5. */
+		<<set _forestValue to ($forest is undefined ? 0 : Math.clamp($forest, 0, 100))>>
+		<<set _pos to Math.floor(_forestValue / 5)>>
+
+		<<if _pos lte 4>>
+			<<set _zoneLabel to "Forest outskirts">>
+		<<elseif _pos lte 10>>
+			<<set _zoneLabel to "Central forest">>
+		<<elseif _pos lte 19>>
+			<<set _zoneLabel to "Deep forest">>
+		<<else>>
+			<<set _zoneLabel to "End of the forest">>
+		<</if>>
+	<</silently>>
+
+	<div class="forestmap-wrap">
+		<div class="forestmap-scroller">
+			<div class="forestmap-grid">
+				<<for _i to 0; _i lte 20; _i++>>
+					<<capture _i>>
+						<<set _hue to 95>>
+						<<set _sat to (34 + Math.floor(_i * 0.8))>>
+						<<set _light to (84 - Math.floor(_i * 2.0))>>
+
+						<<if _i gte 11>>
+							<<set _sat to (_sat + 4)>>
+							<<set _light to (_light - 4)>>
+						<</if>>
+
+						<<if _i is 20>>
+							<<set _sat to 36>>
+							<<set _light to 28>>
+						<</if>>
+
+						<<set _style to "background:hsl(" + _hue + ", " + _sat + "%, " + _light + "%);">>
+						<<set _class to "forestmap-cell">>
+						<<if _i is _pos>><<set _class += " forestmap-here">><</if>>
+
+						<div @class="_class" @style="_style">
+							<<if _i is _pos>>
+								<span class="forestmap-you">YOU</span>
+							<</if>>
+						</div>
+					<</capture>>
+				<</for>>
+			</div>
+		</div>
+
+		<div class="forestmap-caption"><<print _zoneLabel>></div>
+	</div>
+
+	<<script>>
+		(function () {
+			const scrollers = document.querySelectorAll('.forestmap-scroller');
+			const scroller = scrollers[scrollers.length - 1];
+			const here = scroller && scroller.querySelector('.forestmap-here');
+			if (scroller && here) {
+				const left = here.offsetLeft - (scroller.clientWidth - here.clientWidth) / 2;
+				scroller.scrollLeft = Math.max(0, left);
+			}
+		})();
+	<</script>>
+<</widget>>
+
+
+<<widget "moor_map">>
+	<<silently>>
+		/* Moor progress uses $moor from 0 to 100 in steps of 5. */
+		<<set _moorValue to ($moor is undefined ? 0 : Math.clamp($moor, 0, 100))>>
+		<<set _pos to Math.floor(_moorValue / 5)>>
+
+		<<if _pos lte 4>>
+			<<set _zoneLabel to "Moor outskirts">>
+		<<elseif _pos lte 10>>
+			<<set _zoneLabel to "Central moor">>
+		<<elseif _pos lte 19>>
+			<<set _zoneLabel to "Deep moor">>
+		<<else>>
+			<<set _zoneLabel to "Ruined castle">>
+		<</if>>
+	<</silently>>
+
+	<div class="moormap-wrap">
+		<div class="moormap-scroller">
+			<div class="moormap-grid">
+				<<for _i to 0; _i lte 20; _i++>>
+					<<capture _i>>
+						/* 0-4 lavender outskirts, 5-10 sage center, 11-19 teal deep moor, 20 ruined castle grey */
+						<<if _i lte 4>>
+							<<set _hue to 272>>
+							<<set _sat to (66 - Math.floor(_i * 4))>>
+							<<set _light to (74 - Math.floor(_i * 2))>>
+						<<elseif _i lte 10>>
+							<<set _step to (_i - 5)>>
+							<<set _hue to 102>>
+							<<set _sat to (16 + Math.floor(_step * 1.4))>>
+							<<set _light to (69 - Math.floor(_step * 1.6))>>
+						<<elseif _i lte 19>>
+							<<set _step to (_i - 11)>>
+							<<set _hue to 178>>
+							<<set _sat to (24 + Math.floor(_step * 1.4))>>
+							<<set _light to (67 - Math.floor(_step * 1.7))>>
+						<<else>>
+							<<set _hue to 220>>
+							<<set _sat to 6>>
+							<<set _light to 77>>
+						<</if>>
+
+						<<set _style to "background:hsl(" + _hue + ", " + _sat + "%, " + _light + "%);">>
+						<<set _class to "moormap-cell">>
+						<<if _i is _pos>><<set _class += " moormap-here">><</if>>
+
+						<div @class="_class" @style="_style">
+							<<if _i is _pos>>
+								<span class="moormap-you">YOU</span>
+							<</if>>
+						</div>
+					<</capture>>
+				<</for>>
+			</div>
+		</div>
+
+		<div class="moormap-caption"><<print _zoneLabel>></div>
+	</div>
+
+	<<script>>
+		(function () {
+			const scrollers = document.querySelectorAll('.moormap-scroller');
+			const scroller = scrollers[scrollers.length - 1];
+			const here = scroller && scroller.querySelector('.moormap-here');
+			if (scroller && here) {
+				const left = here.offsetLeft - (scroller.clientWidth - here.clientWidth) / 2;
+				scroller.scrollLeft = Math.max(0, left);
+			}
+		})();
+	<</script>>
+<</widget>>
+
+
+<<widget "cave_map">>
+	<<silently>>
+		/* Beach cave / smuggler cave progress uses $cave from 0 to 100 in steps of 5. */
+		<<set _caveValue to ($cave is undefined ? 0 : Math.clamp($cave, 0, 100))>>
+		<<set _pos to Math.floor(_caveValue / 5)>>
+		<<set _pubKnown to ($smuggler_pub_known is 1 or $historytrait gte 4 or ($temple_spear_mission gte 1 and $temple_spear_mission_winter is 1))>>
+		<<set _mapStatus to (($museumAntiques and $museumAntiques.antiques) ? $museumAntiques.antiques.antiqueleathermap : undefined)>>
+		<<set _mapHidden to (_mapStatus isnot "found" and _mapStatus isnot "talk" and _mapStatus isnot "museum")>>
+		<<set _compassHidden to (!$weekly.beachCaveCompass)>>
+		<<set _showChestHint to (_mapHidden or _compassHidden)>>
+
+		<<if _caveValue lt 20>>
+			<<set _zoneLabel to "Water up to your neck">>
+		<<elseif _caveValue lt 50>>
+			<<set _zoneLabel to "Water up to your waist">>
+		<<elseif _caveValue lt 100>>
+			<<set _zoneLabel to "Feet in rushing water">>
+		<<else>>
+			<<set _zoneLabel to "Back of the cave">>
+		<</if>>
+	<</silently>>
+
+	<div class="cavemap-wrap">
+		<div class="cavemap-scroller">
+			<div class="cavemap-grid">
+				<<for _i to 0; _i lte 20; _i++>>
+					<<capture _i>>
+						/* pale wet stone -> blue grey -> deeper cave water */
+						<<if _i lte 3>>
+							<<set _hue to 190>>
+							<<set _sat to (10 + Math.floor(_i * 2))>>
+							<<set _light to (82 - Math.floor(_i * 2))>>
+						<<elseif _i lte 9>>
+							<<set _step to (_i - 4)>>
+							<<set _hue to 202>>
+							<<set _sat to (18 + Math.floor(_step * 1.6))>>
+							<<set _light to (78 - Math.floor(_step * 1.7))>>
+						<<elseif _i lte 19>>
+							<<set _step to (_i - 10)>>
+							<<set _hue to 204>>
+							<<set _sat to (28 + Math.floor(_step * 1.2))>>
+							<<set _light to (68 - Math.floor(_step * 1.2))>>
+						<<else>>
+							<<set _hue to 197>>
+							<<set _sat to 12>>
+							<<set _light to 56>>
+						<</if>>
+
+						<<set _style to "background:hsl(" + _hue + ", " + _sat + "%, " + _light + "%);">>
+						<<set _class to "cavemap-cell">>
+						<<if _i is _pos>><<set _class += " cavemap-here">><</if>>
+
+						<div @class="_class" @style="_style">
+							<<if _i gte 3 and _i lte 19>><span class="cavemap-antique cavemap-antique-basic"></span><</if>>
+							<<if _i gte 6 and _i lte 19>><span class="cavemap-antique cavemap-antique-deep"></span><</if>>
+							<<if _showChestHint and _i is 20>><span class="cavemap-antique cavemap-antique-chest"></span><</if>>
+							<<if _pubKnown and _i is 10>><span class="cavemap-pubdot"></span><</if>>
+							<<if _i is _pos>>
+								<span class="cavemap-you">YOU</span>
+							<</if>>
+						</div>
+					<</capture>>
+				<</for>>
+			</div>
+		</div>
+
+		<div class="cavemap-caption"><<print _zoneLabel>></div>
+		<div class="cavemap-legend">
+			<span class="cavemap-legend-item"><span class="cavemap-legend-mark cavemap-legend-basic"></span> Antiques 3–19</span>
+			<span class="cavemap-legend-item"><span class="cavemap-legend-mark cavemap-legend-deep"></span> Better finds 6–19</span>
+			<<if _showChestHint>>
+				<span class="cavemap-legend-item"><span class="cavemap-legend-mark cavemap-legend-chest"></span> Chest 20</span>
+			<</if>>
+		</div>
+	</div>
+
+	<<script>>
+		(function () {
+			const scrollers = document.querySelectorAll('.cavemap-scroller');
+			const scroller = scrollers[scrollers.length - 1];
+			const here = scroller && scroller.querySelector('.cavemap-here');
+			if (scroller && here) {
+				const left = here.offsetLeft - (scroller.clientWidth - here.clientWidth) / 2;
+				scroller.scrollLeft = Math.max(0, left);
+			}
+		})();
+	<</script>>
+<</widget>>
+
+
+<<widget "sea_map">>
+	<<silently>>
+		/* Sea progress uses $sea from 0 to 100 in steps of 10. */
+		<<set _seaValue to ($sea is undefined ? 0 : Math.clamp($sea, 0, 100))>>
+		<<set _pos to Math.floor(_seaValue / 10)>>
+
+		<<if _seaValue is 0>>
+			<<set _zoneLabel to "Near shore">>
+		<<elseif _seaValue lte 20>>
+			<<set _zoneLabel to "Near beach">>
+		<<elseif _seaValue lte 50>>
+			<<set _zoneLabel to "Near town">>
+		<<elseif _seaValue lt 100>>
+			<<set _zoneLabel to "Far out">>
+		<<else>>
+			<<set _zoneLabel to "Endless deep">>
+		<</if>>
+	<</silently>>
+
+	<div class="seamap-wrap">
+		<div class="seamap-scroller">
+			<div class="seamap-grid">
+				<<for _i to 0; _i lte 10; _i++>>
+					<<capture _i>>
+						/* pale shore blue -> ocean blue -> deep navy */
+						<<if _i lte 2>>
+							<<set _hue to 206>>
+							<<set _sat to (58 + Math.floor(_i * 2))>>
+							<<set _light to (78 - Math.floor(_i * 4))>>
+						<<elseif _i lte 5>>
+							<<set _step to (_i - 3)>>
+							<<set _hue to 210>>
+							<<set _sat to (62 + Math.floor(_step * 3))>>
+							<<set _light to (66 - Math.floor(_step * 5))>>
+						<<elseif _i lte 9>>
+							<<set _step to (_i - 6)>>
+							<<set _hue to 216>>
+							<<set _sat to (68 + Math.floor(_step * 3))>>
+							<<set _light to (50 - Math.floor(_step * 5))>>
+						<<else>>
+							<<set _hue to 220>>
+							<<set _sat to 76>>
+							<<set _light to 24>>
+						<</if>>
+
+						<<set _style to "background:hsl(" + _hue + ", " + _sat + "%, " + _light + "%);">>
+						<<set _class to "seamap-cell">>
+						<<if _i is _pos>><<set _class += " seamap-here">><</if>>
+
+						<div @class="_class" @style="_style">
+							<<if _i is 0>><span class="seamap-shore"></span><</if>>
+							<<if _i is 10>><span class="seamap-island"></span><</if>>
+							<<if _i is _pos>>
+								<span class="seamap-you">YOU</span>
+							<</if>>
+						</div>
+					<</capture>>
+				<</for>>
+			</div>
+		</div>
+
+		<div class="seamap-caption"><<print _zoneLabel>></div>
+	</div>
+
+	<<script>>
+		(function () {
+			const scrollers = document.querySelectorAll('.seamap-scroller');
+			const scroller = scrollers[scrollers.length - 1];
+			const here = scroller && scroller.querySelector('.seamap-here');
+			if (scroller && here) {
+				const left = here.offsetLeft - (scroller.clientWidth - here.clientWidth) / 2;
+				scroller.scrollLeft = Math.max(0, left);
+			}
+		})();
+	<</script>>
+<</widget>>
+
+<<widget "docks_sneak_map">>
+	<<silently>>
+		/* Docks sneak uses $bus for its current zone.
+		   This widget keeps the same read-only style as the other minimaps. */
+		<<set _here to ($bus is undefined ? "" : $bus)>>
+
+		<<set _nodes to {
+			"0-0":{id:"MER", label:"Mer Street", kind:"street", small:false, sea:false},
+			"0-2":{id:"S", label:"Front Gate", kind:"room", small:false, sea:false},
+			"2-2":{id:"SE", label:"Car Park", kind:"room", small:false, sea:false},
+			"4-2":{id:"E", label:"Office", kind:"room", small:false, sea:false},
+			"6-2":{id:"M", label:"Cargo Containers", kind:"room", small:true, sea:false},
+			"0-4":{id:"SW", label:"Lorry Unloading Area", kind:"room", small:true, sea:false},
+			"4-4":{id:"NE", label:"Warehouse", kind:"room", small:false, sea:true},
+			"0-6":{id:"W", label:"Cranes", kind:"room", small:false, sea:false},
+			"2-6":{id:"NW", label:"Beside Anchored Ship", kind:"room", small:true, sea:true},
+			"4-6":{id:"N", label:"Aboard Anchored Ship", kind:"room", small:true, sea:true}
+		}>>
+
+		<<set _paths to {
+			"0-1":"v",
+			"0-3":"v",
+			"0-5":"v",
+			"1-2":"h",
+			"3-2":"h",
+			"5-2":"h",
+			"4-3":"v",
+			"1-6":"h",
+			"3-6":"h"
+		}>>
+
+	<</silently>>
+
+	<div class="dockmap-wrap">
+		<div class="dockmap-scroller">
+			<div class="dockmap-grid">
+				<<for _y to 0; _y lt 7; _y++>>
+					<<for _x to 0; _x lt 7; _x++>>
+						<<capture _x _y>>
+							<<set _key to _x + "-" + _y>>
+							<<set _node to _nodes[_key]>>
+							<<set _path to _paths[_key]>>
+							<<set _class to "dockmap-cell">>
+
+							<<if _node>>
+								<<set _class += " dockmap-room">>
+								<<if _node.kind is "street">><<set _class += " dockmap-street">><</if>>
+								<<if _node.id is _here>><<set _class += " dockmap-here">><</if>>
+							<<elseif _path>>
+								<<set _class += " dockmap-path dockmap-path-" + _path>>
+							<<else>>
+								<<set _class += " dockmap-void">>
+							<</if>>
+
+							<div @class="_class">
+								<<if _node>>
+									<<set _nameClass to "dockmap-name">>
+									<<if _node.small>><<set _nameClass += " dockmap-name-small">><</if>>
+									<span @class="_nameClass"><<print _node.label>></span>
+									<<if _node.sea>><span class="dockmap-sea" title="Sea exit"></span><</if>>
+								<</if>>
+							</div>
+						<</capture>>
+					<</for>>
+				<</for>>
+			</div>
+		</div>
+		<div class="dockmap-caption">
+			<span class="dockmap-legend"><span class="dockmap-legend-sea"></span> Sea exit</span>
+		</div>
+	</div>
+<</widget>>
+

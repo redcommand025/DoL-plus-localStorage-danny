@@ -1,0 +1,83 @@
+# A gitignore file specifies intentionally untracked files that Git
+# should ignore. Files already tracked by Git are not affected!!
+## The `git add` command can be used to add ignored files with the
+## -f (force) option.
+## Consult `git help gitignore` and `git help add` for more info.
+
+# Keys to sign the generated .apks. You don't want them leaked.
+/keys/*
+# Generated apks themselves.
+/dist/*
+# Compiled game htmls.
+Degrees of Lewdity*.html
+# Personal userscripts.
+usettings.js
+
+# Archives
+*.7z
+*.zip
+!*mod.zip
+*.rar
+*.tar
+*.gz
+*.xz
+
+!releases/*.zip
+
+# Node directories and dependencies
+node_modules/
+
+# Operating System files
+Desktop.ini
+Thumbs.db
+
+# Hidden, temporary, and logging files
+*~
+*.tmp
+*.log
+img1/
+
+# Miscellaneous formats
+*.iml
+
+# Ignoring working folder for Quin2k
+# mod/
+*.code-workspace
+release/
+
+# Save files
+*.save
+
+# Gitlab configuration
+!.gitlab
+
+# Publishing automation
+publish.bat
+
+symlink.bat
+
+# Testing
+test-results/
+
+# Environment / secrets
+.env
+.env.*
+*.key
+*.pem
+*.crt
+id_rsa
+id_rsa.pub
+
+# OS / editor junk
+.DS_Store
+.eslintcache
+.vscode/
+.idea/
+
+# Temporary files
+*.swp
+
+# testbuild
+/testbuild/*
+testbuild.ps1
+*.html

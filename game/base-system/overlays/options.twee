@@ -1,0 +1,1330 @@
+/*
+IMPORTANT:
+	When adding variables to the options menu, state variables must use the $options object.
+	Otherwise changes won't be applied when options overlay is closed. See updateOptions().
+ */
+
+:: Options Overlay [widget]
+<<widget "setupOptions">>
+	<<set _optionsEnabled to true>>
+	<<set _optionsRefresh to false>>
+	<<script>>
+		settingsDisableElement();
+		window.Theme.initControl();
+		onInputChanged(() => {
+			if(!T.optionsRefresh) T.optionsRefresh = true;
+			if(T.globalThemeDefaults) Wikifier.wikifyEval("<<setFont true>>");
+		});
+	<</script>>
+<</widget>>
+
+<<widget "optionsgeneral">>
+	<<setupOptions>>
+	<<set _globalGeneralDefaults to JSON.parse(localStorage.getItem("dolDefaultGeneralSettings"))>>
+	<<if !_globalGeneralDefaults>>
+		<<set _globalGeneralDefaults to {}>>
+	<</if>>
+	<<if !_globalThemeDefaults>>
+		<<set _globalThemeDefaults to {}>>
+	<</if>>
+	<<if $debug is 1>>
+		/*<label><<checkbox "$notifyUpdate" false true autocheck>> Notify when there's a new game update available</label>
+		<br>*/
+		/*<<link "Check for updates">>
+			<<run checkNewVersion()>>
+		<</link>>
+		<br><br>*/
+	<</if>>
+	<div class="settingsGrid">
+		<div>
+			<<button "Save Current As Default">>
+				<<set _toSaveDefaults to {}>>
+				<<if $options.general>><<set _toSaveDefaults.general to $options.general>><</if>>
+				<<if $options.dateFormat>><<set _toSaveDefaults.dateFormat to $options.dateFormat>><</if>>
+				<<if $options.fahrenheit>><<set _toSaveDefaults.fahrenheit to $options.fahrenheit>><</if>>
+				<<if $options.timestyle>><<set _toSaveDefaults.timestyle to $options.timestyle>><</if>>
+				<<if $options.mapMovement>><<set _toSaveDefaults.mapMovement to $options.mapMovement>><</if>>
+				<<if $options.mapLegacy>><<set _toSaveDefaults.mapLegacy to $options.mapLegacy>><</if>>
+				<<if $options.mapMarkers>><<set _toSaveDefaults.mapMarkers to $options.mapMarkers>><</if>>
+				<<if $options.mapTop>><<set _toSaveDefaults.mapTop to $options.mapTop>><</if>>
+				<<if $options.closeButtonMobile>><<set _toSaveDefaults.closeButtonMobile to $options.closeButtonMobile>><</if>>
+				<<if $options.passageCount>><<set _toSaveDefaults.passageCount to $options.passageCount>><</if>>
+				<<if $options.playtime>><<set _toSaveDefaults.playtime to $options.playtime>><</if>>
+				<<if $options.neverNudeMenus>><<set _toSaveDefaults.neverNudeMenus to $options.neverNudeMenus>><</if>>
+				<<if $options.autosaveDisabled>><<set _toSaveDefaults.autosaveDisabled to $options.autosaveDisabled>><</if>>
+				<<if $options.numberify_enabled>><<set _toSaveDefaults.numberify_enabled to $options.numberify_enabled>><</if>>
+				<<if $options.clothingReplacementWarning>><<set _toSaveDefaults.clothingReplacementWarning to $options.clothingReplacementWarning>><</if>>
+				<<run localStorage.setItem("dolDefaultGeneralSettings",JSON.stringify(_toSaveDefaults))>>
+				<<replace #customOverlayContent>><<optionsgeneral>><</replace>>
+			<</button>>
+			<<button "Reset Defaults">>
+				<<run localStorage.removeItem("dolDefaultGeneralSettings")>>
+			<</button>>
+		</div>
+	</div>
+	<div class="settingsGrid">
+		<div class="settingsHeader options"><span class="gold">General</span></div>
+		<div class="settingsToggleItem">
+			<label>
+				<<checkbox "$options.neverNudeMenus" false true autocheck>>
+				Hide player nudity in menus
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-disabledif="V.ironmanmode===true">
+				<<checkbox "$options.autosaveDisabled" false true autocheck>> Disable autosave on sleeping
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold">Date Format:</span><<optionsThemeDefault "dateFormat">>
+			<br>
+			<label class="en-GB"><<radiobutton "$options.dateFormat" "en-GB" autocheck>> dd/mm/yyyy</label> |
+			<label class="en-US"><<radiobutton "$options.dateFormat" "en-US" autocheck>> mm/dd/yyyy</label> |
+			<label class="zh-CN"><<radiobutton "$options.dateFormat" "zh-CN" autocheck>> yyyy/mm/dd</label>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold">Temperature Format:</span><<optionsThemeDefault "fahrenheit">>
+			<br>
+			<label><<checkbox "$options.fahrenheit" false true autocheck>> Use Fahrenheit for temperatures</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-disabledif="!StartConfig.enableLinkNumberify">
+				<<checkbox "$options.numberify_enabled" 0 1 autocheck>> Enable numbered link navigation
+			</label>
+			<mouse class="tooltip-small linkBlue">(?)<span>Allows navigation with keyboard.</span></mouse>
+		</div>
+		<div class="settingsToggleItem">
+			Wakeup outfit menu style:
+			<<listbox "$options.listboxOutfitsEnabled" autoselect>>
+				<<option "Radio buttons" false>>
+				<<option "List box" true>>
+			<</listbox>>
+		</div>
+		<div class="settingsToggleItem">
+			<label>
+				<<checkbox "$options.clothingReplacementWarning" false true autocheck>>
+				Enable clothing replacement warning
+			</label>
+		</div>
+	</div>
+	<hr>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Sidebar</div>
+		<div class="settingsToggleItem">
+			<span class="gold">Time format:</span>
+			<br>
+			<label><<radiobutton "$options.timestyle" "military" autocheck>> 24-hour</label> |
+			<label><<radiobutton "$options.timestyle" "ampm" autocheck>> 12-hour</label>
+		</div>
+		<<script>>
+			if ($("#condomsSidebar").length > 0) {
+				T.condomDisplay = true
+			}
+		<</script>>
+		<div class="settingsToggleItem">
+			<span class="gold">Condoms display:</span>
+			<br>
+			<label><<radiovar "$options.condomsDisplay" "standard">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Standard</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded1">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 1</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded2">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 2</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded3">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 3</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded4">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 4</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded5">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 5</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded6">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 6</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded7">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 7</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded8">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 8</label> |
+			<label><<radiovar "$options.condomsDisplay" "modded9">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Modded 9</label> |
+			<label><<radiovar "$options.condomsDisplay" "none">><<if _condomDisplay>><<replace #condomsSidebar>><<condomsSidebar>><</replace>><</if>><</radiovar>> Hidden</label>
+		</div>
+		<<script>>
+			if ($("#peppersprays").length > 0) {
+				T.peppersprays = true
+			}
+		<</script>>
+		<div class="settingsToggleItem">
+			<span class="gold">Pepper sprays display:</span>
+			<br>
+			<label><<radiovar "$options.pepperSprayDisplay" "sprays">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Standard</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "compact">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Compact</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded1">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 1</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded2">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 2</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded3">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 3</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded4">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 4</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded5">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 5</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded6">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 6</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded7">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 7</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded8">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 8</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "modded9">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Modded 9</label> |
+			<label><<radiovar "$options.pepperSprayDisplay" "none">><<if _peppersprays>><<replace #peppersprays>><<peppersprays>><</replace>><</if>><</radiovar>> Hidden</label>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold">Thermometer display:</span>
+			<br>
+			<label><<radiovar "$options.thermometerDisplay" "">><<run Weather.Thermometer.load()>><</radiovar>> Standard</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded1">><<run Weather.Thermometer.load()>><</radiovar>> Modded 1</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded2">><<run Weather.Thermometer.load()>><</radiovar>> Modded 2</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded3">><<run Weather.Thermometer.load()>><</radiovar>> Modded 3</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded4">><<run Weather.Thermometer.load()>><</radiovar>> Modded 4</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded5">><<run Weather.Thermometer.load()>><</radiovar>> Modded 5</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded6">><<run Weather.Thermometer.load()>><</radiovar>> Modded 6</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded7">><<run Weather.Thermometer.load()>><</radiovar>> Modded 7</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded8">><<run Weather.Thermometer.load()>><</radiovar>> Modded 8</label> |
+			<label><<radiovar "$options.thermometerDisplay" "modded9">><<run Weather.Thermometer.load()>><</radiovar>> Modded 9</label>
+		</div>
+		<div class="settingsToggleItem">
+			<div id="nnpcDisplay">
+				<<if $options.nnpcDisplay isnot 0>><<set $options.nnpcDisplayGender to $options.autoNNPCDisplay[$options.nnpcDisplay].gender>><</if>>
+				<<updatesidebarimg>>
+				<span class="gold">Named NPC display:</span>
+				<br>
+				<div id="autonnpc">Auto Mode: <label><<checkbox "$options.autoNNPCDisplay.enabled" false true autocheck>> <mouse class="tooltip linkBlue">(?)<span>Enable NNPCs appearing when you're in a scene with them.</span></mouse></label></div>
+				<<set _options = {}>>
+				<<set _options["None"] = 0>>
+				<<set _options["Avery"] = "avery">>
+				<<set _options["Bailey"] = "bailey">>
+				<<set _options["Briar"] = "briar">>
+				<<set _options["Charlie"] = "charlie">>
+				<<set _options["Darryl"] = "darryl">>
+				<<set _options["Doren"] = "doren">>
+				<<set _options["Eden"] = "eden">>
+				<<set _options["Gwylan"] = "gwylan">>
+				<<set _options["Harper"] = "harper">>
+				<<set _options["Jordan"] = "jordan">>
+				<<set _options["Kylar"] = "kylar">>
+				<<set _options["Landry"] = "landry">>
+				<<set _options["Leighton"] = "leighton">>
+				<<set _options["Mason"] = "mason">>
+				<<set _options["Mickey"] = "mickey">>
+				<<set _options["Morgan"] = "morgan">>
+				<<set _options["River"] = "river">>
+				<<set _options["Robin"] = "robin">>
+				<<set _options["Sam"] = "sam">>
+				<<set _options["Sirris"] = "sirris">>
+				<<set _options["Whitney"] = "whitney">>
+				<<set _options["Winter"] = "winter">>
+				<<set _options["Black Wolf"] = "black_wolf">>
+				<<set _options["Niki"] = "niki">>
+				<<set _options["Quinn"] = "quinn">>
+				<<set _options["Remy"] = "remy">>
+				<<set _options["Alex"] = "alex">>
+				<<set _options["Great Hawk"] = "great_hawk">>
+				<<set _options["Wren"] = "wren">>
+				<<set _options["Sydney"] = "sydney">>
+				<<set _options["Ivory Wraith"] = "ivory_wraith">>
+				<<set _options["Zephyr"] = "zephyr">>
+				<<set _options["Riley"] = "riley">>
+				<<set _options["Night Monster"] = "night_monster">>
+				<<set _options["Poppy"] = "poppy">>
+				<<set _options["Others"] = "others">>
+				<<if Object.keys(_options).length > 1>>
+					<label>NNPC:
+						<div id="nnpc">
+							<<listbox "$options.nnpcDisplay" autoselect>>
+								<<optionsfrom _options>>
+							<</listbox>>
+						</div>
+					</label>
+				<</if>>
+				Layer: 
+				<label><<radiovar "$options.nnpcDisplayLayer" "front">><<updatesidebarimg>><</radiovar>> Front</label> |
+				<label><<radiovar "$options.nnpcDisplayLayer" "back">><<updatesidebarimg>><</radiovar>> Back</label>
+				<br>
+				<span id="manualNNPC">
+					<<if $options.autoNNPCDisplay.enabled is true and $options.nnpcDisplay isnot 0>>
+						Gender: 
+						<label><<radiovar "$options.nnpcDisplayGender" "male">><<updatesidebarimg>><</radiovar>> Male</label> |
+						<label><<radiovar "$options.nnpcDisplayGender" "female">><<updatesidebarimg>><</radiovar>> Female</label>
+						<br>
+						Skin: 
+						<label><<radiovar "$options.nnpcDisplaySkin" "pale">><<updatesidebarimg>><</radiovar>> Pale</label> |
+						<label><<radiovar "$options.nnpcDisplaySkin" "dark">><<updatesidebarimg>><</radiovar>> Dark</label>
+						<<switch $options.nnpcDisplay>>
+							<<case "black_wolf" "great_hawk" "night_monster">> | <label><<radiovar "$options.nnpcDisplaySkin" "monster">><<updatesidebarimg>><</radiovar>> Monster</label>
+						<</switch>>
+						<br>
+						<<if $options.nnpcDisplay is "poppy" and $poppyOverride.length gte 1>>
+							Poppy's Wardrobe: <label><<checkbox "$poppyWardrobe" false true autocheck>> 
+								<mouse class="tooltip linkBlue">(?)<span>Poppy will change sprites when the occasion calls for it.</span></mouse></label>
+								<br>
+							<<if $poppyWardrobe is false>>
+								<label><<radiovar "$poppyOverride.state" "casual">><<updatesidebarimg>><</radiovar>> Default</label>
+								<<if $poppyOverride.includes("valentinesSeen")>>
+									| <label><<radiovar "$poppyOverride.state" "formal">><<updatesidebarimg>><</radiovar>> Formal</label>
+								<</if>>
+								<<if $poppyOverride.includes("halloweenSeen")>>
+									| <label><<radiovar "$poppyOverride.state" "halloween">><<updatesidebarimg>><</radiovar>> Halloween</label>
+								<</if>>
+								<<if $poppyOverride.includes("christmasSeen")>>
+									| <label><<radiovar "$poppyOverride.state" "christmas">><<updatesidebarimg>><</radiovar>> Christmas</label>
+								<</if>>
+								<br>
+							<<else>>
+								<<set $poppyOverride.state to "casual">>
+							<</if>>
+						<</if>>
+
+						<<if $options.nnpcDisplay is "gwylan" and $brownFoxRevealed is true>>
+							<br>
+							Gwylan's Wardrobe:
+							<label><<radiovar "$gwylanOverride" "default">><<updatesidebarimg>><</radiovar>> Default</label> |
+							<label><<radiovar "$gwylanOverride" "fox">><<updatesidebarimg>><</radiovar>> Brown Fox</label>
+						<</if>>
+
+						<<if $options.nnpcDisplay is "sydney">>
+							Sydney's Wardrobe: <label><<checkbox "$sydneyWardrobe" false true autocheck>> 
+								<mouse class="tooltip linkBlue">(?)<span>Sydney will automatically change sprites when <<nnpc_he "Sydney">> meets the conditions.</span></mouse></label>
+							<br>
+							<<if $sydneyWardrobe is false>>
+								<<if $sydneyOverride is undefined>>
+									<<set $sydneyOverride to "pure">>
+								<</if>>
+								<label><<radiovar "$sydneyOverride" "pure">><<updatesidebarimg>><</radiovar>> Pure</label> |
+								<label><<radiovar "$sydneyOverride" "corrupt">><<updatesidebarimg>><</radiovar>> Corrupt</label>
+								<br>
+							<<else>>
+								<<set $sydneyOverride to undefined>>
+							<</if>>
+						<</if>>
+					<<else>>
+						Gender: 
+						<label><<radiovar "$options.nnpcDisplayGender" "male">><<updatesidebarimg>><</radiovar>> Male</label> |
+						<label><<radiovar "$options.nnpcDisplayGender" "female">><<updatesidebarimg>><</radiovar>> Female</label>
+						<br>
+						Skin: 
+						<label><<radiovar "$options.nnpcDisplaySkin" "pale">><<updatesidebarimg>><</radiovar>> Pale</label> |
+						<label><<radiovar "$options.nnpcDisplaySkin" "dark">><<updatesidebarimg>><</radiovar>> Dark</label>
+						<!-- TODO: Night Monster is being funky and only showing up for 1 gender :C -->
+						<<switch $options.nnpcDisplay>>
+							<<case "black_wolf" "great_hawk" "night_monster">> | <label><<radiovar "$options.nnpcDisplaySkin" "monster">><<updatesidebarimg>><</radiovar>> Monster</label>
+						<</switch>>
+						<br>
+						<<if $options.nnpcDisplay is "poppy" and $poppyOverride.length gte 1>>
+							Poppy's Wardrobe: <label><<checkbox "$poppyWardrobe" false true autocheck>> 
+								<mouse class="tooltip linkBlue">(?)<span>Poppy will change sprites when the occasion calls for it.</span></mouse></label>
+								<br>
+							<<if $poppyWardrobe is false>>
+								<label><<radiovar "$poppyOverride.state" "casual">><<updatesidebarimg>><</radiovar>> Default</label>
+								<<if $poppyOverride.includes("valentinesSeen")>>
+									| <label><<radiovar "$poppyOverride.state" "formal">><<updatesidebarimg>><</radiovar>> Formal</label>
+								<</if>>
+								<<if $poppyOverride.includes("halloweenSeen")>>
+									| <label><<radiovar "$poppyOverride.state" "halloween">><<updatesidebarimg>><</radiovar>> Halloween</label>
+								<</if>>
+								<<if $poppyOverride.includes("christmasSeen")>>
+									| <label><<radiovar "$poppyOverride.state" "christmas">><<updatesidebarimg>><</radiovar>> Christmas</label>
+								<</if>>
+								<br>
+							<<else>>
+								<<set $poppyOverride.state to "casual">>
+							<</if>>
+						<</if>>
+
+						<<if $options.nnpcDisplay is "gwylan" and $brownFoxRevealed is true>>
+							<br>
+							Gwylan's Wardrobe:
+							<label><<radiovar "$gwylanOverride" "default">><<updatesidebarimg>><</radiovar>> Default</label> |
+							<label><<radiovar "$gwylanOverride" "fox">><<updatesidebarimg>><</radiovar>> Brown Fox</label>
+						<</if>>
+
+						<<if $options.nnpcDisplay is "sydney">>
+							Sydney's Wardrobe: <label><<checkbox "$sydneyWardrobe" false true autocheck>> 
+								<mouse class="tooltip linkBlue">(?)<span>Sydney will automatically change sprites when <<nnpc_he "Sydney">> meets the conditions.</span></mouse></label>
+							<br>
+							<<if $sydneyWardrobe is false>>
+								<<if $sydneyOverride is undefined>>
+									<<set $sydneyOverride to "pure">>
+								<</if>>
+								<label><<radiovar "$sydneyOverride" "pure">><<updatesidebarimg>><</radiovar>> Pure</label> |
+								<label><<radiovar "$sydneyOverride" "corrupt">><<updatesidebarimg>><</radiovar>> Corrupt</label>
+								<br>
+							<<else>>
+								<<set $sydneyOverride to undefined>>
+							<</if>>
+						<</if>>
+					<</if>>
+				</span>
+				<!-- TODO: When previewing/selecting sprites it doesn't default to the character's skin colour. Users are having to disable Auto NNPC and then select skin colour manually to see the range of sprites. -->
+				Slot: 
+				<<listbox "$options.nnpcDisplaySlot" autoselect>>
+					<<optionsfrom [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]>>
+					<<updatesidebarimg>>
+				<</listbox>>
+				
+				<<if $foolsList isnot undefined and ($foolsList.neutral.includes($options.nnpcDisplay) or ($options.nnpcDisplayGender is "male" and $foolsList.maleOnly.includes($options.nnpcDisplay)) or ($options.nnpcDisplayGender is "female" and $foolsList.femaleOnly.includes($options.nnpcDisplay)))>>
+					<br>
+					<label><<radiovar "$options.nnpcDisplaySlot" "12">><<updatesidebarimg>><</radiovar>> April Fools Special</label>
+				<</if>>
+
+				<span id="autoNNPCSave">
+					<<if $options.autoNNPCDisplay.enabled is true and $options.nnpcDisplay isnot 0>>
+						<br>
+						<<link "Save">>
+							<<if $options.autoNNPCDisplay[$options.nnpcDisplay] is undefined>>
+								<<set $options.autoNNPCDisplay[$options.nnpcDisplay] to {}>>
+							<</if>>
+							<<set $options.autoNNPCDisplay[$options.nnpcDisplay].slot to $options.nnpcDisplaySlot>>
+							<<set $options.autoNNPCDisplay[$options.nnpcDisplay].layer to $options.nnpcDisplayLayer>>
+							<<set $options.autoNNPCDisplay[$options.nnpcDisplay].gender to $options.nnpcDisplayGender>>
+							<<set $options.autoNNPCDisplay[$options.nnpcDisplay].skin to $options.nnpcDisplaySkin>>
+
+						<</link>>
+					<</if>>
+				</span>
+			</div>
+		</div>
+
+		<<script>>
+		$(() =>
+			$("#nnpcDisplay").on(
+				"change",
+				"select.macro-listbox, .macro-checkbox, .macro-radiovar",
+				function () {
+
+					Wikifier.wikifyEval(`
+						/* Build a stable key */
+						<<set _nnpcKey to $options.nnpcDisplay>>
+						<<if _nnpcKey isnot 0>>
+							<<set _nnpcKey to _nnpcKey.toLowerCase()>>
+						<</if>>
+
+						/* Ensure per-NPC settings object exists */
+						<<if _nnpcKey isnot 0 and $options.autoNNPCDisplay[_nnpcKey] is undefined>>
+							<<set $options.autoNNPCDisplay[_nnpcKey] to {}>>
+						<</if>>
+
+						/* Only sync from saved settings when NNPC dropdown changes */
+						<<if $options._lastNNPCSelected is undefined>>
+							<<set $options._lastNNPCSelected to 0>>
+						<</if>>
+
+						<<if $options.autoNNPCDisplay.enabled is true and _nnpcKey isnot 0 and $options._lastNNPCSelected isnot _nnpcKey>>
+							<<if $options.autoNNPCDisplay[_nnpcKey].gender isnot undefined>>
+								<<set $options.nnpcDisplayGender to $options.autoNNPCDisplay[_nnpcKey].gender>>
+							<</if>>
+							<<if $options.autoNNPCDisplay[_nnpcKey].skin isnot undefined>>
+								<<set $options.nnpcDisplaySkin to $options.autoNNPCDisplay[_nnpcKey].skin>>
+							<</if>>
+							<<if $options.autoNNPCDisplay[_nnpcKey].slot isnot undefined>>
+								<<set $options.nnpcDisplaySlot to $options.autoNNPCDisplay[_nnpcKey].slot>>
+							<</if>>
+							<<if $options.autoNNPCDisplay[_nnpcKey].layer isnot undefined>>
+								<<set $options.nnpcDisplayLayer to $options.autoNNPCDisplay[_nnpcKey].layer>>
+							<</if>>
+
+							<<set $options._lastNNPCSelected to _nnpcKey>>
+						<</if>>
+
+						/* Skin guards */
+						<<if $options.nnpcDisplaySkin is "monster" and !(_nnpcKey is "black_wolf" || _nnpcKey is "great_hawk" || _nnpcKey is "night_monster")>>
+							<<set $options.nnpcDisplaySkin to "pale">>
+						<</if>>
+						<<if ($options.nnpcDisplaySkin isnot "pale") and ($options.nnpcDisplaySkin isnot "dark") and ($options.nnpcDisplaySkin isnot "monster")>>
+							<<set $options.nnpcDisplaySkin to "pale">>
+						<</if>>
+
+						<<updatesidebarimg>>
+
+						<<if _nnpcKey isnot 0>>
+
+							<<replace #manualNNPC>>
+								<<if $options.autoNNPCDisplay.enabled is true and $options.nnpcDisplay isnot 0>>
+									Gender: 
+									<label><<radiovar "$options.nnpcDisplayGender" "male">><<updatesidebarimg>><</radiovar>> Male</label> |
+									<label><<radiovar "$options.nnpcDisplayGender" "female">><<updatesidebarimg>><</radiovar>> Female</label>
+									<br>
+									Skin: 
+									<label><<radiovar "$options.nnpcDisplaySkin" "pale">><<updatesidebarimg>><</radiovar>> Pale</label> |
+									<label><<radiovar "$options.nnpcDisplaySkin" "dark">><<updatesidebarimg>><</radiovar>> Dark</label>
+									<<switch $options.nnpcDisplay>>
+										<<case "black_wolf" "great_hawk" "night_monster">> | <label><<radiovar "$options.nnpcDisplaySkin" "monster">><<updatesidebarimg>><</radiovar>> Monster</label>
+									<</switch>>
+									<br>
+									<<if $options.nnpcDisplay is "poppy" and $poppyOverride.length gte 1>>
+										Poppy's Wardrobe: <label><<checkbox "$poppyWardrobe" false true autocheck>> 
+											<mouse class="tooltip linkBlue">(?)<span>Poppy will change sprites when the occasion calls for it.</span></mouse></label>
+											<br>
+										<<if $poppyWardrobe is false>>
+											<label><<radiovar "$poppyOverride.state" "casual">><<updatesidebarimg>><</radiovar>> Default</label>
+											<<if $poppyOverride.includes("valentinesSeen")>>
+												| <label><<radiovar "$poppyOverride.state" "formal">><<updatesidebarimg>><</radiovar>> Formal</label>
+											<</if>>
+											<<if $poppyOverride.includes("halloweenSeen")>>
+												| <label><<radiovar "$poppyOverride.state" "halloween">><<updatesidebarimg>><</radiovar>> Halloween</label>
+											<</if>>
+											<<if $poppyOverride.includes("christmasSeen")>>
+												| <label><<radiovar "$poppyOverride.state" "christmas">><<updatesidebarimg>><</radiovar>> Christmas</label>
+											<</if>>
+											<br>
+										<<else>>
+											<<set $poppyOverride.state to "casual">>
+										<</if>>
+									<</if>>
+
+									<<if $options.nnpcDisplay is "gwylan" and $brownFoxRevealed is true>>
+										<br>
+										Gwylan's Wardrobe:
+										<label><<radiovar "$gwylanOverride" "default">><<updatesidebarimg>><</radiovar>> Default</label> |
+										<label><<radiovar "$gwylanOverride" "fox">><<updatesidebarimg>><</radiovar>> Brown Fox</label>
+									<</if>>
+
+									<<if $options.nnpcDisplay is "sydney">>
+										Sydney's Wardrobe: <label><<checkbox "$sydneyWardrobe" false true autocheck>> 
+											<mouse class="tooltip linkBlue">(?)<span>Sydney will automatically change sprites when <<nnpc_he "Sydney">> meets the conditions.</span></mouse></label>
+										<br>
+										<<if $sydneyWardrobe is false>>
+											<<if $sydneyOverride is undefined>>
+												<<set $sydneyOverride to "pure">>
+											<</if>>
+											<label><<radiovar "$sydneyOverride" "pure">><<updatesidebarimg>><</radiovar>> Pure</label> |
+											<label><<radiovar "$sydneyOverride" "corrupt">><<updatesidebarimg>><</radiovar>> Corrupt</label>
+											<br>
+										<<else>>
+											<<set $sydneyOverride to undefined>>
+										<</if>>
+									<</if>>
+								<<else>>
+									Gender: 
+									<label><<radiovar "$options.nnpcDisplayGender" "male">><<updatesidebarimg>><</radiovar>> Male</label> |
+									<label><<radiovar "$options.nnpcDisplayGender" "female">><<updatesidebarimg>><</radiovar>> Female</label>
+									<br>
+									Skin: 
+									<label><<radiovar "$options.nnpcDisplaySkin" "pale">><<updatesidebarimg>><</radiovar>> Pale</label> |
+									<label><<radiovar "$options.nnpcDisplaySkin" "dark">><<updatesidebarimg>><</radiovar>> Dark</label>
+									<<switch $options.nnpcDisplay>>
+										<<case "black_wolf" "great_hawk" "night_monster">> | <label><<radiovar "$options.nnpcDisplaySkin" "monster">><<updatesidebarimg>><</radiovar>> Monster</label>
+									<</switch>>
+									<br>
+									<<if $options.nnpcDisplay is "poppy">>
+									Poppy's Wardrobe: <label><<checkbox "$poppyWardrobe" false true autocheck>> 
+										<mouse class="tooltip linkBlue">(?)<span>Poppy will change sprites when the occasion calls for it.</span></mouse></label>
+										<br>
+										<<if $poppyWardrobe is false>>
+											<label><<radiovar "$poppyOverride.state" "casual">><<updatesidebarimg>><</radiovar>> Default</label>
+											| <label><<radiovar "$poppyOverride.state" "formal">><<updatesidebarimg>><</radiovar>> Formal</label>
+											| <label><<radiovar "$poppyOverride.state" "halloween">><<updatesidebarimg>><</radiovar>> Halloween</label>
+											| <label><<radiovar "$poppyOverride.state" "christmas">><<updatesidebarimg>><</radiovar>> Christmas</label>
+											<br>
+										<<else>>
+											<<set $poppyOverride.state to "casual">>
+										<</if>>
+									<</if>>
+
+									<<if $options.nnpcDisplay is "gwylan" and $brownFoxRevealed is true>>
+										<br>
+										Gwylan's Wardrobe:
+										<label><<radiovar "$gwylanOverride" "default">><<updatesidebarimg>><</radiovar>> Default</label> |
+										<label><<radiovar "$gwylanOverride" "fox">><<updatesidebarimg>><</radiovar>> Brown Fox</label>
+									<</if>>
+
+									<<if $options.nnpcDisplay is "sydney">>
+										Sydney's Wardrobe: <label><<checkbox "$sydneyWardrobe" false true autocheck>> 
+											<mouse class="tooltip linkBlue">(?)<span>Sydney will automatically change sprites when <<nnpc_he "Sydney">> meets the conditions.</span></mouse></label>
+										<br>
+										<<if $sydneyWardrobe is false>>
+											<<if $sydneyOverride is undefined>>
+												<<set $sydneyOverride to "pure">>
+											<</if>>
+											<label><<radiovar "$sydneyOverride" "pure">><<updatesidebarimg>><</radiovar>> Pure</label> |
+											<label><<radiovar "$sydneyOverride" "corrupt">><<updatesidebarimg>><</radiovar>> Corrupt</label>
+											<br>
+										<<else>>
+											<<set $sydneyOverride to undefined>>
+										<</if>>
+									<</if>>
+								<</if>>
+							<</replace>>
+
+							<<replace #autoNNPCSave>>
+								<<link "Save">>
+									<<set $options.autoNNPCDisplay[_nnpcKey].slot to $options.nnpcDisplaySlot>>
+									<<set $options.autoNNPCDisplay[_nnpcKey].layer to $options.nnpcDisplayLayer>>
+									<<set $options.autoNNPCDisplay[_nnpcKey].skin to $options.nnpcDisplaySkin>>
+									<<set $options.autoNNPCDisplay[_nnpcKey].gender to $options.nnpcDisplayGender>>
+								<</link>>
+							<</replace>>
+						<</if>>
+					`);
+
+					/* --------- FORCE RADIO DOTS TO MATCH THE LOADED VALUES --------- */
+					setTimeout(() => {
+						const root = $("#nnpcDisplay");
+						if (!root.length) return;
+
+						const slot = V.options.nnpcDisplaySlot;
+						root.find("input[type=radio][name$='nnpcDisplaySlot'][value='" + slot + "']").prop("checked", true);
+
+						const layer = V.options.nnpcDisplayLayer;
+						root.find("input[type=radio][name$='nnpcDisplayLayer'][value='" + layer + "']").prop("checked", true);
+
+						const gender = V.options.nnpcDisplayGender;
+						root.find("input[type=radio][name$='nnpcDisplayGender'][value='" + gender + "']").prop("checked", true);
+
+						const skin = V.options.nnpcDisplaySkin;
+						root.find("input[type=radio][name$='nnpcDisplaySkin'][value='" + skin + "']").prop("checked", true);
+					}, 0);
+				}
+			)
+		);
+		<</script>>
+
+
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.lowerHalo" false true autocheck>> Enable halos lowering when holding an umbrella.</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.tipdisable" "t" "f" autocheck>> Enable sidebar hints and tips</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.debugdisable" "t" "f" autocheck>> Enable additional error messages</label>
+		</div>
+		<div class="settingsToggleItem">
+			Show stats when sidebar is closed:
+			<<listbox "$options.sidebarStats" autoselect>>
+				<<option "Disabled" "disabled">>
+				<<option "Limited" "limited">>
+				<<option "Show all" "all">>
+			<</listbox>>
+			<div class="mobile-rec gold">It's a good idea to enable this on mobile!</div>
+		</div>
+		<div class="settingsToggleItem">
+			Show clock when sidebar is closed:
+			<<listbox "$options.sidebarTime" autoselect>>
+				<<option "Disabled" "disabled">>
+				<<option "Above" "top">>
+				<<option "Below" "bottom">>
+			<</listbox>>
+			<div class="mobile-rec gold">It's a good idea to enable this on mobile!</div>
+		</div>
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.clothingCaption" false true autocheck>> Show clothing descriptions in sidebar</label>
+			<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Still displays the description as a tooltip when hovering over the avatar when disabled.</span>">(?)</span>
+		</div>
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.showCaptionText" false true autocheck>> Show caption text in sidebar</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.showUiBar" false true autocheck>> Show arrow button in sidebar</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.bigCanvas" false true autocheck>> Enlarge sideview canvas</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.showSidebarEffects" false true autocheck>> Show effects around player canvas</label>
+			<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Includes precipitation, underwater bubbles, and more. Can also be temporarily hidden by clicking the thermometer in the sidebar to make getting pictures of your PC easier!</span>">(?)</span>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold">Fishing bait selection:</span>
+			<br>
+			<label><<radiobutton "$options.fishingBaitSelection" "sidebar" autocheck>> Sidebar</label> |
+			<label><<radiobutton "$options.fishingBaitSelection" "dropdown" autocheck>> Dropdown</label>
+		</div>
+	</div>
+	<hr>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Combat</div>
+		<div class="settingsToggleItem">
+			"Yourself" as a target:
+			<label><<radiobutton "$options.targetYourself" false autocheck>> Disabled</label> |
+			<label><<radiobutton "$options.targetYourself" true autocheck>> Enabled</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label>
+				<<checkbox "$options.scrollRemember" false true autocheck>>
+				Restore scrolling position during combat
+			</label>
+		</div>
+		<div class="settingsToggleItemWide">
+			Combat Controls:
+			<<listbox "$options.combatControls" autoselect>>
+				<<option "Radio Buttons" "radio">>
+				<<option "Radio Buttons (In Columns)" "columnRadio">>
+				<<option "Lists (No width limit)" "lists">>
+				<<option "Lists (Width Limit)" "limitedLists">>
+			<</listbox>>
+		</div>
+	</div>
+
+	<<if $map isnot undefined>>
+		<hr>
+		<div class="settingsGrid">
+			<div class="settingsHeader options">Map</div>
+			<div class="settingsToggleItem">
+				<label data-target="images"><<checkbox "$options.mapMovement" false true autocheck>> Enable map movement by clicking/touching the map icons</label>
+			</div>
+			<div class="settingsToggleItem">
+				<label data-target="images" data-disabledif="V.options.images===0"><<checkbox "$options.mapLegacy" false true autocheck>> Disable SVG map. Enable if town map is not visible.</label>
+			</div>
+			<div class="settingsToggleItem">
+				<label data-target="['images', 'maplegacy]" data-disabledif="V.options.images===0||V.options.mapLegacy"><<checkbox "$options.mapMarkers" false true autocheck>> Show clickable area on map</label>
+			</div>
+			<div class="settingsToggleItem">
+				<label data-target="images"><<checkbox "$options.mapTop" false true autocheck>> Move the map above the map links</label>
+			</div>
+		</div>
+	<</if>>
+	<hr>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Overlays</div>
+		<div class="settingsToggleItemWide">
+			<span class="gold">Position of the close-button for overlay menus:</span>
+			<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Updated next time overlay is opened.</span>">(?)</span>
+			<br>
+			<label><<radiobutton "$options.closeButtonMobile" false autocheck>> Normal</label> |
+			<label><<radiobutton "$options.closeButtonMobile" true autocheck>> Mobile (Left-hand side)</label>
+		</div>
+	</div>
+	<hr>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Extra Info</div>
+		<div class="settingsToggleItem">
+			<span class="gold">Display passage count in the top right of the screen:</span>
+			<br>
+			<label><<radiobutton "$options.passageCount" "disabled" autocheck>> Disable</label>
+			<br>
+			<label><<radiobutton "$options.passageCount" "changes" autocheck>> Passage Changes Count</label>
+			<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Total number of times a new passage has changed (Clicking on links in most cases). Passages such as the settings are excluded. Not tracked in versions '0.3.12.X' and older.</span>">(?)</span>
+			<br>
+			<label><<radiobutton "$options.passageCount" "total" autocheck>> Passage Count</label>
+			<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Total number of times a new passage has been loaded (Clicking on links in most cases). Passages such as the settings are excluded. Not tracked in versions '0.3.12.X' and older.</span>">(?)</span>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold">Display play time in the top right of the screen:</span>
+			<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Formatted into 'h:mm:ss'. Be aware that leaving the game for hours alone, then saving will have its time tracked. To avoid, save the game before ending play and then load the save when you resume play. Not tracked in versions '0.3.13.X' and older.</span>">(?)</span>
+			<br>
+			<label><<radiobutton "$options.playtime" false autocheck>> Disable</label>
+			<br>
+			<label><<radiobutton "$options.playtime" true autocheck>> Enable</label>
+		</div>
+	</div>
+
+	<<if $passage isnot "Start">>
+		<br>
+		<<button "Restart Game">>
+			<<script>>
+				SugarCube.UI.restart();
+			<</script>>
+		<</button>>
+	<</if>>
+<</widget>>
+
+<<widget "optionstheme">>
+	<<setupOptions>>
+	<<set _globalThemeDefaults to JSON.parse(localStorage.getItem("dolDefaultThemeSettings"))>>
+	<<if !_globalThemeDefaults>>
+		<<set _globalThemeDefaults to {}>>
+	<</if>>
+	<div class="settingsGrid">
+		<div>
+			<<button "Save Current As Default">>
+				<<set _toSaveDefaults to {}>>
+				<<if $options.theme>><<set _toSaveDefaults.theme to $options.theme>><</if>>
+				<<if $options.passageMaxWidth>><<set _toSaveDefaults.passageMaxWidth to $options.passageMaxWidth>><</if>>
+				<<if $options.passageLineHeight>><<set _toSaveDefaults.passageLineHeight to $options.passageLineHeight>><</if>>
+				<<if $options.overlayLineHeight>><<set _toSaveDefaults.overlayLineHeight to $options.overlayLineHeight>><</if>>
+				<<if $options.sidebarLineHeight>><<set _toSaveDefaults.sidebarLineHeight to $options.sidebarLineHeight>><</if>>
+				<<if $options.passageFontSize>><<set _toSaveDefaults.passageFontSize to $options.passageFontSize>><</if>>
+				<<if $options.overlayFontSize>><<set _toSaveDefaults.overlayFontSize to $options.overlayFontSize>><</if>>
+				<<if $options.sidebarFontSize>><<set _toSaveDefaults.sidebarFontSize to $options.sidebarFontSize>><</if>>
+				<<if $options.font>><<set _toSaveDefaults.font to $options.font>><</if>>
+				<<run localStorage.setItem("dolDefaultThemeSettings",JSON.stringify(_toSaveDefaults))>>
+				<<replace #customOverlayContent>><<optionstheme>><</replace>>
+			<</button>>
+			<<button "Reset Defaults">>
+				<<run localStorage.removeItem("dolDefaultThemeSettings")>>
+			<</button>>
+		</div>
+	</div>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Theme<<optionsThemeDefault "theme">></div>
+		<div class="settingsToggleItemWide">
+			<span class="gold">Style:</span>
+			<label><input type="radio" name="theme" value="system-default" /> Default</label> |
+			<label><input type="radio" name="theme" value="dark" /> Dark</label> |
+			<label><input type="radio" name="theme" value="arctic" /> Nord</label> |
+			<label><input type="radio" name="theme" value="zen" /> Zenburn</label> |
+			<label><input type="radio" name="theme" value="monokai" /> Monokai</label> |
+			<label><input type="radio" name="theme" value="storm" /> Storm</label> |
+			<label><input type="radio" name="theme" value="latte" /> Catppuccin Latte</label> |
+			<label><input type="radio" name="theme" value="frappe" /> Catppuccin Frappé</label> |
+			<label><input type="radio" name="theme" value="macchiato" /> Catppuccin Macchiato</label> |
+			<label><input type="radio" name="theme" value="mocha" /> Catppuccin Mocha</label> |
+			<label><input type="radio" name="theme" value="sea" /> Sea</label>
+			<div class="small-description">Selected styles cannot currently be saved as the 'default' option, though they will carry over to new saves.</div>
+		</div>
+	</div>
+	<hr>
+
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Line Height</div>
+		<div class="settingsToggleItem">
+			Passage:
+			<<listbox "$options.passageLineHeight" autoselect>>
+				<<option "Default" undefined>>
+				<<option "1" 1>>
+				<<option "1.25" 1.25>>
+				<<option "1.5" 1.5>>
+				<<option "1.75" 1.75>>
+				<<option "2" 2>>
+			<</listbox>>
+			<<optionsThemeDefault "passageLineHeight">>
+		</div>
+		<div class="settingsToggleItem">
+			Overlay:
+			<<listbox "$options.overlayLineHeight" autoselect>>
+				<<option "Default" undefined>>
+				<<option "1" 1>>
+				<<option "1.25" 1.25>>
+				<<option "1.5" 1.5>>
+				<<option "1.75" 1.75>>
+				<<option "2" 2>>
+			<</listbox>>
+			<<optionsThemeDefault "overlayLineHeight">>
+		</div>
+		<div class="settingsToggleItemWide">
+			Sidebar:
+			<<listbox "$options.sidebarLineHeight" autoselect>>
+				<<option "Default" undefined>>
+				<<option "1" 1>>
+				<<option "1.25" 1.25>>
+				<<option "1.5" 1.5>>
+				<<option "1.75" 1.75>>
+				<<option "2" 2>>
+			<</listbox>>
+			<<optionsThemeDefault "sidebarLineHeight">>
+		</div>
+	</div>
+	<hr>
+
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Font Size</div>
+		<div class="settingsToggleItem">
+			Passage:
+			<<listbox "$options.passageFontSize" autoselect>>
+				<<option "Default" undefined>>
+				<<option "10px" 10>>
+				<<option "12px" 12>>
+				<<option "14px" 14>>
+				<<option "16px" 16>>
+				<<option "18px" 18>>
+				<<option "20px" 20>>
+			<</listbox>>
+			<<optionsThemeDefault "passageFontSize">>
+		</div>
+		<div class="settingsToggleItem">
+			<mouse class="tooltip">Overlay<span class="blue">Default is equivalent to passage font size.</span></mouse>:
+			<<listbox "$options.overlayFontSize" autoselect>>
+				<<option "Default" undefined>>
+				<<option "10px" 10>>
+				<<option "12px" 12>>
+				<<option "14px" 14>>
+				<<option "16px" 16>>
+				<<option "18px" 18>>
+				<<option "20px" 20>>
+			<</listbox>>
+			<<optionsThemeDefault "overlayFontSize">>
+		</div>
+		<div class="settingsToggleItemWide">
+			Sidebar:
+			<<listbox "$options.sidebarFontSize" autoselect>>
+				<<option "Default" undefined>>
+				<<option "12px" 12>>
+				<<option "14px" 14>>
+				<<option "16px" 16>>
+				<<option "18px" 18>>
+				<<option "20px" 20>>
+			<</listbox>>
+			<<optionsThemeDefault "sidebarFontSize">>
+		</div>
+	</div>
+	<hr>
+
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Font Style</div>
+		<div class="settingsToggleItemWide">
+			<<optionsThemeDefault "font">>
+			<label><<radiobutton "$options.font" "" `$options.font is undefined ? 'checked' : 'autocheck'`>> Use system default</label>
+			<br>
+			<span class="gold">Sans-serif:</span>
+			<label class="Arial"><<radiobutton "$options.font" "Arial" autocheck>> Arial</label> |
+			<label class="Verdana"><<radiobutton "$options.font" "Verdana" autocheck>> Verdana</label>
+			<br>
+			<span class="gold">Serif:</span>
+			<label class="TimesNewRoman"><<radiobutton "$options.font" "TimesNewRoman" autocheck>> Times New Roman</label> |
+			<label class="Georgia"><<radiobutton "$options.font" "Georgia" autocheck>> Georgia</label> |
+			<label class="Garamond"><<radiobutton "$options.font" "Garamond" autocheck>> Garamond</label>
+			<br>
+			<span class="gold">Monospace:</span>
+			<label class="CourierNew"><<radiobutton "$options.font" "CourierNew" autocheck>> Courier New</label> |
+			<label class="LucidaConsole"><<radiobutton "$options.font" "LucidaConsole" autocheck>> Lucida Console</label> |
+			<label class="Monaco"><<radiobutton "$options.font" "Monaco" autocheck>> Monaco</label>
+			<br>
+			<span class="gold">Accessibility:</span>
+			<label class="OpenDyslexicMono"><<radiobutton "$options.font" "OpenDyslexicMono" autocheck>> OpenDyslexic Mono</label> |
+			<label class="ComicSans"><<radiobutton "$options.font" "ComicSans" autocheck>> Comic Sans</label> |
+			<label class="Lexend"><<radiobutton "$options.font" "Lexend" autocheck>> Lexend</label>
+		</div>
+	</div>
+	<hr>
+
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Text Animations</div>
+		<div class="settingsToggleItemWide">
+			<label data-target="options.textAnimsAll">
+				<<checkbox "$options.textAnimsAll" false true autocheck { onToggle: t => {
+					$("#prevDrunk").replaceWith(Wikifier.wikifyEval('<span id="prevDrunk" @class="basicDrunkCss(3)">Drunk sway</span>'));
+					$("#prevHeat").replaceWith(Wikifier.wikifyEval('<span id="prevHeat" @class="basicJitterCss()">Heat/rut jitter</span>'));
+					$("#prevHypno").replaceWith(Wikifier.wikifyEval('<span id="prevHypno"><<hypnosisText "Hypnosis spiral">></span>'));
+				}}>>
+				Uncheck to disable all text animations
+			</label>
+			<br>
+			<<checkbox "$options.textAnimsDrunk" false true autocheck { onToggle: t => {
+				$("#prevDrunk").replaceWith(Wikifier.wikifyEval('<span id="prevDrunk" @class="basicDrunkCss(3)">Drunk sway</span>'));
+			}}>>
+			<span id="prevDrunk" @class="basicDrunkCss(3)">Drunk sway</span>
+			<br>
+			<<checkbox "$options.textAnimsHeat" false true autocheck { onToggle: t => {
+				$("#prevHeat").replaceWith(Wikifier.wikifyEval('<span id="prevHeat" @class="basicJitterCss()">Heat/rut jitter</span>'));
+			}}>>
+			<span id="prevHeat" @class="basicJitterCss()">Heat/rut jitter</span>
+			<br>
+			<<checkbox "$options.textAnimsHypno" false true autocheck { onToggle: t => {
+				$("#prevHypno").replaceWith(Wikifier.wikifyEval('<span id="prevHypno"><<hypnosisText "Hypnosis spiral">></span>'));
+			}}>>
+			<span id="prevHypno"><<hypnosisText "Hypnosis spiral">></span>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "optionsThemeDefault">>
+	<<if _args[0]>>
+		<span @id="'optionsThemeDefault-' + _args[0]">
+			<<if _globalThemeDefaults[_args[0]]>> Default: (<<print _globalThemeDefaults[_args[0]]>>)
+			<<elseif _globalGeneralDefaults[_args[0]]>> Default: (<<print _globalGeneralDefaults[_args[0]]>>)
+			<</if>>
+		</span>
+	<</if>>
+<</widget>>
+
+<<widget "optionsperformance">>
+	<<setupOptions>>
+	<<if StartConfig.enableImages is true>>
+		<div class="settingsGrid">
+			<div class="settingsHeader options">Images</div>
+			<div class="settingsToggleItem">
+				<label><<checkbox "$options.images" 0 1 autocheck>> Enable images</label>
+				<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Images may not load properly on older Androids.</span>">(?)</span>
+			</div>
+			<div class="settingsToggleItem">
+				<label data-target="options.images" data-disabledif="V.options.images===0">
+					<<checkbox "$options.combatImages" 0 1 autocheck>> Enable combat images
+				</label>
+			</div>
+
+			<div class="settingsToggleItem">
+				<label data-target="options.images" data-disabledif="V.options.images===0"><<checkbox "$options.silhouetteEnabled" false true autocheck>> Enable NPC silhouettes</label>
+			</div>
+		</div>
+		<hr>
+		<div class="settingsGrid">
+			<div class="settingsHeader options">Rendering</div>
+			<div class="settingsToggleItem">
+				<label data-target="options.images" data-disabledif="V.options.images===0"><<checkbox "$options.weatherUpdate" false true autocheck>> Use new weather renderer for sidebar</label>
+			</div>
+			<div class="settingsToggleItem">
+				<label data-target='["options.images", "weatherupdate"]' data-disabledif="V.options.images===0||V.options.weatherUpdate===false"><<checkbox "$options.reflections" false true autocheck>> Render water reflections
+				</label>
+				<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Could cause performance issues on old devices.</span>">(?)</span>
+			</div>
+			<div class="description">Close the options menu for the change to apply.</div>
+		</div>
+		<span class="gold">Animations</span>
+		<div class="settingsGrid">
+			<div class="settingsToggleItem">
+				<label data-target="options.images" data-disabledif="V.options.images===0">
+					<<checkbox "$options.sidebarAnimations" false true autocheck>> Sidebar character animations
+				</label>
+			</div>
+			<div class="settingsToggleItem">
+				<label data-target='["options.images", "sidebaranimations"]' data-disabledif="V.options.images===0||V.options.sidebarAnimations===false">
+					<<checkbox "$options.blinkingEnabled" false true autocheck>> Animate eyes blinking
+				</label>
+			</div>
+			<div class="settingsToggleItem">
+				<label data-target="images" data-disabledif="V.options.images===0||V.options.combatImages===0">
+					<<checkbox "$options.combatAnimations" false true autocheck>> Combat animations
+				</label>
+				<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Disabling may help improve performance during combat.</span>">(?)</span>
+			</div>
+			<<if $eyelidTEST is true>>
+				<div class="settingsToggleItem">
+					<label data-target='["options.images", "sidebaranimations"]' data-disabledif="V.options.images===0||V.options.sidebarAnimations===false">
+						<<checkbox "$options.halfClosedEnabled" false true autocheck>> Enable half-closed eyes graphics
+					</label>
+				</div>
+				<div class="description">
+					Draw eyelids in sidebar as half-closed when highly aroused.
+				</div>
+			<</if>>
+		</div>
+		<hr>
+		<div>
+			<div class="settingsGrid" data-target='["images", "characterLightEnabled"]' data-disabledif="V.options.images===0||V.options.characterLightEnabled===false" oninput='Renderer.refresh(Renderer.locateModel("lighting", "sidebar"));'>
+				<div class="settingsHeader options">Character Lighting</div>
+				<div class="settingsToggleItem">
+					<label>
+						Spotlight<br>
+						<<numberslider "$options.lightSpotlight" $options.lightSpotlight 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Gradient<br>
+						<<numberslider "$options.lightGradient" $options.lightGradient 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Glow<br>
+						<<numberslider "$options.lightGlow" $options.lightGlow 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Flat<br>
+						<<numberslider "$options.lightFlat" $options.lightFlat 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Colour Component<br>
+						<<numberslider "$options.lightTFColor" $options.lightTFColor 0 1 0.05>>
+						<span class="description">Requires Angel/Demon transformation</span>
+					</label>
+				</div>
+			</div>
+			<div style="margin-left: 10px" onchange="new Wikifier(null, '<<replace #condomsSidebar>><<condomsSidebar>><</replace>>')">
+				<label data-target="options.images" data-disabledif="V.options.images===0">
+					<<checkbox "$options.characterLightEnabled" false true autocheck>> Enable character lighting
+				</label>
+			</div>
+		</div>
+		<hr>
+		<div>
+			<div class="settingsGrid" data-target='["images", "combatImages", "combatLightEnabled"]' data-disabledif="V.options.images===0||!V.options.combatImages||V.options.characterLightEnabled===false" oninput='Renderer.refresh(Renderer.locateModel("lighting", "combat-lighting"));Renderer.refresh(Renderer.locateModel("lighting", "combat-lighting-demo"));'>
+				<div class="settingsHeader options">Combat Visuals</div>
+				<div class="settingsToggleItem d-flex justify-content-center lighting-demo-container">
+					<div id="combatLightingDemo"><<setupCombatLightingDemo>></div>
+					<div id="combatLightingToggle" onchange="new Wikifier(null, '<<updateCombatLightingDemo #combatLightingDemo>>')">
+						<label data-target='["images", "combatImages"]' data-disabledif="V.options.images===0||!V.options.combatImages">
+							<<checkbox "$options.combatLightEnabled" false true autocheck>> Enable combat lighting
+						</label>
+					</div>
+				</div>
+				<div class="settingsToggleItem d-flex justify-content-center boob-demo-container">
+					<div id="closeBreastDemo"><<setupBreastjobDemo>></div>
+					<div id="closeBreastToggle" onchange="new Wikifier(null, '<<replace #closeBreastDemo>><<setupBreastjobDemo>><</replace>>')">
+						<label data-target='["images", "combatImages"]' data-disabledif="V.options.images===0||!V.options.combatImages">
+							<<checkbox "$options.topdownBreastjob" false true autocheck>> Enable topdown breastjob (large breasts only)
+						</label>
+					</div>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Y Offset<br>
+						<<numberslider "$options.combatLightOffsetY" $options.combatLightOffsetY 0 128 1>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Spotlight intensity<br>
+						<<numberslider "$options.combatLightSpotlight" $options.combatLightSpotlight 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Spotlight width<br>
+						<<numberslider "$options.combatLightSpotlightX" $options.combatLightSpotlightX 0 128 1>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Spotlight height<br>
+						<<numberslider "$options.combatLightSpotlightY" $options.combatLightSpotlightY 0 48 1>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Gradient<br>
+						<<numberslider "$options.combatLightGradient" $options.combatLightGradient 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Glow<br>
+						<<numberslider "$options.combatLightGlow" $options.combatLightGlow 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Flat<br>
+						<<numberslider "$options.combatLightFlat" $options.combatLightFlat 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Colour Component<br>
+						<<numberslider "$options.combatLightTFColor" $options.combatLightTFColor 0 1 0.05>>
+						<span class="description">Requires Angel/Demon transformation</span>
+					</label>
+				</div>
+			</div>
+		</div>
+	<<else>>
+		<br>
+		Images disabled
+	<</if>>
+	<hr>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">History Depth</div>
+		<div class="settingsToggleItem">
+			Enables going back in history up to N-1 passages. Useful for reporting bugs or undoing decisions.
+			<hr>
+			<label>
+				<<checkbox "$options.historyControls" false true autocheck>> Display history controls in the sidebar
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold">States saved to memory:</span>
+			<<numberslider "$options.maxStates" `$options.maxStates gt 20 ? 20 : $options.maxStates` 1 20 1 $ironmanmode>>
+			<br><br>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "setupCombatLightingDemo">>
+	<<run Renderer.refresh(Renderer.locateModel("lighting", "combat-lighting-demo"))>>
+	<<selectmodel "lighting" "combat-lighting-demo">>
+	<<configureCombatLighting>>
+	<<if $passage isnot "Start">>
+		<<rendermodel "lighting position-absolute z-hidden">>
+		<<selectmodel "combatMainPc" "combatMainDemo">>
+		<<rendermodel "combatMainPc">>
+	<<else>>
+		<<rendermodel "lighting z-hidden">>
+	<</if>>
+<</widget>>
+
+<<widget "setupBreastjobDemo">>
+	<<run Renderer.refresh(Renderer.locateModel("combatCloseDemo", "combat-boob-demo"))>>
+	<<set T.breastjobDemo to true>>
+	<<selectmodel "combatCloseDemo" "combat-boob-demo">>
+	<<if $passage isnot "Start">>
+		<<selectmodel "combatCloseDemo" "combatCloseDemo">>
+		<<if $options.sidebarAnimations isnot false>>
+			<<animatemodel "combatCloseDemo">>
+		<<else>>
+			<<rendermodel "combatCloseDemo">>
+		<</if>>
+	<<else>>
+		<<rendermodel "combatCloseDemo z-hidden">>
+	<</if>>
+<</widget>>
+
+<<widget "updateCombatLightingDemo">>
+	<<if elementExists(_args[0])>>
+		<<replace _args[0]>><<setupCombatLightingDemo>><</replace>>
+	<</if>>
+<</widget>>
+
+<<widget "optionsadvanced">>
+	<<setupOptions>>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Advanced Settings</div>
+		<div class="settingsToggleItem">
+			<label>
+				<<checkbox "$options.numpad" false true autocheck>>
+				Enable numpad
+			</label>
+			<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>Useful on mobile if links break due to translation software.</span>">(?)</span>
+		</div>
+		<div class="settingsToggleItem">
+			<label>
+				<<checkbox "$options.useNarrowMarket" false true autocheck>>
+				Use "narrow screen" version of the market inventory
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label><<checkbox "$options.showDebugRenderer" false true autocheck>> Enable renderer debugger</label>
+		</div>
+		<<if $debug is 1 or $options.showCombatTools>>
+			<div class="settingsToggleItem">
+				<label><<checkbox "$options.showCombatTools" false true autocheck>> Enable combat tooling</label>
+			</div>
+		<</if>>
+		<div class="settingsToggleItem">
+			<label onclick="setTimeout(() => {toggleConfirmDialogUponTabClose();}, 100)">
+				<<checkbox "$options.confirmDialogUponTabClose" false true autocheck>>
+				Prompt confirmation dialog upon closing tab
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold">Stat Nerf Multiplier:</span>
+			<mouse class="tooltip linkBlue">(?)<span>For nerfing your stats if you want to see what happens when you fail.</span></mouse>
+			<<numberslider "$options.statNerf" $options.statNerf 0 100 1>>
+		</div>
+	</div>
+	<hr>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Game Zoom</div>
+		<div class="settingsToggleItemWide">
+			<span class="gold">Zoom Size:</span>
+			<span class="tooltip-anchor linkBlue" tooltip-width="460" tooltip="<span class='linkBlue'>Will allow you to adjust the size of game elements and text.</span><br><br><span class='red'>
+						Please be careful with this setting! Only save if you are happy with the changes made, as reloading the game will reset it to the last value used in that save.
+						Depending on the device and browser, the setting may break entirely and may cause unexpected effects.
+					</span>">(?)</span>
+			<br>
+			<span class="description red">Not supported in all browsers</span>
+			<br>
+			<<numberslider "$options.zoom" $options.zoom 50 200 1>>
+			<br><br>
+			<input type="button" value="Set" onclick='zoom()'/>
+			<input type="button" value="Reset" onclick='zoom(100)'/>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "optionsinformation">>
+	<div class="p-2 text-align-center">
+		<h3>People of Interest</h3>
+
+		<div class="m-2">
+			<span class="gold">Creator: </span><span>Vrelnir</span>
+		</div>
+		<div class="m-2">
+			<span class="gold">Former developer: </span><span>PurityGuy</span>
+		</div>
+	</div>
+	<div class="p-2 text-align-center">
+		<h3>Useful Resources</h3>
+
+		<<linkinformation>>
+
+		<div class="m-2">
+			<p class="gold m-0">Unofficial Wiki</p>
+			[[degreesoflewdity.miraheze.org|"https://degreesoflewdity.miraheze.org/wiki/Main_Page"]]
+		</div>
+	</div>
+
+	<div class="p-3 text-align-center">
+		<h3>Water Dragon TF Credits</h3>
+
+		<div class="m-2">
+			<span class="teal">Idea: </span><span>NovaCyber</span>
+		</div>
+		<div class="m-2">
+			<span class="teal">Coded by: </span><span>Isari</span>
+		</div>
+		<div class="m-2">
+			<span class="teal">Vanilla Sprites: </span><span>Taken from Freedom Planet 2 by GalaxyTrail</span>
+		</div>
+		<div class="m-2">
+			<span class="teal">Fixed / Updated by: </span><span>Bec and D.N.A.</span>
+		</div>
+		<div class="m-2">
+			<span class="teal">Applicator: </span><span>D.N.A.</span>
+		</div>
+	</div>
+
+	<div class="p-3 text-align-center">
+		<h3>Bunny TF Credits</h3>
+
+		<div class="m-2">
+			<span class="purple">Main Dev and Creator: </span><span>WinterPeach</span>
+		</div>
+		<div class="m-2">
+			<span class="purple">Sprite Makers: </span><span>Pinzya; for making the TF icon. <br> Mellows; For making the TF combat sprites <br> Phreia; For making the beeesss sprites (default & carrot pin)</span>
+		</div>
+		<div class="m-2">
+			<span class="purple">Special Thanks! </span><span> To Frostberg for making the auto-releases! <br> To my Ko-Fi supporter, purepersona_moon!</span>
+		</div>
+		<div class="m-2">
+			<p class="purple m-0">Support WinterPeach!</p>
+			[[ko-fi.com/pro_penlicker|"https://ko-fi.com/pro_penlicker"]]
+		</div>
+<</widget>>
+
+<<widget "setFont">>
+	<<set _globalThemeDefaults to JSON.parse(localStorage.getItem("dolDefaultThemeSettings"))>>
+	<<if !_globalThemeDefaults>>
+		<<set _globalThemeDefaults to {}>>
+	<</if>>
+	<<removeclass "#passages" "passageMaxWidth50">>
+	<<removeclass "#passages" "passageMaxWidth55">>
+	<<removeclass "#passages" "passageMaxWidth60">>
+	<<removeclass "#passages" "passageMaxWidth65">>
+	<<removeclass "#passages" "passageMaxWidth70">>
+	<<removeclass "#passages" "passageMaxWidth75">>
+	<<if $options.passageMaxWidth>><<addclass "#passages" `"passageMaxWidth" + $options.passageMaxWidth`>><</if>>
+
+	<<removeclass "#passages" "fontSize10">>
+	<<removeclass "#passages" "fontSize12">>
+	<<removeclass "#passages" "fontSize14">>
+	<<removeclass "#passages" "fontSize16">>
+	<<removeclass "#passages" "fontSize18">>
+	<<removeclass "#passages" "fontSize20">>
+	<<if $options.passageFontSize>><<addclass "#passages" `"fontSize" + $options.passageFontSize`>><</if>>
+
+	<<removeclass "#story-caption" "fontSize12">>
+	<<removeclass "#story-caption" "fontSize14">>
+	<<removeclass "#story-caption" "fontSize16">>
+	<<removeclass "#story-caption" "fontSize18">>
+	<<removeclass "#story-caption" "fontSize20">>
+	<<if $options.sidebarFontSize>><<addclass "#story-caption" `"fontSize" + $options.sidebarFontSize`>><</if>>
+
+	<<if _args[0]>><!--For elements that are not sugarcube specific and wont be loaded when the widget is normally called-->
+		<<removeclass "#customOverlay" "fontSize10">>
+		<<removeclass "#customOverlay" "fontSize12">>
+		<<removeclass "#customOverlay" "fontSize14">>
+		<<removeclass "#customOverlay" "fontSize16">>
+		<<removeclass "#customOverlay" "fontSize18">>
+		<<removeclass "#customOverlay" "fontSize20">>
+		<<if $options.overlayFontSize>><<addclass "#customOverlay" `"fontSize" + $options.overlayFontSize`>><</if>>
+	<</if>>
+
+	<<removeclass "#passages" "lineHeight1">>
+	<<removeclass "#passages" "lineHeight125">>
+	<<removeclass "#passages" "lineHeight15">>
+	<<removeclass "#passages" "lineHeight175">>
+	<<removeclass "#passages" "lineHeight2">>
+	<<if $options.passageLineHeight>><<addclass "#passages" `"lineHeight" + $options.passageLineHeight.toString().replace('.','')`>><</if>>
+
+	<<removeclass "#story-caption" "lineHeight1">>
+	<<removeclass "#story-caption" "lineHeight125">>
+	<<removeclass "#story-caption" "lineHeight15">>
+	<<removeclass "#story-caption" "lineHeight175">>
+	<<removeclass "#story-caption" "lineHeight2">>
+	<<if $options.sidebarLineHeight>><<addclass "#story-caption" `"lineHeight" + $options.sidebarLineHeight.toString().replace('.','')`>><</if>>
+
+	<<if _args[0]>>
+		<<removeclass "#customOverlay" "lineHeight1">>
+		<<removeclass "#customOverlay" "lineHeight125">>
+		<<removeclass "#customOverlay" "lineHeight15">>
+		<<removeclass "#customOverlay" "lineHeight175">>
+		<<removeclass "#customOverlay" "lineHeight2">>
+		<<if $options.overlayLineHeight>><<addclass "#customOverlay" `"lineHeight" + $options.overlayLineHeight.toString().replace('.','')`>><</if>>
+	<</if>>
+
+	<<removeclass "html" "Arial">>
+	<<removeclass "html" "Verdana">>
+	<<removeclass "html" "TimesNewRoman">>
+	<<removeclass "html" "Georgia">>
+	<<removeclass "html" "Garamond">>
+	<<removeclass "html" "CourierNew">>
+	<<removeclass "html" "LucidaConsole">>
+	<<removeclass "html" "Monaco">>
+	<<removeclass "html" "ComicSans">>
+	<<removeclass "html" "OpenDyslexicMono">>
+	<<removeclass "html" "Lexend">>
+	<<if $options.font>><<addclass "html" $options.font>><</if>> <!--Adding to the body would remove it on changing passage-->
+<</widget>>

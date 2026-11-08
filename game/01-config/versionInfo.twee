@@ -1,0 +1,75 @@
+:: Widgets Version Info [widget]
+<<widget "versioninfo">>
+	<h3>Degrees of Lewdity Plus <<print StartConfig.version>></h3>
+
+	<<if StartConfig.versionName>>
+		<h4><<print StartConfig.versionName>></h4>
+	<</if>>
+
+	<<if StartConfig.sneaky>>
+		<h4 class="orange">SNEAKY BUILD</h4>
+	<</if>>
+<</widget>>
+
+<<widget "linkinformation">>
+	<div class="m-2">
+		<p class="gold m-0">Official Vanilla website</p>
+		[[vrelnir.com|"https://www.vrelnir.com"]]
+	</div>
+
+	<div class="m-2">
+		<p class="gold m-0">Vanilla Changelog and information</p>
+		[[vrelnir.blogspot.com|"https://vrelnir.blogspot.com"]]
+	</div>
+
+	<div class="m-2">
+		<p class="gold m-0">DoLP Changelog and Releases</p>
+		[[gitgud.io/Andrest07/degrees-of-lewdity-plus/-/releases|"https://gitgud.io/Andrest07/degrees-of-lewdity-plus/-/releases"]]
+	</div>
+
+	<div class="m-2">
+		<p class="gold m-0">Vanilla Wiki</p>
+		[[degreesoflewdity.miraheze.org/wiki/Main_Page|"https://degreesoflewdity.miraheze.org/wiki/Main_Page"]]
+	</div>
+
+	<div class="m-2">
+		<p class="gold m-0">DoLP Wiki</p>
+		[[dolmodding.miraheze.org/wiki/DoL_Plus|"https://dolmodding.miraheze.org/wiki/DoL_Plus"]]
+	</div>
+
+	<div class="m-2">
+		<p class="gold m-0">Support Vanilla development</p>
+		[[vrelnir.fanbox.cc|"https://vrelnir.fanbox.cc/"]]
+		<p class="gold m-0">Support DoLP development</p>
+		[[patreon.com/DegreesofLewdityPlus|"https://www.patreon.com/DegreesofLewdityPlus"]]
+	</div>
+
+	<<if StartConfig.sourceLinkEnabled>>
+		<div class="m-2">
+			<p class="gold m-0">Vanilla Source code</p>
+			[[gitgud.io/Vrelnir|"https://gitgud.io/Vrelnir/degrees-of-lewdity"]]
+		</div>
+
+		<div class="m-2">
+			<p class="gold m-0">DoLP Source code</p>
+			[[gitgud.io/Andrest07|"https://gitgud.io/Andrest07/degrees-of-lewdity-plus"]]
+		</div>
+	<</if>>
+
+	<<if StartConfig.socialMediaEnabled>>
+		<div class="m-2">
+			<p class="gold m-0">Official Vanilla Discord</p>
+			[[discord.gg/VznUtEh|"https://discord.gg/VznUtEh"]]
+		</div>
+
+		<div class="m-2">
+			<p class="gold m-0">Official Modding Discord</p>
+			[[discord.gg/mGpRSn9qMF|"https://discord.gg/mGpRSn9qMF"]]
+		</div>
+
+		<div class="m-2">
+			<p class="gold m-0">Official DoLP Discord</p>
+			[[discord.gg/H8PRRw8ZvN|"https://discord.gg/H8PRRw8ZvN"]]
+		</div>
+	<</if>>
+<</widget>>

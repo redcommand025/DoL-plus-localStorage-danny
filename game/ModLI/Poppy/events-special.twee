@@ -1,0 +1,566 @@
+/* Matches base-game pattern (cf. $christmas_robin_visit line 249 and $christmas_robin_gift_received line 2942):
+     • Flat persistent flag $christmas_poppy_orphanage gates re-entry.
+     • Date is implied by $christmas; we still spell out monthDay 25 for parity with sibling events.
+     • _li is a local convenience for branching dialogue inside the scene. */
+:: Poppy Christmas Orphanage
+<<set $christmas_poppy_orphanage to 1>><<set _poppyChristmasLI to Number($poppyromance) gte 0>>
+<<npc Poppy>><<person1>><<generatey2>><<person2>>
+You celebrate Christmas with the other residents. A <<person1>><<person>> passes a gift to another orphan. As <<he>> does, the door <b>slams</b> open, letting in a rush of cold air and snow.
+<<person1>><span class="purple">It's Poppy!</span> 
+<br><br>
+<<He>> stands in the doorway, grinning despite the cold, snowflakes melting on a bright red Santa costume. There's a large container balanced in <<his>> arms.
+<<He>> looks around the room, a warm glint in <<his>> eyes as <<he>> takes in the residents gathered in the main hall. 
+<br><br>
+<<He>> steps forward and calls out, "Hey, kiddos! Guess who brought cookies?"
+<br><br>
+Now that <<hes>> closer, you can see the container is filled with brightly decorated gingerbread men.
+<br><br>
+<<He>> takes it over to a table where the orphans gather around, eyes wide.
+"Merry Christmas, everyone," <<he>> says with a smile.
+<br><br>
+The cookies vanish into eager hands.
+<br><br>
+<<person2>>"So sweet!" <<he>> exclaims through a mouthful of gingerbread.
+<br><br>
+<<person1>>Poppy approaches you with two cookies in hand.
+<<if _poppyChristmasLI>>
+	"For you, my jewel." <<He>> says with a wink and passes you one. It's a Santa hat, decorated with red and white icing.
+	<br><br>
+	"Sorry I took so long, I tried to get here sooner for you, but I ran into some... <i>difficulties</i> along the way." Poppy says sheepishly.
+<<else>>
+	<<He>> passes you one. It's shaped like a Santa hat, decorated with red and white icing.
+	<br><br>
+	"Sorry I took so long. I meant to wake up earlier," Poppy says sheepishly.
+<</if>>
+<br><br>
+<<link [[Eat your cookie|Poppy Christmas Cookie]]>><</link>>
+
+:: Poppy Christmas Cookie
+<<effects>>
+You and Poppy eat the gingerbread cookies. You catch a glimpse of Poppy's cookie. It has orange and white icing, though you can't figure out what it is once <<he>> takes a bite.
+<br><br>
+<<link [[Compliment <<him>>|Poppy Christmas Compliment]]>><<npcincr Poppy love 1>><</link>><<glove>>
+<br>
+<<link [[Insult the baking|Poppy Christmas Insult]]>><<npcincr Poppy love -4>><<npcincr Poppy patience -5>><</link>><<llove>><<llpatience>>
+
+:: Poppy Christmas Compliment
+<<effects>>
+"It tastes great," you say.
+<br><br>
+Poppy breaks out into a smile. "Thank you!" <<he>> says with joy.
+<br><br>
+<<poppyChristmasBaileyPayment>>
+<br><br>
+<<link [[Next|Poppy Christmas After Answer]]>><</link>>
+
+:: Poppy Christmas Insult
+<<effects>><<person1>>
+"You need to work on your baking," you remark. "It doesn't taste as good as it looks."
+<br><br>
+Poppy doesn't say anything, but <<his>> glaring eyes speaks volume.
+<br><br>
+<<poppyChristmasBaileyPayment>>
+<br><br>
+<<link [[Next|Poppy Christmas After Answer]]>><</link>>
+
+:: Poppy Christmas After Answer
+<<effects>><<person1>>
+<<set _poppyChristmasLI to Number($poppyromance) gte 0>>
+Poppy heads back to you. 
+<br><br>
+"The orphans look so happy, don't they? I didn't see this very often before..."
+<<if _poppyChristmasLI>>
+	<<He>> trails off, appearing lost in thought for a moment. 
+	<br><br>
+	Poppy snaps out of <<his>> thoughts and looks back at you. "Hey, I have one more gift that I'd like to show you back at my flat. Would you like to come with me?" 
+	<br><br>
+	<<link [[Accept (0:10)|Poppy Christmas Flat Accept]]>>
+		<<set $christmas_poppy_flat_pending to 1>>
+		<<set $christmas_poppy_route to "accept">>
+		<<if window.markPoppyInteraction>><<run markPoppyInteraction()>><</if>>
+		<<pass 10>>
+	<</link>><<glove>>
+	<br>
+	<<link [[Decline|Poppy Christmas Flat Decline]]>>
+		<<set $christmas_poppy_flat_pending to 1>>
+		<<set $christmas_poppy_route to "decline">>
+		<<if window.markPoppyInteraction>><<run markPoppyInteraction()>><</if>>
+	<</link>>
+<<else>>
+	<<He>> trails off. "Well, now that that's done with, I think it'd be best if I head out too." 
+	<br><br>
+	<<He>> says over <<his>> shoulder as <<he>> leaves. You wave to <<him>>. 
+	<br><br>
+	<<link [[Next|Orphanage]]>><<if window.markPoppyInteraction>><<run markPoppyInteraction()>><</if>><<endevent>><</link>>
+<</if>>
+
+:: Poppy Christmas Flat Accept
+<<location "barb">><<effects>>
+"Yeah," You grin. 
+<br><br>
+"Who would miss out on free gifts?" You grab <<his>> hand and walk out the door towards Barb Street.
+<br><br>
+<<link [[Next|Poppy Christmas Flat Arrival]]>><<endevent>><</link>>
+
+:: Poppy Christmas Flat Decline
+<<effects>>
+"I can't right now." You say. 
+<br><br>
+"Well, alright. I'll be waiting for you at my flat later today." Poppy says before giving you a smooch on the cheek.
+<br><br>
+<<link [[Next|Orphanage]]>><<endevent>><</link>>
+
+:: Poppy Christmas Flat Arrival
+<<effects>><<set $location to "flats">><<set $bus to "poppy_living_room">>
+<<npc Poppy>><<person1>>
+<<if $christmas_poppy_route is "accept">>
+	Poppy opens the door and leads you inside before shutting it. 
+	<br><br>
+	"Well, I only slipped twice as we came. Thanks for catching me love." <<He>> says with a bit of embarrassment. 
+	<br><br>
+	"Now, why don't you wait here and I'll change into something a bit more comfortable," <<he>> says as <<he>> heads towards the bedroom. 
+	<br><br>
+	You wait a little while for Poppy to change, when <<he>> sings out from the bedroom. "Why don't you join me in here, my jewel?"
+<<else>>
+	You enter Poppy's flat. 
+	<br><br>
+	"Hello?" you call out.
+	<br><br>
+	"In here, my jewel!" Poppy responds, <<his>> voice coming from the bedroom.
+<</if>>
+<br><br>
+<<poppyicon "bed">><<link [[Enter the bedroom|Poppy Christmas Bedroom]]>><</link>>
+<br>
+<<getouticon>><<link [[Leave|Flats]]>>
+	<<npcincr Poppy love -3>><<npcincr Poppy patience -5>>
+	<<set $christmas_poppy_flat_done to 1>>
+	<<if window.markPoppyInteraction>><<run markPoppyInteraction()>><</if>>
+	<<endevent>>
+<</link>><<llove>><<llpatience>>
+
+:: Poppy Christmas Bedroom
+<<effects>>
+You enter the bedroom, to see Poppy in <<his>> Santa costume. But <<hes>> made a few changes to the outfit compared to <<his>> visit to the orphanage. 
+<br><br>
+<<if C.npc.Poppy.pronoun is "m">>
+	The suit is pulled apart, revealing <<his>> muscular chest and abs.
+<<else>>
+	The Santa suit has been replaced by a festive dress. It shows off <<his>> curves, and leaves little to the imagination with how high up the skirt is.
+<</if>>
+<br><br>
+"Well," Poppy says, looking you over with a smile, "why don't you join me, my jewel?"
+<br><br>
+<<link [[Join Poppy|Poppy Christmas Sex]]>><<set $sexstart to 1>><</link>><<promiscuous2>>
+
+:: Poppy Christmas Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+	<<set $enemytrust += 100>>
+	<<set $enemyanger to 0>>
+	<<promiscuity2>>
+<</if>>
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+<<if _combatend>>
+	<span id="next"><<link [[Next|Poppy Christmas Afterglow]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Poppy Christmas Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Poppy Christmas Afterglow
+<<effects>>
+<<if $enemypleasure gte $enemypleasuremax>><<ejaculation>><</if>>
+<<set $christmas_poppy_flat_done to 1>>
+<<if window.markPoppyInteraction>>
+	<<run markPoppyInteraction()>>
+<</if>>
+<<npcincr Poppy love 2>><<npcincr Poppy lust -10>>
+"Well, that was certainly something, wasn't it? We should do that again some time," <<he>> says as <<he>> holds you close, savouring the bliss of the moment.
+<br><br>
+After a little while, you get dressed, say your goodbyes, and leave.
+<br><br>
+<<script>>T.poppyChristmasUnlock = setup.specialClothes.filter(_clothes => _clothes.sets && _clothes.sets.includes("christmas")).map(_clothes => _clothes.name);<</script>>
+<<if _poppyChristmasUnlock.length>>
+<<print specialClothesUnlockText(_poppyChristmasUnlock, "christmas")>>
+	<br>
+<</if>>
+<<endcombat>><<pass 30>><<clotheson>>
+<<link [[Next|Flats]]>><</link>>
+
+/* VALENTINE DATE */
+
+:: Poppy Valentine Flat Arrival
+<<unset $valentines_poppy_flat_accept>><<set $valentines_poppy_flat_done to 1>><<run markPoppyInteraction()>>
+You arrive at the flats.
+<br><br>
+You stand in front of Poppy's door for a moment to take a deep breath, readying yourself before knocking. When the door opens, Poppy greets you before the smell of food hits.
+<br>
+<<Hes>>
+<<if C.npc.Poppy.gender is "m">>
+	wearing dark trousers and a fitted vest, <<his>> rustic red jacket the only colour highlighting the outfit.
+<<else>>
+	wearing a deep red gown that hugged <<his>> waist and hips, lace slipping from <<his>> shoulders as if <<he>>'d meant for it to be noticed.
+<</if>>
+<<poppyOpiumPulse>>
+"My oh my! You look phenomenal, my jewel." Poppy gushes over your attire. "I just took out the main dish so it needs to cool a little. We can start on the appetizers though." <<He>> says as <<he>> ushers you in. 
+<br><br>
+<<link [[Next|Poppy Valentine Flat Dinner]]>><</link>>
+
+:: Poppy Valentine Flat Dinner
+<<set $location to "flats">><<set $bus to "poppy_kitchen">><<set $outside to 0>>
+The room is dim save for small specks of light that you realize are from small candles scattered throughout the room. You barely have a moment to admire it before Poppy pulls out a seat for you. 
+<br><br>
+"Now sit here and be good for me, alright? I'll be back in just a minute." You sit down and watch as <<he>> enters the kitchen. Not a moment later, Poppy brings out courses of succulent looking food. 
+<br><br>
+You both enjoy the meal, with the star being the salmon wellington Poppy cooked. You're not sure how <<he>> did it, but it somehow even tastes better than you expected. <<stress -3>><<trauma -3>><<llstress>><<ltrauma>>
+<br><br>
+<<link [[Next|Poppy Valentine Flat Dinner 2]]>><<pass 60>><</link>>
+
+:: Poppy Valentine Flat Dinner 2
+<<effects>>
+Once dinner is finished, Poppy dabs <<his>> mouth with a napkin and slowly gets up. You see <<him>> walk over to a small table which holds an old vinyl record player. Soft, classical music begins to play. Poppy starts humming along, twirling in place before looking your way. "A romantic date must end with a dance now, mustn't it?" <<He>> extends a hand out to you. 
+<br><br>
+The way Poppy looks at you makes your body move on its own to take Poppy's hand. The music continues to play as the two of you waltz together. 
+<<silently>><<dancedifficulty 1 600>><</silently>>
+<<if $danceSuccess>>
+	<<if currentSkillValue('danceskill') gte 1000>>
+		<span class ="green">You're excellent at this </span>
+	<<elseif currentSkillValue('danceskill') gte 600>>
+		You move confidently 
+	<<elseif currentSkillValue('danceskill') gte 400>>
+		You are good at this 
+	<<elseif currentSkillValue('danceskill') gte 100>>
+		You manage to follow the music without problem 
+	<<else>>
+		You manage to not stumble 
+	<</if>>
+	and the two of you fall into rhythm, moving together seamlessly without thinking. <<danceskilluse>>
+	<<poppyOpiumPulse>>
+<<else>>
+	You stumble but Poppy catches you swiftly. 
+	
+	<<poppyOpiumPulse>> 
+	
+	The two of you continue to dance as if nothing had happened.
+<</if>>
+<<if $bodysize gte 3>>
+	You feel Poppy lay <<his>> head against your chest, still humming along with the song as it slowly comes to an end.
+<<else>>
+	You feel Poppy rest <<his>> chin on top of your head, still humming along with the song as it slowly comes to an end.
+<</if>>
+<br><br>
+"...Hey." Poppy murmured softly, <<his>> voice only slightly louder than the music. "You know...there were days when I questioned the choices I made. The things I did, sometimes I wonder if any of this was worth it." You see Poppy look at you with a smile, but not <<his>> usual coy or mischievous one. It's a subtle smile, one that shows how truly comfortable <<he>> is with you. "Then I met you. And now I know everything was worth it just to be here with you."
+<br><br>
+<<link [[Kiss Poppy|Poppy Valentine Flat Dinner Kiss]]>><<npcincr Poppy love 1>><<npcincr Poppy lust 1>><</link>><<gglove>><<glust>><<kissvirginitywarning>><br>
+<<link [[Hug Poppy|Poppy Valentine Flat Dinner Hug]]>><<npcincr Poppy love 1>><</link>> <<glove>>
+
+:: Poppy Valentine Flat Dinner Kiss
+<<effects>>
+You don't say anything. Instead, you show Poppy the only way you know how. You press your lips against <<his>>. <<takeKissVirginity "Poppy" "consensual">>
+<br><br>
+<<Hes>> surprised when you kiss <<him>> but immediately relaxes and leans into you. When you finally pull away to catch your breath, you tighten your hold on <<him>> "I feel the same. You are what makes everything worth it."
+<br><br>
+You can see Poppy start tearing up and <<he>> kisses you again. “Don't leave tonight. I want to be with you for as long as we can.” The music has long stopped but neither of you realise and instead tumble to the ground in a heated make out.
+<br><br>
+<<link [[Next|Poppy Valentine Dinner Sex]]>><<set $sexstart to 1>><</link>>
+
+:: Poppy Valentine Dinner Sex
+<<set $location to "flats">><<set $bus to "poppy_bedroom">><<set $outside to 0>>
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+<</if>>
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br>
+<<actionsman>>
+<<if _combatend>>
+	<span id="next"><<link [[Next|Poppy Valentine Dinner Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Poppy Valentine Dinner Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Poppy Valentine Dinner Sex Finish
+<<effects>>
+<<if $enemypleasure gte $enemypleasuremax>><<ejaculation>>
+<<else>>
+	You can't take it any more.
+	<br><br>
+	<<link [[Next|Poppy Valentine Dinner Sex Finish]]>>
+		<<set $enemypleasure to $enemypleasuremax>>
+		<<set $finish to 0>>
+	<</link>>
+<</if>>
+<<if $finish isnot 1>>
+<<npcincr Poppy love 2>><<npcincr Poppy lust -10>>
+The two of you lie in bed together after a long, passionate session. Poppy holds onto you tightly even as <<he>> drifts off to sleep.
+<</if>>
+<br><br>
+<<clotheson>><<endcombat>>
+<<link [[Next|Flats Poppy Bed]]>><<endevent>><</link>>
+
+
+:: Poppy Valentine Flat Dinner Hug
+<<effects>>
+You embrace Poppy and hug <<him>> tightly. "Me too. You make everything that's happened worth it." You can feel <<him>> tighten <<his>> hands around you as <<he>> returns the gesture.
+<br><br>
+"Won't you stay with me tonight?"
+<br><br>
+The music had long since stopped playing by then. Hearing Poppy's earnest request, you can't help but stay with <<him>> tonight.
+<br><br>
+<<link [[Next|Flats Poppy Bed]]>><<endevent>><</link>>
+
+:: Poppy Valentine Flat Missed
+<<effects>>
+
+<<unset $valentines_poppy_flat_accept>><<unset $valentines_poppy_flat_missed>><<unset $valentines_poppy_flat_done>>
+<<npc Poppy>><<person1>>
+"Where were you?! You <<if $valentines is 1>>were late<<else>>stood me up<</if>> after I went through all that effort for the date!" Poppy lashes out at you. <<npcincr Poppy love -8>><<llllove>>
+<br><br>
+"If you didn't want to come you could've just said so instead of having me wait for you like an idiot. You're so inconsiderate..." <<He>> turns <<his>> head away from you angrily. <<npcincr Poppy patience -10>><<lllpatience>>
+<<set $poppyFlat.kickedUntilDay to Time.days + 7>>
+<br><br>
+<<link [[Next|Flats]]>><<endevent>><<set $eventskip to 0>><</link>>
+
+
+:: Poppy Comfort Talk
+<<poppyComfortHeader>>
+<<set _comfortBadEnd to poppyBadEndComfortAvailable()>>
+<<if !_comfortBadEnd>>
+	You start to say something about where you've been, then realise you've already said it.
+	<br><br>
+	<<link [[Next|Poppy Comfort Return]]>><</link>>
+	<<exit>>
+<</if>>
+
+<<set _comfortDays to poppyBadEndComfortDays(_comfortBadEnd)>>
+<<set _comfortLow to (T.poppyStatus and T.poppyStatus.includes("LowPatience"))>>
+<<if _comfortLow>>
+	Poppy still will not look at you. <<He>> has barely spoken since you came back, and you know why.
+	You were gone for days without warning, so from <<his>> point of view, you simply stopped showing up.
+	<br><br>
+	You say <<his>> name, but <<he>> keeps looking away. "I wasn't in town," you explain. "I couldn't come."
+	<br><br>
+	Poppy finally turns towards you.
+<<else>>
+	Poppy notices you before you have decided how to begin. <<He>> watches you quietly, waiting for you to speak.
+	<br><br>
+	"I haven't been avoiding you," you say. "I wasn't in town, so I couldn't come."
+	<br><br>
+	<<He>> puts down what <<he>> was holding and looks at you properly.
+<</if>>
+<br><br>
+<<if $poppyComfortVenue is "lake">>
+	"Sit," <<he>> says, moving along the bank to make room beside <<him>>.
+<<else>>
+	"Sit," <<he>> says, moving along the couch to make room beside <<him>>.
+<</if>>
+<<if _comfortDays gte 14>>
+	"You've been gone for <<print _comfortDays>> days. I stopped counting, and then I started again. I want to know what happened."
+<<elseif _comfortDays gte 7>>
+	"You've been gone over a week. <<print _comfortDays>> days. I want to know what happened."
+<<else>>
+	"You've been gone for <<print _comfortDays>> days. I want to know what happened."
+<</if>>
+<br><br>
+<<link [[Tell Poppy all of it|Poppy Comfort Talk 2]]>><<set $phase to "open">><<pass 5>><</link>>
+<br>
+<<link [[Give Poppy the short version|Poppy Comfort Talk 2]]>><<set $phase to "short">><<pass 5>><</link>>
+<br>
+<<link [[Ask why <<he>> never came looking|Poppy Comfort Talk 2]]>><<set $phase to "lash">><<pass 5>><</link>>
+<br>
+
+:: Poppy Comfort Talk 2
+<<poppyComfortHeader>>
+<<set _comfortSource to ($badEndStats.last() ? $badEndStats.last().source : "")>>
+<<if $phase is "open">>
+	You tell Poppy what happened, starting from when you were taken.
+	<br><br>
+	<<switch _comfortSource>>
+		<<case "Underground Farm" "Underground Dungeon" "Mines">>
+			You tell <<him>> about being kept underground, where you could not see the sky or tell how much time had passed.
+			After a while, you stopped trying to count the days.
+		<<case "Asylum">>
+			You tell <<him>> about the ward, the locked doors, and the schedule you were forced to follow.
+			You explain how long you were kept there before anyone finally allowed you to leave.
+		<<case "Wolf Cave" "Eden">>
+			You tell <<him>> about being kept deep in the forest, far from any road or nearby house.
+			After enough time passed without seeing anyone, you stopped expecting someone to find you.
+		<<case "Kylar Abduction">>
+			You tell <<him>> about the room you were kept in, who put you there,
+			and how everything had already been prepared before you arrived.
+		<<case "Water Dragon Lab">>
+			You tell <<him>> about the lab, what they did to you there,
+			and the things that happened which you still do not fully understand.
+		<<case "Prison" "Pound">>
+			You tell <<him>> about being locked up and having no control over how long you would be kept there.
+		<<default>>
+			You tell <<him>> where you were held, what happened while you were there, and how you eventually escaped.
+	<</switch>>
+	<br><br>
+	<<if ($speech_attitude is "meek" or $speech_attitude is "shy")>>
+		You speak quietly, stopping several times when the words become difficult.
+		Poppy waits each time until you are ready to continue.
+	<<elseif $speech_attitude is "docile">>
+		You apologise twice while explaining what happened. Each time, Poppy shakes <<his>> head and lets you continue.
+	<<elseif ($speech_attitude is "polite" or $speech_attitude is "flamboyant")>>
+		You begin carefully, trying to explain everything without showing how much it affected you.
+		That becomes harder as you continue, and before long you stop trying to hide it.
+	<<elseif $speech_attitude is "confident">>
+		You explain everything in order, keeping your voice steady even when your hands begin to shake.
+	<<elseif ($speech_attitude is "bratty" or $speech_attitude is "cruel")>>
+		You make a few jokes while telling <<him>>, trying to keep the worst parts from sounding serious.
+		Poppy does not laugh, and eventually you stop joking.
+	<<else>>
+		You tell <<him>> everything in the order it happened.
+	<</if>>
+	After you finish, Poppy stays quiet while <<he>> takes in everything you have told <<him>>.
+	<br><br>
+	"I thought you didn't want to see me any more. I was angry with you for disappearing."
+	<<He>> looks down before continuing. "I wish that had been the reason."
+	<<stress -10>><<lllstress>><<trauma -10>><<llltrauma>>
+<<elseif $phase is "short">>
+	You tell <<him>> where you were, roughly how long you were gone, and how you managed to get away.
+	You leave out what happened while you were there, but Poppy notices that you are avoiding that part.
+	<br><br>
+	<<if ($speech_attitude is "bratty" or $speech_attitude is "cruel")>>
+		"That's all you're getting," you say, making it clear that you do not want any more questions.
+	<<else>>
+		"That's most of it," you say. "I don't want to talk about the rest yet."
+	<</if>>
+	<br><br>
+	Poppy stays quiet for a while, looking at you as <<he>> thinks over what you have told <<him>>.
+	<br><br>
+	"Alright," <<he>> says. "You don't have to tell me the rest today. I thought you'd stopped wanting to see me,
+	so I've been angry with you for disappearing."
+	<br><br>
+	<<He>> looks down before continuing. "I'd rather find out I was wrong about that than know you stayed away
+	because something bad happened to you."
+	<<stress -6>><<llstress>><<trauma -4>><<ltrauma>>
+<<else>>
+	<<if ($speech_attitude is "meek" or $speech_attitude is "shy")>>
+		"You didn't come," you say before you can stop yourself. "Nobody came. You didn't even look for me."
+	<<elseif $speech_attitude is "docile">>
+		"I kept thinking someone would come," you say quietly. "I thought it might be you."
+	<<elseif ($speech_attitude is "bratty" or $speech_attitude is "cruel")>>
+		"All that time, you were sitting here angry with me," you say. "Did you ever think about looking for me?"
+	<<else>>
+		"Why didn't you come looking for me?" you ask. "I waited for someone. I waited for a long time."
+	<</if>>
+	<br><br>
+	Your voice comes out sharper than you intended, but you leave the words as they are.
+	Poppy does not argue or make an excuse. <<He>> looks down, taking a few seconds before answering.
+	<br><br>
+	"You're right... I thought you'd got tired of me and left. I was angry about it,
+	and I never stopped to think that something might have happened to you."
+	<<He>> looks back at you. "I should have looked for you. I'm sorry."
+	<<stress -6>><<llstress>><<trauma -6>><<lltrauma>>
+<</if>>
+<br><br>
+<<if $awarelevel gte 5>>
+	<<His>> ears flatten against <<his>> head as <<he>> looks at you.
+<<else>>
+	<<He>> looks away while <<he>> speaks, only glancing back when <<he>> finishes.
+<</if>>
+<<if $poppyComfortVenue is "lake">>
+	The water moves quietly in front of you while neither of you speaks.
+<<else>>
+	The flat is quiet except for the occasional sound from the pipes behind you.
+<</if>>
+<br><br>
+After a short pause, <<he>> opens <<his>> arms slightly, leaving the choice to you if you want a hug.
+<br><br>
+<<link [[Let Poppy hold you|Poppy Comfort Talk 3]]>><<set $phase to "hold">><<pass 5>><</link>>
+<br>
+<<link [[Ask <<him>> to just sit with you|Poppy Comfort Talk 3]]>><<set $phase to "sit">><<pass 5>><</link>>
+<br>
+<<link [[Say you're fine|Poppy Comfort Talk 3]]>><<set $phase to "fine">><<pass 5>><</link>>
+<br>
+
+:: Poppy Comfort Talk 3
+<<poppyComfortHeader>>
+<<set _poppyPatienceBefore to (Number(C.npc.Poppy.patience) || 0)>>
+<<run poppyBadEndComfortResolve()>>
+<<set _poppyPatienceGain to ((Number(C.npc.Poppy.patience) || 0) - _poppyPatienceBefore)>>
+<<if $phase is "hold">>
+	You move into <<his>> arms, and <<he>> pulls you close.
+	<br><br>
+	<<if $poppyComfortVenue is "lake">>
+		<<He>> keeps one arm around you while you rest against <<his>> side.
+	<<else>>
+		<<He>> shifts closer on the couch, keeping you pressed against <<him>>.
+	<</if>>
+	<<He>> stays like that until you finally begin to relax, making no move to let you go.
+	<br><br>
+	You did not realise how tense you still were until your body started to relax in <<his>> arms.
+	<<stress -8>><<llstress>><<trauma -8>><<lltrauma>><<tiredness -3>><<lltiredness>>
+	<<if T.poppyLoveGainAllowed>><<npcincr Poppy love 3>><<glove>><</if>>
+<<elseif $phase is "sit">>
+	"Not yet," you say. "Just stay here."
+	<br><br>
+	<<He>> lowers <<his>> arms and sits beside you, leaving a small space between you.
+	<<He>> stays close without trying to touch you.
+	<br><br>
+	You remain there together without speaking.
+	<<if $poppyComfortVenue is "lake">>
+		Ducks swim slowly along the far side of the lake while you watch them.
+	<<else>>
+		Sunlight shifts across the wall as the time passes.
+	<</if>>
+	For the first time since you came back, nobody is asking anything from you. You can sit quietly because you want to.
+	<<stress -6>><<llstress>><<trauma -4>><<ltrauma>><<tiredness -1>><<ltiredness>>
+	<<if T.poppyLoveGainAllowed>><<npcincr Poppy love 2>><<glove>><</if>>
+<<else>>
+	"I'm fine," you say. "It's over. I don't want to keep talking about it."
+	<br><br>
+	Poppy lowers <<his>> arms and studies you for a few seconds, but <<he>> does not push.
+	<br><br>
+	"Alright," <<he>> says. "If it starts bothering you later, you can come to me. I'll be here."
+	<<stress -3>><<lstress>>
+	<<if T.poppyLoveGainAllowed>><<npcincr Poppy love 1>><<glove>><</if>>
+<</if>>
+<br><br>
+<<if $phase is "fine">>
+	As you get ready to leave, <<he>> reaches out and takes your hand.
+<<else>>
+	After a while, <<he>> sits back beside you and takes your hand.
+<</if>>
+"Next time you're late, I won't think you've lost interest in me. I'll think something happened to you.
+That's our deal, my jewel."
+<br><br>
+<<He>> keeps hold of your hand until you agree.
+<<if _poppyPatienceGain gte 20>><<gggpatience>><<elseif _poppyPatienceGain gte 10>><<ggpatience>><<elseif _poppyPatienceGain gt 0>><<gpatience>><</if>>
+<br><br>
+<<link [[Next|Poppy Comfort Return]]>><</link>>
+<br>
+
+:: Poppy Comfort Return
+<<poppyComfortHeader>>
+<<if !$poppySeen.includes("bad_end_comfort")>>
+	<<set $poppySeen.push("bad_end_comfort")>>
+	<br><br>
+	<span class="green">Poppy will no longer lose patience with you while you are being held somewhere against your will.</span>
+<</if>>
+<<poppyOpiumPulse>>
+<<unset $phase>>
+<<if $poppyComfortVenue is "lake">>
+	<<unset $poppyComfortVenue>>
+	<<poppyLakeReturn>>
+<<else>>
+	<<unset $poppyComfortVenue>>
+	<<set $eventskip to 1>>
+	<<poppyFlatsMenu>>
+<</if>>

@@ -1,0 +1,593 @@
+stages:
+    - compilation
+    - upload
+
+variables:
+    GIT_STRATEGY: fetch
+    # Required GitLab CI/CD variables for R2 uploads:
+    # R2_ACCOUNT_ID, R2_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+    # Required for release links: R2_PUBLIC_URL, without a trailing slash.
+
+default:
+    retry: 2
+
+before_script:
+    - apk add --no-cache zip jq nodejs git aws-cli
+    - |
+        upload_r2_zip() {
+            package_name="$1"
+            folder="$2"
+            version="v0.$CI_PIPELINE_IID"
+            zip_name="${package_name}_${version}.zip"
+            object_key="${package_name}/${version}/${zip_name}"
+            endpoint_url="${R2_ENDPOINT_URL:-https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com}"
+
+            : "${R2_ACCOUNT_ID:?Set R2_ACCOUNT_ID in GitLab CI/CD variables}"
+            : "${R2_BUCKET:?Set R2_BUCKET in GitLab CI/CD variables}"
+            : "${AWS_ACCESS_KEY_ID:?Set AWS_ACCESS_KEY_ID in GitLab CI/CD variables}"
+            : "${AWS_SECRET_ACCESS_KEY:?Set AWS_SECRET_ACCESS_KEY in GitLab CI/CD variables}"
+
+            rm -f "./${zip_name}"
+            zip -r "./${zip_name}" "./${folder}/" >/dev/null
+
+            aws s3 cp "./${zip_name}" "s3://${R2_BUCKET}/${object_key}" \
+                --endpoint-url "$endpoint_url" \
+                --region auto \
+                --content-type "application/zip" \
+                --cache-control "public, max-age=31536000, immutable" \
+                --no-progress
+        }
+
+dolmods_update:
+    stage: compilation
+    script:
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - git config --global user.email $username
+        - git config --global user.name $username
+        - git add .
+        - git commit -m "Update Dolmods $version"
+        - git push "https://$username:$token@gitgud.io/Frostberg/degrees-of-lewdity-plus.git" HEAD:dolmods --force
+    only:
+        - master
+
+build_upload_vanilla_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_Vanilla/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_Vanilla/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_Vanilla/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_Vanilla/img/
+        - echo "Finished Building DoLP v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_Vanilla" "DoLP_Vanilla"
+        - rm -rf ./DoLP_Vanilla
+        - rm -rf ./DoLP_Vanilla_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_beeesss_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP BEEESSS v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_BEEESSS/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_BEEESSS/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_BEEESSS/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_BEEESSS/img/
+        - cp -r -f ./imagepacks/b3s/* ./DoLP_BEEESSS/img/
+        - cp -r -f ./imagepacks/kaervek/* ./DoLP_BEEESSS/img/
+        - cp -r -f ./imagepacks/dolp_b3s/* ./DoLP_BEEESSS/img/
+        - echo "Finished Building DoLP BEEESSS v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP BEEESSS v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_BEEESSS" "DoLP_BEEESSS"
+        - rm -rf ./DoLP_BEEESSS
+        - rm -rf ./DoLP_BEEESSS_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP BEEESSS v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_beeesss_mysterious_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP beeesss_mysterious v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_beeesss_mysterious/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_beeesss_mysterious/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_beeesss_mysterious/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_beeesss_mysterious/img/
+        - cp -r -f ./imagepacks/b3s/* ./DoLP_beeesss_mysterious/img/
+        - cp -r -f ./imagepacks/kaervek/* ./DoLP_beeesss_mysterious/img/
+        - cp -r -f ./imagepacks/dolp_b3s/* ./DoLP_beeesss_mysterious/img/
+        - cp -r -f ./imagepacks/mysterious/* ./DoLP_beeesss_mysterious/img/
+        - echo "Finished Building beeesss_mysterious v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP beeesss_mysterious v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_beeesss_mysterious" "DoLP_beeesss_mysterious"
+        - rm -rf ./DoLP_beeesss_mysterious
+        - rm -rf ./DoLP_beeesss_mysterious_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP beeesss_mysterious v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_beeesss_hikari_female_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP BEEESSS + Hikari Female v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_BEEESSS_Hikari_Female/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_BEEESSS_Hikari_Female/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_BEEESSS_Hikari_Female/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_BEEESSS_Hikari_Female/img/
+        - cp -r -f ./imagepacks/b3s/* ./DoLP_BEEESSS_Hikari_Female/img/
+        - cp -r -f ./imagepacks/kaervek/* ./DoLP_BEEESSS_Hikari_Female/img/
+        - cp -r -f ./imagepacks/dolp_b3s/* ./DoLP_BEEESSS_Hikari_Female/img/
+        - cp -r -f ./imagepacks/b3s_hikfem/* ./DoLP_BEEESSS_Hikari_Female/img/
+        - cp -r -f ./imagepacks/b3s_hikfemsubs/* ./DoLP_BEEESSS_Hikari_Female/img/
+        - echo "Finished Building DoLP BEEESSS + Hikari Female v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP BEEESSS + Hikari Female v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_BEEESSS_Hikari_Female" "DoLP_BEEESSS_Hikari_Female"
+        - rm -rf ./DoLP_BEEESSS_Hikari_Female
+        - rm -rf ./DoLP_BEEESSS_Hikari_Female_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP BEEESSS + Hikari Female v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_hikfem_mysterious_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP hikfem_mysterious v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_hikfem_mysterious/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_hikfem_mysterious/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_hikfem_mysterious/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_hikfem_mysterious/img/
+        - cp -r -f ./imagepacks/b3s/* ./DoLP_hikfem_mysterious/img/
+        - cp -r -f ./imagepacks/kaervek/* ./DoLP_hikfem_mysterious/img/
+        - cp -r -f ./imagepacks/dolp_b3s/* ./DoLP_hikfem_mysterious/img/
+        - cp -r -f ./imagepacks/b3s_hikfem/* ./DoLP_hikfem_mysterious/img/
+        - cp -r -f ./imagepacks/b3s_hikfemsubs/* ./DoLP_hikfem_mysterious/img/
+        - cp -r -f ./imagepacks/mysterious/* ./DoLP_hikfem_mysterious/img/
+        - echo "Finished Building hikfem_mysterious v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP hikfem_mysterious v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_hikfem_mysterious" "DoLP_hikfem_mysterious"
+        - rm -rf ./DoLP_hikfem_mysterious
+        - rm -rf ./DoLP_hikfem_mysterious_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP hikfem_mysterious v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_goose_female_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP goose_female v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_goose_female/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_goose_female/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_goose_female/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_goose_female/img/
+        - cp -r -f ./imagepacks/goosefem/* ./DoLP_goose_female/img/
+        - cp -r -f ./imagepacks/goosefemsubs/* ./DoLP_goose_female/img/
+        - echo "Finished Building goose_female v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP goose_female v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_goose_female" "DoLP_goose_female"
+        - rm -rf ./DoLP_goose_female
+        - rm -rf ./DoLP_goose_female_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP goose_female v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_goose_female_mysterious_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP goose_female_mysterious v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_goose_female_mysterious/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_goose_female_mysterious/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_goose_female_mysterious/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_goose_female_mysterious/img/
+        - cp -r -f ./imagepacks/goosefem/* ./DoLP_goose_female_mysterious/img/
+        - cp -r -f ./imagepacks/goosefemsubs/* ./DoLP_goose_female_mysterious/img/
+        - cp -r -f ./imagepacks/mysterious/* ./DoLP_goose_female_mysterious/img/
+        - echo "Finished Building goose_female_mysterious v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP goose_female_mysterious v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_goose_female_mysterious" "DoLP_goose_female_mysterious"
+        - rm -rf ./DoLP_goose_female_mysterious
+        - rm -rf ./DoLP_goose_female_mysterious_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP goose_female_mysterious v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_goose_masc_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP goose_masc v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_goose_masc/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_goose_masc/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_goose_masc/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_goose_masc/img/
+        - cp -r -f ./imagepacks/goosemasc/* ./DoLP_goose_masc/img/
+        - cp -r -f ./imagepacks/goosemascsubs/* ./DoLP_goose_masc/img/
+        - echo "Finished Building goose_masc v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP goose_masc v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_goose_masc" "DoLP_goose_masc"
+        - rm -rf ./DoLP_goose_masc
+        - rm -rf ./DoLP_goose_masc_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP goose_masc v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_goose_masc_mys_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP goose_masc_mys v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_goose_masc_mys/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_goose_masc_mys/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_goose_masc_mys/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_goose_masc_mys/img/
+        - cp -r -f ./imagepacks/goosemasc/* ./DoLP_goose_masc_mys/img/
+        - cp -r -f ./imagepacks/goosemascsubs/* ./DoLP_goose_masc_mys/img/
+        - cp -r -f ./imagepacks/mysterious/* ./DoLP_goose_masc_mys/img/
+        - echo "Finished Building goose_masc_mys v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP goose_masc_mys v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_goose_masc_mys" "DoLP_goose_masc_mys"
+        - rm -rf ./DoLP_goose_masc_mys
+        - rm -rf ./DoLP_goose_masc_mys_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP goose_masc_mys v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_mikili_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP mikili v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_mikili/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_mikili/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_mikili/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_mikili/img/
+        - cp -r -f ./imagepacks/mikili/* ./DoLP_mikili/img/
+        - cp -r -f ./imagepacks/mikilisubs/* ./DoLP_mikili/img/
+        - echo "Finished Building mikili v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP mikili v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_mikili" "DoLP_mikili"
+        - rm -rf ./DoLP_mikili
+        - rm -rf ./DoLP_mikili_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP mikili v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_mikili_mys_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP mikili_mys v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_mikili_mys/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_mikili_mys/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_mikili_mys/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_mikili_mys/img/
+        - cp -r -f ./imagepacks/mikili/* ./DoLP_mikili_mys/img/
+        - cp -r -f ./imagepacks/mikilisubs/* ./DoLP_mikili_mys/img/
+        - cp -r -f ./imagepacks/mysterious/* ./DoLP_mikili_mys/img/        
+        - echo "Finished Building mikili_mys v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP mikili_mys v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_mikili_mys" "DoLP_mikili_mys"
+        - rm -rf ./DoLP_mikili_mys
+        - rm -rf ./DoLP_mikili_mys_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP mikili_mys v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_au_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP aoki_utage v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_aoki_utage/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_aoki_utage/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_aoki_utage/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_aoki_utage/img/
+        - cp -r -f ./imagepacks/au/* ./DoLP_aoki_utage/img/
+        - echo "Finished Building aoki_utage v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP aoki_utage v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_aoki_utage" "DoLP_aoki_utage"
+        - rm -rf ./DoLP_aoki_utage
+        - rm -rf ./DoLP_aoki_utage_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP aoki_utage v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_au_mys_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP aoki_utage_mys v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_aoki_utage_mys/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_aoki_utage_mys/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_aoki_utage_mys/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_aoki_utage_mys/img/
+        - cp -r -f ./imagepacks/au/* ./DoLP_aoki_utage_mys/img/
+        - cp -r -f ./imagepacks/mysterious/* ./DoLP_aoki_utage_mys/img/
+        - echo "Finished Building aoki_utage_mys v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP aoki_utage_mys v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_aoki_utage_mys" "DoLP_aoki_utage_mys"
+        - rm -rf ./DoLP_aoki_utage_mys
+        - rm -rf ./DoLP_aoki_utage_mys_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP aoki_utage_mys v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_aumasc_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP aoki_utage_masc v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_aoki_utage_masc/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_aoki_utage_masc/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_aoki_utage_masc/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_aoki_utage_masc/img/
+        - cp -r -f ./imagepacks/aumasc/* ./DoLP_aoki_utage_masc/img/
+        - echo "Finished Building aoki_utage_masc v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP aoki_utage_masc v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_aoki_utage_masc" "DoLP_aoki_utage_masc"
+        - rm -rf ./DoLP_aoki_utage_masc
+        - rm -rf ./DoLP_aoki_utage_masc_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP aoki_utage_masc v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_aumasc_mys_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP aoki_utage_masc_mys v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_aoki_utage_masc_mys/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_aoki_utage_masc_mys/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_aoki_utage_masc_mys/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_aoki_utage_masc_mys/img/
+        - cp -r -f ./imagepacks/aumasc/* ./DoLP_aoki_utage_masc_mys/img/
+        - cp -r -f ./imagepacks/mysterious/* ./DoLP_aoki_utage_masc_mys/img/
+        - echo "Finished Building aoki_utage_masc_mys v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP aoki_utage_masc_mys v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_aoki_utage_masc_mys" "DoLP_aoki_utage_masc_mys"
+        - rm -rf ./DoLP_aoki_utage_masc_mys
+        - rm -rf ./DoLP_aoki_utage_masc_mys_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP aoki_utage_masc_mys v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_rotting_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP rotting v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_rotting/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_rotting/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_rotting/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_rotting/img/
+        - cp -r -f ./imagepacks/rotting/* ./DoLP_rotting/img/
+        - echo "Finished Building rotting v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP rotting v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_rotting" "DoLP_rotting"
+        - rm -rf ./DoLP_rotting
+        - rm -rf ./DoLP_rotting_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP rotting v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+build_upload_rotting_mys_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP rotting_mys v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - version=$(cat version)
+        - mkdir -p DoLP_rotting_mys/img/
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_rotting_mys/
+        - cp -r -f ./imagepacks/vanilla/* ./DoLP_rotting_mys/img/
+        - cp -r -f ./imagepacks/dolp/* ./DoLP_rotting_mys/img/
+        - cp -r -f ./imagepacks/rotting/* ./DoLP_rotting_mys/img/
+        - cp -r -f ./imagepacks/mysterious/* ./DoLP_rotting_mys/img/
+        - echo "Finished Building rotting_mys v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP rotting_mys v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_rotting_mys" "DoLP_rotting_mys"
+        - rm -rf ./DoLP_rotting_mys
+        - rm -rf ./DoLP_rotting_mys_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP rotting_mys v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+# build_upload_modloader_job:
+#     stage: compilation
+#     script:
+#         - echo "Building DoLP Modloader v0.$CI_PIPELINE_IID"
+#         - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+#         - find ./devTools/androidsdk/image/cordova/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+#         - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+#         - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+#         - mkdir -p DoLP_Modloader/img/
+#         - mkdir -p DoLP_Modloader/mod/
+#         - sh ./compile.sh
+#         - node "dist-insertTools/insert2html.cjs" "Degrees of Lewdity.html" "modList.json" "dist-BeforeSC2/BeforeSC2.js"
+#         - cp "Degrees of Lewdity.html.mod.html" ./DoLP_Modloader/
+#         - cp "modList.json" ./DoLP_Modloader/
+#         - cp -r -f ./mod/* ./DoLP_Modloader/mod/
+#         - cp -r -f ./imagepacks/vanilla/* ./DoLP_Modloader/img/
+#         - cp -r -f ./imagepacks/dolp/* ./DoLP_Modloader/img/
+#         - echo "Finished Building DoLP Modloader v0.$CI_PIPELINE_IID"
+#         - echo "Uploading DoLP Modloader v0.$CI_PIPELINE_IID"
+#         - upload_r2_zip "DoLP_Modloader" "DoLP_Modloader"
+#         - rm -rf ./DoLP_Modloader
+#         - rm -rf ./DoLP_Modloader_v0.$CI_PIPELINE_IID.zip
+#         - echo "Finished Uploading DoLP Modloader v0.$CI_PIPELINE_IID"
+#     only:
+#         - master
+
+build_upload_html_only_job:
+    stage: compilation
+    script:
+        - echo "Building DoLP HTML only v0.$CI_PIPELINE_IID"
+        - find ./version -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./devTools/apkbuilder/config.xml -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - find ./game/01-config/sugarcubeConfig.js -type f -exec sed -i "s/DoLP version/DoLP v0.$CI_PIPELINE_IID/g" {} +
+        - mkdir -p DoLP_HTML_only/
+        - version=$(cat version)
+        - sh ./compile.sh
+        - cp "Degrees of Lewdity.html" ./DoLP_HTML_only/
+        - echo "Finished Building HTML only v0.$CI_PIPELINE_IID"
+        - echo "Uploading DoLP HTML only v0.$CI_PIPELINE_IID"
+        - upload_r2_zip "DoLP_HTML_only" "DoLP_HTML_only"
+        - rm -rf ./DoLP_HTML_only
+        - rm -rf ./DoLP_HTML_only_v0.$CI_PIPELINE_IID.zip
+        - echo "Finished Uploading DoLP HTML only v0.$CI_PIPELINE_IID"
+    only:
+        - master
+
+release_job:
+    stage: upload
+    image: registry.gitlab.com/gitlab-org/release-cli:latest
+    before_script: []
+    needs:
+        - job: build_upload_vanilla_job
+        - job: build_upload_beeesss_job
+        - job: build_upload_beeesss_mysterious_job
+        - job: build_upload_beeesss_hikari_female_job
+        - job: build_upload_hikfem_mysterious_job
+        - job: build_upload_goose_female_job
+        - job: build_upload_goose_female_mysterious_job
+        - job: build_upload_goose_masc_job
+        - job: build_upload_goose_masc_mys_job
+        - job: build_upload_mikili_job
+        - job: build_upload_mikili_mys_job
+        - job: build_upload_au_job
+        - job: build_upload_au_mys_job
+        - job: build_upload_aumasc_job
+        - job: build_upload_aumasc_mys_job
+        - job: build_upload_rotting_job
+        - job: build_upload_rotting_mys_job
+        # - job: build_upload_modloader_job
+        - job: build_upload_html_only_job
+    rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    script:
+        - test -n "$R2_PUBLIC_URL" || { echo "Set R2_PUBLIC_URL in GitLab CI/CD variables, without a trailing slash"; exit 1; }
+        - echo "Creating releases..."
+    release:
+        description: 'Click on one of the links under OTHER with the image pack you want to use, extract the downloaded zip and play.
+            Changelogs:'
+        tag_name: 'v0.$CI_PIPELINE_IID'
+        ref: '$CI_COMMIT_SHA'
+        assets:
+            links:
+                - name: 'DoLP_Vanilla'
+                  url: "${R2_PUBLIC_URL}/DoLP_Vanilla/v0.$CI_PIPELINE_IID/DoLP_Vanilla_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_BEEESSS'
+                  url: "${R2_PUBLIC_URL}/DoLP_BEEESSS/v0.$CI_PIPELINE_IID/DoLP_BEEESSS_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_BEEESSS_mysterious'
+                  url: "${R2_PUBLIC_URL}/DoLP_beeesss_mysterious/v0.$CI_PIPELINE_IID/DoLP_beeesss_mysterious_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_BEEESSS_HikFem'
+                  url: "${R2_PUBLIC_URL}/DoLP_BEEESSS_Hikari_Female/v0.$CI_PIPELINE_IID/DoLP_BEEESSS_Hikari_Female_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_HikFem_mysterious'
+                  url: "${R2_PUBLIC_URL}/DoLP_hikfem_mysterious/v0.$CI_PIPELINE_IID/DoLP_hikfem_mysterious_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_goose_female'
+                  url: "${R2_PUBLIC_URL}/DoLP_goose_female/v0.$CI_PIPELINE_IID/DoLP_goose_female_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_goose_female_mysterious'
+                  url: "${R2_PUBLIC_URL}/DoLP_goose_female_mysterious/v0.$CI_PIPELINE_IID/DoLP_goose_female_mysterious_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_goose_masc'
+                  url: "${R2_PUBLIC_URL}/DoLP_goose_masc/v0.$CI_PIPELINE_IID/DoLP_goose_masc_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_goose_masc_mysterious'
+                  url: "${R2_PUBLIC_URL}/DoLP_goose_masc_mys/v0.$CI_PIPELINE_IID/DoLP_goose_masc_mys_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_mikili'
+                  url: "${R2_PUBLIC_URL}/DoLP_mikili/v0.$CI_PIPELINE_IID/DoLP_mikili_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_mikili_mysterious'
+                  url: "${R2_PUBLIC_URL}/DoLP_mikili_mys/v0.$CI_PIPELINE_IID/DoLP_mikili_mys_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_aoki_utage'
+                  url: "${R2_PUBLIC_URL}/DoLP_aoki_utage/v0.$CI_PIPELINE_IID/DoLP_aoki_utage_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_aoki_utage_mysterious'
+                  url: "${R2_PUBLIC_URL}/DoLP_aoki_utage_mys/v0.$CI_PIPELINE_IID/DoLP_aoki_utage_mys_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_aoki_utage_masc'
+                  url: "${R2_PUBLIC_URL}/DoLP_aoki_utage_masc/v0.$CI_PIPELINE_IID/DoLP_aoki_utage_masc_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_aoki_utage_masc_mysterious'
+                  url: "${R2_PUBLIC_URL}/DoLP_aoki_utage_masc_mys/v0.$CI_PIPELINE_IID/DoLP_aoki_utage_masc_mys_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_rotting'
+                  url: "${R2_PUBLIC_URL}/DoLP_rotting/v0.$CI_PIPELINE_IID/DoLP_rotting_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_rotting_mysterious'
+                  url: "${R2_PUBLIC_URL}/DoLP_rotting_mys/v0.$CI_PIPELINE_IID/DoLP_rotting_mys_v0.$CI_PIPELINE_IID.zip"
+                - name: 'DoLP_HTML_only'
+                  url: "${R2_PUBLIC_URL}/DoLP_HTML_only/v0.$CI_PIPELINE_IID/DoLP_HTML_only_v0.$CI_PIPELINE_IID.zip"
+    after_script:
+        - echo "Finished creating releases."

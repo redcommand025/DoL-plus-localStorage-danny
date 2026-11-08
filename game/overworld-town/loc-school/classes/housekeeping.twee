@@ -1,0 +1,616 @@
+:: Housekeeping Classroom
+<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>><<set $bus to "housekeeping_classroom">>
+
+<<if $schoolstate is "second" and [3, 5].includes(Time.weekDay)>>
+	<!-- Note: until we separate the NPC introductions out of the <<npc>> widget, we must pay attention to where we use <<npc River>> in this passage. -->
+	<!-- It would save several lines to simply put it here, but we can't. -->
+	<<lockerClothesAutoEquip>>
+	<<classRoomEarSlime "housekeeping">>
+	<<if $worn.upper.type.includes("naked") and $worn.lower.type.includes("naked")>>
+		<<outfitChecks>>
+		/*Check for when the pc is only wearing an overcoat*/
+		<<if $worn.under_upper.name isnot "naked" and $worn.under_lower.name isnot "naked">>
+			<<set _naked to ($worn.under_upper.type.includes("swim") or $worn.under_lower.type.includes("swim")) ? "only wearing swimwear" : "only wearing underwear">>
+		<<else>>
+			<<set _naked to "not wearing anything">>
+		<</if>>
+
+		<<if $worn.over_upper.name isnot "naked" and $worn.over_lower.name isnot "naked">>
+			<<set _overClothes to _middleOutfit ? $worn.over_upper.name : ($worn.over_upper.name + " and " + $worn.over_lower.name)>>
+			As you go to hang your <<print _overClothes>>, you remember that you're <<print _naked>> underneath.
+		<</if>>
+
+		<br><br>
+		<<npc River>><<person1>>
+		River's eyes narrow as you glance at <<him>>. "You can't be trying to attend my lesson without a uniform. Go see the head."
+		<br><br>
+		<<pubfameComplete "river">>
+		<!--<<link [[Hang up coat|]]>><<endevent>><</link>>
+		<br><br> good starting point for when you can go to class naked-->
+		<<link [[Next|Hallways]]>><<endevent>><</link>>
+		<br><br>
+	<<elseif wearingSchoolOutfit() and !pcAreArmsBound("right")>>
+		<<if $daily.school.attended.housekeeping>>
+			You rejoin the housekeeping lesson,
+			<<if $worn.over_upper.name isnot "naked" or $worn.over_lower.name isnot "naked" or $worn.over_head.name isnot "naked">>
+				hang your coat at the back of the class
+				<<undressOverClothes "housekeepingClassroom">>
+			<</if>>
+			and take your seat.
+		<<elseif Time.minute lt 5>>
+			<<if modLISelected("Poppy") and Time.days gte 21 and C.npc.Poppy and C.npc.Poppy.init isnot 1 and ($poppySeen is undefined or !Array.isArray($poppySeen) or !$poppySeen.includes("talk_intro"))>>
+				<<poppyFirstMeetingInit>><<npc Poppy>><<person1>>
+				You enter the housekeeping classroom. River and a stranger are preparing at the front of the room while the seats fill.
+				<<if $worn.over_upper.name isnot "naked" or $worn.over_lower.name isnot "naked" or $worn.over_head.name isnot "naked">>
+					<<undressOverClothes "housekeepingClassroom">>
+					You hang your coat at the back of the class and take your seat.
+				<</if>>
+				<<if $awarelevel gte 5>>
+					<br>
+					"Alright class," River starts. "From today on, Poppy will be my teaching assistant." 
+					<br><br>
+					River gestures to the person beside <<nnpc_him "River">>. Poppy has beautiful, natural crimson red hair. Only with your eyes can you see that <<he>> has a pair of fox ears, a fluffy tail, a broken halo and a pair of ink black wings folded neatly behind <<him>>. 
+					<br><br>
+					Poppy smiles at the students and waves at them. The students are immediately charmed by <<his>> charisma and start whispering amongst themselves.
+				<<elseif modLISelected("Poppy") and poppyDismissed() and !$poppySeen.includes("dismissal_classroom")>>
+					<<set $poppySeen.push("dismissal_classroom")>>
+					<<npc Poppy>><<person1>>
+					You enter the housekeeping classroom. You see Poppy at the front of the classroom but <<he>> completely disregards your existence.
+					<<if $worn.over_upper.name isnot "naked" or $worn.over_lower.name isnot "naked" or $worn.over_head.name isnot "naked">>
+						<<undressOverClothes "housekeepingClassroom">>
+						You hang your coat at the back of the class and take your seat.
+					<</if>>
+				<<else>>
+					<br>
+					"Alright class," River starts. "From today on, Poppy will be my teaching assistant." River gestures to the person beside <<nnpc_him "River">>. Poppy has beautiful, natural crimson red hair. 
+					<br><br>
+					Something about <<him>> makes your focus falter, as if <span class="navy">something</span> is flickering just beyond your vision. The students are immediately charmed by <<his>> charisma and start whispering amongst themselves.
+				<</if>>
+			<<else>>
+				You enter the housekeeping classroom.
+				<<npc River>><<person1>>
+				River is preparing at the front of the room while the seats fill.
+				<<if $worn.over_upper.name isnot "naked" or $worn.over_lower.name isnot "naked" or $worn.over_head.name isnot "naked">>
+					<<undressOverClothes "housekeepingClassroom">>
+					You hang your coat at the back of the class and take your seat.
+				<</if>>
+			<</if>>
+		<<else>>
+			You enter the housekeeping classroom.
+			<<npc River>><<person1>>
+			River cuts off mid-sentence to regard you.
+			<<if $daily.school.housekeepingExcused>>
+				<<run delete $daily.school.housekeepingExcused>>
+				"Sit down and try to catch up." <<He>> doesn't mention your tardiness.
+			<<else>>
+				"You're late. Maybe some time in detention will prevent future tardiness."
+				<<gdelinquency>>
+				<<detention 1>>
+			<</if>>
+			<br><br>
+			You
+			<<if $worn.over_upper.name isnot "naked" or $worn.over_lower.name isnot "naked" or $worn.over_head.name isnot "naked">>
+				hang your coat at the back of the class and
+				<<undressOverClothes "mathsClassroom">>
+			<</if>>
+			take a seat as River continues.
+		<</if>>
+		<br><br>
+
+		<<pubfameComplete "river">>
+		<<link [[Next|Housekeeping Lesson]]>><<endevent>><</link>>
+		<br>
+	<<elseif pcAreArmsBound("any") or $feetuse is "bound">>
+		<<npc River>><<person1>>
+		River's eyes narrow as <<he>> sees your bound <<boundBodyParts>>.
+		"And another one. Look, whatever silly game you're playing needs to stop. You're not coming in here tied up like that. Go see the head."
+		<br><br>
+
+		<<pubfameComplete "river">>
+		<<link [[Next|Hallways]]>><<endevent>><</link>>
+		<br><br>
+	<<else>>
+		<<npc River>><<person1>>
+		River's eyes narrow as you enter. "You can't attend my lesson without a uniform. Go see the head."
+		<br><br>
+
+		<<pubfameComplete "river">>
+		<<link [[Next|Hallways]]>><<endevent>><</link>>
+		<br><br>
+	<</if>>
+<<elseif $schoollesson is 1 and [3, 5].includes(Time.weekDay)>>
+	<<npc River>><<person1>>
+	<<if $daily.school.housekeepingInterrupted is 1>>
+		You enter the housekeeping classroom. River stops speaking abruptly and looks your way. "You again? Get out." <<He>> shuts the door on you.
+		<<detention 1>><<gdelinquency>>
+		<br><br>
+
+		<<link [[Next|Hallways]]>><<endevent>><</link>>
+	<<else>>
+		<<set $daily.school.housekeepingInterrupted to 1>>
+		You enter the housekeeping classroom. River stops speaking abruptly and looks your way. "Yes, what is it?" It seems you've interrupted the lesson.
+		<br><br>
+		<<pubfameComplete "river">>
+
+		<<link [[Apologise|Housekeeping Classroom Apology]]>><<trauma 1>><<stress 1>><</link>><<gstress>><<gtrauma>>
+		<br>
+		<<if $trauma gte 1>>
+			<<link [[Mock|Housekeeping Classroom Mock]]>><<status 1>><<stress -12>><</link>><<lstress>><<gcool>><<gdelinquency>>
+			<br>
+		<</if>>
+	<</if>>
+<<else>>
+	<<if modLISelected("Poppy")>>
+		<<run poppySchedule()>>
+	<</if>>
+	<<if modLISelected("Poppy") and C.npc.Poppy and C.npc.Poppy.init is 1 and T.poppy_location is "housekeepingClassroom" and T.poppy_location_message is "prep">>
+		<<set $daily.poppy.hkClassroomVisits to typeof $daily.poppy.hkClassroomVisits is "number" ? $daily.poppy.hkClassroomVisits : 0>>
+		<<set $daily.poppy.hkClassroomLocked to $daily.poppy.hkClassroomLocked ? 1 : 0>>
+		<<if $daily.poppy.hkClassroomLocked is 1>>
+			You try to enter the housekeeping classroom. The door is locked.
+			<br><br>
+			<<getouticon>><<link [[Leave|Hallways]]>><<endevent>><</link>>
+		<<elseif Array.isArray(_poppyStatus) and _poppyStatus.includes("LowPatience")>>
+			<<set $daily.poppy.hkClassroomLocked to 1>>
+			<<npc Poppy>><<person1>>
+			When you enter the housekeeping classroom, Poppy looks up from <<his>> paperwork. <<He>> doesn't seem happy to see you.
+			<br><br>
+			"I'm busy right now. If you need anything, please go seek River." Poppy ushers you out of the classroom and locks the door.
+			<<poppyOpiumPulse>>
+			<<getouticon>><<link [[Leave|Hallways]]>><<endevent>><</link>>
+		<<else>>
+			<<set $daily.poppy.hkClassroomVisits to $daily.poppy.hkClassroomVisits + 1>>
+			<<npc Poppy>><<person1>>
+			<<if $daily.poppy.hkClassroomVisits is 1>>
+				When you enter the housekeeping classroom, Poppy looks up from <<his>> paperwork and smiles. "Is there anything I can do for you?"
+				<<poppyOpiumPulse>>
+				<<socialiseicon "ask">><<link [[Ask for help with your housekeeping skills (0:30)|Housekeeping Classroom Poppy Help]]>><<pass 30>><</link>><<ghousekeeping>>
+				<br>
+				<<getouticon>><<link [[Leave|Hallways]]>><<endevent>><</link>>
+			<<elseif $daily.poppy.hkClassroomVisits is 2>>
+				Poppy looks up from <<his>> paperwork. "Did... you forget something?"
+				<<poppyOpiumPulse>>
+				<<socialiseicon "ask">><<link [[Ask for help with your housekeeping skills (0:30)|Housekeeping Classroom Poppy Help]]>><<pass 30>><</link>><<ghousekeeping>>
+				<br>
+				<<getouticon>><<link [[Leave|Hallways]]>><<endevent>><</link>>
+			<<elseif (typeof C.npc.Poppy.lust is "number" and C.npc.Poppy.lust gte 60)>>
+				<<npcincr Poppy patience -5>>
+				<<set $daily.poppy.hkClassroomLocked to 1>>
+				As you enter the housekeeping classroom once more, Poppy grabs you by the wrist and throws you against the nearest wall, pinning both hands beside your head. 
+				<br><br>
+				"You're such a pain in the ass, are you really this desperate for my attention?" <<He>> scowls.
+				<<poppyOpiumPulse>>
+				<<link [[Kiss|Housekeeping Classroom Poppy Kiss]]>><</link>>
+				<br>
+				<<link [[Apologise|Housekeeping Classroom Poppy Apologise]]>><</link>>
+			<<else>>
+				<<npcincr Poppy patience -5>>
+				<<set $daily.poppy.hkClassroomLocked to 1>>
+				Poppy looks up from <<his>> paperwork with an annoyed sigh. "Please stop disturbing me unless it's something important." 
+				<br><br>
+				Poppy ushers you out of the classroom and locks the door.<<delinquency 1>><<gdelinquency>>
+				<<poppyOpiumPulse>>
+				<<getouticon>><<link [[Leave|Hallways]]>><<endevent>><</link>>
+				<br>
+			<</if>>
+		<</if>>
+	<<else>>
+		You are in the housekeeping classroom. A large portion is dedicated to a kitchen.
+		<br><br>
+		<<if $arousal gte $arousalmax>>
+			<<orgasmLocation "emptyClassroom">>
+		<</if>>
+		<<storeon "housekeepingClassroom" "check">>
+		<<if _store_check is 1>>
+			<<storeon "housekeepingClassroom">>
+			You take your coat at the back of the class.
+			<br><br>
+		<</if>>
+		<<exhibitionclassroom>>
+
+		/* Commented out because it looks really weird with the kitchen UI. Maybe something unique could be done here?
+		<<emptyClassroomMasturbationIntro>> */
+
+		River allows students to use the kitchen while lessons aren't in session, though woe betide those who don't clean up after themselves.
+		<br><br>
+
+		<<ingredientsSupplied "salt" "vegetable_oil" "bottle_of_milk" "white_wine" "flour" "oats" "sugar">>
+		<br><br>
+
+		<<kitchenDisplay>>
+		<<if $cookbook is true>>
+			<<set _baseTime to Math.max(180 - (6 * Math.round($housekeeping / 50)), 10)>>
+			<<set _timeString to getTimeString(_baseTime)>>
+			<br><br>
+			<<housekeeping_exam_select>>
+			<<if $chosen_recipe isnot "none">>
+				<span class="gold">You can teach yourself a recipe from your cookbook here.</span> You flip open the book and land on a recipe for <<print $chosen_recipe.replace(/_/g," ")>>.<br><br>
+				<<link [["Learn something new (" + _timeString + ")"|Kitchen Self Teach]]>><<pass _baseTime>><<housekeeping 1 1000>><</link>><<ghousekeeping 1000>>
+			<<else>>
+				There's no more recipes you can learn.
+			<</if>>
+			<br>
+		<</if>>
+
+	<<crimeicon "mark">><<link [[Steal|Housekeeping Kitchen Steal]]>><</link>>
+	<br><br>
+	<<getouticon>><<link [[Leave the room (0:01)|Hallways]]>><<kitchenExit>><<pass 1>><</link>>
+	<br>
+	<</if>>
+<</if>>
+
+:: Housekeeping Lesson
+<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+<<if modLISelected("Poppy") and Time.days gte 21 and C.npc.Poppy and C.npc.Poppy.init isnot 1 and ($poppySeen is undefined or !Array.isArray($poppySeen) or !$poppySeen.includes("talk_intro"))>>
+	<<poppyFirstMeetingInit>><<npc Poppy>><<person1>>
+	You slip into the housekeeping classroom just as River begins the lesson.
+	<br><br>
+	<<if $awarelevel gte 5>>
+		"Before we begin," River says, gesturing to the person beside <<nnpc_him "River">>, "this is Poppy, my new teaching assistant." Poppy has beautiful, natural crimson red hair. 
+		<br><br>
+		Only with your eyes can you see that <<he>> has a pair of fox ears, a fluffy tail, a broken halo and a pair of ink black wings folded neatly behind <<him>>. Poppy smiles and gives the class a lazy wave.
+	<<else>>
+		"Before we begin," River says, gesturing to the person beside <<nnpc_him "River">>, “this is Poppy, my new teaching assistant.” Poppy has beautiful, natural crimson red hair. 
+		<br><br>
+		Something about <<him>> makes your focus falter, as if <span class="navy">something</span> is flickering just beyond your vision. Poppy smiles and gives the class a lazy wave.
+	<</if>>
+	<br><br><<endevent>>
+<<else>>
+	<<set $daily.school.attended.housekeeping to true>>
+<</if>>
+
+<<if Time.weekDay is 5 and Time.minute gte 37>>
+	"Everyone to the kitchen," River says. "It's time for an exam."<<gstress>><<stress 6>>
+	<br><br>
+
+	<<npc River>><<person1>>
+	<<housekeeping_exam_select>>
+	<<if $chosen_recipe isnot "none">>
+		<<exam "housekeeping">>
+	<</if>>
+	<br><br>
+
+	<<if $chosen_recipe is "none">>
+		River gestures for you to approach. "You know all this already," <<he>> says. "Set up the projector for me. Choose any recipe, the class needs each of them."
+		<br><br>
+		You approach the projector. Beside it are a number of slides, each containing instructions for a particular dish. What sort of recipe should the class be tested on?
+		<br><br>
+
+		<<link [[Something sweet|Housekeeping Exam Assistant Sweet]]>><</link>>
+		<br>
+		<<link [[Something savoury|Housekeeping Exam Assistant Savoury]]>><</link>>
+		<br>
+		<<link [[Something spicy|Housekeeping Exam Assistant Spicy]]>><</link>>
+		<br>
+	<<else>>
+		Students take their places in the kitchen as River fiddles with a projector. A recipe is displayed on a board.
+		<<recipe_exam_description $chosen_recipe>>
+		<<He>> taps the board. "You have twenty minutes. Go."
+		<br><br>
+
+		<<endevent>>
+		<<if $arousal gte $arousalmax>>
+			<<set _teacher to "River">>
+			<<orgasmLocation "classroom">>
+		<</if>>
+
+		<<link [[Focus|Housekeeping Exam]]>><<stress 6>><<set $phase to 0>><<set $exam_chance += 5>><</link>><<gstress>><<passPercent 5>>
+		<br>
+		<<link [[Try to relax|Housekeeping Exam]]>><<set $phase to 1>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	<<if Time.minute lt 5>>
+		The housekeeping lesson begins. How do you want to conduct yourself?
+		<br><br>
+	<<else>>
+		The housekeeping lesson continues. How do you want to conduct yourself?
+		<br><br>
+	<</if>>
+	<<if $arousal gte $arousalmax>>
+		<<set _teacher to "River">>
+		<<orgasmLocation "classroom">>
+	<</if>>
+
+	<<icon "housekeeping.png">><<link [[Focus on the lesson|Housekeeping Lesson Focus]]>><</link>><<gstress>><<ghousekeeping>>
+	<br>
+	<<socialiseicon>><<link [[Socialise with classmates|Housekeeping Lesson Socialise]]>><</link>><<gcool>><<ltrauma>><<lstress>><<gharass>>
+	<br>
+	<<daydreamicon>><<link [[Daydream|Housekeeping Lesson Daydream]]>><</link>><<lstress>><<ltiredness>><<lharass>>
+	<br>
+	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+		<<bedicon "zzz">><<link [[Sleep at your desk|Housekeeping Lesson Sleep]]>><</link>><<ltiredness>>
+		<br>
+	<</if>>
+	<<if hasSexStat("exhibitionism", 4)>>
+		<<skinicon "masturbate">><<link [[Masturbate|Housekeeping Lesson Masturbate]]>><<set $masturbationstart to 1>><</link>><<exhibitionist4>>
+		<br>
+	<</if>>
+<</if>>
+
+:: Housekeeping Classroom Apology
+<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
+Embarrassed, you apologise and leave.
+<br><br>
+
+<<link [[Next|Hallways]]>><<endevent>><</link>>
+
+:: Housekeeping Classroom Mock
+<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
+You mock the teacher. "Sorry for interrupting <<sir>>, I'll let you get back to putting your class to sleep." Laughter erupts among the seated students.
+<br><br>
+
+River is not so amused. "You've made a mistake. Get out."
+<<gdelinquency>>
+<br><br>
+<<detention 1>><<npcincr River love -1>>
+<<link [[Next|Hallways]]>><<endevent>><</link>>
+
+:: Housekeeping Lesson Focus
+<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+<<towelup>>
+<<if modLISelected("Poppy")>><<run poppySchedule()>><</if>>
+<<if random(1,100) lte 20 and modLISelected("Poppy") and C.npc.Poppy and C.npc.Poppy.init is 1 and !poppyDismissed()>>
+	<<npc Poppy>><<person1>><<advancelesson>>
+	You focus on listening to the teacher and studying the material. It's hard going, but you think you're making progress.
+	<br><br>
+	<<housekeeping _lesson_progress>>
+	<<if _dolp_desk_stress>><<stress _dolp_desk_stress>><<else>><<stress _lesson_progress>><</if>>
+	As you work, a pair of hands rest against your shoulders. 
+	<br><br>
+	You turn around to see Poppy smiling at you. "Do you need any guidance?"
+	<br><br>
+	<<link [[Say yes|Housekeeping Lesson Focus Poppy Yes]]>><</link>><<glove>><<ghousekeeping>><<handholdingvirginitywarning>>
+	<br>
+	<<link [[Say you're fine|Housekeeping Lesson Focus Poppy No]]>><</link>>
+<<else>>
+	You focus on listening to the teacher and studying the material. It's hard going, but you think you're making progress.
+	<br><br>
+	<<advancelesson>><<housekeeping _lesson_progress>>
+	<<if _dolp_desk_stress>><<stress _dolp_desk_stress>><<else>><<stress _lesson_progress>><</if>>
+	<<if $phase is 1>>
+		<<lessonEnd "housekeepingClassroom">>
+	<<else>>
+		<<lessonEvents "housekeeping">>
+	<</if>>
+<</if>>
+
+:: Housekeeping Lesson Socialise
+<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
+<<towelup>>
+
+<<if $cool gte ($coolmax / 5 * 2)>>
+	You do the bare minimum of work, focusing instead on trying to endear yourself to your classmates. You soon become the centre of attention.
+<<elseif $cool gte ($coolmax / 5)>>
+	You do the bare minimum of work, focusing instead on trying to endear yourself to your classmates.
+<<else>>
+	You do the bare minimum of work, focusing instead on trying to endear yourself to your classmates. Most avoid interacting with you.
+<</if>>
+<br><br>
+
+<<status 1>>
+
+<<advancelesson>>
+<<set _stress to _lesson_progress * -1>>
+<<stress _stress>>
+<<set _trauma to _lesson_progress * -0.5>>
+<<trauma _trauma>>
+
+<<if $phase is 1>>
+	<<lessonEnd "housekeepingClassroom">>
+<<else>>
+	<<lessonEvents "housekeeping" 2>>
+<</if>>
+
+:: Housekeeping Lesson Daydream
+<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
+<<towelup>>
+
+<<if $trauma gte (($traumamax / 10) * 7)>>
+	You keep to yourself, afraid that one wrong move will result in the whole class molesting you.
+<<elseif $trauma gte (($traumamax / 10) * 2)>>
+	You focus on your own thoughts, trying to keep the creeping anxiety at bay.
+<<else>>
+	You don't really pay attention to the lesson, instead idly staring out the window and thinking about what you'll do after school.
+<</if>>
+<br><br>
+
+<<advancelesson>>
+<<set _stress to _lesson_progress * -1>>
+<<stress _stress>>
+
+
+<<if $phase is 1>>
+	<<lessonEnd "housekeepingClassroom">>
+<<else>>
+	<<lessonEvents "housekeeping" 0.5>>
+<</if>>
+
+:: Housekeeping Lesson Sleep
+<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
+You rest your head on the desk while River <<print either("demonstrates a sewing technique", "enthuses about the importance of kitchen hygiene", "explains the finer points of a particular recipe", "lectures about household finances")>>. Your eyes soon close, just for a moment, before you open them again. You struggle to stay awake, but the desk is just too comfy.
+<br><br>
+<<towelup>>
+<<tiredness -12>>
+<<advancelesson>>
+
+<<if $phase is 1>>
+	<<lessonEnd "housekeepingClassroom" "sleep">>
+<<else>>
+	<<eventshousekeepingsleep>>
+<</if>>
+
+:: Housekeeping Kitchen Steal
+<<set $outside to 0>><<set $location to "school">><<effects>>
+You look through the cabinets. Most of the ingredients you use during classes are here. 
+<<if Time.schoolDay>>
+	<<if $schoolstate is "early" or $schoolstate is "lunch">>
+		Nobody usually comes here at this hour, so it should be easy.
+		<<set $skulduggerydifficulty to 400>>
+	<<elseif $schoolstate is "late">>
+		You don't think anybody will come in, but there is always the possibility.
+		<<set $skulduggerydifficulty to 500>>
+	<<else>>
+		You must be quick. Somebody may come in at any point.
+		<<set $skulduggerydifficulty to 800>>
+	<</if>>
+<<else>>
+	Nobody is around.
+	<<set $skulduggerydifficulty to 300>>
+<</if>>
+<br><br>
+
+<<ingredientsSuppliesSteal "salt" "vegetable_oil" "bottle_of_milk" "white_wine" "flour" "oats" "sugar">>
+<br>
+<<icon "housekeeping.png">><<link [[Back|Housekeeping Classroom]]>><<endevent>><</link>>
+
+:: school Kitchen Steal Result
+<<effects>>
+
+<<set $skulduggerydifficulty to 300>><<skulduggerycheck>>
+<br><br>
+
+<<if $skulduggerysuccess is 1>>
+	The <<recipe_name $phase "plural">> are behind some jars, so you move them out of your way as quietly as possible. <<tending_pick $phase 3 6>>
+	<br>
+	You probably shouldn't take more, or River will notice too much is missing.
+	<br><br>
+	
+	<<icon "housekeeping.png">><<link [[Walk away|Housekeeping Classroom]]>><</link>>
+	<br>
+	<<ingredientsSuppliesSteal "salt" "vegetable_oil" "bottle_of_milk" "white_wine" "flour" "oats" "sugar">>
+<<else>>
+	<<if Time.schoolDay>>
+		<<if $schoolstate is "early" or $schoolstate is "lunch" or $schoolstate is "late">>
+			<<generatey1>><<person1>>
+			<<set _tellTarget to random(1, 6)>>
+			The <<recipe_name $phase "plural">> are behind some jars, so you move them out of your way as quietly as possible. You're reaching for them when you hear a gasp behind you. You turn around.
+			<br><br>
+			"Are you stealing ingredients?" the <<person>> exclaims. "That's not okay! I'm telling <<switch _tellTarget>><<case 1>>the head<<case 2>>the <<nnpc_title "Leighton">><<case 3>>Leighton<<case 4>>a teacher<<default>>River<</switch>>!"
+			<br><br>
+			<<He>> runs out before you can say anything. <<detention 1>><<gdelinquency>>
+			<br><br>
+			You look at the <<recipe_name $phase>> in your hand. You'll still be in trouble even if you leave it here, but it will be worse if you take it with you.
+			<br><br><<set $weekly.theft.school[$phase] to false>>
+			<<link [[Leave it behind|Housekeeping Leave]]>><</link>>
+			<br>
+			<<link [[Take it anyway|Housekeeping Take]]>><<detention 4>><</link>><<ggdelinquency>>
+		<<else>>
+			<<npc River>><<person1>>
+			The <<recipe_name $phase "plural">> are behind some jars, so you move them out of your way as quietly as possible. You don't manage to take them before you hear someone coming in.
+			<br><br>
+			"Are you trying to steal ingredients?" You turn around and find yourself face to face with River. <<His>> eyes narrow. "Put the <<recipe_name $phase>> back. Perhaps a detention will teach you not to steal."<<npcincr River love -1>><<llove>><<detention 6>><<ggdelinquency>>
+			<<set $weekly.theft.school[$phase] to false>><br><br>
+			<<link [[Leave the room (0:01)|Hallways]]>><<handheldon>><<pass 1>><<endevent>><</link>>
+		<</if>>
+	<<else>>
+		<<beastNEWinit 1 cat>>
+		You move some jars out of the way to reach for <<recipe_name $phase "plural">>, but accidentally knock them together. You freeze, and hear a low growl behind you.
+		<<beastNEWinit 1 cat>>
+		<<if ($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked)>>
+			A large <<beasttype>> pounces on you from the shadows, forcing you to your knees. The jar drops, shattering on the floor.
+			<br><br>
+			<<if (($cat gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "cat")>>
+				<<link [[Hiss|School Housekeeping Hiss]]>><</link>><<cat>>
+				<br>
+			<</if>>
+			<<link [[Fight|School Housekeeping Cat]]>><<set $molestationstart to 1>><</link>>
+			<br>
+		<<else>>
+			A large cat pounces on you from the shadows, making you drop the jar. It shatters on the floor. You manage to escape, but not without injury. You leave quite a mess behind you.<<crimeUp 5 "destruction">><<crime "destruction">>
+			<<beastescape>>
+			<br><br>
+			<<link [[Next|Housekeeping Classroom]]>><<endevent>><</link>>
+			<br>
+		<</if>>
+	<</if>>
+<</if>>
+
+:: Housekeeping Leave
+<<effects>>
+You put down the <<recipe_name $phase "plural">>. At least now there's little evidence it was you. Still, you should probably leave and not try again for some time. 
+<<set $weekly.theft.school[$phase] to false>>
+<br><br>
+<<getouticon>><<link [[Leave the room (0:01)|Hallways]]>><<handheldon>><<pass 1>><<endevent>><</link>>
+
+:: Housekeeping Take
+<<effects>>
+You pick the <<recipe_name $phase>> anyways. <<tending_pick $phase 3 6>> You should still leave quickly before you get in more trouble. And probably not return any time soon.
+<br><br>
+<<getouticon>><<link [[Leave the room (0:01)|Hallways]]>><<pass 1>><</link>>
+
+:: School Housekeeping Hiss
+<<set $outside to 0>><<set $location to "school">><<effects>>
+You hiss at the <<beasttype>>. <<bHe>> backs away from you, <<bhis>> ears turned back. You stare at <<bhim>> and unleash your deepest meow. <<bHe>> growls back, but <<bhis>> face relaxes. <<bHe>> leaps onto the windowsill and disappears behind it.
+<br><br>
+You look around at the shattered jar on the ground. The <<recipe_name $phase "plural">> you wanted to steal lie on the ground mixed with glass. Picking any of it would be too dangerous, but it's enough to be passed as a simple accident. If you clean it up, nobody should bat an eye on the destruction you caused.
+<br><br>
+<<link [[Clean it up|Housekeeping Classroom Sweep]]>><<endevent>><</link>><br>
+<<link [[Leave it|Housekeeping Classroom Leave]]>><<detention 2>><<endevent>><</link>><<gdelinquency>>
+
+:: Housekeeping Classroom Sweep
+<<set $outside to 0>><<set $location to "school">><<effects>>
+You pick up the broom and sweep the glass and remains of <<recipe_name $phase "plural">> off the floor. It doesn't take you long to take care of it.
+<br><br>
+<<crimeicon "mark">><<link [[Steal more|Housekeeping Kitchen Steal]]>><</link>><br>
+<<icon "housekeeping.png">><<link [[Walk away|Housekeeping Classroom]]>><</link>>
+
+:: Housekeeping Classroom Leave
+<<set $outside to 0>><<set $location to "school">><<effects>>
+You decide it's better to leave the mess behind. It's not your problem anymore.
+<br><br>
+<<crimeicon "mark">><<link [[Steal more|Housekeeping Kitchen Steal]]>><</link>><br>
+<<icon "housekeeping.png">><<link [[Walk away|Housekeeping Classroom]]>><<endevent>><</link>>
+
+
+:: School Housekeeping Cat
+
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<beastCombatInit>>
+	<<set $enemytrust -= 40>>
+	<<set $NPCList[0].stance to "top">><<set $head to "grappled">>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<beast $enemyno>>
+<<stateman>>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|School Housekeeping Cat Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|School Housekeeping Cat]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: School Housekeeping Cat Finish
+
+<<set $outside to 0>><<set $location to "school">><<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+	The <<beasttype>> grunts in satisfaction, and leaps out the window, leaving you lying on the floor.
+	<br><br>
+	<<tearful>> you rise to your feet. You look around and see quite a mess behind you.<<crimeUp 7 "destruction">><<crime "destruction">>
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Housekeeping Classroom]]>><<endevent>><</link>>
+<<elseif $enemyhealth lte 0>>
+	The <<beasttype>> yelps and flees through the window.
+	<br><br>
+	<<tearful>> you rise to your feet. You look around and see quite a mess behind you.<<crimeUp 10 "destruction">><<crime "destruction">>
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Housekeeping Classroom]]>><<endevent>><</link>>
+<</if>>

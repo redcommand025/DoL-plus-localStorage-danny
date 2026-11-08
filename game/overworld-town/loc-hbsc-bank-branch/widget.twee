@@ -1,0 +1,28 @@
+:: Widgets HBSC Bank [widget]
+<<widget "hbscOptions">>
+    <<if $passage isnot "HBSC Bank Ask Savings Accounts">>
+        <<socialiseicon "ask">><<link [[Ask about HBSC' Savings Accounts (0:02)|HBSC Bank Ask Savings Accounts]]>><<pass 2>><</link>>
+        <br>
+    <</if>>
+    <<if $passage isnot "HBSC Bank Ask Fixed-Term Deposits">>
+        <<socialiseicon "ask">><<link [[Ask about HBSC' Fixed-Term Deposits (0:02)|HBSC Bank Ask Fixed-Term Deposits]]>><<pass 2>><</link>>
+        <br>
+    <</if>>
+    <<if $passage isnot "HBSC Bank Account">>
+        <<if $hbsc.account.level lte 0>>
+            <<link [[Open an account (0:02)|HBSC Bank Account]]>><<pass 2>><</link>>
+            <br>
+        <<else>>
+            <<if $hbsc.account.level gte 1 and $hbsc.account.level lt 5>>
+                <<link [[Upgrade your account (0:02)|HBSC Bank Account]]>><<pass 2>><</link>>
+                <br>
+            <</if>>
+        <</if>>
+    <</if>>
+    <<if $hbsc.account.level gte 1>>
+        <<link [[Put down a Fixed-Term Deposit (0:02)|HBSC Bank Fixed-Term Deposit]]>><<pass 2>><</link>>
+        <br>
+    <</if>>
+    <<getouticon>><<link [[Leave|High Street]]>><<endevent>><</link>>
+    <br>
+<</widget>>

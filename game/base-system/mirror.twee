@@ -1,0 +1,4018 @@
+:: Widgets Mirror [widget]
+<<widget "mirror">>
+	<div id="mirror">
+		<<if _args[0] isnot undefined>>
+			<<mirrorDisplay _args[0]>>
+		<<else>>
+			<<mirrorDisplay>>
+		<</if>>
+	</div>
+<</widget>>
+
+<<widget "preMirror">>
+	<<if (Browser.isMobile).any()>>
+		<<set $showMannequins to 0>>
+	<<else>>
+		<<set $showMannequins to 1>>
+	<</if>>
+<</widget>>
+
+<<widget "postMirror">>
+	<<shopClothingFilterReset>> /* Due to the reusing of shop code */
+<</widget>>
+
+<<widget "mirrorDisplay">>
+	<<switch $mirrorMenu>>
+		<<case "appearance">>
+			<<if playerBellyVisible(true) and !playerAwareTheyArePregnant()>>
+				<<mirrorAppearancePregnancy>>
+			<<else>>
+				<<mirrorAppearance>>
+			<</if>>
+		<<case "body">>
+			<<visual-settings>>
+		<<case "skin">>
+			<<mirrorSkin>>
+		<<case "hair">>
+			<<mirrorHair>>
+		<<case "makeup">>
+			<<mirrorMakeup>>
+		<<case "transformation">>
+			<<mirrorTransformation>>
+		<<case "genomedump">>
+			<<genomedump>>
+		<<case "mood">>
+			<<mirrorMood>>
+		<<default>>
+			<<mirrorMenu _args[0]>>
+	<</switch>>
+	<<calchairlengthstage>>
+	<br><br>
+<</widget>>
+
+<<widget "mirrorwet">>
+	<<if _args[1] or _args[2] or _args[3]>>
+		<br>
+		<<set $_part to _args[0]>>
+		<<set $_semen to _args[1]>>
+		<<set $_slime to _args[2]>>
+		<<set $_nectar to _args[3]>>
+		Your $_part
+		<<if $_part is "thighs" or $_part is "feet">>
+			are
+		<<else>>
+			is
+		<</if>>
+		<<if $_semen gt 0>>
+			<<switch Math.clamp($_semen, 1, 5)>>
+				<<case 1>> <span class="blue">moist</span> with
+				<<case 2>> <span class="purple">wet</span> with
+				<<case 3>> <span class="purple">slick</span> with
+				<<case 4>> <span class="pink">soaked</span> in
+				<<case 5>> <span class="red">drenched</span> in
+			<</switch>>
+			<<if $_slime gt 0 and $_nectar gt 0>>
+				semen,
+			<<elseif $_slime gt 0 or $_nectar gt 0>>
+				semen and
+			<<else>>
+				semen.
+			<</if>>
+		<</if>>
+		<<if $_slime gt 0>>
+			<<switch Math.clamp($_slime, 1, 5)>>
+				<<case 1>> <span class="blue">moist</span> with
+				<<case 2>> <span class="purple">wet</span> with
+				<<case 3>> <span class="purple">slick</span> with
+				<<case 4>> <span class="pink">soaked</span> in
+				<<case 5>> <span class="red">drenched</span> in
+			<</switch>>
+			<<if $_nectar gt 0>>
+				slime and
+			<<else>>
+				slime.
+			<</if>>
+		<</if>>
+		<<if $_nectar gt 0>>
+			<<switch Math.clamp($_nectar, 1, 5)>>
+				<<case 1>> <span class="blue">moist</span> with
+				<<case 2>> <span class="purple">wet</span> with
+				<<case 3>> <span class="purple">slick</span> with
+				<<case 4>> <span class="pink">soaked</span> in
+				<<case 5>> <span class="red">drenched</span> in
+			<</switch>>
+			nectar.
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "mirrorMenu">>
+	<<set $_mirror to _args[0] || 'mirror'>>
+	You look into the $_mirror.
+	<<if $fallenangel is 2>>
+		A pathetic excuse of a person
+	<<elseif $hallucinogen gte 200>>
+		The $_mirror melts away into an inky black puddle, floating before you.
+		<<if $_mirror is 'mirror'>>
+			Shards of glass graze past your skin and dissolve into the air.
+		<</if>>
+		<br>
+		You stare into the void, and the void
+	<<elseif $hallucinogen gte 100>>
+		The surface folds over itself at an angle you can't quite understand, and something unrecognisable
+	<<elseif $hallucinogen gt 0>>
+		The surface ripples at your presence, and a vaguely familiar <<girl>>
+	<<elseif $trauma gte $traumamax>>
+		A <<girl>> with glazed eyes
+	<<else>>
+		A <<= $pain gte 100 ? "crying" : $pain gte 40 ? "tearful" : $pain gte 1 ? "frowning" : "cheerful">> <<girl>>
+	<</if>>
+	stares back.
+	<<set _wraithMirror to !_wraithMirror && ["haunt", "despair"].includes($wraith.state) and $hallucinations gte 1 and ((random(1, 100) is 1) or ($controlled is 0 and random(1, 100) lte 5))>>
+	<<if _wraithMirror>>
+		<span class="fading">A pale figure stands behind.</span>
+	<</if>>
+	<<if $asylum_mirror gte 5 and !$daily.mirror_madness and $awareness lt 200>>
+		<<set $daily.mirror_madness to 1>>
+		Supportive, half hidden smiles watch from the shadows.<<lawareness>><<ltrauma>><<awareness -6>><<trauma -6>>
+	<</if>>
+	<br><br>
+	<<crimeicon "mark">><<link "Examine how you are seen by others">><<set $mirrorMenu to "appearance">><<replace #mirror>><<mirrorDisplay>><</replace>><<numberify "#passages > .passage">><</link>>
+	<br><br>
+	<<if !$simpleMirror>>
+		__Appearance__
+		<br>
+		<<investigateicon>><<link "Examine your body">><<set $mirrorMenu to "skin">><<replace #mirror>><<mirrorDisplay>><</replace>><<numberify "#passages > .passage">><</link>>
+		<br><br>
+	<</if>>
+		__Hair__
+		<br>
+		<<hairdressericon "hairspray">><<link "Change your hair style">><<set $mirrorMenu to "hair">><<replace #mirror>><<mirrorDisplay>><</replace>><<numberify "#passages > .passage">><</link>>
+		<br><br>
+		__Makeup__
+		<br>
+		<<cosmeticsicon>><<link "Apply makeup">><<set $mirrorMenu to "makeup">><<replace #mirror>><<mirrorDisplay>><</replace>><<numberify "#passages > .passage">><</link>>
+		<br><br>
+
+	<<if $worn.neck.name is "love locket">>
+		__Locket__
+		<br>
+		<span @class="'clothes-'+$worn.neck.colour.replace(' ','-')"><<icon "locket.png">></span><<link [[Customise locket|Mirror Locket]]>><<set $passage_mirror to $passage>><</link>>
+		<br><br>
+	<</if>>
+
+	
+	
+	__DecoMod__
+	<br>
+	<<decoicon>><<link "Beautify your inner self">><<set $mirrorMenu to "mood">><<replace #mirror>><<mirrorDisplay>><</replace>><<numberify "#passages > .passage">><</link>>
+	<br><br>
+	
+	
+
+
+	<<if !$simpleMirror>>
+		/* only display the tf menu if there's actually some options that can be changed */
+		<<set $_tfs to setup.transformations.filter(tf => tf.parts?.some(part => tf.level >= part.tfRequired))>>
+		<<set _permtfs to ["angeltf","fallenangeltf","fallenangelplustf","demontf","wolftf","cattf","cowtf","beartf","waterdragontf","harpytf","foxtf","bunnytf"]>>
+		<<if $_tfs.length >= 1 or _permtfs.some(tf => V[tf] === 1) or $waterdragonCosmeticUnlocked is 1>>
+			__Transformation__
+			<br>
+			/* show the icon of the highest levelled transform with parts unlocked */
+			/* assumes maximum of 2 simultaneous transformations */
+			<<if $_tfs.length gt 1>><<set $_icon to ($_tfs[1]?.level gt $_tfs[0].level) ? $_tfs[1].name : $_tfs[0].name>><</if>>
+			<<if !$_icon and $waterdragonCosmeticUnlocked is 1>><<set $_icon to "waterdragon">><<elseif !$_icon>><<set $_icon to "angel">><</if>>
+			<<tficon $_icon>>
+			<<link "Examine your inner self">><<set $mirrorMenu to "transformation">><<replace #mirror>><<mirrorDisplay>><</replace>><<numberify "#passages > .passage">><</link>>
+		<<else>>
+			Obtain otherworldly powers to examine further.
+		<</if>>
+	<</if>>
+	<br><br>
+<</widget>>
+
+<<widget "mirrorGender">>
+	<div class="settingsGrid">
+		<div class="settingsHeader">Gender Appearance</div>
+		<<settextcolorfromfemininity $player.femininity>>
+		<div class="settingsToggleItem">
+			You look like a <span @class="_text_color"><<if playerBellyVisible(true)>>pregnant <</if>><<girl>>.</span>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold bold">Gender:</span>
+			<br>
+			<label class="blue">Male <<radiobutton "$player.gender" "m" autocheck>></label> |
+			<label class="pink">Female <<radiobutton "$player.gender" "f" autocheck>></label> |
+			<label class="purple">Neither <<radiobutton "$player.gender" "n" autocheck>></label>
+			<br>
+			<span class="small-description">How you see yourself. Does not change your genitals or affect how other people perceive you.</span>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold bold">Contributing Factors:</span>
+			<br>
+			<<for _x range $player.gender_appearance_factors>>
+				<<if _x.femininity is 0 or !_x.factor>>
+					<<continue>>
+				<</if>>
+				<<settextcolorfromfemininity _x.femininity>>
+				<span @class="_text_color">
+					_x.factor
+					<<if $debug is 1>>
+						_x.femininity
+					<<else>>
+						<<print "+".repeat(
+							Math.trunc(Math.clamp(
+								Math.abs(_x.femininity) / 100, 0, 10
+							))
+						)>>
+					<</if>>
+				</span>
+				<br>
+			<</for>>
+			<<if $debug is 1>>
+				<<settextcolorfromfemininity $player.femininity>>
+				Total femininity: <span @class="_text_color">$player.femininity</span>
+				<br><br>
+			<</if>>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold bold">Behaviour:</span>
+			<br>
+			<<if $player.gender_posture is "n">>
+				You turn around to get a look at yourself. You look like a <<girl>>. Maybe if you carried yourself differently, you could change that.
+			<<elseif $player.gender_posture is "f">>
+				You strike a few girly poses and put on your best feminine voice.
+				<br>
+				<span class="pink">Others will be more likely to think that you're a girl.</span>
+			<<elseif $player.gender_posture is "m">>
+				You flex your muscles and add some gruff to your voice.
+				<br>
+				<span class="lblue">Others will be more likely to think that you're a boy.</span>
+			<</if>>
+			<br><br>
+			<<set _postures to ["masculine", "feminine", "natural"]>>
+			Posture:
+			<<capture _i>>
+				<<for _i = 0; _i < _postures.length; _i++>>
+					<span @class="$player.gender_posture is _postures[_i].charAt(0) ? 'goldLink no-numberify' : 'unselected no-numberify'">
+						<<link _postures[_i].toUpperFirst()>>
+							<<set $player.gender_posture to _postures[_i].charAt(0)>>
+							<<exposure>>
+							<<replace "#mirrorGender">><<mirrorGender>><</replace>>
+						<</link>>
+					</span>	<<= _i lt _postures.length - 1 ? "|" : "">>
+				<</for>>
+			<</capture>>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "mirrorAppearance">>
+	<<mirroricon>><<link "Back">><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+	<br><br>
+	<i>Attractiveness measures your ability to use your looks to your advantage.</i>
+	<br>
+	Attractiveness rating:
+	<<if $attractiveness gte 5000>>
+		<span class="green">S</span>
+	<<elseif $attractiveness gte 4000>>
+		<span class="teal">A</span>
+	<<elseif $attractiveness gte 3000>>
+		<span class="lblue">B</span>
+	<<elseif $attractiveness gte 2000>>
+		<span class="blue">C</span>
+	<<elseif $attractiveness gte 1000>>
+		<span class="purple">D</span>
+	<<else>>
+		<span class="pink">F</span>
+	<</if>>
+	<br><br>
+
+	<span class="green">
+		<<if $beauty gte ($beautymax / 7)>>
+			Cute
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 2>>
+			Pretty
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 3>>
+			Charming
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 4>>
+			Beautiful
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 5>>
+			Ravishing
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 6>>
+			Divine
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 7>>
+			Alluring
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 8>>
+			Stunning
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 9>>
+			Mesmerizing
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 10>>
+			Enchanting
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 11>>
+			Captivating
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 12>>
+			Breathtaking
+			<br>
+		<</if>>
+		<<if $beauty gte ($beautymax / 7) * 13>>
+			Beyond Divine
+			<br>
+		<</if>>
+		Hair length
+		<br>
+		<<if $worn.upper.type.includes("naked")>>
+			Topless
+			<br>
+		<<elseif $worn.upper.reveal gte 500>>
+			Revealing top
+			<br>
+		<</if>>
+		<<if $worn.lower.type.includes("naked")>>
+			Bottomless
+			<br>
+		<<elseif $worn.lower.reveal gte 500>>
+			Revealing bottoms
+			<br>
+		<</if>>
+		<<if $worn.under_lower.type.includes("naked")>>
+			Pantiless
+			<br>
+		<<elseif $worn.under_lower.reveal gte 500>>
+			Sexy underwear
+			<br>
+		<</if>>
+		<<if (($wolfgirl gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "wolf")>>
+			Wolfy
+			<br>
+		<</if>>
+		<<if (($cat gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "cat")>>
+			Catlike
+			<br>
+		<</if>>
+		<<if (($cow gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "cow")>>
+			Bovine
+			<br>
+		<</if>>
+		<<if (($bear gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "bear")>>
+			Bearly
+			<br>
+		<</if>>
+		<<if (($harpy gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "bird")>>
+			Harpy
+			<br>
+		<</if>>
+		<<if (($fox gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "fox")>>
+			Vulpine
+			<br>
+		<</if>>
+		<<if (($angel gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "angel")>>
+			Angel
+			<br>
+		<</if>>
+		<<if (($fallenangel gte 2 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "fallenAngel")>>
+			Fallen angel
+			<br>
+		<</if>>
+		<<if (($demon gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "demon")>>
+			Demon
+			<br>
+		<</if>>
+		<<if ($transformationParts.okami.wings isnot "hidden" and $transformationParts.okami.wings isnot "disabled")>>
+			Okami
+			<br>
+		<</if>>
+		<<if ($transformationParts.seraphim.wings isnot "hidden" and $transformationParts.seraphim.wings isnot "disabled")>>
+			Seraphim
+			<br>
+		<</if>>
+		<<if ($transformationParts.kitsune.tail isnot "hidden" and $transformationParts.kitsune.tail isnot "disabled")>>
+			Kitsune
+			<br>
+		<</if>>
+		<<if $makeup.lipstick != 0 or $makeup.eyeshadow != 0 or $makeup.mascara != 0>>
+			Attractive makeup
+			<br>
+		<</if>>
+		<<if $worn.head.reveal gte 50>>
+			Attractive headwear
+			<br>
+		<</if>>
+		<<if $worn.face.reveal gte 50>>
+			Attractive face accessory
+			<br>
+		<</if>>
+		<<if $worn.neck.reveal gte 50>>
+			Attractive collar
+			<br>
+		<</if>>
+		<<if $worn.legs.reveal gte 50>>
+			Attractive legwear
+			<br>
+		<</if>>
+		<<if $worn.feet.reveal gte 50>>
+			Attractive shoes
+			<br>
+		<</if>>
+	</span>
+	<span id="mirrorGender">
+		<<mirrorGender>>
+	</span>
+	<hr>
+
+	<div class="settingsGrid">
+		<<set _increaseAllure to []>>
+		<<set _increaseAttractive to []>>
+		<<set _increaseBoth to (name) => {
+			_increaseAllure.push(name);
+			_increaseAttractive.push(name);
+		}>>
+		<<if $beauty gte ($beautymax / 7) * 6>>
+			<<run _increaseBoth("Beauty: Divine +++++")>>
+		<<elseif $beauty gte ($beautymax / 7) * 5>>
+			<<run _increaseBoth("Beauty: Ravishing ++++")>>
+		<<elseif $beauty gte ($beautymax / 7) * 4>>
+			<<run _increaseBoth("Beauty: Beautiful +++")>>
+		<<elseif $beauty gte ($beautymax / 7) * 3>>
+			<<run _increaseBoth("Beauty: Charming ++")>>
+		<<elseif $beauty gte ($beautymax / 7) * 2>>
+			<<run _increaseBoth("Beauty: Pretty +")>>
+		<<elseif $beauty gte ($beautymax / 7)>>
+			<<run _increaseBoth("Beauty: Cute")>>
+		<</if>>
+		<<run _increaseBoth(`Hair length ${$hairlength gte 333 ? "+".repeat($hairlength gte 666 ? 2 : 1) : ""}`)>>
+		<<if $worn.upper.type.includes("naked")>>
+			<<if $worn.lower.type.includes("overalls")>>
+				<<run _increaseBoth("Topless (covered)")>>
+			<<else>>
+				<<run _increaseBoth("Topless")>>
+			<</if>>
+		<<elseif $worn.upper.reveal gte 500>>
+			<<run _increaseBoth("Revealing top")>>
+		<</if>>
+		<<if $worn.lower.type.includes("naked")>>
+			<<run _increaseBoth("Bottomless")>>
+		<<elseif $worn.lower.reveal gte 500>>
+			<<run _increaseBoth("Revealing bottoms")>>
+		<</if>>
+		<<if $worn.under_lower.type.includes("naked")>>
+			<<run _increaseBoth("Pantiless")>>
+		<<elseif $worn.under_lower.reveal gte 500>>
+			<<run _increaseBoth("Sexy underwear")>>
+		<</if>>
+		<<if ["ears", "tail"].filter(p => $transformationParts.wolf[p] is "disabled").length < 2>>
+			<<run _increaseBoth(`Wolfy ${"+".repeat(2 - ["ears", "tail"].filter(p => $transformationParts.wolf[p] is "disabled").length)}`)>>
+		<</if>>
+		<<if ["ears", "tail"].filter(p => $transformationParts.cat[p] is "disabled").length < 2>>
+			<<run _increaseBoth(`Catlike ${"+".repeat(2 - ["ears", "tail"].filter(p => $transformationParts.cat[p] is "disabled").length)}`)>>
+		<</if>>
+		<<if ["ears", "tail", "horns"].filter(p => $transformationParts.cow[p] is "disabled").length < 3>>
+			<<run _increaseBoth(`Bovine ${"+".repeat(2 - Math.ceil(["ears", "tail", "horns"].filter(p => $transformationParts.cow[p] is "disabled").length / 2))}`)>>
+		<</if>>
+		<<if ["tail", "eyes", "malar", "plumage", "wings"].filter(p => $transformationParts.bird[p] is "disabled").length < 5>>
+			<<run _increaseBoth(`Harpy ${"+".repeat(2 - Math.ceil(["tail", "eyes", "malar", "plumage", "wings"].filter(p => $transformationParts.bird[p] is "disabled").length / 3))}`)>>
+		<</if>>
+		<<if ["ears", "tail"].filter(p => $transformationParts.fox[p] is "disabled").length < 2>>
+			<<run _increaseAttractive.push(`Vulpine ${"+".repeat(3 - ["ears", "tail"].filter(p => $transformationParts.fox[p] is "disabled").length)}`)>>
+		<</if>>
+		<<if ["ears", "tail"].filter(p => $transformationParts.fox[p] is "disabled").length < 2>>
+			<<run _increaseAllure.push(`Foxy ${"+".repeat(3 - ["ears", "tail"].filter(p => $transformationParts.fox[p] is "disabled").length)}`)>>
+		<</if>>
+		<<if ["ears", "tail"].filter(p => $transformationParts.bear[p] is "disabled").length < 2>>
+			<<run _increaseBoth(`Bear ${"+".repeat(2 - Math.ceil(["ears","tail"].filter(p => $transformationParts.bear[p] is "disabled").length))}`)>>
+		<</if>>
+		<<if ["ears", "tail", "horns"].filter(p => $transformationParts.waterdragon[p] is "disabled").length < 3>>
+			<<run _increaseBoth(`Draconic ${"+".repeat(2 - Math.ceil(["ears", "tail", "horns"].filter(p => $transformationParts.waterdragon[p] is "disabled").length / 2))}`)>>
+		<</if>>
+		<<if ["ears", "tail"].filter(p => $transformationParts.bunny[p] is "disabled").length < 2>>
+			<<run _increaseBoth(`Bunny ${"+".repeat(2 - Math.ceil(["ears","tail"].filter(p => $transformationParts.bunny[p] is "disabled").length))}`)>>
+		<</if>>
+		<<if ["ears", "tail", "wings"].filter(p => $transformationParts.okami[p] is "disabled").length < 3>>
+			<<run _increaseBoth(`Okami ${"+".repeat(4 - Math.ceil(["ears", "tail", "wings"].filter(p => $transformationParts.okami[p] is "disabled").length))}`)>>
+		<</if>>
+		<<if ["wings", "plumage"].filter(p => $transformationParts.seraphim[p] is "disabled").length < 2>>
+			<<run _increaseBoth(`Seraphim ${"+".repeat(4 - Math.ceil(["wings", "plumage"].filter(p => $transformationParts.seraphim[p] is "disabled").length))}`)>>
+		<</if>>
+		<<if ["ears", "tail", "cheeks"].filter(p => $transformationParts.kitsune[p] is "disabled").length < 3>>
+			<<run _increaseBoth(`Kitsune ${"+".repeat(4 - Math.ceil(["ears", "tail", "cheeks"].filter(p => $transformationParts.kitsune[p] is "disabled").length))}`)>>
+		<</if>>
+		<<if ["halo", "wings"].filter(p => $transformationParts.angel[p] is "disabled").length < 2>>
+			<<run _increaseBoth(`Angel ${"+".repeat(2 - ["halo", "wings"].filter(p => $transformationParts.angel[p] is "disabled").length)}`)>>
+		<</if>>
+		<<if ["halo", "wings"].filter(p => $transformationParts.fallenAngel[p] is "disabled").length < 2>>
+			<<run _increaseBoth(`Fallen angel ${"+".repeat(2 - ["halo", "wings"].filter(p => $transformationParts.fallenAngel[p] is "disabled").length)}`)>>
+		<</if>>
+		<<if ["horns", "tail", "wings"].filter(p => $transformationParts.demon[p] is "disabled").length < 3>>
+			<<run _increaseBoth(`Demon ${"+".repeat(2 - Math.ceil(["horns", "tail", "wings"].filter(p => $transformationParts.demon[p] is "disabled").length / 2))}`)>>
+		<</if>>
+		<<if $earSlime.growth gt 50>>
+			<<run _increaseAllure.push(`Ear slime pheromones${$earSlime.growth gt 75 ? " " + "+".repeat(Math.ceil(($earSlime.growth - 75) / 25)): ""}`)>>
+		<</if>>
+		<<if $makeup.lipstick != 0 or $makeup.eyeshadow != 0 or $makeup.mascara != 0 or $makeup.blusher != 0>>
+			<<run _increaseAllure.push("Alluring makeup")>>
+			<<run _increaseAttractive.push("Attractive makeup")>>
+		<</if>>
+		<<if $worn.upper.reveal + $worn.lower.reveal gte 50>>
+			<<set $_outfit to $worn.lower.name is "naked" or ($worn.upper.name is "naked" and $player.perceived_breastsize gt 2) ? '"outfit"' : 'outfit'>>
+			<<run _increaseAllure.push(`Alluring ${$_outfit} ${"+".repeat(Math.floor((($worn.lower.type.includes("overalls") ? $worn.upper.reveal / 2 : $worn.upper.reveal) + $worn.lower.reveal) / 400))}`)>>
+			<<run _increaseAttractive.push(`Attractive ${$_outfit} ${"+".repeat(Math.floor(($worn.upper.reveal + $worn.lower.reveal) / 400))}`)>>
+		<</if>>
+		<<if $worn.head.reveal gte 50>>
+			<<run _increaseAllure.push(`Alluring headwear ${"+".repeat(Math.floor($worn.head.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive headwear ${"+".repeat(Math.floor($worn.head.reveal / 200))}`)>>
+		<</if>>
+		<<if $worn.face.reveal gte 50>>
+			<<run _increaseAllure.push(`Alluring face accessory ${"+".repeat(Math.floor($worn.face.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive face accessory ${"+".repeat(Math.floor($worn.face.reveal / 200))}`)>>
+		<</if>>
+		<<if $worn.neck.reveal gte 50>>
+			<<run _increaseAllure.push(`Alluring neck accessory ${"+".repeat(Math.floor($worn.neck.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive neck accessory ${"+".repeat(Math.floor($worn.neck.reveal / 200))}`)>>
+		<</if>>
+		<<if $worn.legs.reveal gte 50>>
+			<<run _increaseAllure.push(`Alluring legwear ${"+".repeat(Math.floor($worn.legs.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive legwear ${"+".repeat(Math.floor($worn.legs.reveal / 200))}`)>>
+		<</if>>
+		<<if $worn.feet.reveal gte 50>>
+			<<run _increaseAllure.push(`Alluring shoes ${"+".repeat(Math.floor($worn.feet.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive shoes ${"+".repeat(Math.floor($worn.feet.reveal / 200))}`)>>
+		<</if>>
+		<<if Weather.dayState is "night">>
+			<<run _increaseAllure.push("Night")>>
+		<</if>>
+		<<if $exposed gte 1>>
+			<<run _increaseAllure.push("Exposed")>>
+		<</if>>
+		<<if $liquidcount gte 1>>
+			<<run _increaseAllure.push("Smell of lewd fluids")>>
+		<</if>>
+		<<if $liquidcount gte 10>>
+			<<run _increaseAllure.push("Covered in lewd fluids")>>
+		<</if>>
+		<<if $liquidcount gte 30>>
+			<<run _increaseAllure.push("Drenched in lewd fluids")>>
+		<</if>>
+		<<if Time.isBloodMoon()>>
+			<<run _increaseAllure.push("Full moon")>>
+		<</if>>
+		<<if $auriga_scar gte 1>>
+			<<run _increaseAllure.push(`Elk-scarred ${"+".repeat($auriga_scar)}`)>>
+		<</if>>
+		<<set _negLabels = [
+			{ threshold: 4000, class: "lustful", label: "Legendary" },
+			{ threshold: 3000, class: "lustful", label: "Renowned" },
+			{ threshold: 2000, class: "red", label: "Infamous" },
+			{ threshold: 1000, class: "red", label: "Notorious" },
+			{ threshold: 600, class: "pink", label: "Famous" },
+			{ threshold: 400, class: "purple", label: "Recognised" },
+			{ threshold: 200, class: "blue", label: "Known" },
+			{ threshold: 100, class: "lblue", label: "Low-key" },
+			{ threshold: 30, class: "teal", label: "Obscure" }
+		]>>
+		<<set _posLabels = [
+			{ threshold: 4000, class: "lustful", label: "Legendary" },
+			{ threshold: 3500, class: "lustful", label: "Exalted" },
+			{ threshold: 3000, class: "gold", label: "Renowned" },
+			{ threshold: 2500, class: "gold", label: "Esteemed" },
+			{ threshold: 2000, class: "gold", label: "Notorious" },
+			{ threshold: 1500, class: "green", label: "Well-regarded" },
+			{ threshold: 1200, class: "green", label: "Distinguished" },
+			{ threshold: 1000, class: "green", label: "Famous" },
+			{ threshold: 800, class: "teal", label: "Honoured" },
+			{ threshold: 600, class: "teal", label: "Recognised" },
+			{ threshold: 400, class: "lblue", label: "Known" },
+			{ threshold: 200, class: "blue", label: "Low-key" },
+			{ threshold: 100, class: "purple", label: "Obscure" },
+			{ threshold: 30, class: "pink", label: "Unknown" }
+		]>>
+		<<set _neg = [
+			{ type: "sex", name: "slut" },
+			{ type: "prostitution", name: "whore" },
+			{ type: "rape", name: "fucktoy" },
+			{ type: "bestiality", name: $settings.bestialityEnabled ? "bitch" : "monster fucker" },
+			{ type: "exhibitionism", name: "flaunter" },
+			{ type: "pregnancy", name: $fame.pregnancy gte 1000 ? "broodmother" : ($fame.pregnancy gte 400 ? "breeder" : "mother") },
+			{ type: "impreg", name: $fame.impreg gte 1000 ? "allfather" : ($fame.impreg gte 400 ? "sire" : "inseminator") },
+		]>>
+		<<set _pos = [
+			{ type: "scrap", name: "scrapper" },
+			{ type: "good", name: "do-gooder" },
+			{ type: "business", name: "entrepreneur" },
+			{ type: "social", name: $fame.social gte 1000 ? "schmoozer" : "socialite" },
+			{ type: "model", name: $fame.model gte 1000 ? "show off" : "model" },
+		]>>
+		<<set _decreaseAllure to _pos.some(fame => (_posLabels.some(status => $fame[fame.type] >= status.threshold)))>>
+
+		<div class="settingsHeader">Attractiveness</div>
+		<div class="settingsToggleItemWide">
+			<i>Attractiveness</i> measures your ability to use your looks to your advantage.
+			<br>
+			Rating:
+			<<if $attractiveness gte 5000>>
+				<span class="green">S</span>
+			<<elseif $attractiveness gte 4000>>
+				<span class="teal">A</span>
+			<<elseif $attractiveness gte 3000>>
+				<span class="lblue">B</span>
+			<<elseif $attractiveness gte 2000>>
+				<span class="blue">C</span>
+			<<elseif $attractiveness gte 1000>>
+				<span class="purple">D</span>
+			<<else>>
+				<span class="pink">F</span>
+			<</if>>
+		</div>
+		<div class="settingsToggleItemWide">
+			<span class="gold bold">Contributing Factors:</span>
+			<br>
+			<span class="green">
+				<<for _item range _increaseAttractive>>
+					<<= _item>>
+					<br>
+				<</for>>
+			</span>
+		</div>
+	</div>
+	<hr>
+	<div class="settingsGrid">
+		<div class="settingsHeader">Allure</div>
+		<div class="settingsToggleItemWide">
+			<i>Allure</i> is the dark side of attractiveness and measures how much people will want to molest you.
+			<br>
+			Currently:
+			<<if $allure gte 6000 * $settings.allureModifier>>
+				<span class="red">You look like you need to be ravaged.</span>
+			<<elseif $allure gte 4000 * $settings.allureModifier>>
+				<span class="pink">You look perverted.</span>
+			<<elseif $allure gte 3000 * $settings.allureModifier>>
+				<span class="purple">You look lewd.</span>
+			<<elseif $allure gte 2000 * $settings.allureModifier>>
+				<span class="blue">You stand out.</span>
+			<<elseif $allure gte 1500 * $settings.allureModifier>>
+				<span class="lblue">You attract attention.</span>
+			<<elseif $allure gte 1000 * $settings.allureModifier>>
+				<span class="teal">You attract glances.</span>
+			<<else>>
+				<span class="green">You look unremarkable.</span>
+			<</if>>
+		</div>
+		<div @class="_decreaseAllure ? 'settingsToggleItem' : 'settingsToggleItemWide'">
+			<span class="gold bold">Increasing Allure:</span>
+			<br>
+			<span class="red">
+				<<for _item range _increaseAllure>>
+					<<= _item>>
+					<br>
+				<</for>>
+			</span>
+			<<if !["island"].includes($location)>>
+				<<for _fame range _neg>>
+					<<set _famous = _negLabels.find(status => $fame[_fame.type] >= status.threshold)>>
+					<<if _famous>>
+						<span @class="_famous.class">Fame: <<= _famous.label>> <<= _fame.name>> <<= "+".repeat([30, 100, 200, 400, 600, 1000, 2000, 3000, 4000].indexOf(_famous.threshold))>></span>
+						<br>
+					<</if>>
+				<</for>>
+			<</if>>
+		</div>
+		<<if _decreaseAllure>>
+			<div class="settingsToggleItem">
+				<span class="gold bold">Decreasing Allure:</span>
+				<br>
+				<<if !["island"].includes("location")>>
+					<<for _fame range _pos>>
+						<<set _famous = _posLabels.find(status => $fame[_fame.type] >= status.threshold)>>
+						<<if _famous>>
+							<span @class="_famous.class">Fame: <<= _famous.label>> <<= _fame.name>> <<= "+".repeat([30, 100, 200, 400, 600, 800, 1000, 1200, 1500, 2000, 2500, 3000, 3500, 4000].indexOf(_famous.threshold))>></span>
+							<br>
+						<</if>>
+					<</for>>
+				<</if>>
+				<<if $moorLuck gt 5>>
+					<span class="green">????</span>
+					<br>
+				<<elseif $moorLuck gt 0>>
+					<span class="lblue">????</span>
+					<br>
+				<</if>>
+			</div>
+		<</if>>
+	</div>
+<</widget>>
+
+<<widget "mirrorAppearancePregnancy">>
+	You look like a <span class="lewd">pregnant <<girl>>...</span>
+	<<if !$hourly.mirrorPregArousal>>
+		<<set $hourly.mirrorPregArousal to true>>
+		<<garousal>><<gstress>><<arousal 300>><<stress 10>>
+	<</if>>
+	<br><br>
+
+	<<set _preg to getPlayerPregnancy()>>
+	<<pregnancyFatherHint _preg>>
+	<<run setPlayerLearnedPregnancyFrom("mirror")>>
+<</widget>>
+
+<<widget "mirrorBodywriting">>
+	<<set _array to _args[0] is "visible" ? _skin_array : _hidden_writing>>
+	<<for _index, _active_bodypart range _array>>
+		<<if $skin[_active_bodypart].writing>>
+			<<silently>><<bodypart _active_bodypart>><</silently>>
+			<<= _text_output.toUpperFirst()>>:
+			<<if isLoveInterest($skin[_active_bodypart].special)>>
+				<<set _colour to "lewd">>
+			<<elseif $skin[_active_bodypart].special isnot "none">>
+				<<set _colour to "red">>
+			<<elseif $skin[_active_bodypart].lewd is 1>>
+				<<set _colour to "pink">>
+			<<else>>
+				<<set _colour to "purple">>
+			<</if>>
+			<<if $skin[_active_bodypart].type is "text">>
+				<<set _written to "written">>
+				"<span @class="_colour"><<= $skin[_active_bodypart].writing.toUpperFirst()>></span>"
+			<<else>>
+				<<set _written to "drawn">>
+				A picture of a <span @class="_colour"><<= $skin[_active_bodypart].writing>></span>
+			<</if>>
+			<<if $skin[_active_bodypart].arrow is 1>>
+				<<if _active_bodypart is "left_cheek" or _active_bodypart is "right_cheek">>
+					and an arrow pointing to your mouth
+				<<elseif _active_bodypart is "left_bottom" or _active_bodypart is "right_bottom" or _active_bodypart is "back">>
+					and an arrow pointing to your anus
+				<<elseif _active_bodypart is "pubic" or _active_bodypart is "left_thigh" or _active_bodypart is "right_thigh">>
+					and an arrow pointing to your <<genitals true>>
+				<</if>>
+			<</if>>
+			<<switch $skin[_active_bodypart].pen>>
+				<<case "marker">>
+					(_written in permanent marker)
+				<<case "magic">>
+					(<span class="pink">seal</span>)
+				<<case "tattoo" "brand">>
+					(<span class="red"><<= $skin[_active_bodypart].pen>></span>)
+				<<default>>
+					(_written in <<= $skin[_active_bodypart].pen>>)
+			<</switch>>
+			<<= _index lt _array.length - 1 ? "<br>" : "">>
+		<</if>>
+	<</for>>
+<</widget>>
+
+<<widget "visual-settings">>
+	<<mirroricon>><<link "Back">><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+<</widget>>
+
+<<widget "faceStyleOptions">>
+	Your current face style is:
+	<<listbox "_facestyle" autoselect>>
+		<<optionsfrom setup.faceStyleOptions>>
+	<</listbox>>
+	<br>
+	<<link "Apply">>
+		<<if $facestyle isnot _facestyle>>
+			<<set $facestyle to _facestyle>>
+			<<set $facevariant to "default">>
+			<<replace "#visualsFaceVariantRadios">><<faceVariantOptions>><</replace>>
+			<<updatesidebarimg true>>
+		<</if>>
+	<</link>>
+<</widget>>
+
+<<widget "faceVariantOptions">>
+	<<if Object.keys(setup.faceVariantOptions[$facestyle]).length gt 1>>
+		Your current demeanour is:
+		<<listbox "$facevariant" autoselect>>
+			<<optionsfrom setup.faceVariantOptions[$facestyle]>>
+		<</listbox>>
+		<br>
+		<<run $(() => {
+			$("#listbox-facevariant").on("change", () => {
+				Wikifier.wikifyEval('<<updatesidebarimg true>>');
+			});
+		})>>
+	<<else>>
+		There are
+		<mouse class = "gold tooltip-small" style="border-bottom-color:white">
+			no alternative demeanours available.
+			<span class="blue">
+				Selecting a different face style may make additional demeanours available to you.
+			</span>
+		</mouse>
+	<</if>>
+<</widget>>
+
+<<widget "mirrorSkin">>
+	<<mirroricon>><<link "Back">><<updatesidebarimg>><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+	<br><br>
+
+	<div class="settingsGrid">
+		<div class="settingsHeader">Skin</div>
+		<div class="settingsToggleItem">
+			<span class="gold bold">Tanning:</span>
+			<br>
+			Your chosen skin type:
+			<<listbox "$settings.tanningDifficulty" autoselect>>
+				<<option "Tans very easily" 0>>
+				<<option "Tans easily" 1>>
+				<<option "Tans moderately" 2>>
+				<<option "Tans poorly" 3>>
+				<<option "Hardly tans" 4>>
+			<</listbox>>
+			<br><br>
+			<span id="sunscreenDescription">
+				<<sunscreenDesc>>
+			</span>
+			<span id="sunscreenLinks">
+				<<sunscreenLinks>>
+			</span>
+			<br>
+			<label data-target="options.images" data-disabledif="V.options.images===0">
+				<<checkbox "$options.tanLines" false true autocheck>> Enable tanning lines from clothing
+			</label>
+			<mouse class="tooltip-small linkBlue">(?)<span>Disables the visual aspect of tanning lines. Only for sidebar.</span></mouse>
+		</div>
+		<div class="settingsToggleItem">
+			<span class="gold bold">Body Liquids:</span>
+			<<if $liquidcount gt 0>>
+				<<mirrorwet "neck" $player.bodyliquid.neck.semen $player.bodyliquid.neck.goo $player.bodyliquid.neck.nectar>>
+				<<mirrorwet "right arm" $player.bodyliquid.rightarm.semen $player.bodyliquid.rightarm.goo $player.bodyliquid.rightarm.nectar>>
+				<<mirrorwet "left arm" $player.bodyliquid.leftarm.semen $player.bodyliquid.leftarm.goo $player.bodyliquid.leftarm.nectar>>
+				<<mirrorwet "thighs" $player.bodyliquid.thigh.semen $player.bodyliquid.thigh.goo $player.bodyliquid.thigh.nectar>>
+				<<mirrorwet "bottom" $player.bodyliquid.bottom.semen $player.bodyliquid.bottom.goo $player.bodyliquid.bottom.nectar>>
+				<<mirrorwet "tummy" $player.bodyliquid.tummy.semen $player.bodyliquid.tummy.goo $player.bodyliquid.tummy.nectar>>
+				<<mirrorwet "chest" $player.bodyliquid.chest.semen $player.bodyliquid.chest.goo $player.bodyliquid.chest.nectar>>
+				<<mirrorwet "face" $player.bodyliquid.face.semen $player.bodyliquid.face.goo $player.bodyliquid.face.nectar>>
+				<<mirrorwet "hair" $player.bodyliquid.hair.semen $player.bodyliquid.hair.goo $player.bodyliquid.hair.nectar>>
+				<<mirrorwet "feet" $player.bodyliquid.feet.semen $player.bodyliquid.feet.goo $player.bodyliquid.feet.nectar>>
+				<<mirrorwet "labia" $player.bodyliquid.vaginaoutside.semen $player.bodyliquid.vaginaoutside.goo $player.bodyliquid.vaginaoutside.nectar>>
+				<<mirrorwet "vagina" $player.bodyliquid.vagina.semen $player.bodyliquid.vagina.goo $player.bodyliquid.vagina.nectar>>
+				<<mirrorwet "penis" $player.bodyliquid.penis.semen $player.bodyliquid.penis.goo $player.bodyliquid.penis.nectar>>
+				<<mirrorwet "anus" $player.bodyliquid.anus.semen $player.bodyliquid.anus.goo $player.bodyliquid.anus.nectar>>
+				<<mirrorwet "mouth" $player.bodyliquid.mouth.semen $player.bodyliquid.mouth.goo $player.bodyliquid.mouth.nectar>>
+			<<else>>
+				<br>
+				Your skin feels <span class="green">clean</span>.
+			<</if>>
+
+		</div>
+	</div>
+	<hr>
+	<div class="settingsGrid">
+		<<bodywritingExposureCheck true true>>
+		<<bodywritingHiddenCheck true true>>
+		<div class="settingsHeader">Body</div>
+		<<if _bodywriting_exposed is 1 and _bodywriting_hidden is 1>>
+			<div class="settingsToggleItem">
+				<span class="gold bold">Visible Bodywriting:</span>
+				<br>
+				<<mirrorBodywriting "visible">>
+				<br>
+			</div>
+			<div class="settingsToggleItem">
+				<span class="gold bold">Hidden Bodywriting:</span>
+				<br>
+				<<mirrorBodywriting "hidden">>
+				<br>
+			</div>
+		<<elseif _bodywriting_exposed is 1 || _bodywriting_hidden is 1>>
+			<div class="settingsToggleItemWide">
+				<<if _bodywriting_exposed is 1>>
+					<span class="gold bold">Visible Bodywriting:</span>
+					<br>
+					<<mirrorBodywriting "visible">>
+					<br>
+				<<elseif _bodywriting_hidden is 1>>
+					<span class="gold bold">Hidden Bodywriting:</span>
+					<br>
+					<<mirrorBodywriting "hidden">>
+					<br>
+				<</if>>
+			</div>
+		<</if>>
+
+		<div class="settingsToggleItemWide">
+			<<if $bodyWritingSelected is null>>
+				<<unset $bodyWritingSelected>>
+			<</if>>
+			<<if $bodyWritingSelected isnot undefined>>
+				You write
+				<<if isLoveInterest($skin[$bodyPartSelected].special)>>
+					"<span class="lewd"><<print $bodyWritingSelected>></span>"
+				<<elseif $skin[$bodyPartSelected].special isnot "none">>
+					"<span class="red"><<print $bodyWritingSelected>></span>"
+				<<elseif $skin[$bodyPartSelected].lewd is 1>>
+					"<span class="pink"><<print $bodyWritingSelected>></span>"
+				<<else>>
+					"<span class="purple"><<print $bodyWritingSelected>></span>"
+				<</if>>
+				on your <<bodypart $bodyPartSelected>>.
+				<<unset $bodyWritingSelected>>
+				<<unset $bodyPartSelected>>
+				<hr>
+			<</if>>
+
+			<<bodywritingOptions>>
+
+			/*Needs to be last*/
+			<div class="mirrorContainer">
+				<<bodywritingMenuLinks>>
+			</div>
+		</div>
+		<div class="settingsToggleItemWide">
+			<span class="gold bold">Body shape:</span>
+			<mouse class="tooltip-small linkBlue">(?)<span>This is a cosmetic change that does not contribute towards gender appearance.</span></mouse>
+			<br>
+			Your chosen body shape is:
+			<span class="capitalize">
+				<<listbox "$player.bodyshape" autoselect>>
+					<<optionsfrom setup.bodyShapes>>
+				<</listbox>>
+			</span>
+			<br>
+			<<run $(() => {
+				$("#listbox-playerbodyshape").on("change", () => {
+					Wikifier.wikifyEval('<<updatesidebarimg true>>');
+				});
+			})>>
+		</div>
+		<div class="settingsToggleItemWide">
+			<div class="armMenu">
+				<span class="gold bold">Right arm position:</span>
+				<mouse class="tooltip-small linkBlue">(?)<span>This is a cosmetic change.</span></mouse>
+				<br>
+				Your chosen right arm position is:
+				<<set _positionOptions to {
+					"Above": "above",
+					"Below": "below"
+				}>>
+				<<listbox "$rightArmPosition" autoselect>>
+					<<optionsfrom _positionOptions>>
+				<</listbox>>
+				<br>
+				<<link "Apply">>
+					<<updatesidebarimg true>>
+				<</link>>
+			</div>
+		</div>
+		<div class="settingsToggleItemWide">
+			<div class="releaseboobs">
+				<span class="gold bold">Release the boobas from the sideview:</span>
+				<mouse class="tooltip-small linkBlue">(?)<span>This is a cosmetic change.</span></mouse>
+				<br>
+				<span class="red">Only for Goose Female!</span>
+				<br>
+				Your chosen sideview booba state is:
+				<<set _releaseboobs to {
+					"Release": "release",
+					"Contain": "contain"
+				}>>
+				<<listbox "$releaseBoobs" autoselect>>
+					<<optionsfrom _releaseboobs>>
+				<</listbox>>
+				<br>
+				<<link "Apply">>
+					<<updatesidebarimg true>>
+				<</link>>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div class="settingsGrid">
+
+		<div class="settingsHeader">Facial Settings</div>
+		<<if setup.faceStyleOptions.length gt 1>>
+			<div id="visualsFaceStyle" class="settingsToggleItem">
+				<span class="gold bold">Face style:</span><br>
+				<<faceStyleOptions>>
+			</div>
+		<</if>>
+
+		<div id="visualsFaceVariants" @class="setup.faceStyleOptions.length gt 1 ? 'settingsToggleItem' : 'settingsToggleItemWide'">
+			<span class="gold bold">Demeanour:</span>
+			<br>
+			<div id="visualsFaceVariantRadios">
+				<<faceVariantOptions>>
+			</div>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "sunscreenLinks">>
+	<<if Skin.Sunscreen.isApplied()>>
+		<br>
+		<<cosmeticsicon "sunscreen">><<link "Remove sunscreen">>
+
+			<<set Skin.Sunscreen.autoApply to false>>
+			<<replace #sunscreenDescription>><<sunscreenApply "remove">><</replace>>
+			<<replace #sunscreenLinks>><<sunscreenLinks>><</replace>>
+		<</link>> <<note `Skin.Sunscreen.usesLeft + ' use'+(Skin.Sunscreen.usesLeft > 1 ? 's' : '') + ' left'`>>
+	<<else>>
+		<<if Skin.Sunscreen.usesLeft gt 0>>
+			<br>
+			<<cosmeticsicon "sunscreen">><<link "Apply sunscreen">>
+
+				<<replace #sunscreenDescription>><<sunscreenApply>><</replace>>
+				<<replace #sunscreenLinks>><<sunscreenLinks>><</replace>>
+			<</link>> <<note `Skin.Sunscreen.usesLeft + ' use'+(Skin.Sunscreen.usesLeft > 1 ? 's' : '') + ' left'`>>
+		<</if>>
+	<</if>>
+	<br>
+	<<if Skin.Sunscreen.usesLeft gt 0>>
+		<<ind>><<link `Skin.Sunscreen.autoApply ? "Stop applying" : "Apply when required"`>>
+			<<set Skin.Sunscreen.autoApply to !Skin.Sunscreen.autoApply>>
+			<<replace #sunscreenLinks>><<sunscreenLinks>><</replace>>
+		<</link>>
+	<</if>>
+<</widget>>
+
+<<widget "sunscreenDesc">>
+	Your skin is
+	<<if Skin.Sunscreen.isApplied()>>
+		<mouse class = "gold tooltip-small" style="border-bottom-color:white">
+			protected against the sun
+			<span class="black">
+				Sunscreen is keeping your skin from getting tanned.
+				<<if Skin.Sunscreen.usesLeft is 0>>
+					<br>
+					<i class="blue">Sunscreen can be acquired at the shops</i>
+				<</if>>
+			</span>
+		</mouse>
+		<<set $_timeLeft to Math.floor(Skin.Sunscreen.timeLeft / 60)>>
+		(<<print getTimeString($_timeLeft)>> left).
+	<<else>>
+		<mouse class = "gold tooltip-small" style="border-bottom-color:white">
+			not protected against the sun.
+			<span class="black">
+				Your skin will tan when exposed to the sun.
+				<<if Skin.Sunscreen.usesLeft is 0>>
+					<br>
+					<i class="blue">Sunscreen can be acquired at the cosmetics shop</i>
+				<</if>>
+			</span>
+		</mouse>
+	<</if>>
+<</widget>>
+
+<<widget "sunscreenApply">>
+	<<if !pcAreArmsBound("any")>>
+		<<if _args[0] is "remove">>
+			<<run Skin.Sunscreen.remove()>>
+		<<else>>
+			<<run Skin.Sunscreen.apply()>>
+		<</if>>
+	<</if>>
+	<<if pcAreArmsBound("both")>>
+		<span class="red">Both of your arms are bound</span>, and you find it difficult to do anything about your skin this way.
+		<hr>
+	<<elseif _args[0] is "remove">>
+		<<wearProp "rag" "white">><<updatesidebarimg>>
+		You scrub a damp towel over your skin, removing any last traces of sunscreen.
+		<hr>
+	<<else>>
+		<<wearProp "sunscreen">><<updatesidebarimg>>
+		You squirt a hefty dollop of sunscreen onto your hand and rub it into your skin.
+		<hr>
+	<</if>>
+	<<sunscreenDesc>>
+<</widget>>
+
+<<widget "bodywritingOptions">>
+	<<set _bodyWritingOptions to {
+		General: {
+		"Cute boy":"cute_boy",
+		"Cute girl":"cute_girl",
+		"Orphan":"orphan"
+		}
+	}>>
+
+	<<if $beauty gte ($beautymax / 7) * 3>>
+		<<set _bodyWritingOptions.General["Handsome"] to "handsome">>
+		<<set _bodyWritingOptions.General["Pretty"] to "pretty">>
+	<</if>>
+	<<if $beauty gte ($beautymax / 7) * 4>>
+		<<set _bodyWritingOptions.General["Stud"] to "stud">>
+		<<set _bodyWritingOptions.General["Beauty"] to "beauty">>
+	<</if>>
+	<<if $beauty gte ($beautymax / 7) * 5>>
+		<<set _bodyWritingOptions.General["Beautiful"] to "beautiful">>
+	<</if>>
+
+	<<if $trauma gte (($traumamax / 5) * 2)>>
+		<<set _bodyWritingOptions.General["Daddy issues"] to "daddy_issues">>
+		<<set _bodyWritingOptions.General["Mummy issues"] to "mummy_issues">>
+		<<set _bodyWritingOptions.General["Trashy"] to "trashy">>
+	<</if>>
+	<<if $trauma gte (($traumamax / 5) * 3)>>
+		<<set _bodyWritingOptions.General["Worthless"] to "worthless">>
+		<<set _bodyWritingOptions.General["Oh no"] to "oh_no">>
+		<<set _bodyWritingOptions.General["Dumb bitch"] to "dumb_bitch">>
+	<</if>>
+
+	<<if hasSexStat("promiscuity", 2)>>
+		<<set _bodyWritingOptions.General["Hot"] to "hot">>
+	<</if>>
+	<<if hasSexStat("promiscuity", 3)>>
+		<<set _bodyWritingOptions.Promiscuity = {}>>
+		<<set _bodyWritingOptions.Promiscuity["Slut"] to "slut">>
+		<<set _bodyWritingOptions.Promiscuity["Promiscuous"] to "promiscuous">>
+		<<set _bodyWritingOptions.Promiscuity["Wanton"] to "wanton">>
+		<<set _bodyWritingOptions.Promiscuity["D.T.F."] to "dtf">>
+	<</if>>
+
+	<<if hasSexStat("promiscuity", 4)>>
+		<<set _bodyWritingOptions.Promiscuity["Insatiable slut"] to "insatiable_slut">>
+		<<set _bodyWritingOptions.Promiscuity["Free Sex"] to "free_sex">>
+		<<set _bodyWritingOptions.Promiscuity["Town bicycle"] to "town_bicycle">>
+		<<set _bodyWritingOptions.Promiscuity["Size queen"] to "size_queen">>
+		<<if $orgasmtrait gte 1>>
+			<<set _bodyWritingOptions.Promiscuity["Sex addict"] to "sex_addict">>
+			<<set _bodyWritingOptions.Promiscuity["Make me cum"] to "make_me_cum">>
+		<</if>>
+	<</if>>
+
+	<<if hasSexStat("promiscuity", 5)>>
+		<<set _bodyWritingOptions.Promiscuity["Fuck Me"] to "fuck_me">>
+		<<set _bodyWritingOptions.Promiscuity["Cocksucker"] to "cocksucker">>
+		<<set _bodyWritingOptions.Promiscuity["Cum dump"] to "cum_dump">>
+		<<set _bodyWritingOptions.Promiscuity["Public Slut"] to "public_slut">>
+		<<if $analstat gte 100>>
+			<<set _bodyWritingOptions.Promiscuity["Buttslut"] to "buttslut">>
+			<<set _bodyWritingOptions.Promiscuity["Anal whore"] to "anal_whore">>
+		<</if>>
+	<</if>>
+
+	<<if hasSexStat("promiscuity", 3)>>
+		<<set _bodyWritingOptions.Prostitution = {}>>
+		<<if $trauma gte (($traumamax / 5) * 2)>>
+			<<set _bodyWritingOptions.Prostitution["It's not rape if you pay me"] to "its_not_rape_if_you_pay_me">>
+		<</if>>
+		<<set _bodyWritingOptions.Prostitution["£5 whore"] to "five_pound_whore">>
+		<<set _bodyWritingOptions.Prostitution["£10 a pop"] to "ten_pound_a_pop">>
+		<<set _bodyWritingOptions.Prostitution["Slut for hire"] to "slut_for_hire">>
+	<</if>>
+	<<if hasSexStat("promiscuity", 4)>>
+		<<set _bodyWritingOptions.Prostitution["£25 per fuck"] to "twenty_five_pound_per_fuck">>
+		<<set _bodyWritingOptions.Prostitution["£100"] to "one_hundred_pound">>
+		<<set _bodyWritingOptions.Prostitution["Body for sale"] to "body_for_sale">>
+		<<if $trauma gte (($traumamax / 5) * 3)>>
+			<<set _bodyWritingOptions.Prostitution["Stupid whore"] to "stupid_whore">>
+		<<else>>
+			<<set _bodyWritingOptions.Prostitution["Whore"] to "whore">>
+		<</if>>
+		<<set _bodyWritingOptions.Prostitution["Prostitute"] to "prostitute">>
+	<</if>>
+	<<if hasSexStat("exhibitionism", 3)>>
+		<<set _bodyWritingOptions.Exhibitionism to {}>>
+		<<set _bodyWritingOptions.Exhibitionism["Pervert"] to "pervert">>
+		<<set _bodyWritingOptions.Exhibitionism["Attention whore"] to "attention_whore">>
+		<<set _bodyWritingOptions.Exhibitionism["Flaunter"] to "flaunter">>
+		<<set _bodyWritingOptions.Exhibitionism["Object"] to "object">>
+		<<set _bodyWritingOptions.Exhibitionism["Strip me"] to "strip_me">>
+		<<set _bodyWritingOptions.Exhibitionism["Ask to see me naked"] to "ask_to_see_me_naked">>
+	<</if>>
+	<<if hasSexStat("deviancy", 4)>>
+		<<set _bodyWritingOptions.Deviancy to {}>>
+		<<set _bodyWritingOptions.Deviancy["Doggy slut"] to "doggy_slut">>
+		<<set _bodyWritingOptions.Deviancy["Animal"] to "animal">>
+		<<set _bodyWritingOptions.Deviancy["Beast fucker"] to "beast_fucker">>
+		<<set _bodyWritingOptions.Deviancy["Breedable"] to "breedable">>
+		<<set _bodyWritingOptions.Deviancy["Deviant"] to "deviant">>
+	<</if>>
+	<<if $masochism_level gte 1>>
+		<<set _bodyWritingOptions.Masochism to {}>>
+		<<set _bodyWritingOptions.Masochism["Hit me"] to "hit_me">>
+		<<set _bodyWritingOptions.Masochism["Hurt me"] to "hurt_me">>
+		<<set _bodyWritingOptions.Masochism["Treat me bad"] to "treat_me_bad">>
+		<<set _bodyWritingOptions.Masochism["Make me squeal"] to "make_me_squeal">>
+	<</if>>
+	/* <<if $submissive gte 1200>> */
+		<<set _bodyWritingOptions.Submission to {}>>
+		<<set _bodyWritingOptions.Submission["Submissive"] to "submissive">>
+		<<set _bodyWritingOptions.Submission["Pet"] to "pet">>
+
+			<<if hasSexStat("deviancy", 3)>>
+				<<set _bodyWritingOptions.Submission["Public pet"] to "public_pet">>
+			<</if>>
+
+		<<if hasSexStat("promiscuity", 4)>>
+			<<set _bodyWritingOptions.Submission["Free use"] to "free_use">>
+			<<set _bodyWritingOptions.Submission["Use Me"] to "use_me">>
+		<</if>>
+
+		/* <<if $submissive gte 1500>> */
+			<<set _bodyWritingOptions.Submission["Slave"] to "slave">>
+			<<set _bodyWritingOptions.Submission["Enslave Me"] to "enslave_me">>
+			<<set _bodyWritingOptions.Submission["Cum rag"] to "cum_rag">>
+			<<if hasSexStat("promiscuity", 5)>>
+				<<set _bodyWritingOptions.Submission["Fuckdoll"] to "fuckdoll">>
+				<<set _bodyWritingOptions.Submission["Fucktoy"] to "fucktoy">>
+				<<if $player.penisExist>>
+					<<set _bodyWritingOptions.Submission["Walking dildo"] to "walking_dildo">>
+				<</if>>
+			<</if>>
+		/* <</if>> */
+	/* <</if>> */
+	<<if ($player.vaginaExist or (playerAwareTheyArePregnant() or $sexStats.anus.pregnancy.totalBirthEvents gte 1)) and hasSexStat("promiscuity", 5)>>
+		<<set _bodyWritingOptions.Pregnancy to {}>>
+		<<set _bodyWritingOptions.Pregnancy["Brood mother"] to "brood_mother">>
+		<<set _bodyWritingOptions.Pregnancy["Inseminate me"] to "inseminate_me">>
+		<<set _bodyWritingOptions.Pregnancy["Impregnate me"] to "impregnate_me">>
+		<<set _bodyWritingOptions.Pregnancy["Pregnancy slut"] to "pregnancy_slut">>
+		<<set _bodyWritingOptions.Pregnancy["Breeding ground"] to "breeding_ground">>
+	<</if>>
+
+	<<set _bodyWritingOptions["Love Interests"] to {}>>
+	<<if isPossibleLoveInterest("Robin")>>
+		<<set _bodyWritingOptions["Love Interests"]["Robin's Protector"] to "robins_protector">>
+		<<set _bodyWritingOptions["Love Interests"]["Robin & I"] to "robin_and_i">>
+		<<set _bodyWritingOptions["Love Interests"]["The Orphan Lover"] to "the_orphan_lover">>
+		<<if ($player.penisExist or $player.gender_appearance is "m" or $backgroundTraits.includes("crossdresser"))>>
+			<<set _bodyWritingOptions["Love Interests"]["Robin's Boyfriend"] to "robins_boyfriend">>
+		<</if>>
+		<<if ($player.vaginaExist or $player.gender_appearance is "f" or $backgroundTraits.includes("crossdresser"))>>
+			<<set _bodyWritingOptions["Love Interests"]["Robin's Girlfriend"] to "robins_girlfriend">>
+		<</if>>
+	<</if>>
+	<<if isPossibleLoveInterest("Whitney")>>
+		<<set _bodyWritingOptions["Love Interests"]["Whitney's Pet"] to "whitneys_pet">>
+		<<set _bodyWritingOptions["Love Interests"]["Property of Whitney"] to "property_of_whitney">>
+		<<set _bodyWritingOptions["Love Interests"]["Whitney's Toy"] to "whitneys_toy">>
+		<<if ($player.penisExist or $player.gender_appearance is "m" or $backgroundTraits.includes("crossdresser"))>>
+			<<set _bodyWritingOptions["Love Interests"]["Whitney's Boyslut"] to "whitneys_boyslut">>
+		<</if>>
+		<<if ($player.vaginaExist or $player.gender_appearance is "f" or $backgroundTraits.includes("crossdresser"))>>
+			<<set _bodyWritingOptions["Love Interests"]["Whitney's Slut"] to "whitneys_slut">>
+		<</if>>
+	<</if>>
+	<<if isPossibleLoveInterest("Kylar")>>
+		<<set _bodyWritingOptions["Love Interests"]["Kylar's Obsession"] to "kylars_obsession">>
+		<<set _bodyWritingOptions["Love Interests"]["Love Kylar Forever"] to "love_kylar_forever">>
+		<<set _bodyWritingOptions["Love Interests"]["Reserved for Kylar"] to "reserved_for_kylar">>
+		<<set _bodyWritingOptions["Love Interests"]["Just Kylar"] to "just_kylar">>
+	<</if>>
+	<<if isPossibleLoveInterest("Eden")>>
+		<<set _bodyWritingOptions["Love Interests"]["Eden's Companion"] to "edens_companion">>
+		<<set _bodyWritingOptions["Love Interests"]["Hunter and Prey"] to "hunter_and_prey">>
+		<<set _bodyWritingOptions["Love Interests"]["It's Lonely in the Woods"] to "its_lonely_in_the_woods">>
+		<<set _bodyWritingOptions["Love Interests"]["Something is Hunting you"] to "something_is_hunting_you">>
+	<</if>>
+	<<if isPossibleLoveInterest("Avery")>>
+		<<set _bodyWritingOptions["Love Interests"]["Avery's Trophy"] to "averys_trophy">>
+		<<set _bodyWritingOptions["Love Interests"]["Endearing"] to "endearing">>
+		<<if ($player.penisExist or $player.gender_appearance is "m" or $backgroundTraits.includes("crossdresser"))>>
+			<<set _bodyWritingOptions["Love Interests"]["Uptown Boy"] to "uptown_boy">>
+		<</if>>
+		<<if ($player.vaginaExist or $player.gender_appearance is "f" or $backgroundTraits.includes("crossdresser"))>>
+			<<set _bodyWritingOptions["Love Interests"]["Uptown Girl"] to "uptown_girl">>
+		<</if>>
+		<<set _bodyWritingOptions["Love Interests"]["Avery's Monopoly"] to "averys_monopoly">>
+	<</if>>
+	<<if isPossibleLoveInterest("Alex")>>
+		<<set _bodyWritingOptions["Love Interests"]["Alex's Partner"] to "alexs_partner">>
+		<<set _bodyWritingOptions["Love Interests"]["Sunrise to Sunset"] to "sunrise_to_sunset">>
+		<<set _bodyWritingOptions["Love Interests"]["Hay Baler"] to "hay_baler">>
+		<<if ($player.penisExist or $player.gender_appearance is "m" or $backgroundTraits.includes("crossdresser"))>>
+			<<set _bodyWritingOptions["Love Interests"]["Cowboy"] to "cowboy">>
+		<</if>>
+		<<if ($player.vaginaExist or $player.gender_appearance is "f" or $backgroundTraits.includes("crossdresser"))>>
+			<<set _bodyWritingOptions["Love Interests"]["Cowgirl"] to "cowgirl">>
+		<</if>>
+	<</if>>
+	<<if isPossibleLoveInterest("Sydney")>>
+		<<set _bodyWritingOptions["Love Interests"]["Sydney's Saviour"] to "sydneys_savior">>
+		<<set _bodyWritingOptions["Love Interests"]["Bound to Sydney"] to "bound_to_sydney">>
+		<<set _bodyWritingOptions["Love Interests"]["Sydney Makes Me :)"] to "sydney_makes_me_smile">>
+		<<if C.npc.Sydney.purity gt 1>>
+			<<set _bodyWritingOptions["Love Interests"]["Purest Love"] to "purest_love">>
+		<<else>>
+			<<set _bodyWritingOptions["Love Interests"]["Lusty Sinners"] to "lusty_sinners">>
+		<</if>>
+	<</if>>
+	<<if isPossibleLoveInterest("Black Wolf")>>
+		<<set _bodyWritingOptions["Love Interests"]["Black Wolf's Bitch"] to "black_wolfs_bitch">>
+		<<set _bodyWritingOptions["Love Interests"]["All for my Alpha"] to "all_for_my_alpha">>
+		<<if $wolfpackleader is 1>>
+			<<set _bodyWritingOptions["Love Interests"]["Leader of the Pack"] to "leader_of_the_pack">>
+		<</if>>
+		<<set _bodyWritingOptions["Love Interests"]["Runs With Wolves"] to "runs_with_wolves">>
+	<</if>>
+	<<if isPossibleLoveInterest("Great Hawk")>>
+		<<set _bodyWritingOptions["Love Interests"]["Great Hawk's Spouse"] to "great_hawks_spouse">>
+		<<set _bodyWritingOptions["Love Interests"]["Soaring With Love"] to "soaring_with_love">>
+		<<set _bodyWritingOptions["Love Interests"]["Terror's Mate"] to "terrors_mate">>
+		<<set _bodyWritingOptions["Love Interests"]["Free Bird"] to "free_bird">>
+	<</if>>
+	<<if isPossibleLoveInterest("Gwylan")>>
+		<<set _bodyWritingOptions["Love Interests"]["Witch's Ward"] to "witchs_ward">>
+		<<set _bodyWritingOptions["Love Interests"]["Witch's Familiar"] to "witchs_familiar">>
+		<<set _bodyWritingOptions["Love Interests"]["Gwylan's Treasure"] to "gwylans_treasure">>
+		<<set _bodyWritingOptions["Love Interests"]["Gwylan's Apprentice"] to "gwylans_apprentice">>
+		<<set _bodyWritingOptions["Love Interests"]["Forever Yearning"] to "forever_yearning">>
+	<</if>>
+	<<if $debug is 1>>
+		<<set _bodyWritingOptions["Debug"] to setup.bodywriting>>
+		<<set _debugBodywritingOptionsKeys to Object.keys(setup.bodywriting)>>
+		<<link [[Wash yourself|$passage]]>>
+			<<set $mirrorMenu to "skin">>
+			<<wash>>
+		<</link>>
+		<<link [[Bind hands|$passage]]>>
+			<<set $mirrorMenu to "skin">>
+			<<bind>>
+		<</link>><span class="black"> (Will destroy handheld items.)</span>
+		<br/>
+		<<print Object.values(setup.bodywriting).length>> known bodywriting options.
+	<</if>>
+<</widget>>
+
+<<widget "bodywritingMenuLinks">>
+	<span class="gold bold">Add Bodywriting:</span>
+	<br>
+	<div id="bodywritingMenuLinks">
+		<<set _keys to Object.keys(_bodyWritingOptions)>>
+		<<if $bodywritingSet is undefined>>
+			<<set $bodywritingSet to "General">>
+		<</if>>
+		<<for _i to 0; _i lt _keys.length; _i++>>
+			<<capture _i _keys>>
+				<div @id="'link-'+_keys[_i].replace(/ /g,'-')" @class="(_keys[_i] is $bodywritingSet ? 'no-numberify bodywritingSelected' : 'no-numberify bodywriting')">
+				<<button _keys[_i]>>
+					<<removeclass `'#link-'+$bodywritingSet.replace(/ /g,'-')` "bodywritingSelected">>
+					<<addclass `'#link-'+$bodywritingSet.replace(/ /g,'-')` "bodywriting">>
+					<<set $bodywritingSet to clone(_keys[_i])>>
+					<<addclass `'#link-'+$bodywritingSet.replace(/ /g,'-')` "bodywritingSelected">>
+					<<replace "#bodywritingMenu">><<bodywritingMenu _args[0]>><</replace>>
+				<</button>>
+				</div>
+			<</capture>>
+		<</for>>
+	</div>
+
+	<br>
+	<div id="bodywritingMenu" class="skinMenu no-numberify">
+		<<bodywritingMenu _args[0]>>
+	</div>
+	<div class="skinMenu">
+		<label data-target="options.images" data-disabledif="V.options.images===0">
+			<<checkbox "$options.bodywritingImages" false true autocheck>> Enable bodywriting images
+		</label>
+	</div>
+<</widget>>
+
+<<widget "bodywritingMenu">>
+	<<if Object.keys(_bodyWritingOptions[$bodywritingSet]).length gt 0>>
+		<<set _bodyPartOptions to {}>>
+		<<if _args[0] isnot undefined>>
+			<<set _bodyPartOptionsSkip to _args[0]>>
+		<<else>>
+			<<set _bodyPartOptionsSkip to ["back", "left_bottom", "right_bottom"]>>
+		<</if>>
+		<<for _label, _value range $skin>>
+			<<if _bodyPartOptionsSkip.includes(_label)>>
+				<<continue>>
+			<<elseif Object.keys(_value).length is 0>>
+				<<silently>><<bodypart _label>><</silently>>
+				<<set _bodyPartOptions[_text_output.toUpperFirst()] to _label>>
+			<</if>>
+		<</for>>
+		<<if $debug is 1>>
+			Write
+			<<listbox "_bodyWritingDebugSelected">>
+				<<optionsfrom _bodyWritingOptions[$bodywritingSet]>>
+			<</listbox>>
+			everywhere
+			<<link [[Confirm|$passage]]>>
+				<<set $mirrorMenu to "skin">>
+				<<for _part, _value range $skin>>
+					<<add_bodywriting _part _bodyWritingDebugSelected "pen">>
+				<</for>>
+			<</link>>
+			<br />
+			Write
+			<<listbox "_bodyWritingDebugSelected">>
+				<<optionsfrom _bodyWritingOptions[$bodywritingSet]>>
+			<</listbox>>
+			everywhere where it has custom sprites
+
+
+			<<link [[Confirm|$passage]]>>
+				<<set $mirrorMenu to "skin">>
+				<<for _part, _value range $skin>>
+					<<if _bodyWritingDebugSelected.sprites.includes(_part)>>
+						<<add_bodywriting _part _bodyWritingDebugSelected "pen">>
+					<</if>>
+				<</for>>
+			<</link>>
+			<br />
+			<br />
+		<</if>>
+
+		<<if Object.keys(_bodyPartOptions).length gt 0>>
+			Write
+			<<listbox "_bodyWritingSelected">>
+				<<optionsfrom _bodyWritingOptions[$bodywritingSet]>>
+			<</listbox>>
+			on your
+			<<listbox "_bodyPartSelected">>
+				<<optionsfrom _bodyPartOptions>>
+			<</listbox>>
+
+			<<link [[Confirm|$passage]]>>
+				<<set $mirrorMenu to "skin">>
+				<<set $bodyWritingSelected to Object.keys(_bodyWritingOptions[$bodywritingSet])[Object.values(_bodyWritingOptions[$bodywritingSet]).indexOf(_bodyWritingSelected)]>>
+				<<set $bodyPartSelected to _bodyPartSelected>>
+				<<add_bodywriting _bodyPartSelected _bodyWritingSelected "pen">>
+			<</link>>
+		<<else>>
+			<span class="blue">You're not sure where else you can write an advertisement.</span>
+		<</if>>
+	<<else>>
+		<span class="blue">You have not unlocked any bodywriting options for this category yet.</span>
+	<</if>>
+<</widget>>
+
+<<widget "hairDescription">>
+	You check your hair in the mirror.
+	<<if $hairtype is "default" and $fringetype is "default">>
+	Your hair is not currently styled. Your sides are positioned <<if $hairposition is "front">>in front of<<else>>behind<</if>> your body.
+	Your hair
+	<<if $hairgelBottles is undefined>><<set $hairgelBottles to 0>><</if>>
+	<<if $earsposition is "front">>
+			<span class="gold"> is tucked behind your ears</span>
+	<<else>>
+			<span class="gold">hangs in front of your ears</span>
+	<</if>>
+	and is
+	<<if $ruffledisable is "t">>
+		<mouse class = "gold tooltip-small" style="border-bottom-color:white">
+			fixed in place.
+			<span class="black">Your hairstyle cannot be ruined. <br> <i class="red">Selecting a new hairstyle will re-enable hair ruffling. <<print ($hairgelBottles is 0 ? "Hair gel can be acquired at the shops." : "Hair gel will need to be re-applied.")>></i></span>
+		</mouse>
+	<<else>>
+		<mouse class = "gold tooltip-small" style="border-bottom-color:white">
+			not fixed in place.
+			<span class="black">Certain situations may change your hair to a messier style. <br> <i class="teal">You can apply hair gel to disable hair ruffling.<<print ($hairgelBottles is 0 ? " Hair gel can be acquired at the shops." : "")>></i> </span>
+		</mouse>
+	<</if>>
+		<div class="no-numberify">
+			<<link [[Randomise your hairstyle|$passage]]>>
+				<<set _hairType to Object.values(_hairTypeByName)>>
+				<<set $hairtype to _hairType[random(0,_hairType.length - 1)]>>
+				<<set _fringeType to Object.values(_fringeTypeByName)>>
+				<<set $fringetype to _fringeType[random(0,_fringeType.length - 1)]>>
+				<<set $hairposition to ["front","back"][random(0,1)]>>
+			<</link>>
+			|
+			<<switch $hairposition>>
+				<<case "front">>
+					<<link "Position sides behind body">>
+						<<run State.setVar("$hairposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Position sides in front of body">>
+						<<run State.setVar("$hairposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Position sides in front of body">>
+						<<run State.setVar("$hairposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $earsposition>>
+				<<case "front">>
+					<<link "Position hair in front of ears">>
+						<<run State.setVar("$earsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Tuck hair behind ears">>
+						<<run State.setVar("$earsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Tuck hair behind ears">>
+						<<run State.setVar("$earsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $tfearsposition>>
+				<<case "front">>
+					<<link "Position hair in front of TF ears">>
+						<<run State.setVar("$tfearsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Tuck hair behind TF ears">>
+						<<run State.setVar("$tfearsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Tuck hair behind TF ears">>
+						<<run State.setVar("$tfearsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $tfearshatposition>>
+				<<case "through">>
+					<<link "Tuck ears under hats">>
+						<<run State.setVar("$tfearshatposition", "under")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "under">>
+					<<link "Poke ears through hats">>
+						<<run State.setVar("$tfearshatposition", "through")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Tuck ears under hats">>
+						<<run State.setVar("$tfearshatposition", "under")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $browsposition>>
+				<<case "front">>
+					<<link "Position brows behind hair">>
+						<<run State.setVar("$browsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Position brows in front of hair">>
+						<<run State.setVar("$browsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Position brows behind hair">>
+						<<run State.setVar("$browsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $earringsposition>>
+				<<case "fringe">>
+					<<link "Position earrings behind hair">>
+						<<run State.setVar("$earringsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Position earrings in front of hair">>
+						<<run State.setVar("$earringsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "front">>
+					<<link "Position earrings behind fringe">>
+						<<run State.setVar("$earringsposition", "fringe")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Position earrings behind fringe">>
+						<<run State.setVar("$earringsposition", "fringe")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			<br><br>
+		</div>
+	<<else>>
+		<<if $hairtype is "default">>
+			Currently, your fringe is in the <span class="gold">$fringetype</span> style. Your sides are left <span class="gold">natural</span> and are positioned <<if $hairposition is "front">>in front of<<else>>behind<</if>> your body.
+		<<elseif $fringetype is "default">>
+			Currently, your fringe is left <span class="gold">natural</span>. Your sides are in the <span class="gold">$hairtype</span> style and are positioned <<if $hairposition is "front">>in front of<<else>>behind<</if>> your body.
+		<<else>>
+			Currently, your fringe is in the <span class="gold">$fringetype</span> style. Your sides are in the <span class="gold">$hairtype</span> style and are positioned <<if $hairposition is "front">>in front of<<else>>behind<</if>> your body.
+		<</if>>
+			Your hair
+			<<if $hairgelBottles is undefined>><<set $hairgelBottles to 0>><</if>>
+			<<if $earsposition is "front">>
+				<span class="gold"> is tucked behind your ears</span>
+			<<else>>
+				<span class="gold">hangs in front of your ears</span>
+			<</if>>
+			and is
+			<<if $ruffledisable is "t">>
+				<mouse class = "gold tooltip-small" style="border-bottom-color:white">
+					fixed in place.
+					<span class="black">Your hairstyle cannot be ruined. <br> <i class="red">Selecting a new hairstyle will re-enable hair ruffling. <<print ($hairgelBottles is 0 ? "Hair gel can be acquired at the shops." : "Hair gel will need to be re-applied.")>></i></span>
+				</mouse>
+			<<else>>
+				<mouse class = "gold tooltip-small" style="border-bottom-color:white">
+					not fixed in place.
+					<span class="black">Certain situations may change your hair to a messier style. <br> <i class="teal">You can apply hair gel to disable hair ruffling.<<print ($hairgelBottles is 0 ? " Hair gel can be acquired at the shops." : "")>></i> </span>
+				</mouse>
+			<</if>>
+		<div class="no-numberify">
+			<<link [[Randomise your hairstyle|$passage]]>>
+				<<set _hairType to Object.values(_hairTypeByName)>>
+				<<set $hairtype to _hairType[random(0,_hairType.length - 1)]>>
+				<<set _fringeType to Object.values(_fringeTypeByName)>>
+				<<set $fringetype to _fringeType[random(0,_fringeType.length - 1)]>>
+				<<set $hairposition to ["front","back"][random(0,1)]>>
+			<</link>>
+			|
+			<<switch $hairposition>>
+				<<case "front">>
+					<<link "Position sides behind body">>
+						<<run State.setVar("$hairposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Position sides in front of body">>
+						<<run State.setVar("$hairposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Position sides in front of body">>
+						<<run State.setVar("$hairposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $earsposition>>
+				<<case "front">>
+					<<link "Position hair in front of ears">>
+						<<run State.setVar("$earsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Tuck hair behind ears">>
+						<<run State.setVar("$earsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Tuck hair behind ears">>
+						<<run State.setVar("$earsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $tfearsposition>>
+				<<case "front">>
+					<<link "Position hair in front of TF ears">>
+						<<run State.setVar("$tfearsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Tuck hair behind TF ears">>
+						<<run State.setVar("$tfearsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Tuck hair behind TF ears">>
+						<<run State.setVar("$tfearsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $tfearshatposition>>
+				<<case "through">>
+					<<link "Tuck ears under hats">>
+						<<run State.setVar("$tfearshatposition", "under")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "under">>
+					<<link "Poke ears through hats">>
+						<<run State.setVar("$tfearshatposition", "through")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Tuck ears under hats">>
+						<<run State.setVar("$tfearshatposition", "under")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $browsposition>>
+				<<case "front">>
+					<<link "Position brows behind hair">>
+						<<run State.setVar("$browsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Position brows in front of hair">>
+						<<run State.setVar("$browsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Position brows behind hair">>
+						<<run State.setVar("$browsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+			|
+			<<switch $earringsposition>>
+				<<case "fringe">>
+					<<link "Position earrings behind hair">>
+						<<run State.setVar("$earringsposition", "back")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "back">>
+					<<link "Position earrings in front of hair">>
+						<<run State.setVar("$earringsposition", "front")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<case "front">>
+					<<link "Position earrings behind fringe">>
+						<<run State.setVar("$earringsposition", "fringe")>>
+						<<run Engine.show()>>
+					<</link>>
+				<<default>>
+					<<link "Position earrings behind fringe">>
+						<<run State.setVar("$earringsposition", "fringe")>>
+						<<run Engine.show()>>
+					<</link>>
+			<</switch>>
+		<br><br>
+		</div>
+	<</if>>
+<</widget>>
+
+<<widget "mirrorHair">>
+	<<set _wraithMirror to false>>
+	<<mirroricon>><<link "Back">><<updatesidebarimg>><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+	<<shopClothingFilterSettingsDefault>> /* Due to reusing the traits filtering */
+	<br><br>
+	<div id="hairDescription">
+	<<hairDescription>>
+	</div>
+
+	<div id="hairgelLinks">
+		<<hairgelLinks>>
+	</div>
+
+	<br>
+
+	<<set _hairTypeByName to {}>>
+	<<run setup.hairstyles.sides.sort((a, b) => {
+		if (a.name === "natural") return -1;
+		if (b.name === "natural") return 1;
+		return a.name.localeCompare(b.name);
+	}).forEach(style => {
+		if (!V.shopClothingFilter.active || !V.shopClothingFilter.traits.length || style.type.find(type => V.shopClothingFilter.traits.includes(type))) {
+			T.hairTypeByName[style.name] = style.variable;
+		}
+	})>>
+	<<set _fringeTypeByName to {}>>
+	<<run setup.hairstyles.fringe.sort((a, b) => {
+		if (a.name === "natural") return -1;
+		if (b.name === "natural") return 1;
+		return a.name.localeCompare(b.name);
+	}).forEach(style => {
+		if (!V.shopClothingFilter.active || !V.shopClothingFilter.traits.length || style.type.find(type => V.shopClothingFilter.traits.includes(type))) {
+			T.fringeTypeByName[style.name] = style.variable;
+		}
+	})>>
+
+	<div id="hairContainer">
+		<div class="containerHeader" class="no-numberify">
+			<<mirrorhairdisplayLinks "hair">>
+		</div>
+		<<mirrorhairdisplay "$hairtype" "sides">>
+	</div>
+	<br><br>
+<</widget>>
+
+<<widget "hairgelLinks">>
+	<div class="no-numberify">
+	<<link [[($showMannequins ? "Hide" : "Show") + " Mannequins"|$passage]]>><<set $showMannequins to 1 - ($showMannequins or 0)>><</link>>
+	<mouse class="tooltip-small linkBlue">(?)<span>Disable preview images for hairstyles. <i class="red">Enabling mannequins may cause performance issues on some devices.</i></span></mouse>
+	<<if $hairgelBottles isnot undefined and $hairgelBottles gte 1>>
+		| <<hairdressericon "gel">>
+		<<if $ruffledisable is "f">>
+			<<link "Apply hair gel">><<replace #hairDescription>><<hairgelApply>><</replace>><<replace #hairgelDesc>><<hairgelDesc>><</replace>><<replace#hairgelLinks>><<hairgelLinks>><</replace>><</link>>
+		|
+		<</if>>
+		<div id="hairgelDesc" style="display:inline"><<hairgelDesc>></div>
+	<</if>>
+	</div>
+<</widget>>
+
+<<widget "hairgelApply">>
+	<<if !pcAreArmsBound("any")>>
+		<<set $ruffledisable to "t">>
+		<<set $hairgelBottles += -1>>
+	<</if>>
+	<<hairDescription>>
+	<<if pcAreArmsBound("both")>>
+		<span class="red">Both of your arms are bound</span>, and you find it difficult to do anything about your hair this way.
+		<hr>
+	<<else>>
+		<<wearProp "hairgel">><<updatesidebarimg>>
+		You squirt a hefty dollop of hair gel onto your hand and slick it through your hair. By the time you're finished, your hairstyle is securely in place, and the small bottle is empty. <span class="pink">If you decide to change up your hairstyle, you'll need to <<print ($hairgelBottles is 0) ? "acquire" : "apply">> more.</span>
+		<hr>
+	<</if>>
+<</widget>>
+
+<<widget "hairgelDesc">>
+	You have <span class="gold">$hairgelBottles</span> <<pluralise $hairgelBottles "bottle">> of hair gel remaining.
+<</widget>>
+
+<<widget "mirrorhairdisplay">>
+	<<if _hairCategory isnot _args[0]>>
+		<<set _perPage to $showMannequins ? 14 : 100>>
+		<<set _page to 1>>
+	<</if>>
+	<<set _hairCategory to _args[0]>>
+	<<mirrorhairOptions _args[1]>>
+
+	<div id="hairContainerElements">
+		<<mirrorhairdisplayElements _hairOptions>>
+	</div>
+	<div id="hairContainerPages" class="no-numberify">
+		<<mirrorhairControls _args[1]>>
+	</div>
+<</widget>>
+
+<<widget "mirrorhairControls">>
+	<<if $showMannequins>>
+		<div class="containerFooter">
+			<div class="tab">
+			<<if _page gt 1>>
+				<<button '<span class="fa-icon fa-left"></span> Previous'>>
+					<<if _page gt 1>><<set _page-->><</if>>
+					<<mirrorhairOptions _args[0]>>
+					<<replace "#hairContainerElements">><<mirrorhairdisplayElements _hairOptions>><</replace>>
+					<<replace "#hairContainerPages">><<mirrorhairControls _args[0]>><</replace>>
+				<</button>>
+			<<else>>
+				<button class="link-internal macro-button no-numberify buttonDisabled" disabled>Previous</button>
+			<</if>>
+			</div>
+			<div class="tab">
+			<<if _page lt _pageMax>>
+				<<button 'Next <span class="fa-icon fa-right"></span>'>>
+					<<if _page lt _pageMax>><<set _page++>><</if>>
+					<<mirrorhairOptions _args[0]>>
+					<<replace "#hairContainerElements">><<mirrorhairdisplayElements _hairOptions>><</replace>>
+					<<replace "#hairContainerPages">><<mirrorhairControls _args[0]>><</replace>>
+				<</button>>
+			<</if>>
+			</div>
+			<div class="tab">
+				<div class="buttonPage">
+					<<button '_page/_pageMax'>>
+					<</button>>
+				</div>
+			</div>
+		</div>
+	<</if>>
+<</widget>>
+
+<<widget "mirrorhairTraits">>
+	<div id="hairContainerFilter">
+		<div class="tab">
+				<<button "<span class='fa-icon fa-check'></span> Apply">>
+					<<set $shopClothingFilter.active = true>>
+					<<run updateMoment()>>
+				<</button>>
+				<<button "<span class='fa-icon fa-reset'></span> Reset Filters">>
+					<<shopClothingFilterReset>>
+					<<replace "#hairContainerTraits">><<mirrorHairTraitList>><</replace>>
+					<<run updateMoment()>>
+				<</button>>
+				<<button "<span class='fa-icon fa-selected'></span> Select/Deselect All">>
+					<<run toggleAllHairTraitsFilter()>>
+				<</button>>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "mirrorhairOptions">>
+	<<set _hairOptions to {}>>
+	<<run setup.hairstyles[_args[0]].forEach(style => {
+		if (!V.shopClothingFilter.active || !V.shopClothingFilter.traits.length || style.type.find(type => V.shopClothingFilter.traits.includes(type))) T.hairOptions[style.name] = style.variable;
+	})>>
+	<<set _pageMax to Math.ceil(Object.keys(_hairOptions).length / _perPage)>>
+
+	<<run Object.keys(_hairOptions).forEach((key, index) => {
+	if (!between(index, T.perPage * (T.page - 1), (T.perPage * T.page) - 1)) {
+			delete T.hairOptions[key];
+		}
+	})>>
+<</widget>>
+
+<<widget "mirrorhairdisplayLinks">>
+	<div class="tab">
+		<span @class="_args[0] is 'hair' ? 'tab-selected' : 'tab'">
+			<<button "Sides">>
+				<<replace "#hairContainer">>
+					<div class="containerHeader" class="no-numberify">
+						<<mirrorhairdisplayLinks "hair">>
+					</div>
+					<<mirrorhairdisplay "$hairtype" "sides">>
+				<</replace>>
+			<</button>>
+		</span>
+	</div>
+	<div class="tab">
+		<span @class="_args[0] is 'fringe' ? 'tab-selected' : ''">
+			<<button "Fringe">>
+				<<replace "#hairContainer">>
+					<div class="containerHeader" class="no-numberify">
+						<<mirrorhairdisplayLinks "fringe">>
+					</div>
+					<<mirrorhairdisplay "$fringetype" "fringe">>
+				<</replace>>
+			<</button>>
+		</span>
+	</div>
+	<div class="tab">
+		<span @class="_args[0] is 'style' ? 'tab-selected' : ''">
+			<<button "Save/Load">>
+				<<replace "#hairContainer">>
+					<div class="containerHeader" class="no-numberify">
+						<<mirrorhairdisplayLinks "style">>
+					</div>
+					<<mirrorhairdisplaySave>>
+				<</replace>>
+			<</button>>
+			<div id="hairContainerSave" class="no-numberify">
+			</div>
+		</span>
+	</div>
+	<div class="tab">
+		<span @class="_args[0] is 'filter' ? 'tab-selected' : ''">
+			<<button "Filters">>
+				<<replace "#hairContainer">>
+					<div class="containerHeader" class="no-numberify">
+						<<mirrorhairdisplayLinks "filter">>
+					</div>
+					<<mirrorhairdisplayFilter>>
+				<</replace>>
+			<</button>>
+		</span>
+	</div>
+<</widget>>
+
+<<widget "mirrorhairdisplayElements">>
+	<div id="hairGridSides" class="no-numberify hairGrid">
+		<<for _label, _hairName range _args[0]>>
+			<<capture _hairCategory, _hairName>>
+				<div @id="'hairGrid-' + _hairCategory.replace('$','') + '-' + _hairName.replace(/ /g,'')" @class="'gridItem' + (_hairName is V[_hairCategory.replace('$','')] ? ' selectedHair' : '')" @onclick="`wikifier('mirrorhairdisplayClick', '${T.hairCategory.replace('$','')}', '${T.hairName.replace(/ /g,'_')}');`">
+					<<if $options.images is 1 and $showMannequins is 1>>
+						<<selectmodel "main">>
+						<<set _modeloptions.tanningEnabled to false>>
+						<<set _modeloptions.skin_type = Skin.color.natural>>
+						<<set _modeloptions.skin_tone = Skin.color.tan>>
+						<<set _modeloptions.freckles = $player.freckles == true and $makeup.concealer != 1>>
+						<<set _modeloptions.mouth to 'neutral'>>
+						<<set _modeloptions.facevariant = $facevariant>>
+						<<set _modeloptions.left_eye = $makeup.eyelenses.left != 0 ? $makeup.eyelenses.left : $leftEyeColour>>
+						<<set _modeloptions.right_eye = $makeup.eyelenses.right != 0 ? $makeup.eyelenses.right : $rightEyeColour>>
+						<<set _modeloptions.hair_colour = $haircolour>>
+						<<set _modeloptions.hair_fringe_colour = $hairfringecolour>>
+						<<set _modeloptions.hair_fringe_colour_gradient = $hairFringeColourGradient>>
+						<<set _modeloptions.hair_fringe_colour_style = $hairFringeColourStyle>>
+						<<set _modeloptions.hair_colour_gradient = $hairColourGradient>>
+						<<set _modeloptions.hair_colour_style = $hairColourStyle>>
+						<<set _modeloptions.hair_sides_length to $hairlengthstage>>
+						<<set _modeloptions.hair_sides_position to $hairposition>>
+						<<set _modeloptions.hair_fringe_length to $fringelengthstage>>
+						<<if _hairCategory is "$hairtype">>
+							<<set _modeloptions.hair_sides_type to _hairName>>
+							<<set _modeloptions.hair_fringe_type to $fringetype>>
+						<<else>>
+							<<set _modeloptions.hair_fringe_type to _hairName>>
+							<<set _modeloptions.hair_sides_type to $hairtype>>
+						<</if>>
+						<<set _modeloptions.ears_position to $earsposition>>
+						<<rendermodel "hairstyleMannequin">>
+						<br>
+					<</if>>
+					<<print toTitleCase(_label)>>
+				</div>
+			<</capture>>
+		<</for>>
+	</div>
+<</widget>>
+
+<<widget "mirrorhairdisplayClick">>
+	<<if _args[0] and _args[1]>>
+		<<if Object.values(_hairOptions).includes(V[_args[0]])>>
+			<<set _id to "#hairGrid-" + _args[0] + "-" + V[_args[0]].replace(/ /g,"")>>
+			<<removeclass _id "selectedHair">>
+		<</if>>
+		<<set V[_args[0]] to _args[1].replace(/_/g," ")>>
+		<<set _id2 to "#hairGrid-" + _args[0] + "-" + _args[1].replace(/_/g,"")>>
+		<<set $ruffledisable to "f">>
+		<<addclass _id2 "selectedHair">>
+		<<updatesidebarimg>>
+		<<replace #hairDescription>><<hairDescription>><</replace>>
+		<<replace #hairgelLinks>><<hairgelLinks>><</replace>>
+	<</if>>
+<</widget>>
+
+<<widget "mirrorhairdisplaySave">>
+	<div id="hairContainerHairstyle">
+		<<mirrorHairSaveOptions>>
+	</div>
+	<div id="hairContainerSave" class="no-numberify">
+		<<mirrorHairSave>>
+	</div>
+<</widget>>
+
+<<widget "mirrorHairSaveOptions">>
+		<<if !$savedHairStyles>>
+			<<set $savedHairStyles to {
+				Default: { hairtype:$hairtype, fringetype:$fringetype, hairposition:$hairposition }
+			}>>
+		<</if>>
+		<div class="no-numberify saveHair">
+		<span class="bold">Select a hairstyle:</span>
+			<hr style="border:none;margin:.25em 0">
+			<<set _savedHairStylesKeys to Object.keys($savedHairStyles)>>
+			<<if _savedHairStylesKeys.length gt 0>>
+				<<listbox '_selectedSavedHairStyle'>>
+					<<optionsfrom _savedHairStylesKeys>>
+				<</listbox>>
+			<</if>>
+			<br>
+		</div>
+		<div class="no-numberify saveHair">
+			<span class="bold" style="margin:.25em 0">Create a new hairstyle:</span>
+			<hr style="border:none;margin:.25em 0">
+			<label>Name: <<textbox "_hairStyleName" "">></label>
+			<mouse class="tooltip linkBlue"> (?)<span>Saves your current hairstyle, so it may be worn later. Duplicate names will overwrite existing styles.</span></mouse>
+			<span id="textbox-error"></span>
+		</div>
+<</widget>>
+
+
+<<widget "mirrorhairdisplayFilter">>
+	<div id="hairContainerTraits" class="no-numberify">
+		<<mirrorHairTraitList>>
+	</div>
+	<div id="hairContainerFilter">
+		<<mirrorhairTraits>>
+	</div>
+<</widget>>
+
+<<widget "mirrorHairTraitList">>
+	<<set _shopLocation to "mirrorhair">>
+	<div class="hairGridTraits">
+		<div class="traitCategory">
+			<<set _textureTraits to ["curly", "sleek", "wavy", "textured"]>>
+			<span class="gold" style="padding-left:5px">Texture:</span>
+				<<for _trait range _textureTraits.sort()>>
+					<<silently>><< _trait>><</silently>>
+					<<set _traitObj to setup.shopDetails[_trait]>>
+					<div class="filters-trait-row">
+						<label>
+							<<set _checked = $shopClothingFilter.traits.includes(_trait) ? 'checked="checked"' : ''>>
+							<<clothingtrait _trait 'display_normal'>>
+							<<print '<input type="checkbox" @id="_trait" @value="_trait" ' + _checked + ' onclick="window.shopClothingFilterToggleTrait(this.value)">'>>
+							<<if !_traitObj.desc>>
+								<<print _traitObj.name>>
+							<<else>>
+								<mouse class = "tooltip-small">
+									<<print _traitObj.name>>
+									<span class="black"><<print _traitObj.desc>></span>
+								</mouse>
+							<</if>>
+						</label>
+					</div>
+				<</for>>
+		</div>
+		<div class="traitCategory">
+			<span class="gold" style="padding-left:5px">Style:</span>
+			<<set _styleTraits to ["braids", "buns", "pigtails", "ponytail"]>>
+				<<for _trait range _styleTraits.sort()>>
+					<<silently>><< _trait>><</silently>>
+					<<set _traitObj to setup.shopDetails[_trait]>>
+					<div class="filters-trait-row">
+						<label>
+							<<set _checked = $shopClothingFilter.traits.includes(_trait) ? 'checked="checked"' : ''>>
+							<<clothingtrait _trait 'display_normal'>>
+							<<print '<input type="checkbox" @id="_trait" @value="_trait" ' + _checked + ' onclick="window.shopClothingFilterToggleTrait(this.value)">'>>
+							<<if !_traitObj.desc>>
+								<<print _traitObj.name>>
+							<<else>>
+								<mouse class = "tooltip-small">
+									<<print _traitObj.name>>
+									<span class="black"><<print _traitObj.desc>></span>
+								</mouse>
+							<</if>>
+						</label>
+					</div>
+				<</for>>
+		</div>
+		<div class="traitCategory">
+			<span class="gold" style="padding-left:5px">Other</span>
+			<<set _otherTraits to ["loose","short"]>>
+				<<for _trait range _otherTraits.sort()>>
+					<<silently>><< _trait>><</silently>>
+					<<set _traitObj to setup.shopDetails[_trait]>>
+					<div class="filters-trait-row">
+						<label>
+							<<set _checked = $shopClothingFilter.traits.includes(_trait) ? 'checked="checked"' : ''>>
+							<<clothingtrait _trait 'display_normal'>>
+							<<print '<input type="checkbox" @id="_trait" @value="_trait" ' + _checked + ' onclick="window.shopClothingFilterToggleTrait(this.value)">'>>
+							<<if !_traitObj.desc>>
+								<<print _traitObj.name>>
+							<<else>>
+								<mouse class = "tooltip-small">
+									<<print _traitObj.name>>
+									<span class="black"><<print _traitObj.desc>></span>
+								</mouse>
+							<</if>>
+						</label>
+					</div>
+				<</for>>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "mirrorHairSave">>
+	<div class="hairContainerSave">
+	<<if _savedHairStylesKeys.length gt 0>>
+	<div class="tab">
+		<<button '<span class="fa-icon fa-check"></span> Wear'>>
+			<<set $hairtype to $savedHairStyles[_selectedSavedHairStyle].hairtype>>
+			<<set $fringetype to $savedHairStyles[_selectedSavedHairStyle].fringetype>>
+			<<set $hairposition to $savedHairStyles[_selectedSavedHairStyle].hairposition>>
+			<<set $ruffledisable to "f">>
+			<<updatesidebarimg>>
+		<</button>>
+		<<button '<span class="fa-icon fa-overwrite"></span> Overwrite'>>
+			<<set $savedHairStyles[_selectedSavedHairStyle].hairtype to $hairtype>>
+			<<set $savedHairStyles[_selectedSavedHairStyle].fringetype to $fringetype>>
+			<<set $savedHairStyles[_selectedSavedHairStyle].hairposition to $hairposition>>
+			<<updatesidebarimg>>
+		<</button>>
+		<<button '<span class="fa-icon fa-delete"></span> Delete'>>
+			<<if _selectedSavedHairStyle isnot "Default">>
+				<<run $outfit.forEach((o) => {
+					if(o.hairStyle === T.selectedSavedHairStyle){
+						o.hairStyle = undefined;
+					}
+				})>>
+				<<run delete $savedHairStyles[_selectedSavedHairStyle]>>
+				<<updatesidebarimg>>
+				<<replace #hairContainerHairstyle>><<mirrorHairSaveOptions>><</replace>>
+			<</if>>
+		<</button>>
+		<<button '<span class="fa-icon fa-save"></span> Save'>>
+			<<if _hairStyleName is "">>
+				<<replace "#textbox-error">><br> <span class="red">Please enter a name.</span><</replace>>
+			<<else>>
+				<<replace "#textbox-error">><</replace>>
+				<<set _hairStyleName to _hairStyleName.replace(/[^a-zA-Z\u4e00-\u9fa50-9_-]+/g,"").substring(0,30)>>
+				<<set $savedHairStyles[_hairStyleName] to { hairtype:$hairtype, fringetype:$fringetype, hairposition:$hairposition }>>
+				<<replace #hairContainerHairstyle>><<mirrorHairSaveOptions>><</replace>>
+			<</if>>
+		<</button>>
+	</div>
+	<<else>>
+	<div class="tab">
+		<<button '<span class="fa-icon fa-save"></span> Save'>>
+			<<if _hairStyleName is "">>
+				<<replace "#textbox-error">><br> <span class="red">Please enter a name.</span><</replace>>
+			<<else>>
+				<<replace "#textbox-error">><</replace>>
+				<<set _hairStyleName to _hairStyleName.replace(/[^a-zA-Z\u4e00-\u9fa50-9_-]+/g,"").substring(0,30)>>
+				<<set $savedHairStyles[_hairStyleName] to { hairtype:$hairtype, fringetype:$fringetype, hairposition:$hairposition }>>
+				<<replace #hairContainerHairstyle>><<mirrorHairSaveOptions>><</replace>>
+			<</if>>
+		<</button>>
+	</div>
+	<</if>>
+	</div>
+<</widget>>
+
+
+<<widget "mirrorMakeupPart">>
+	<<set _itemType = _args[0]>>
+
+	<<set _items = $makeup.owned[_itemType].filter(x => x.count > 0)>>
+	<<cosmeticsicon _itemType>>	<span class="gold bold"><<= _itemType.toUpperFirst()>>:</span>
+	<<if $makeup.owned[_itemType].length == 0>>
+		<br>
+		You don't own any _itemType.
+	<<elseif _items.length == 0>>
+		<br>
+		You ran out of _itemType.
+		<br>
+	<</if>>
+	<<if _items.length != 0 or $makeup[_itemType] != 0>>
+		<<if $makeup[_itemType] != 0>>
+			<<capture _itemType>>
+			<span class="no-numberify">
+				<<link "Remove">>
+					<<if _itemType is "eyelenses">>
+						<!-- A safety check for $makeup.eyelenses -->
+						<<set $makeup.eyelenses to { left: 0, right: 0 }>>
+					<<else>>
+						<<set $makeup[_itemType] to 0>>
+					<</if>>
+					<<if _itemType == 'mascara'>>
+						<<set $makeup.mascara_running = 0>>
+					<</if>>
+					<<run Engine.show()>>
+				<</link>>
+			</span>
+			<</capture>>
+		<</if>>
+		<div class="makeupList no-numberify capitalize">
+			<<for _i, _item range _items>>
+				<span @class="$makeup[_itemType] == _item.colour ? 'makeupWorn' : 'makeupItem'">
+					<<capture _item, _itemType>>
+						<<set _name to
+						`_item.colour <span @class="_itemType+'-'+_item.colour.replace(/ /g, '-')"><span class="colour-sample"></span></span>
+						× _item.count`>>
+						<<button _name>>
+							<<if $makeup[_itemType] !== _item.colour>>
+								<<set $makeup[_itemType] = _item.colour>>
+								<<set _item.count -= 1>>
+								<<if _itemType == 'mascara'>>
+									<<set $makeup.mascara_running = 0>>
+								<</if>>
+							<</if>>
+							<<set $mirrorMenu to "makeup">>
+							<<replace #mirror>>
+								<<if _itemType is "lipstick">>
+									<<set _colour to _item.colour is "dark red" ? "jewel red" : _item.colour is "orange" ? "tangerine" : _item.colour>>
+									<<wearProp _itemType _colour>>
+								<<else>>
+									<<wearProp _itemType>>
+								<</if>>
+								<<updatesidebarimg>>
+								<<mirrorDisplay>>
+							<</replace>>
+						<</button>>
+					<</capture>>
+				</span>
+			<</for>>
+		</div>
+	<</if>>
+<</widget>>
+
+<<widget "mirrorMakeup">>
+	<<mirroricon>><<link "Back">><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+	<br><br>
+	<div class="settingsGrid">
+		<div class="settingsHeader">Makeup</div>
+		<<set _makeup to []>>
+		<<if $makeup.lipstick isnot 0>>
+			<<run _makeup.push($makeup.lipstick + " lipstick")>>
+		<</if>>
+		<<if $makeup.eyeshadow isnot 0>>
+			<<run _makeup.push($makeup.eyeshadow + " eyeshadow")>>
+		<</if>>
+		<<if $makeup.blusher isnot 0>>
+			<<run _makeup.push($makeup.blusher + " blusher")>>
+		<</if>>
+		<<if $makeup.mascara isnot 0>>
+			<<run _makeup.push($makeup.mascara + " mascara")>>
+		<</if>>
+		<<if $makeup.concealer is 1>>
+			<<run _makeup.push("concealer")>>
+		<</if>>
+		<<set _makeupNames to ["lipstick","eyeshadow","mascara","blusher","browscolour","eyelenses"]>>
+		<<set _makeupData to ["lipstick","eyeshadow","mascara","blusher","hairdye","eyelenses"]>>
+		<<set _ownsMakeup to _makeupData.some(item => $makeup.owned[item].some(colour => colour.count > 0))>>
+		<<set _removableMakeup to _makeup.length gt 1 or (_makeup.length is 1 and _makeup[0] isnot "concealer")>>
+
+		<div class="settingsToggleItemWide">
+			<<if _makeup.length gt 0>>
+				You are wearing <<=_makeup.reduce( (a, b, i, array) => a + ( i < array.length - 1 ? ', ' : (array.length > 2 ? ', and ' : ' and ') ) + b)>>.
+			<<else>>
+				You are not wearing any makeup.
+			<</if>>
+
+			<<if _ownsMakeup or _makeup.length gt 0 or $player.freckles == true>>
+				<br><br>
+				Makeup:
+			<</if>>
+			<<if _removableMakeup>>
+				<<link [[Remove all|$passage]]>>
+					<<set $makeup.lipstick to 0>>
+					<<set $makeup.eyeshadow to 0>>
+					<<set $makeup.mascara to 0>>
+					<<set $makeup.blusher to 0>>
+					<<set $makeup.eyelenses to { left: 0, right: 0 }>>
+					<<set $makeup.mascara_running to 0>>
+				<</link>>
+				<<if _makeup.includes("concealer")>>
+					<mouse class="tooltip linkBlue">(?)<span>Will not remove concealer.</span></mouse>
+				<</if>>
+				|
+			<</if>>
+
+			<<if _ownsMakeup>>
+				<<link [[Randomise|$passage]]>>
+					<<for _i to 0; _i lt _makeupNames.length; _i++>>
+						<<set _ownedMakeup to $makeup.owned[_makeupData[_i]]>>
+						<<if _makeupNames[_i] is "eyelenses">>
+							<<set _rng to random(0, _ownedMakeup.length)>>
+							<<set _lens to _rng is _ownedMakeup.length ? 0 : _ownedMakeup[_rng]>>
+							<<set $makeup.eyelenses to { left: _lens, right: _lens }>>
+						<<else>>
+							<<set _rngset to []>>
+							<<for _label, _value range _ownedMakeup>>
+								<<if _value.count gt 0>>
+									<<run _rngset.push(_label)>>
+								<</if>>
+							<</for>>
+							<<run _rngset.push(_ownedMakeup.length)>>
+							<<set _rng to _rngset[random(0, _rngset.length - 1)]>>
+							<<if _rng is _ownedMakeup.length and _makeupNames[_i] is "browscolour">>
+								/*Do Nothing*/
+							<<elseif _rng is _ownedMakeup.length>>
+								<<set $makeup[_makeupNames[_i]] to 0>>
+							<<elseif _ownedMakeup[_rng].count gt 0 and $makeup[_makeupNames[_i]] isnot _ownedMakeup[_rng].colour>>
+								<<set $makeup[_makeupNames[_i]] to _ownedMakeup[_rng].colour>>
+								<<set _ownedMakeup[_rng].count-->>
+							<</if>>
+						<</if>>
+					<</for>>
+				<</link>>
+			<</if>>
+			/* CONCEALER */
+			<<if $player.freckles == true>>
+				<<if _ownsMakeup>>|<</if>>
+				<<if $makeup.concealer == 0>>
+					<<link "Hide freckles with concealer">>
+						<<set $makeup.concealer = 1>>
+						<<run Engine.show()>>
+					<</link>>
+				<<else>>
+					<<link "Remove concealer">>
+						<<set $makeup.concealer = 0>>
+						<<run Engine.show()>>
+					<</link>>
+				<</if>>
+			<</if>>
+			<<if $makeup.presets is undefined>>
+				<<set $makeup.presets to {}>>
+			<</if>>
+			<<if Object.keys($makeup.presets).length gt 0>>
+				<br>
+				Presets:
+				<<for _label, _value range $makeup.presets>>
+					<<capture _label>>
+						<<link _label>>
+							<<replace "#makeupPresets">>
+								<<makeupPresets _label>>
+							<</replace>>
+						<</link>>
+						<<if _label != Object.keys(V.makeup.presets).slice(-1)[0]>>|<</if>>
+					<</capture>>
+				<</for>>
+				<div id="makeupPresets"></div>
+			<</if>>
+		</div>
+		<div class="settingsToggleItem">
+			<<mirrorMakeupPart "lipstick">>
+		</div>
+		<div class="settingsToggleItem">
+			<<mirrorMakeupPart "eyeshadow">>
+		</div>
+		<div class="settingsToggleItem">
+			<<mirrorMakeupPart "mascara">>
+		</div>
+		<div class="settingsToggleItem">
+			<<mirrorMakeupPart "blusher">>
+		</div>
+		<div class="settingsToggleItemWide">
+			<span class="gold bold">New Makeup Preset</span>
+			<br>
+			Saves the makeup you currently have equipped.
+			<br>
+			<<textbox "_newPresetName" "">>
+			<br>
+			<<link [[Save preset|$passage]]>>
+				<<set _newPresetName to _newPresetName.replace(/[^a-zA-Z\u4e00-\u9fa5 0-9]+/g,"")>>
+				<<set $makeup.presets[_newPresetName] to {
+					lipstick:clone($makeup.lipstick),
+					eyeshadow:clone($makeup.eyeshadow),
+					mascara:clone($makeup.mascara),
+					blusher:clone($makeup.blusher),
+					browscolour:clone($makeup.browscolour),
+					eyelenses:clone($makeup.eyelenses),
+				}>>
+			<</link>>
+		</div>
+		<<if !$simpleMirror>>
+			<div class="settingsToggleItemWide">
+				<<cosmeticsicon "contacts">>
+				<<if $makeup.owned.eyelenses.length == 0 and $makeup.owned.custom_eyelenses.length == 0>>
+					You don't own any contact lenses.
+				<<else>>
+					<span class="gold bold">Contact Lenses:</span>
+					<<if $makeup.eyelenses.left != 0 || $makeup.eyelenses.right != 0>>
+						<span class="no-numberify">
+							<<link "Remove">>
+								<<set $makeup.eyelenses = { left: 0, right: 0 }>>
+									<<replace #mirror>>
+										<<updatesidebarimg>>
+										<<mirrorDisplay>>
+									<</replace>>
+								<</link>>
+						</span>
+						<br>
+						You are wearing
+						<<if $makeup.eyelenses.left is $makeup.eyelenses.right>>
+							<<= $makeup.eyelenses.left>> contacts.
+						<<elseif $makeup.eyelenses.left != 0 and $makeup.eyelenses.right != 0>>
+							<<= $makeup.eyelenses.left>> contacts in your left eye and <<= $makeup.eyelenses.right>> contacts in your right eye.
+						<<else>>
+							<<set _lens to $makeup.eyelenses.left != 0 ? $makeup.eyelenses.left : $makeup.eyelenses.right>>
+							<<set _eye to $makeup.eyelenses.left != 0 ? "left" : "right">>
+							<<= _lens>> contacts in your <<= _eye>> eye. Your <<= _eye is "left" ? "right" : "left">> eye is your natural <<= _eye is "left" ? $rightEyeColour : $leftEyeColour>> colour.
+						<</if>>
+					<<else>>
+						<br>
+						You are not wearing any contact lenses.
+					<</if>>
+					<br><br>
+
+					Put contacts in:
+					<label><<radiobutton "_contact_eye_selected" "Both" checked>> Both eyes</label> |
+					<label><<radiobutton "_contact_eye_selected" "Left eye">> Left eye</label> |
+					<label><<radiobutton "_contact_eye_selected" "Right eye">> Right eye</label>
+					<br>
+					<div class="makeupList no-numberify capitalize">
+						<<for _i, _colour range $makeup.owned.eyelenses>>
+							<<switch _contact_eye_selected>>
+								<<default>><<set _eye to "left">>
+							<</switch>>
+							<span @class="$makeup.eyelenses.left == _colour || $makeup.eyelenses.right == _colour ? 'makeupWorn' : 'makeupItem'">
+							<span class="makeupItem">
+								<<capture _colour>>
+									<<set _contactName to
+									`_colour <span @class="'eye-'+_colour.replace(/ /g, '-')"><span class="colour-sample bgcolour-eyes left-"></span></span>`>>
+
+									<<button _contactName>>
+										<<if _contact_eye_selected == "Both">>
+											<<set $makeup.eyelenses = { left: _colour, right: _colour }>>
+										<<elseif _contact_eye_selected == "Left eye">>
+											<<set $makeup.eyelenses.left = _colour>>
+										<<elseif _contact_eye_selected == "Right eye">>
+											<<set $makeup.eyelenses.right = _colour>>
+										<</if>>
+										<<replace #mirror>>
+											<<updatesidebarimg>>
+											<<mirrorDisplay>>
+										<</replace>>
+									<</button>>
+								<</capture>>
+							</span>
+						<</for>>
+						/* I wish a fiery death on whoever made the custom contacts */
+						<<for _i = 0; _i < $makeup.owned.custom_eyelenses.length; _i++>>
+							<<run _colour = $makeup.owned.custom_eyelenses[_i]>>
+							<<for _e = 0; _e < $custom_eyecolours.length; _e++>>
+								<<if $custom_eyecolours[_e].variable == $makeup.owned.custom_eyelenses[_i]>>
+									<<set _background_colour to clone($custom_eyecolours[_e].canvasfilter.blend)>>
+								<</if>>
+							<</for>>
+							<span class="makeupItem">
+								<<capture _colour _background_colour>>
+									<<set _colourSpaced to window.colorNameTranslate(_colour, "spaced name")>>
+									<<set _customName to
+									`_colourSpaced [C] <span class="eye-custom"><span @style="'background:'+_background_colour" class="colour-sample"></span></span>`>>
+
+									<<button _customName>>
+										<<if _contact_eye_selected == "Both">>
+											<<set $makeup.eyelenses = { left:_colour, right:_colour }>>
+										<<elseif _contact_eye_selected == "Left eye">>
+											<<set $makeup.eyelenses.left = _colour>>
+										<<elseif _contact_eye_selected == "Right eye">>
+											<<set $makeup.eyelenses.right = _colour>>
+										<</if>>
+										<<replace #mirror>>
+											<<updatesidebarimg>>
+											<<mirrorDisplay>>
+										<</replace>>
+									<</button>>
+								<</capture>>
+							</span>
+						<</for>>
+					</div>
+				<</if>>
+			</div>
+
+		<</if>>
+	</div>
+<</widget>>
+
+<<widget "makeupPresets">>
+	<<set _presetChosen to $makeup.presets[_args[0]]>>
+	<hr>
+	Preset: <<print _args[0]>>
+	<br>
+	<<for $_label, $_value range _presetChosen>>
+		<<switch $_label>>
+			<<case "browscolour">>
+				Eyebrow Dye: <<makeupPresetsItem "hairdye" $_value>>
+			<<case "lipstick">>
+				Lipstick: <<makeupPresetsItem $_label $_value>>
+			<<case "eyeshadow">>
+				Eyeshadow: <<makeupPresetsItem $_label $_value>>
+			<<case "mascara">>
+				Mascara: <<makeupPresetsItem $_label $_value>>
+			<<case "blusher">>
+				Blusher: <<makeupPresetsItem $_label $_value>>
+			<<case "eyelenses">>
+				Contact Lenses: <<makeupPresetsItem $_label $_value>>
+		<</switch>>
+		<br>
+	<</for>>
+	<br>
+	<<link [[Apply preset makeup|$passage]]>>
+		<<for _makeupName range _makeupNames>>
+			<<set _preset to _presetChosen[_makeupName]>>
+			<<if _makeupName is "eyelenses">>
+				<<if _preset.left is 0 and _preset.right is 0>>
+					<<set $makeup.eyelenses to { left:0, right:0 }>>
+				<<elseif $makeup.owned.eyelenses.includes(_preset.left) and $makeup.owned.eyelenses.includes(_preset.right)>>
+					<<set $makeup.eyelenses to _preset>>
+				<<elseif $makeup.owned.custom_eyelenses.includes(_preset.left) and $makeup.owned.custom_eyelenses.includes(_preset.right)>>
+					<<set $makeup.eyelenses to _preset>>
+				<</if>>
+			<<elseif _preset is 0 and _makeupName is "hairdye">>
+				/*Do Nothing*/
+			<<elseif _preset is 0>>
+				<<set $makeup[_makeupName] to 0>>
+			<<else>>
+				<<set _makeupName2 to (_makeupName is "browscolour" ? "hairdye" : _makeupName)>>
+				<<set _target to $makeup.owned[_makeupName2].find(invMakeup => invMakeup.colour is _preset and invMakeup.colour isnot $makeup[_makeupName] and invMakeup.count gt 0)>>
+				<<if _target>>
+					<<set $makeup[_makeupName] to clone(_target.colour)>>
+					<<set _target.count-->>
+				<</if>>
+			<</if>>
+		<</for>>
+	<</link>> |
+	<<link [[Delete preset|$passage]]>>
+		<<run delete $makeup.presets[_args[0]]>>
+	<</link>>
+<</widget>>
+
+<<widget "makeupPresetsItem">>
+	<<if _args[0] isnot undefined and _args[1] isnot undefined>>
+		<<if _args[1] is 0 and _args[0] is "hairdye">>
+			<span class="green">Natural</span>
+		<<elseif _args[1] is 0>>
+			None
+		<<else>>
+			<<if _args[0] is "eyelenses">>
+				<<if _args[1].left == 0 && _args[1].right == 0>>
+					None
+				<<elseif _args[1].left == _args[1].right>>
+					<span class="green"><<print _args[1].left.toUpperFirst()>> (Owned)</span>
+				<<else>>
+					<<if _args[1].left == 0>>
+						<<set _args[1].left to "None">>
+					<</if>>
+					<<if _args[1].right == 0>>
+						<<set _args[1].right to "None">>
+					<</if>>
+					<span class="green"><<print _args[1].left.toUpperFirst() + " (Left), " + _args[1].right.toUpperFirst()+" (Right)">></span>
+				<</if>>
+			<<else>>
+				<<for $_i to 0; $_i lt $makeup.owned[_args[0]].length; $_i++>>
+					<<if $makeup.owned[_args[0]][$_i].colour is _args[1]>>
+						<<if $makeup.owned[_args[0]][$_i].count gt 0>>
+							<span class="green"><<print _args[1].toUpperFirst()>> (<<print "×"+$makeup.owned[_args[0]][$_i].count>>)</span>
+						<<else>>
+							<span class="red"><<print _args[1].toUpperFirst()>> (× 0)</span>
+						<</if>>
+						<<break>>
+					<</if>>
+				<</for>>
+			<</if>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "browsColourPreview">>
+	<span id="browsColourPreview">
+	<<if $browsDyeOption isnot "noChange">>
+		<span @class="'hair-' + $browsDyeOption.replace(/ /g, '-')">
+			<span class="colour-sample bgcolour-hair colour-hair"></span>
+		</span>
+		<br><<link [[Dye eyebrows (0:15)|$passage]]>><<set $mirror_eyebrow_dye to true>><<pass 15>><</link>>
+	<</if>>
+	</span>
+<</widget>>
+
+<<widget "mirrorTransformation">>
+	<<mirroricon>><<link "Back">><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+	<br><br>
+
+	__Genome Dump__
+	<br>
+	<<link "Reset Transformation">><<set $mirrorMenu to "genomedump">><<replace #mirror>><<mirrorDisplay>><</replace>><<numberify "#passages > .passage">><</link>>
+	<br><br>
+
+	<<tfcheck>>
+
+	<<set _angel to $transformationParts.angel>>
+	<<set _fallen to $transformationParts.fallenAngel>>
+	<<set _demon to $transformationParts.demon>>
+	<<set _cat to $transformationParts.cat>>
+	<<set _cow to $transformationParts.cow>>
+	<<set _bear to $transformationParts.bear>>
+	<<set _waterdragon to $transformationParts.waterdragon || {horns:"disabled", ears:"disabled", tail:"disabled"}>>
+	<<set _wolf to $transformationParts.wolf>>
+	<<set _bird to $transformationParts.bird>>
+	<<set _fox to $transformationParts.fox>>
+	<<set _bunny to $transformationParts.bunny>>
+	<<set _okami to $transformationParts.okami>>
+	<<set _seraphim to $transformationParts.seraphim>>
+	<<set _kitsune to $transformationParts.kitsune>>
+	<<set _traits to $transformationParts.traits>>
+
+	<<set _angelFullCheck to ($angel gte 6) or $angeltf is 1>>
+	<<set _fallenFullCheck to ($fallenangel gte 2) or $fallenangeltf is 1>>
+	<<set _fallenPlusFullCheck to ($fallenangel gte 4) or $fallenangelplustf is 1>>
+	<<set _demonFullCheck to ($demon gte 6) or $demontf is 1>>
+	<<set _catFullCheck to ($cat gte 6) or $cattf is 1>>
+	<<set _cowFullCheck to ($cow gte 6) or $cowtf is 1>>
+	<<set _bearFullCheck to ($bear gte 6) or $beartf is 1>>
+	<<set _waterdragonFullCheck to ($waterdragon gte 7) or $waterdragontf is 1>>
+	<<set _waterdragonUnlockedCheck to ($waterdragonCosmeticUnlocked is 1)>>
+	<<set _waterdragonTraitsCheck to (_waterdragonFullCheck or _waterdragonUnlockedCheck)>>
+	<<set _waterdragonSkinMenuCheck to (_waterdragonTraitsCheck or $waterdragonSkinLock isnot 0)>>
+	<<set _wolfFullCheck to ($wolfgirl gte 6) or $wolftf is 1>>
+	<<set _birdFullCheck to ($harpy gte 6) or $harpytf is 1>>
+	<<set _foxFullCheck to ($fox gte 6) or $foxtf is 1>>
+	<<set _bunnyFullCheck to ($bunny gte 6) or $bunnytf is 1>>
+
+	<<set _angelPartialCheck to ($angel gte 4) or $angeltf is 1>>
+	<<set _demonPartialCheck to ($demon gte 4) or $demontf is 1>>
+	<<set _catPartialCheck to ($cat gte 4) or $cattf is 1>>
+	<<set _cowPartialCheck to ($cow gte 4) or $cowtf is 1>>
+	<<set _bearPartialCheck to ($bear gte 4) or $beartf is 1>>
+	<<set _waterdragonPartialCheck to ($waterdragon gte 4) or $waterdragontf is 1>>
+	<<set _waterdragonAppearanceCheck to (_waterdragonPartialCheck or _waterdragonUnlockedCheck)>>
+	<<set _wolfPartialCheck to ($wolfgirl gte 4) or $wolftf is 1>>
+	<<set _birdPartialCheck to ($harpy gte 4) or $harpytf is 1>>
+	<<set _foxPartialCheck to ($fox gte 4) or $foxtf is 1>>
+	<<set _bunnyPartialCheck to ($bunny gte 4) or $bunnytf is 1>>
+
+	<<set _angelInitialCheck to ($angel gte 2) or $angeltf is 1>>
+	<<set _demonInitialCheck to ($demon gte 2) or $demontf is 1>>
+	<<set _catInitialCheck to ($cat gte 2) or $cattf is 1>>
+	<<set _cowInitialCheck to ($cow gte 2) or $cowtf is 1>>
+	<<set _bearInitialCheck to ($bear gte 2) or $beartf is 1>>
+	<<set _waterdragonInitialCheck to ($waterdragon gte 2) or $waterdragontf is 1>>
+	<<set _waterdragonMenuCheck to (_waterdragonInitialCheck or _waterdragonUnlockedCheck)>>
+	<<set _wolfInitialCheck to ($wolfgirl gte 2) or $wolftf is 1>>
+	<<set _birdInitialCheck to ($harpy gte 2) or $harpytf is 1>>
+	<<set _foxInitialCheck to ($fox gte 2) or $foxtf is 1>>
+	<<set _bunnyInitialCheck to ($bunny gte 2) or $bunnytf is 1>>
+
+	<<if _angelFullCheck or _fallenFullCheck or _fallenPlusFullCheck or _demonFullCheck or _catFullCheck or _cowFullCheck or _bearFullCheck or _waterdragonFullCheck or _wolfFullCheck or _birdFullCheck or _foxFullCheck or _bunnyFullCheck>>
+		/* Active TF */
+		<<set _options = {}>> 
+		<<set _options["None"] = "disabled">>
+		<<if _wolfFullCheck>>
+			<<set _options["Wolf"] = "wolf">>
+			<<if _traits.activeTF is "wolf">>
+				<<set _activeTFChoice to _options["Wolf"]>>
+			<</if>>
+		<</if>>
+		<<if _catFullCheck>>
+			<<set _options["Cat"] = "cat">>
+			<<if _traits.activeTF is "cat">>
+				<<set _activeTFChoice to _options["Cat"]>>
+			<</if>>
+		<</if>>
+		<<if _cowFullCheck>>
+			<<set _options["Cow"] = "cow">>
+			<<if _traits.activeTF is "cow">>
+				<<set _activeTFChoice to _options["Cow"]>>
+			<</if>>
+		<</if>>
+		<<if _bearFullCheck>>
+			<<set _options["Bear"] = "bear">>
+			<<if _traits.activeTF is "bear">>
+				<<set _activeTFChoice to _options["Bear"]>>
+			<</if>>
+		<</if>>
+		<<if _waterdragonTraitsCheck>>
+			<<set _options["Water Dragon"] = "waterdragon">>
+			<<if _traits.activeTF is "waterdragon">>
+				<<set _activeTFChoice to _options["Water Dragon"]>>
+			<</if>>
+		<</if>>
+		<<if _birdFullCheck>>
+			<<set _options["Bird"] = "bird">>
+			<<if _traits.activeTF is "bird">>
+				<<set _activeTFChoice to _options["Bird"]>>
+			<</if>>
+		<</if>>
+		<<if _foxFullCheck>>
+			<<set _options["Fox"] = "fox">>
+			<<if _traits.activeTF is "fox">>
+				<<set _activeTFChoice to _options["Fox"]>>
+			<</if>>
+		<</if>>
+		<<if _bunnyFullCheck>>
+			<<set _options["Bunny"] = "bunny">>
+			<<if _traits.activeTF is "bunny">>
+				<<set _activeTFChoice to _options["Bunny"]>>
+			<</if>>
+		<</if>>
+		<<if _angelFullCheck>>
+			<<set _options["Angel"] = "angel">>
+			<<if _traits.activeTF is "angel">>
+				<<set _activeTFChoice to _options["Angel"]>>
+			<</if>>
+		<</if>>
+		<<if _fallenFullCheck>>
+			<<set _options["Fallen Angel"] = "fallenAngel">>
+			<<if _traits.activeTF is "fallenAngel">>
+				<<set _activeTFChoice to _options["Fallen Angel"]>>
+			<</if>>
+		<</if>>
+		<<if _demonFullCheck>>
+			<<set _options["Demon"] = "demon">>
+			<<if _traits.activeTF is "demon">>
+				<<set _activeTFChoice to _options["Demon"]>>
+			<</if>>
+		<</if>>
+		<<if !_activeTFChoice>>
+			<<set _activeTFChoice to 0>>
+		<</if>>
+		<<if Object.keys(_options).length > 1>>
+			<label>Active TF: <<note "If set to anything other than disabled, it will override TF checks to your choice." "yellow">>
+				<div class="tf-activeTF">
+					<<listbox "_activeTFChoice" autoselect>>
+						<<optionsfrom _options>>
+					<</listbox>>
+				</div>
+			</label>
+			<br>
+		<</if>>
+	<</if>>
+
+	<<if _wolfInitialCheck or _catInitialCheck or _cowFullCheck or _bearFullCheck or _waterdragonMenuCheck or $harpy gte 3 or $harpytf is 1 or $fox gte 3 or $foxtf is 1 or _bunnyInitialCheck or (_demonPartialCheck and $exhibitionism gte 95)>>
+		__Traits__<br>
+		<<if _wolfInitialCheck or _catInitialCheck or _foxInitialCheck or _bearInitialCheck or _waterdragonMenuCheck>>
+			Fangs: <<checkbox "_traits.fangs" "disabled" "default" autocheck>><br>
+		<</if>>
+		<<if _catInitialCheck or _birdInitialCheck or _foxInitialCheck>>
+			Sharp Eyes: <<checkbox "_traits.sharpEyes" "disabled" "default" autocheck>><br>
+		<</if>>
+		<<if $waterdragon gte 7 or $waterdragontf is 1 or $waterdragonCosmeticUnlocked is 1>>
+			Dragon Eyes: <<checkbox "_traits.dragonEyes" "disabled" "default" autocheck>><br>
+		<</if>>
+		<<if _cowFullCheck>>
+			Double Semen/Milk: 
+			<<if $semen_max isnot 6000>>
+				<<link [[Set|$passage]]>><<set $semen_max to 6000>><<set $milk_max to 6000>><</link>>
+			<<else>>
+				<<link [[Clear|$passage]]>><<set $semen_max to 3000>><<set $milk_max to 3000>><</link>>
+			<</if>>
+			<br>
+		<</if>>
+		<<if $harpy gte 3 or $harpytf is 1 or $fox gte 3 or $foxtf is 1>>
+			Mate for Life: <<checkbox "_traits.mateForLife" "disabled" "default" autocheck>><br>
+		<</if>>
+		<<if _bunnyInitialCheck>>
+			Strong Feet: <<checkbox "_traits.strongFeet" "disabled" "default" autocheck>><br>
+		<</if>>
+		<<if _demonPartialCheck and hasSexStat("exhibitionism", 6)>>
+			Flaunting when exposed: <<checkbox "_traits.flaunting" "disabled" "default" autocheck>><br>
+		<</if>>
+		<<if $waterdragon gte 7 or $waterdragontf is 1>>
+			Aquatic Lungs: <<checkbox "_traits.aquatic" "disabled" "default" autocheck>><br>
+		<</if>>
+		<<if _waterdragonSkinMenuCheck>>
+			Water Dragon Skin:
+			<<if $waterdragonSkinLock isnot 1>>
+				<<link [[Set|$passage]]>><<set $waterdragonSkinLock to 1>><<syncWaterDragonSkin>><<updatesidebarimg>><</link>>
+			<<elseif $waterdragonSkinLock isnot -1>>
+				<<link [[Clear|$passage]]>><<set $waterdragonSkinLock to -1>><<syncWaterDragonSkin>><<updatesidebarimg>><</link>>
+			<</if>>
+			<br>
+		<</if>>
+		<<if $cat gte 7 or $cattf is 1>>
+			Heterochromia:
+			<<if _cat.heterochromia isnot "default">>
+				<<link [[Set|$passage]]>><<set _cat.heterochromia = "default">><<run window.determineCatEyeStages()>><<set $original_colour = [$leftEyeColour, $rightEyeColour]>><<catHeterochromiaTF 3>><<updatesidebarimg>><</link>>
+			<<else>>
+				<<link [[Clear|$passage]]>><<set _cat.heterochromia = "disabled">><<set $leftEyeColour to $original_colour[0]>><<set $rightEyeColour to $original_colour[1]>><<catHeterochromiaTF "hide">><<updatesidebarimg>><</link>>
+			<</if>>
+			<br><br>
+		<</if>>
+		<<if $DoLPTFBuffs is 1>>
+			<<if _wolfFullCheck>>
+				Spirit of the Wild: <<checkbox "$TFWolfBuffs" 0 1 autocheck>><br>
+			<</if>>
+			<<if _catFullCheck>>
+				Felinous Mischief: <<checkbox "$TFCatBuffs" 0 1 autocheck>><br>
+			<</if>>
+			<<if _cowFullCheck>>
+				Nature's Nurturer: <<checkbox "$TFCowBuffs" 0 1 autocheck>><br>
+			<</if>>
+			<<if _bearFullCheck>>
+				Ursine Strength: <<checkbox "$TFBearBuffs" 0 1 autocheck>><br>
+			<</if>>
+			<<if _waterdragonTraitsCheck>>
+				Dragon's Grace: <<checkbox "$TFWaterDragonBuffs" 0 1 autocheck>><br>
+			<</if>>
+			<<if _birdFullCheck>>
+				Sky's Embrace: <<checkbox "$TFBirdBuffs" 0 1 autocheck>><br>
+			<</if>>
+			<<if _foxFullCheck>>
+				Vixen's Guile: <<checkbox "$TFFoxBuffs" 0 1 autocheck>><br>
+			<</if>>
+			<<if _bunnyFullCheck>>
+				Lapine Celerity: <<checkbox "$TFBunnyBuffs" 0 1 autocheck>><br>
+			<</if>>
+		<</if>>
+		<<if $DoLPTFTempTolerance is 1>>
+			/* Temp Tolerance */
+			<<set _options = {}>> 
+			<<set _options["None"] = "disabled">>
+			<<if _wolfFullCheck>>
+				<<set _options["Wolf"] = "wolf">>
+				<<if _traits.tempTolerance is "wolf">>
+					<<set _tempToleranceChoice to _options["Wolf"]>>
+				<</if>>
+			<</if>>
+			<<if _catFullCheck>>
+				<<set _options["Cat"] = "cat">>
+				<<if _traits.tempTolerance is "cat">>
+					<<set _tempToleranceChoice to _options["Cat"]>>
+				<</if>>
+			<</if>>
+			<<if _cowFullCheck>>
+				<<set _options["Cow"] = "cow">>
+				<<if _traits.tempTolerance is "cow">>
+					<<set _tempToleranceChoice to _options["Cow"]>>
+				<</if>>
+			<</if>>
+			<<if _bearFullCheck>>
+				<<set _options["Bear"] = "bear">>
+				<<if _traits.tempTolerance is "bear">>
+					<<set _tempToleranceChoice to _options["Bear"]>>
+				<</if>>
+			<</if>>
+			<<if _waterdragonTraitsCheck>>
+				<<set _options["Water Dragon"] = "waterdragon">>
+				<<if _traits.tempTolerance is "waterdragon">>
+					<<set _tempToleranceChoice to _options["Water Dragon"]>>
+				<</if>>
+			<</if>>
+			<<if _birdFullCheck>>
+				<<set _options["Bird"] = "bird">>
+				<<if _traits.tempTolerance is "bird">>
+					<<set _tempToleranceChoice to _options["Bird"]>>
+				<</if>>
+			<</if>>
+			<<if _foxFullCheck>>
+				<<set _options["Fox"] = "fox">>
+				<<if _traits.tempTolerance is "fox">>
+					<<set _tempToleranceChoice to _options["Fox"]>>
+				<</if>>
+			<</if>>
+			<<if _bunnyFullCheck>>
+				<<set _options["Bunny"] = "bunny">>
+				<<if _traits.tempTolerance is "bunny">>
+					<<set _tempToleranceChoice to _options["Bunny"]>>
+				<</if>>
+			<</if>>
+			<<if !_tempToleranceChoice>>
+				<<set _tempToleranceChoice to 0>>
+			<</if>>
+			<<if Object.keys(_options).length > 1>>
+				<label>Temperature Tolerance:
+					<div class="tf-tempTolerance">
+						<<listbox "_tempToleranceChoice" autoselect>>
+							<<optionsfrom _options>>
+						<</listbox>>
+					</div>
+				</label>
+				<br>
+			<</if>>
+		<</if>>
+		<br>
+	<</if>>
+
+	/* misc */
+	<<set _options = {}>> 
+	<<set _options["None"] = 0>>
+	<<if _angelFullCheck and _wolfFullCheck>>
+		<<set _options["Okami"] = ["okami", "default"]>>
+		<<if _okami.misc is "default">>
+			<<set _miscChoice to _options["Okami"]>>
+		<</if>>
+	<</if>>
+	<<if _angelFullCheck and _foxFullCheck>>
+		<<set _options["Kitsune"] = ["kitsune", "default"]>>
+		<<if _kitsune.misc is "default">>
+			<<set _miscChoice to _options["Kitsune"]>>
+		<</if>>
+	<</if>>
+	<<if !_miscChoice>>
+		<<set _miscChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Hybrid Misc:
+			<div class="tf-misc">
+				<<listbox "_miscChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Cheeks */
+	<<set _options = {}>> 
+	<<set _options["None"] = 0>>
+	<<if $fox gte 5 or $foxtf is 1>>
+		<<set _options["Fox"] = ["fox", "default"]>>
+		<<if _fox.cheeks is "default">>
+			<<set _cheeksChoice to _options["Fox"]>>
+		<</if>>
+	<</if>>
+	<<if _wolfFullCheck>>
+		<<set _options["Wolf"] = ["wolf", "feral"]>>
+		<<if _wolf.cheeks is "feral">>
+			<<set _cheeksChoice to _options["Wolf"]>>
+		<</if>>
+	<</if>>
+	<<if _angelFullCheck and _foxFullCheck>>
+		<<set _options["Kitsune"] = ["kitsune", "default"]>>
+		<<if _kitsune.cheeks is "default">>
+			<<set _cheeksChoice to _options["Kitsune"]>>
+		<</if>>
+	<</if>>
+	<<if !_cheeksChoice>>
+		<<set _cheeksChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Cheeks:
+			<div class="tf-cheeks">
+				<<listbox "_cheeksChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Malar */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _birdInitialCheck>>
+		<<set _options["Bird"] = ["bird", "default"]>>
+		<<if _bird.malar is "default">>
+			<<set _malarChoice to _options["Bird"]>>
+		<</if>>
+	<</if>>
+	<<if !_malarChoice>>
+		<<set _malarChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Malar:
+			<div class="tf-malar">
+				<<listbox "_malarChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Pits */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if $settings.pubicHairEnabled>>
+		<<if _wolfPartialCheck>>
+			<<set _options["Wolf"] = ["wolf", "default"]>>
+			<<if _wolf.pits is "default">>
+				<<set _pitsChoice to _options["Wolf"]>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if !_pitsChoice>>
+		<<set _pitsChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Pits:
+			<div class="tf-pits">
+				<<listbox "_pitsChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Plumage and Fur */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _bearPartialCheck>>
+		<<set _options["Bear"] = ["bear", "default"]>>
+		<<if _bear.plumage is "default">>
+			<<set _plumageChoice to _options["Bear"]>>
+		<</if>>
+	<</if>>
+	<<if _birdPartialCheck>>
+		<<set _options["Bird"] = ["bird", "default"]>>
+		<<if _bird.plumage is "default">>
+			<<set _plumageChoice to _options["Bird"]>>
+		<</if>>
+	<</if>>
+	<<if _angelFullCheck and _birdFullCheck>>
+		<<set _options["Seraphim"] = ["seraphim", "default"]>>
+		<<if _seraphim.plumage is "default">>
+			<<set _plumageChoice to _options["Seraphim"]>>
+		<</if>>
+	<</if>>
+	<<if !_plumageChoice>>
+		<<set _plumageChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Plumage and Fur:
+			<div class="tf-plumage">
+				<<listbox "_plumageChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Pubes */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if $settings.pubicHairEnabled>>
+		<<if _bearFullCheck>>
+			<<set _options["Bear"] = ["bear", "default"]>>
+			<<if _bear.pubes is "default">>
+				<<set _pubesChoice to _options["Bear"]>>
+			<</if>>
+		<</if>>
+		<<if _birdPartialCheck>>
+			<<set _options["Bird"] = ["bird", "default"]>>
+			<<if _bird.pubes is "default">>
+				<<set _pubesChoice to _options["Bird"]>>
+			<</if>>
+		<</if>>
+		<<if _wolfPartialCheck>>
+			<<set _options["Wolf"] = ["wolf", "default"]>>
+			<<if _wolf.pubes is "default">>
+				<<set _pubesChoice to _options["Wolf"]>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if !_pubesChoice>>
+		<<set _pubesChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Pubes:
+			<div class="tf-pubes">
+				<<listbox "_pubesChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Ears */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _bearFullCheck>>
+		<<set _options["Bear"] = ["bear", "default"]>>
+		<<if _bear.ears is "default">>
+			<<set _earsChoice to _options["Bear"]>>
+		<</if>>
+	<</if>>
+	<<if _bunnyPartialCheck>>
+		<<set _options["Bunny Default"] = ["bunny", "default"]>>
+		<<set _options["Bunny Lop"] = ["bunny", "lop"]>>
+		<<if _bunny.ears is "default">>
+			<<set _earsChoice to _options["Bunny Default"]>>
+		<<elseif _bunny.ears is "lop">>
+			<<set _earsChoice to _options["Bunny Lop"]>>
+		<</if>>
+	<</if>>
+	<<if _catPartialCheck>>
+		<<set _options["Cat"] = ["cat", "default"]>>
+		<<if _cat.ears is "default">>
+			<<set _earsChoice to _options["Cat"]>>
+		<</if>>
+	<</if>>
+	<<if _cowPartialCheck>>
+		<<set _options["Cow"] = ["cow", "default"]>>
+		<<set _options["Cow Spotted Black"] = ["cow", "spotted-black"]>>
+		<<set _options["Cow Spotted Brown"] = ["cow", "spotted-brown"]>>
+		<<set _options["Cow Classic"] = ["cow", "classic"]>>
+		<<set _options["Cow Classic Spotted Black"] = ["cow", "classic-spotted-black"]>>
+		<<set _options["Cow Classic Spotted Brown"] = ["cow", "classic-spotted-brown"]>>
+		<<if _cow.ears is "default">>
+			<<set _earsChoice to _options["Cow"]>>
+		<<elseif _cow.ears is "spotted-black">>
+			<<set _earsChoice to _options["Cow Spotted Black"]>>
+		<<elseif _cow.ears is "spotted-brown">>
+			<<set _earsChoice to _options["Cow Spotted Brown"]>>
+		<<elseif _cow.ears is "classic">>
+			<<set _earsChoice to _options["Cow Classic"]>>
+		<<elseif _cow.ears is "classic-spotted-black">>
+			<<set _earsChoice to _options["Cow Classic Spotted Black"]>>
+		<<elseif _cow.ears is "classic-spotted-brown">>
+			<<set _earsChoice to _options["Cow Classic Spotted Brown"]>>
+		<</if>>
+	<</if>>
+	<<if _foxPartialCheck>>
+		<<set _options["Fox"] = ["fox", "default"]>>
+		<<if _fox.ears is "default">>
+			<<set _earsChoice to _options["Fox"]>>
+		<</if>>
+	<</if>>
+	<<if _wolfPartialCheck>>
+		<<set _options["Wolf Default"] = ["wolf", "default"]>>
+		<<set _options["Wolf Feral"] = ["wolf", "feral"]>>
+		<<if _wolf.ears is "default">>
+			<<set _earsChoice to _options["Wolf Default"]>>
+		<<elseif _wolf.ears is "feral">>
+			<<set _earsChoice to _options["Wolf Feral"]>>
+		<</if>>
+	<</if>>
+	<<if _wolfFullCheck and _angelFullCheck>>
+		<<set _options["Okami"] = ["okami", "default"]>>
+		<<if _okami.ears is "default">>
+			<<set _earsChoice to _options["Okami"]>>
+		<</if>>
+	<</if>>
+	<<if _angelFullCheck and _foxFullCheck>>
+		<<set _options["Kitsune"] = ["kitsune", "default"]>>
+		<<if _kitsune.ears is "default">>
+			<<set _earsChoice to _options["Kitsune"]>>
+		<</if>>
+	<</if>>
+	<<if _waterdragonAppearanceCheck>>
+		<<set _options["Water Dragon"] = ["waterdragon", "default"]>>
+		<<set _options["Water Dragon Purple"] = ["waterdragon", "purple"]>>
+		<<set _options["Water Dragon Gray"] = ["waterdragon", "gray"]>>
+		<<if _waterdragon.ears is "default">>
+			<<set _earsChoice to _options["Water Dragon"]>>
+		<<elseif _waterdragon.ears is "purple">>
+			<<set _earsChoice to _options["Water Dragon Purple"]>>
+		<<elseif _waterdragon.ears is "gray">>
+			<<set _earsChoice to _options["Water Dragon Gray"]>>
+		<</if>>
+	<</if>>
+	<<if !_earsChoice>>
+		<<set _earsChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Ears:
+			<div class="tf-ears">
+				<<listbox "_earsChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Eyes */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _catInitialCheck or _birdInitialCheck or _foxInitialCheck>>
+		<<set _options["Bird"] = ["bird", "default"]>>
+		<<if _bird.eyes is "default">>
+			<<set _eyesChoice to _options["Bird"]>>
+		<</if>>
+	<</if>>
+	<<if _angelFullCheck and _birdFullCheck>>
+		<<set _options["Seraphim"] = ["seraphim", "default"]>>
+		<<if _seraphim.eyes is "default">>
+			<<set _eyesChoice to _options["Seraphim"]>>
+		<</if>>
+	<</if>>
+	<<if _catInitialCheck or _birdInitialCheck or _kitsuneInitialCheck>>
+		<<set _options["Bird"] = ["bird", "default"]>>
+		<<if _bird.eyes is "default">>
+			<<set _eyesChoice to _options["Bird"]>>
+		<</if>>
+	<</if>>
+	<<if !_eyesChoice>>
+		<<set _eyesChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Eyes:
+			<div class="tf-eyes">
+				<<listbox "_eyesChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Halo */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _angelPartialCheck>>
+		<<set _options["Angel Default"] = ["angel", "default"]>>
+		<<set _options["Angel Traditional"] = ["angel", "traditional"]>>
+		<<set _options["Angel Celestial"] = ["angel", "celestial"]>>
+		<<if _angel.halo is "default">>
+			<<set _haloChoice to _options["Angel Default"]>>
+		<<elseif _angel.halo is "traditional">>
+			<<set _haloChoice to _options["Angel Traditional"]>>
+		<<elseif _angel.halo is "celestial">>
+			<<set _haloChoice to _options["Angel Celestial"]>>
+		<</if>>
+	<</if>>
+	<<if $fallenangel gte 1 or $fallenangeltf is 1>>
+		<<set _options["Fallen Angel Default"] = ["fallenAngel", "default"]>>
+		<<set _options["Fallen Angel Celestial"] = ["fallenAngel", "celestial"]>>
+		<<set _options["Fallen Angel Dark Celestial"] = ["fallenAngel", "celestial-black"]>>
+		<<set _options["Fallen Angel Forgiven Celestial"] = ["fallenAngel", "celestial-fallenplus"]>>
+		<<set _options["Fallen Angel Traditional"] = ["fallenAngel", "traditional"]>>
+		<<if _fallen.halo is "default">>
+			<<set _haloChoice to _options["Fallen Angel Default"]>>
+		<<elseif _fallen.halo is "celestial">>
+			<<set _haloChoice to _options["Fallen Angel Celestial"]>>
+		<<elseif _fallen.halo is "celestial-black">>
+			<<set _haloChoice to _options["Fallen Angel Dark Celestial"]>>
+		<<elseif _fallen.halo is "celestial-fallenplus">>
+			<<set _haloChoice to _options["Fallen Angel Forgiven Celestial"]>>
+		<<elseif _fallen.halo is "traditional">>
+			<<set _haloChoice to _options["Fallen Angel Traditional"]>>
+		<</if>>
+	<</if>>
+	<<if !_haloChoice>>
+		<<set _haloChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Halo:
+			<div class="tf-halo">
+				<<listbox "_haloChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Divine Horns */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _demonInitialCheck>>
+		<<set _options["Demon Default"] = ["demon", "default"]>>
+		<<set _options["Demon Succubus"] = ["demon", "succubus"]>>
+		<<set _options["Demon Classic"] = ["demon", "classic"]>>
+		<<if _demon.horns is "default">>
+			<<set _divineHornsChoice to _options["Demon Default"]>>
+		<<elseif _demon.horns is "succubus">>
+			<<set _divineHornsChoice to _options["Demon Succubus"]>>
+		<<elseif _demon.horns is "classic">>
+			<<set _divineHornsChoice to _options["Demon Classic"]>>
+		<</if>>
+	<</if>>
+	<<if !_divineHornsChoice>>
+		<<set _divineHornsChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Divine Horns:
+			<div class="tf-divine-horns">
+				<<listbox "_divineHornsChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+				<<gencolourselector "_demon.horns_colour">>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Horns */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _cowInitialCheck>>
+		<<set _options["Cow"] = ["cow", "default"]>>
+		<<if _cow.horns is "default">>
+			<<set _hornsChoice to _options["Cow"]>>
+		<</if>>
+	<</if>>
+	<<if _waterdragonAppearanceCheck>>
+		<<set _options["Water Dragon"] = ["waterdragon", "default"]>>
+		<<set _options["Water Dragon Short"] = ["waterdragon", "short"]>>
+		<<if _waterdragon.horns is "default">>
+			<<set _hornsChoice to _options["Water Dragon"]>>
+		<<elseif _waterdragon.horns is "short">>
+			<<set _hornsChoice to _options["Water Dragon Short"]>>
+		<</if>>
+	<</if>>
+	<<if !_hornsChoice>>
+		<<set _hornsChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Horns:
+			<div class="tf-horns">
+				<<listbox "_hornsChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Divine Tail */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _demonPartialCheck>>
+		<<set _options["Demon Default"] = ["demon", "default"]>>
+		<<set _options["Demon Imp"] = ["demon", "imp"]>>
+		<<set _options["Demon Classic"] = ["demon", "classic"]>>
+		<<set _options["Demon Succubus"] = ["demon", "succubus"]>>
+		<<if _demon.tail is "default">>
+			<<set _divineTailChoice to _options["Demon Default"]>>
+		<<elseif _demon.tail is "imp">>
+			<<set _divineTailChoice to _options["Demon Imp"]>>
+		<<elseif _demon.tail is "classic">>
+			<<set _divineTailChoice to _options["Demon Classic"]>>
+		<<elseif _demon.tail is "succubus">>
+			<<set _divineTailChoice to _options["Demon Succubus"]>>
+		<</if>>
+	<</if>>
+	<<if _wolfFullCheck and _angelFullCheck>>
+		<<set _options["Okami"] = ["okami", "default"]>>
+		<<if _okami.tail is "default">>
+			<<set _divineTailChoice to _options["Okami"]>>
+		<</if>>
+	<</if>>
+	<<if _angelFullCheck and _foxFullCheck>>
+		<<set _options["Kitsune"] = ["kitsune", "default"]>>
+		<<if _kitsune.tail is "default">>
+			<<set _divineTailChoice to _options["Kitsune"]>>
+		<</if>>
+	<</if>>
+	<<if !_divineTailChoice>>
+		<<set _divineTailChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Divine Tail:
+			<div class="tf-divine-tail">
+				<<listbox "_divineTailChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+				<<gencolourselector "_demon.tail_colour">>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Tail */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _bearPartialCheck>>
+		<<set _options["Bear"] = ["bear", "default"]>>
+		<<if _bear.tail is "default">>
+			<<set _tailChoice to _options["Bear"]>>
+		<</if>>
+	<</if>>
+	<<if _birdPartialCheck>>
+		<<set _options["Bird"] = ["bird", "default"]>>
+		<<if _bird.tail is "default">>
+			<<set _tailChoice to _options["Bird"]>>
+		<</if>>
+	<</if>>
+	<<if _bunnyFullCheck>>
+		<<set _options["Bunny"] = ["bunny", "default"]>>
+		<<if _bunny.tail is "default">>
+			<<set _tailChoice to _options["Bunny"]>>
+		<</if>>
+	<</if>>
+	<<if _catFullCheck>>
+		<<set _options["Cat"] = ["cat", "default"]>>
+		<<if _cat.tail is "default">>
+			<<set _tailChoice to _options["Cat"]>>
+		<</if>>
+	<</if>>
+	<<if _cowFullCheck>>
+		<<set _options["Cow"] = ["cow", "default"]>>
+		<<set _options["Cow Black"] = ["cow", "black"]>>
+		<<if _cow.tail is "default">>
+			<<set _tailChoice to _options["Cow"]>>
+		<<elseif _cow.tail is "black">>
+			<<set _tailChoice to _options["Cow Black"]>>
+		<</if>>
+	<</if>>
+	<<if _foxFullCheck>>
+		<<set _options["Fox"] = ["fox", "default"]>>
+		<<if _fox.tail is "default">>
+			<<set _tailChoice to _options["Fox"]>>
+		<</if>>
+	<</if>>
+	<<if _wolfFullCheck>>
+		<<set _options["Wolf Default"] = ["wolf", "default"]>>
+		<<set _options["Wolf Feral"] = ["wolf", "feral"]>>
+		<<if _wolf.tail is "default">>
+			<<set _tailChoice to _options["Wolf Default"]>>
+		<<elseif _wolf.tail is "feral">>
+			<<set _tailChoice to _options["Wolf Feral"]>>
+		<</if>>
+	<</if>>
+	<<if _waterdragonTraitsCheck>>
+		<<set _options["Water Dragon Long"] = ["waterdragon", "default"]>>
+		<<set _options["Water Dragon Short"] = ["waterdragon", "short"]>>
+		<<set _options["Water Dragon Long Purple"] = ["waterdragon", "purple"]>>
+		<<set _options["Water Dragon Long Gray"] = ["waterdragon", "gray"]>>
+		<<set _options["Water Dragon Short Gray"] = ["waterdragon", "sgray"]>>
+		<<if _waterdragon.tail is "default">>
+			<<set _tailChoice to _options["Water Dragon Long"]>>
+		<<elseif _waterdragon.tail is "short">>
+			<<set _tailChoice to _options["Water Dragon Short"]>>
+		<<elseif _waterdragon.tail is "purple">>
+			<<set _tailChoice to _options["Water Dragon Long Purple"]>>
+		<<elseif _waterdragon.tail is "gray">>
+			<<set _tailChoice to _options["Water Dragon Long Gray"]>>
+		<<elseif _waterdragon.tail is "sgray">>
+			<<set _tailChoice to _options["Water Dragon Short Gray"]>>
+		<</if>>
+	<</if>>
+	<<if !_tailChoice>>
+		<<set _tailChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Tail:
+			<div class="tf-tail">
+				<<listbox "_tailChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Divine Wings */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _angelFullCheck>>
+		<<set _options["Angel Default"] = ["angel", "default"]>>
+		<<set _options["Angel Cherub"] = ["angel", "cherub"]>>
+		<<set _options["Angel Classic"] = ["angel", "classic"]>>
+		<<if _angel.wings is "default">>
+			<<set _divineWingsChoice to _options["Angel Default"]>>
+		<<elseif _angel.wings is "cherub">>
+			<<set _divineWingsChoice to _options["Angel Cherub"]>>
+		<<elseif _angel.wings is "classic">>
+			<<set _divineWingsChoice to _options["Angel Classic"]>>
+		<</if>>
+	<</if>>
+	<<if _demonFullCheck>>
+		<<set _options["Demon Default"] = ["demon", "default"]>>
+		<<set _options["Demon Imp"] = ["demon", "imp"]>>
+		<<set _options["Demon Succubus"] = ["demon", "succubus"]>>
+		<<if _demon.wings is "default">>
+			<<set _divineWingsChoice to _options["Demon Default"]>>
+		<<elseif _demon.wings is "imp">>
+			<<set _divineWingsChoice to _options["Demon Imp"]>>
+		<<elseif _demon.wings is "succubus">>
+			<<set _divineWingsChoice to _options["Demon Succubus"]>>
+		<</if>>
+	<</if>>
+	<<if _fallenFullCheck>>
+		<<set _options["Fallen Angel Default"] = ["fallenAngel", "default"]>>
+		<<set _options["Fallen Angel Torn"] = ["fallenAngel", "torn"]>>
+		<<set _options["Fallen Angel Cherub"] = ["fallenAngel", "cherub"]>>
+		<<set _options["Fallen Angel Dark Cherub"] = ["fallenAngel", "cherub-black"]>>
+		<<set _options["Fallen Angel Classic"] = ["fallenAngel", "classic"]>>
+		<<if _fallen.wings is "default">>
+			<<set _divineWingsChoice to _options["Fallen Angel Default"]>>
+		<<elseif _fallen.wings is "torn">>
+			<<set _divineWingsChoice to _options["Fallen Angel Torn"]>>
+		<<elseif _fallen.wings is "cherub">>
+			<<set _divineWingsChoice to _options["Fallen Angel Cherub"]>>
+		<<elseif _fallen.wings is "cherub-black">>
+			<<set _divineWingsChoice to _options["Fallen Angel Dark Cherub"]>>
+		<<elseif _fallen.wings is "classic">>
+			<<set _divineWingsChoice to _options["Fallen Angel Classic"]>>
+		<</if>>
+	<</if>>
+	<<if _fallenPlusFullCheck>>
+		<<set _options["Fallen Angel Feathered Cherub"] = ["fallenAngel", "cherub-fallenplus"]>>
+		<<set _options["Fallen Angel Feathered"] = ["fallenAngel", "fallenplus"]>>
+		<<set _options["Fallen Angel Classic Feathered"] = ["fallenAngel", "classic-fallenplus"]>>
+		<<if _fallen.wings is "cherub-fallenplus">>
+			<<set _divineWingsChoice to _options["Fallen Angel Feathered Cherub"]>>
+		<<elseif _fallen.wings is "fallenplus">>
+			<<set _divineWingsChoice to _options["Fallen Angel Feathered"]>>
+		<<elseif _fallen.wings is "classic-fallenplus">>
+			<<set _divineWingsChoice to _options["Fallen Angel Classic Feathered"]>>
+		<</if>>
+	<</if>>
+	<<if _wolfFullCheck and _angelFullCheck>>
+		<<set _options["Okami"] = ["okami", "default"]>>
+		<<if _okami.wings is "default">>
+			<<set _divineWingsChoice to _options["Okami"]>>
+		<</if>>
+	<</if>>
+	<<if _angelFullCheck and _birdFullCheck>>
+		<<set _options["Seraphim"] = ["seraphim", "default"]>>
+		<<if _seraphim.wings is "default">>
+			<<set _divineWingsChoice to _options["Seraphim"]>>
+		<</if>>
+	<</if>>
+	<<if !_divineWingsChoice>>
+		<<set _divineWingsChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Divine Wings:
+			<div class="tf-divine-wings">
+				<<listbox "_divineWingsChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+				<<gencolourselector "_demon.wings_colour">>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Wings */
+	<<set _options = {}>>
+	<<set _options["None"] = 0>>
+	<<if _birdFullCheck>>
+		<<set _options["Bird"] = ["bird", "default"]>>
+		<<if _bird.wings is "default">>
+			<<set _wingsChoice to _options["Bird"]>>
+		<</if>>
+	<</if>>
+	<<if !_wingsChoice>>
+		<<set _wingsChoice to 0>>
+	<</if>>
+	<<if Object.keys(_options).length > 1>>
+		<label>Wings:
+			<div class="tf-wings">
+				<<listbox "_wingsChoice" autoselect>>
+					<<optionsfrom _options>>
+				<</listbox>>
+			</div>
+		</label>
+		<br>
+	<</if>>
+
+	/* Chimera */
+	
+	<span id="tf-chimera">
+		<<set _chimeraOptions to {
+			"demoncat_tail" : !["disabled", "hidden"].includesAny(_demon.tail, _cat.tail),
+			"demoncow_tail" : !["disabled", "hidden"].includesAny(_demon.tail, _cow.tail),
+			"demonwolf_tail" : !["disabled", "hidden"].includesAny(_demon.tail, _wolf.tail),
+			"demonfox_tail" : !["disabled", "hidden"].includesAny(_demon.tail, _fox.tail),
+			"demonfox_ears" : !["disabled", "hidden"].includesAny(_fox.ears) && V.demontf == 1,
+			"demonharpy_wings" : !["disabled", "hidden"].includesAny(_demon.wings, _bird.wings),
+			"angelharpy_wings" : !["disabled", "hidden"].includesAny(_angel.wings, _bird.wings),
+			"fallenharpy_wings" : !["disabled", "hidden"].includesAny(_fallen.wings, _bird.wings),
+		}>>
+		<<set _chimeraEnabled to Object.values(_chimeraOptions).some(o => o) ? "" : " hide">>
+		<div class="chimera<<=_chimeraEnabled>>">
+			<<if _divine>><<tficon _divine>><</if>>
+			<span class="gold bold">Chimera</span><br>
+			<<if _chimeraOptions.demoncat_tail>>
+				/* Using demon cat chimera tail. */
+				<label>Demon cat tail:
+					<<listbox "$chimera.demoncat.tail" autoselect>>
+						<<option "Show" true>>
+						<<option "Hide" false>>
+					<</listbox>>
+				</label>
+				<br>
+			<</if>>
+			<<if _chimeraOptions.demoncow_tail>>
+				/* Using demon cow chimera tail. */
+				<label>Demon cow tail:
+					<<listbox "$chimera.demoncow.tail" autoselect>>
+						<<option "Show" true>>
+						<<option "Hide" false>>
+					<</listbox>>
+				</label>
+			<</if>>
+			<<if _chimeraOptions.demonwolf_tail>>
+				/* Using demon wolf chimera tail. */
+				<label>Demon wolf tail:
+					<<listbox "$chimera.demonwolf.tail" autoselect>>
+						<<option "Show" true>>
+						<<option "Hide" false>>
+					<</listbox>>
+				</label>
+				<br>
+			<</if>>
+			<<if _chimeraOptions.demonfox_tail>>
+				/* Using demon fox chimera tail. */
+				<label>Demon fox tail:
+					<<listbox "$chimera.demonfox.tail" autoselect>>
+						<<option "Show" true>>
+						<<option "Hide" false>>
+					<</listbox>>
+				</label>
+				<br>
+			<</if>>
+			<<if _chimeraOptions.demonfox_ears>>
+				/* Using demon fox chimera ears. */
+				<label>Demon fox ears:
+					<<listbox "$chimera.demonfox.ears" autoselect>>
+						<<option "Show" true>>
+						<<option "Hide" false>>
+					<</listbox>>
+				</label>
+				<br>
+			<</if>>
+			<<if _chimeraOptions.demonharpy_wings>>
+				/* Using demon harpy chimera wings. */
+				<label>Demon harpy wings:
+					<<listbox "$chimera.demonharpy.wings" autoselect>>
+						<<option "Show" true>>
+						<<option "Hide" false>>
+					<</listbox>>
+				</label>
+				<br>
+			<</if>>
+			<<if _chimeraOptions.angelharpy_wings>>
+				/* Using angel harpy chimera wings. */
+				<label>Angel harpy wings:
+					<<listbox "$chimera.angelharpy.wings" autoselect>>
+						<<option "Show" true>>
+						<<option "Hide" false>>
+					<</listbox>>
+				</label>
+				<br>
+			<</if>>
+			<<if _chimeraOptions.fallenharpy_wings>>
+				/* Using fallen angel harpy chimera wings. */
+				<label>Fallen harpy wings:
+					<<listbox "$chimera.fallenharpy.wings" autoselect>>
+						<<option "Show" true>>
+						<<option "Hide" false>>
+					<</listbox>>
+				</label>
+				<br>
+			<</if>>
+		</div>
+	</span>
+
+	<<if ($traumatized isnot undefined)>>
+		__Trauma__<br>
+		<<link [[Set|$passage]]>><<set $traumaeyes to true>><<updatesidebarimg>><</link>> / <<link [[Clear|$passage]]>><<set $traumaeyes to false>><<updatesidebarimg>><</link>><br>
+		<br>
+	<</if>>
+	
+	<<if !["demon", "cow"].every(transform => T[transform].horns is "disabled") || !["demon", "cat", "cow", "wolf", "bird", "fox"].every(transform => T[transform].tail is "disabled") || !["angel", "fallen", "demon", "bird"].every(transform => T[transform].wings is "disabled") || !["fox", "wolf", "cat"].every(transform => T[transform].ears is "disabled")>>
+		<div class="settingsToggleItemWide no-numberify">
+			<span class="gold bold">Layer Adjustments:</span>
+			<br>
+			<<if !["demon", "cow", "waterdragon"].every(transform => !T[transform] || T[transform].horns === "disabled")>>
+				<<switch $hornslayer>>
+					<<case "front">>
+						<<link "Prioritise headwear over horns">>
+							<<run State.setVar("$hornslayer", "back")>>
+							<<run Engine.show()>>
+						<</link>>
+					<<case "back">>
+						<<link "Prioritise horns over headwear">>
+							<<run State.setVar("$hornslayer", "front")>>
+							<<run Engine.show()>>
+						<</link>>
+					<<default>>
+						<<link "Prioritise horns over headwear">>
+							<<run State.setVar("$hornslayer", "front")>>
+							<<run Engine.show()>>
+									<<updatesidebarimg true>>
+								<</link>>
+						<</switch>>
+						<br>
+					<</if>>
+					/* TF ears position WIP*/
+					<<if !["fox", "wolf", "cat"].every(transform => T[transform].ears is "disabled")>>
+							<<switch $tfearslayer>>
+								<<case "front">>
+									<<link "Position hair in front of animal ears">>
+										<<run State.setVar("$tfearslayer", "back")>>
+										<<run Engine.show()>>
+										<<updatesidebarimg true>>
+									<</link>>
+								<<case "back">>
+									<<link "Tuck hair behind animal ears">>
+										<<run State.setVar("$tfearslayer", "front")>>
+										<<run Engine.show()>>
+										<<updatesidebarimg true>>
+									<</link>>
+								<<default>>
+									<<link "Tuck hair behind animal ears">>
+										<<run State.setVar("$tfearslayer", "front")>>
+										<<run Engine.show()>>
+										<<updatesidebarimg true>>
+									<</link>>
+							<</switch>>
+							<br>
+			<</if>>
+			<<if !["demon", "cat", "cow", "bear", "wolf", "bird", "fox", "okami", "kitsune", "waterdragon"].every(transform => T[transform].tail is "disabled")>>
+				<<switch $taillayer>>
+					<<case "front">>
+						<<link "Push tail back">>
+							<<run State.setVar("$taillayer", "back")>>
+							<<run Engine.show()>>
+						<</link>>
+					<<case "back">>
+						<<link "Move tail forward">>
+							<<run State.setVar("$taillayer", "front")>>
+							<<run Engine.show()>>
+						<</link>>
+					<<default>>
+						<<link "Push tail back">>
+							<<run State.setVar("$taillayer", "back")>>
+							<<run Engine.show()>>
+						<</link>>
+				<</switch>>
+				<br>
+			<</if>>
+			<<if !["angel", "fallen", "demon", "bird", "okami"].every(transform => T[transform].wings is "disabled")>>
+				<<switch $wingslayer>>
+					<<case "front">>
+						<<link "Push wings behind">>
+							<<run State.setVar("$wingslayer", "back")>>
+							<<run Engine.show()>>
+						<</link>>
+					<<case "back">>
+						<<link "Move wings forward">>
+							<<run State.setVar("$wingslayer", "front")>>
+							<<run Engine.show()>>
+						<</link>>
+					<<default>>
+						<<link "Push wings behind">>
+							<<run State.setVar("$wingslayer", "back")>>
+							<<run Engine.show()>>
+						<</link>>
+				<</switch>>
+				<br>
+			<</if>>
+		</div>
+	<</if>>
+		<<if _isMenuEnabled>>
+			<details class="expandMenu">
+				<summary class="expandMenu">Custom Colours</summary>
+				<div class="menuWarning">
+					You haven't chosen any transformation parts! Select the checkboxes for the parts you'd like to recolour.
+				</div>
+				<div class="menuContent hidden">
+					<<set _options to ['ffffff', 'ff0000', '00ff00', '0000ff', '590099', '000000']>>
+					<<gencoloursquares _options>>
+					<<gencolourpicker>>
+				</div>
+			</details>
+		<</if>>
+
+	<br>
+	<<link "Top of Page">>
+		<<script>>
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+		<</script>>
+	<</link>>
+	<br>
+	/*
+	<<link [[Confirm|$passage]]>>
+		<<set $mirrorMenu to "transformation">>
+		/* <<if _cat.heterochromia is "hidden">>
+			<<catHeterochromiaTF "hide">>
+		<<elseif $cat gte 7 and $cat lte 10>>
+			<<catHeterochromiaTF `$cat - 7`>>
+		<</if>>
+	<</link>>
+	*/
+	<!-- Attach an event to every listbox item to update the PC on the sidebar. -->
+	<<script>>
+		jQuery('.passage').on('change', 'div.tf-activeTF select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<set _traits.activeTF = _activeTFChoice>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-tempTolerance select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<set _traits.tempTolerance = _tempToleranceChoice>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-misc select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearmisc>><<if _miscChoice isnot 0>><<set $transformationParts[_miscChoice[0]].misc = _miscChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-cheeks select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearcheeks>><<if _cheeksChoice isnot 0>><<set $transformationParts[_cheeksChoice[0]].cheeks = _cheeksChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-malar select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearmalar>><<if _malarChoice isnot 0>><<set $transformationParts[_malarChoice[0]].malar = _malarChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-pits select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearpits>><<if _pitsChoice isnot 0>><<set $transformationParts[_pitsChoice[0]].pits = _pitsChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-plumage select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearplumage>><<if _plumageChoice isnot 0>><<set $transformationParts[_plumageChoice[0]].plumage = _plumageChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-pubes select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearpubes>><<if _pubesChoice isnot 0>><<set $transformationParts[_pubesChoice[0]].pubes = _pubesChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-ears select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearears>><<if _earsChoice isnot 0>><<set $transformationParts[_earsChoice[0]].ears = _earsChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-eyes select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<cleareyes>><<if _eyesChoice isnot 0>><<set $transformationParts[_eyesChoice[0]].eyes = _eyesChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-halo select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearhalo>><<if _haloChoice isnot 0>><<set $transformationParts[_haloChoice[0]].halo = _haloChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-divine-horns select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<cleardivinehorns>><<if _divineHornsChoice isnot 0>><<set $transformationParts[_divineHornsChoice[0]].horns = _divineHornsChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-horns select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearhorns>><<if _hornsChoice isnot 0>><<set $transformationParts[_hornsChoice[0]].horns = _hornsChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-divine-tail select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<cleardivinetail>><<if _divineTailChoice isnot 0>><<set $transformationParts[_divineTailChoice[0]].tail = _divineTailChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-tail select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<cleartail>><<if _tailChoice isnot 0>><<set $transformationParts[_tailChoice[0]].tail = _tailChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-divine-wings select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<cleardivinewings>><<if _divineWingsChoice isnot 0>><<set $transformationParts[_divineWingsChoice[0]].wings = _divineWingsChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'div.tf-wings select.macro-listbox', function (e) {
+			Wikifier.wikifyEval('<<clearwings>><<if _wingsChoice isnot 0>><<set $transformationParts[_wingsChoice[0]].wings = _wingsChoice[1]>><</if>>');
+		});
+		jQuery('.passage').on('change', 'select.macro-listbox', function (e) {
+			if (V.transformationParts.cat.heterochromia === "hidden") {
+				Wikifier.wikifyEval('<<catHeterochromiaTF "hide">>');
+			} else if (V.cat >= 7 && V.cat <= 10) {
+				Wikifier.wikifyEval('<<catHeterochromiaTF `$cat - 7`>>')
+			};
+			Wikifier.wikifyEval('<<updatesidebarimg true>>');
+			if (V.mirrorMenu == "transformation") {
+				Wikifier.wikifyEval('
+					<<replace #tf-chimera>>
+						<<set _chimeraOptions to {
+							"demoncat_tail" : !["disabled", "hidden"].includesAny(_demon.tail, _cat.tail),
+							"demoncow_tail" : !["disabled", "hidden"].includesAny(_demon.tail, _cow.tail),
+							"demonwolf_tail" : !["disabled", "hidden"].includesAny(_demon.tail, _wolf.tail),
+							"demonfox_tail" : !["disabled", "hidden"].includesAny(_demon.tail, _fox.tail),
+							"demonfox_ears" : !["disabled", "hidden"].includesAny(_fox.ears) && V.demontf == 1,
+							"demonharpy_wings" : !["disabled", "hidden"].includesAny(_demon.wings, _bird.wings),
+							"angelharpy_wings" : !["disabled", "hidden"].includesAny(_angel.wings, _bird.wings),
+							"fallenharpy_wings" : !["disabled", "hidden"].includesAny(_fallen.wings, _bird.wings),
+						}>>
+						<<set _chimeraEnabled to Object.values(_chimeraOptions).some(o => o) ? "" : " hide">>
+						<div class="chimera<<=_chimeraEnabled>>">
+							<<if _divine>><<tficon _divine>><</if>>
+							<span class="gold bold">Chimera</span><br>
+							<<if _chimeraOptions.demoncat_tail>>
+								/* Using demon cat chimera tail. */
+								<label>Demon cat tail:
+									<<listbox "$chimera.demoncat.tail" autoselect>>
+										<<option "Show" true>>
+										<<option "Hide" false>>
+									<</listbox>>
+								</label>
+								<br>
+							<</if>>
+							<<if _chimeraOptions.demoncow_tail>>
+								/* Using demon cow chimera tail. */
+								<label>				Demon cow tail:
+									<<listbox "$chimera.demoncow.tail" autoselect>>
+										<<option "Show" true>>
+										<<option "Hide" false>>
+									<</listbox>>
+								</label>
+								<br>
+							<</if>>
+							<<if _chimeraOptions.demonwolf_tail>>
+								/* Using demon wolf chimera tail. */
+								<label>				Demon wolf tail:
+									<<listbox "$chimera.demonwolf.tail" autoselect>>
+										<<option "Show" true>>
+										<<option "Hide" false>>
+									<</listbox>>
+								</label>
+								<br>
+							<</if>>
+							<<if _chimeraOptions.demonfox_tail>>
+								/* Using demon fox chimera tail. */
+								<label>				Demon fox tail:
+									<<listbox "$chimera.demonfox.tail" autoselect>>
+										<<option "Show" true>>
+										<<option "Hide" false>>
+									<</listbox>>
+								</label>
+								<br>
+							<</if>>
+							<<if _chimeraOptions.demonfox_ears>>
+								/* Using demon fox chimera ears. */
+								<label>				Demon fox ears:
+									<<listbox "$chimera.demonfox.ears" autoselect>>
+										<<option "Show" true>>
+										<<option "Hide" false>>
+									<</listbox>>
+								</label>
+								<br>
+							<</if>>
+							<<if _chimeraOptions.demonharpy_wings>>
+								/* Using demon harpy chimera wings. */
+								<label>Demon harpy wings:
+									<<listbox "$chimera.demonharpy.wings" autoselect>>
+										<<option "Show" true>>
+										<<option "Hide" false>>
+									<</listbox>>
+								</label>
+								<br>
+							<</if>>
+							<<if _chimeraOptions.angelharpy_wings>>
+								/* Using angel harpy chimera wings. */
+								<label>				Angel harpy wings:
+									<<listbox "$chimera.angelharpy.wings" autoselect>>
+										<<option "Show" true>>
+										<<option "Hide" false>>
+									<</listbox>>
+								</label>
+								<br>
+							<</if>>
+							<<if _chimeraOptions.fallenharpy_wings>>
+								/* Using fallen angel harpy chimera wings. */
+								<label>				Fallen harpy wings:
+									<<listbox "$chimera.fallenharpy.wings" autoselect>>
+										<<option "Show" true>>
+										<<option "Hide" false>>
+									<</listbox>>
+								</label>
+								<br>
+							<</if>>
+						</div>
+					<</replace>>
+				');
+			}
+		});
+	<</script>>
+<</widget>>
+
+<<widget "genomedump">>
+	<<link "Back">><<set $mirrorMenu to "transformation">><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+	<br><br>
+	<span class="red">Warning: This will reset your manifestation and transformation points for the specified transformation.
+	<br><br>
+	<i>It is highly recommended you only do this after completing the transformation in its entirety.</i></span>
+	<br><br>
+	<<if $angelbuild gte 1>>
+	Angel Transform: <<link [[Reset|$passage]]>><<angelTransform 99>><<updatesidebarimg>><</link>><<if $angeltf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $fallenangel gte 1>>
+	Fallen Angel Transform: <<link [[Reset|$passage]]>><<fallenButNotOut 99>><<updatesidebarimg>><</link>><<if $fallenangelplustf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $demonbuild gte 1>>
+	Demon Transform: <<link [[Reset|$passage]]>><<demonTransform 99>><<updatesidebarimg>><</link>><<if $demontf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $wolfbuild gte 1>>
+	Wolf Transform: <<link [[Reset|$passage]]>><<wolfTransform 99>><<updatesidebarimg>><</link>><<if $wolftf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $catbuild gte 1>>
+	Cat Transform: <<link [[Reset|$passage]]>><<catTransform 99>><<updatesidebarimg>><</link>><<if $cattf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $cowbuild gte 1>>
+	Cow Transform: <<link [[Reset|$passage]]>><<cowTransform 99>><<updatesidebarimg>><</link>><<if $cowtf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $bearbuild gte 1>>
+	Bear Transform: <<link [[Reset|$passage]]>><<bearTransform 99>><<updatesidebarimg>><</link>><<if $beartf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $waterdragonbuild gte 1>>
+	Water Dragon Transform: <<link [[Reset|$passage]]>><<if $waterdragontf is 1>><<set $waterdragonCosmeticUnlocked to 1>><</if>><<waterdragonTransform 99>><<syncWaterDragonSkin>><<updatesidebarimg>><</link>><<if $waterdragontf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $birdbuild gte 1>>
+	Bird Transform: <<link [[Reset|$passage]]>><<harpyTransform 99>><<updatesidebarimg>><</link>><<if $harpytf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $foxbuild gte 1>>
+	Fox Transform: <<link [[Reset|$passage]]>><<foxTransform 99>><<updatesidebarimg>><</link>><<if $foxtf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+	<<if $bunnybuild gte 1>>
+	Bunny Transform: <<link [[Reset|$passage]]>><<bunnyTransform 99>><<updatesidebarimg>><</link>><<if $bunnytf is 1>><span class="green">Safe</span><<else>><span class="red">Unsafe</span><</if>><br>
+	<</if>>
+<</widget>>
