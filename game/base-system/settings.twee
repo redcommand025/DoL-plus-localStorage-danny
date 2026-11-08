@@ -102,7 +102,7 @@
 	<<set $settings.tendingYieldModifier to 5>>
 	<<set $notifyUpdate = true>>
 	<<set $ModExclusiveLIEnabled to $ModExclusiveLIEnabled is undefined ? 0 : $ModExclusiveLIEnabled>>
-	<<run ensureModLISettings()>>
+	<<run typeof ensureModLISettings === "function" && ensureModLISettings()>>
 	<<set _tan to 0>>
 
 	<<startingPlayerImageReset>>
@@ -4175,7 +4175,7 @@
 <</widget>>
 
 <<widget "modLISettingsSection">>
-	<<run ensureModLISettings()>>
+	<<run typeof ensureModLISettings === "function" && ensureModLISettings()>>
 	<<set _enabledModLIs to getActivatedModLIs()>>
 	<<set _availableModLIs to getAvailableModLIs()>>
 	<div class="settingsToggleItemWide">
