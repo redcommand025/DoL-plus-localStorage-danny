@@ -1,6 +1,8 @@
 <script>
 /* Storage fallback: localStorage/sessionStorage/indexedDB may be missing or throw
-   (private windows, blocked storage). Keep an in-memory stub so boot cannot loop. */
+   (private windows, blocked storage). Keep an in-memory stub so boot cannot loop.
+   This script must run before SugarCube libraries: SugarCube disables its IDB
+   adapter only when window.indexedDB == null, and otherwise calls indexedDB.open(). */
 (function(){
   function makeStub(){
     var mem = {};
@@ -25,15 +27,26 @@
       return ok;
     } catch (e) { return false; }
   }
-  function ensure(name, stub){
-    try { if (works(window[name])) return; } catch (e) {}
-    try { delete window[name]; } catch (e) {}
+  function defineOn(obj, name, stub){
     try {
-      Object.defineProperty(window, name, { value: stub, configurable: true, writable: true });
-      if (works(window[name])) return;
+      Object.defineProperty(obj, name, { value: stub, configurable: true, writable: true, enumerable: true });
+      return works(obj[name]);
+    } catch (e) { return false; }
+  }
+  function ensure(name, stub){
+    try { if (works(window[name])) return true; } catch (e) {}
+    try { delete window[name]; } catch (e) {}
+    if (defineOn(window, name, stub)) return true;
+    try {
+      if (typeof Window !== "undefined" && Window.prototype && defineOn(Window.prototype, name, stub)) return true;
     } catch (e) {}
     try { window[name] = stub; } catch (e) {}
+    try { return works(window[name]); } catch (e) { return false; }
   }
+  var nativeLS = false;
+  var nativeSS = false;
+  try { nativeLS = works(window.localStorage); } catch (e) {}
+  try { nativeSS = works(window.sessionStorage); } catch (e) {}
   ensure("localStorage", memLS);
   ensure("sessionStorage", memSS);
   try {
@@ -54,6 +67,31 @@
       });
     }
   } catch (e) {}
+  function disableIndexedDB(){
+    function setNull(obj){
+      try { delete obj.indexedDB; } catch (e) {}
+      try {
+        Object.defineProperty(obj, "indexedDB", { value: null, configurable: true, writable: true, enumerable: true });
+        return obj.indexedDB == null;
+      } catch (e) {
+        try { obj.indexedDB = null; return obj.indexedDB == null; } catch (e2) { return false; }
+      }
+    }
+    setNull(window);
+    try { if (typeof Window !== "undefined" && Window.prototype) setNull(Window.prototype); } catch (e) {}
+  }
+  function idbUnusable(){
+    try {
+      if (window.indexedDB == null) return true;
+      if (typeof window.indexedDB.open !== "function") return true;
+    } catch (e) { return true; }
+    try { window.indexedDB.open("__dol_idb_probe__"); }
+    catch (e) { return true; }
+    return false;
+  }
+  if (!nativeLS || !nativeSS || idbUnusable()) {
+    disableIndexedDB();
+  }
   window.plusneedsMemoryStore = function(storageId, persistent){
     var key = String(storageId) + (persistent ? "!p" : "!s");
     var root = window.__plusneedsMem = window.__plusneedsMem || {};
