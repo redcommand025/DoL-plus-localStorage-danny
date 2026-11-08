@@ -1122,7 +1122,8 @@ You are in Poppy's kitchen. The walls are lined with wooden wall cabinets and co
 		<<link [[Eat dinner (0:20)|Flats Poppy Eat Meal]]>><<pass 20>><<run markPoppyInteraction()>><</link>><br><br>
 	<</if>>
 <</if>>
-<<allowLewdIngredients>><<kitchenDisplay>>
+<<allowLewdIngredients>><<plusKitchenSnack>><br>
+<<kitchenDisplay>>
 <<if $cookbook is true>>
 	<<set _baseTime to Math.max(180 - (6 * Math.round($housekeeping / 50)), 10)>>
 	<<set _timeString to getTimeString(_baseTime)>>

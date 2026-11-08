@@ -215,7 +215,8 @@
 		<<socialiseicon>><<link [[Socialise with classmates|Maths Lesson Socialise]]>><</link>><<gcool>><<ltrauma>><<lstress>><<gharass>>
 		<br>
 	<</if>>
-	<<daydreamicon>><<link [[Daydream|Maths Lesson Daydream]]>><</link>><<lstress>><<ltiredness>><<ltiredness>><<lharass>>
+	<<plusClassAskLinks>>
+<<daydreamicon>><<link [[Daydream|Maths Lesson Daydream]]>><</link>><<lstress>><<ltiredness>><<ltiredness>><<lharass>>
 	<br>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
 		<<bedicon "zzz">><<link [[Sleep at your desk|Maths Lesson Sleep]]>><</link>><<ltiredness>>

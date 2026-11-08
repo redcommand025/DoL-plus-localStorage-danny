@@ -5382,6 +5382,7 @@ You are in the kitchen in Alex's cottage. There's a window above the sink, givin
 <<allowLewdIngredients>>
 <br><br>
 
+<<plusKitchenSnack>><br>
 <<kitchenDisplay>>
 <<if $cookbook is true>>
 	<<set _baseTime to Math.max(180 - (6 * Math.round($housekeeping / 50)), 10)>>

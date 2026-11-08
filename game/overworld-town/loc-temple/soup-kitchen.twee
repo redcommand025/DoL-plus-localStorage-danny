@@ -675,7 +675,8 @@ The rest of the hour passes without event.
 	<</if>>
 	<br><br>
 	<<set _hourRestriction to 21>>
-	<<kitchenDisplay>>
+	<<plusKitchenSnack>><br>
+<<kitchenDisplay>>
 	<<if $cookbook is true>>
 		<<set _baseTime to Math.max(180 - (6 * Math.round($housekeeping / 50)), 10)>>
 		<<set _timeString to getTimeString(_baseTime)>>

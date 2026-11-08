@@ -710,6 +710,7 @@
 			<<characteristic-box _promiscuityConfig>>
 			<<characteristic-box _exhibitionismConfig>>
 			<<characteristic-box _deviancyConfig>>
+			<<plusContinenceBox>>
 		</div>
 
 		<!--Common states for skills with grades-->

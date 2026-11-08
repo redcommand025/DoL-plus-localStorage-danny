@@ -543,6 +543,7 @@
 		<div id="detailedStatsDiv"><<statisticsDetailedTables>></div>
 	<</foldout>>
 
+	<<plusNeedsStatistics>>
 	<<foldout false "_miscFoldout">>
 		<span class="gold">Miscellaneous</span>
 		<<if $gamemode isnot "soft">>

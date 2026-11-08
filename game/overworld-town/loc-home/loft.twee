@@ -94,6 +94,7 @@ You are in the kitchen in the orphanage loft, hidden away from Bailey.
 <</if>>
 
 <<allowLewdIngredients>>
+<<plusKitchenSnack>><br>
 <<kitchenDisplay>>
 <<if $cookbook is true>>
 	<<set _baseTime to Math.max(180 - (6 * Math.round($housekeeping / 50)), 10)>>

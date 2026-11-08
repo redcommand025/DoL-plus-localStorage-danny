@@ -48,6 +48,7 @@
 			<mouse class="tooltip-centertop">Al<span>Allure: <<print $allure.toFixed(2)>></span></mouse>
 		</div>
 	<</if>>
+	<<plusNeedsMobile>>
 	<<if Number.isFinite($drunk) and $drunk gt 0>>
 		<<mobileStatsColor "drunk">>
 		<div @class="'stat ' + _mobileColor">

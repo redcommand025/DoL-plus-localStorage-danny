@@ -2948,6 +2948,7 @@ You are in Eden's kitchen. A grill sits over a fire, and looks more hygienic tha
 <<allowLewdIngredients>>
 <br><br>
 
+<<plusKitchenSnack>><br>
 <<kitchenDisplay>>
 <<if $cookbook is true>>
 	<<set _baseTime to Math.max(180 - (6 * Math.round($housekeeping / 50)), 10)>>
