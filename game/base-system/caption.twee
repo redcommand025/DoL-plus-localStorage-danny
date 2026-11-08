@@ -272,6 +272,10 @@
 			<<arousalcaption>>
 			<<tirednesscaption>>
 			<<stresscaption>>
+			<<hungercaption>>
+			<<thirstcaption>>
+			<<bladdercaption>>
+			<<bowelscaption>>
 			<<if $innocencestate is 1>>
 				<<innocencecaption>>
 			<<else>>

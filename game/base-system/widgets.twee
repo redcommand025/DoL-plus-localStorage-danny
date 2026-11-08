@@ -6286,3 +6286,95 @@
 		<</if>>
 	<</if>>
 <</widget>>
+/* Needs system - integrated like other status stats */
+<<widget "hungercaption">>
+	<<if Number.isFinite($plusHunger)>>
+		<div id="hungercaption" @title="'Hunger: ' + $plusHunger.toFixed(0) + ' / 2000'">
+			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
+				Hunger:
+				<<if $options.showCaptionText is true>>
+					<<if $plusHunger gte 1500>>
+						<span class="green">You are full.</span>
+					<<elseif $plusHunger gte 1000>>
+						<span class="lblue">You could eat.</span>
+					<<elseif $plusHunger gte 400>>
+						<span class="purple">You are hungry.</span>
+					<<else>>
+						<span class="red">You are starving.</span>
+					<</if>>
+				<</if>>
+			</div>
+			<<set _showCaptionText to !$options.showCaptionText>>
+			<<statbarinverted $plusHunger 2000 _showCaptionText>>
+		</div>
+	<</if>>
+<</widget>>
+
+<<widget "thirstcaption">>
+	<<if Number.isFinite($plusThirst)>>
+		<div id="thirstcaption" @title="'Thirst: ' + $plusThirst.toFixed(0) + ' / 2000'">
+			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
+				Thirst:
+				<<if $options.showCaptionText is true>>
+					<<if $plusThirst gte 1500>>
+						<span class="green">You are hydrated.</span>
+					<<elseif $plusThirst gte 1000>>
+						<span class="lblue">You could drink.</span>
+					<<elseif $plusThirst gte 400>>
+						<span class="purple">You are thirsty.</span>
+					<<else>>
+						<span class="red">You are parched.</span>
+					<</if>>
+				<</if>>
+			</div>
+			<<set _showCaptionText to !$options.showCaptionText>>
+			<<statbarinverted $plusThirst 2000 _showCaptionText>>
+		</div>
+	<</if>>
+<</widget>>
+
+<<widget "bladdercaption">>
+	<<if Number.isFinite($plusBladder)>>
+		<div id="bladdercaption" @title="'Bladder: ' + $plusBladder.toFixed(0) + ' / 2000'">
+			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
+				Bladder:
+				<<if $options.showCaptionText is true>>
+					<<if $plusBladder gte 1500>>
+						<span class="green">You are fine.</span>
+					<<elseif $plusBladder gte 1000>>
+						<span class="lblue">You could go.</span>
+					<<elseif $plusBladder gte 400>>
+						<span class="purple">You should find a toilet soon.</span>
+					<<else>>
+						<span class="red">You really need a toilet now!</span>
+					<</if>>
+				<</if>>
+			</div>
+			<<set _showCaptionText to !$options.showCaptionText>>
+			<<statbarinverted $plusBladder 2000 _showCaptionText>>
+		</div>
+	<</if>>
+<</widget>>
+
+<<widget "bowelscaption">>
+	<<if Number.isFinite($plusBowels)>>
+		<div id="bowelscaption" @title="'Bowels: ' + $plusBowels.toFixed(0) + ' / 2000'">
+			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
+				Bowels:
+				<<if $options.showCaptionText is true>>
+					<<if $plusBowels gte 1500>>
+						<span class="green">You are fine.</span>
+					<<elseif $plusBowels gte 1000>>
+						<span class="lblue">You could go.</span>
+					<<elseif $plusBowels gte 400>>
+						<span class="purple">You should find a toilet soon.</span>
+					<<else>>
+						<span class="red">You really need a toilet now!</span>
+					<</if>>
+				<</if>>
+			</div>
+			<<set _showCaptionText to !$options.showCaptionText>>
+			<<statbarinverted $plusBowels 2000 _showCaptionText>>
+		</div>
+	<</if>>
+<</widget>>
