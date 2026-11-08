@@ -1,0 +1,1002 @@
+:: Widgets Plus Needs [widget plusneeds]
+/* Sidebar captions for the Plus Needs mod. Values: 2000 = satisfied, 0 = empty. */
+<<widget "plusneedsbar">>
+	/* _args[0] = label, _args[1] = value, _args[2..5] = flavor text full/mid/low/very low */
+	<<set _pnValue to Math.clamp(_args[1], 0, 2000)>>
+	<div @class="'plusneedscaption' + ($options.showCaptionText is true ? '' : ' rightMeterText')" @title="_args[0] + ': ' + _pnValue.toFixed(0) + ' / 2000'">
+		<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
+			_args[0]:
+			<<if $options.showCaptionText is true>>
+				<<if _pnValue gte 1500>>
+					<span class="green">_args[2]</span>
+				<<elseif _pnValue gte 1000>>
+					<span class="lblue">_args[3]</span>
+				<<elseif _pnValue gte 400>>
+					<span class="purple">_args[4]</span>
+				<<else>>
+					<span class="red">_args[5]</span>
+				<</if>>
+			<</if>>
+		</div>
+		<<set _showCaptionText to !$options.showCaptionText>>
+		<<statbarinverted _pnValue 2000 _showCaptionText>>
+	</div>
+<</widget>>
+
+/* Diaper meters (shown only while a mod diaper is worn): Pee ml/capacity, Poo lb/capacity. */
+<<widget "plusdiaperbar">>
+	/* _args: label, value, max, text */
+	<<set _pnDV to Math.clamp(_args[1], 0, _args[2])>>
+	<div @class="'plusneedscaption plusdiaperbar' + ($options.showCaptionText is true ? '' : ' rightMeterText')" @title="_args[0] + ': ' + _args[3]">
+		<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
+			_args[0]:
+			<<if $options.showCaptionText is true>>
+				<<if _pnDV gte _args[2]>><span class="red">_args[3] (full)</span>
+				<<elseif _pnDV gte _args[2] * 0.75>><span class="purple">_args[3]</span>
+				<<elseif _pnDV gt 0>><span class="lblue">_args[3]</span>
+				<<else>><span class="green">_args[3]</span>
+				<</if>>
+			<</if>>
+		</div>
+		<<set _showCaptionText to !$options.showCaptionText>>
+		<<statbar 0 _pnDV _args[2] _showCaptionText>>
+	</div>
+<</widget>>
+
+<<widget "plusdiaperbars">>
+	<<set _pnDB to plusDiaperBarData()>>
+	<<if _pnDB>>
+		<<plusdiaperbar "Pee" _pnDB.ml _pnDB.capMl _pnDB.mlText>>
+		<<plusdiaperbar "Poo" _pnDB.lb _pnDB.capLb _pnDB.lbText>>
+	<</if>>
+<</widget>>
+
+<<widget "plusneedscaption">>
+	<<run plusNeedsInit()>>
+	<<plusneedsbar "Hunger" $plusHunger "You feel well fed." "You could go for a snack." "You should eat something." "You're starving.">>
+	<<plusneedsbar "Thirst" $plusThirst "You're not thirsty." "You could use a drink." "You should drink something." "You're parched.">>
+	<<plusneedsbar "Bladder" $plusBladder "You feel comfortable." "You'll need the toilet at some point." "You should find a toilet soon." "You really need a toilet now!">>
+	<<plusneedsbar "Bowels" $plusBowels "You feel comfortable." "You'll need the toilet at some point." "You should find a toilet soon." "You really need a toilet now!">>
+	<<plusdiaperbars>>
+	<<if $plusHunger lte 0 or $plusThirst lte 0>>
+		<span class="red">You feel weak.</span>
+	<</if>>
+	<<if $plusHunger lte 0>>
+		<span class="red">Your stomach aches with hunger.</span>
+	<</if>>
+	<<if $plusThirst lte 0>>
+		<span class="red">Your head pounds from thirst.</span>
+	<</if>>
+	<<if $plusFlat and $plusFlat.rented>>
+		<span class="teal"><<print plusFlatStatusLine()>></span>
+	<</if>>
+	<<set _pnVis to plusDiaperVisibility()>>
+	<<if _pnVis.visible>>
+		<<if _pnVis.conceal lt 0>><span class="red">Nothing covers your diaper. Anyone can see it.</span><<else>><span class="purple">Your diaper is visible under your clothes.</span><</if>>
+	<</if>>
+<</widget>>
+
+/* Link shown in bathrooms and toilets. */
+<<widget "plusToiletLink">>
+	<<bathroomicon "toilet">><<link [[Use the toilet (0:03)|Plus Needs Toilet]]>><<set $plusToiletReturn to $passage>><</link>>
+	<br>
+	<<plusCleanLink>>
+	<<plusDiaperChangeLink>>
+<</widget>>
+
+/* Public toilet block (beach, High Street): uses the same toilet passage, so stats are counted the same way. */
+<<widget "plusPublicToiletLink">>
+	<<bathroomicon "toilet">><<link `_args[0] + " (0:03)"` "Plus Needs Toilet">><<set $plusToiletReturn to $passage>><</link>>
+	<br>
+	<<plusDiaperChangeLink>>
+<</widget>>
+
+<<widget "plusKitchenSnack">>
+	<<foodicon "creambun">><<link [[Have a quick snack and a glass of water (0:10)|Plus Needs Kitchen Snack]]>><<pass 10>><<set $plusToiletReturn to $passage>><</link>>
+	<br>
+<</widget>>
+
+<<widget "plusNeedsAccident">>
+	<<set _pnWhich to _args[0]>>
+	<<set _pnFloor to plusAccidentFloor()>>
+	<<set _pnGround to ($outside ? "ground" : "floor")>>
+	<<set _pnOrig to _pnWhich>>
+	<<set _pnDiaper to (_pnFloor ? false : plusDiaperWorn())>>
+	/* plusDiaperAbsorb returns the part that leaks: "" (all absorbed), "plusBladder", "plusBowels" or "both". */
+	<<set _pnLeak to (_pnDiaper ? plusDiaperAbsorb(_pnWhich) : _pnWhich)>>
+	<<set _pnAbsorbed to (_pnDiaper and _pnLeak is "")>>
+	<<if _pnAbsorbed>>
+	<span class="purple">
+		You couldn't hold it any longer and didn't make it to a toilet in time. <<if _pnWhich is "plusBladder">>You wet yourself, but your _pnDiaper.name absorbs it.<<elseif _pnWhich is "plusBowels">>You soil yourself, but your _pnDiaper.name holds it.<<else>>You have an accident at both ends, but your _pnDiaper.name takes it all.<</if>>
+		Nothing shows through your clothes.<<if plusDiaperPeeFull(_pnDiaper) and plusDiaperPoopFull(_pnDiaper)>> It feels completely full now.<<elseif plusDiaperPeeFull(_pnDiaper)>> It feels soaked through now. It won't hold any more pee.<<elseif plusDiaperPoopFull(_pnDiaper)>> It feels heavy and full now. It won't hold any more mess.<</if>>
+	</span>
+	<br>Your cheeks warm a little<<if plusDiaperDef(_pnDiaper).cloth>>, and the cloth will need washing<<else>>, and you should change it soon<</if>>.
+	<<run plusDiaperExposure()>>
+	<<if plusDiaperStressApplies("use")>><<stress 6>><<gstress>><</if>><<set $hygiene to Math.clamp($hygiene + 200, 0, 2000)>>
+	<<set _pnSeen to plusAccidentSpotRoll(false, 0.5)>>
+	<<else>>
+	<<if _pnDiaper>><span class="red">Your _pnDiaper.name <<if _pnLeak is "plusBladder">>can't hold any more pee<<elseif _pnLeak is "plusBowels">>can't hold any more mess<<else>>can't hold any more<</if>>. It leaks<<if _pnLeak isnot _pnWhich or _plusLeakFrac lt 0.999>>, though it holds <<if _plusLeakFrac lt 0.5>>most of it<<else>>some of it<</if>><</if>>.</span><br><<set _pnWhich to _pnLeak>><</if>>
+	<<set _pnFrac to (_pnDiaper ? _plusLeakFrac : 1)>><<set _pnPeeFrac to (_pnDiaper ? _plusLeakPee : 1)>><<set _pnPoopFrac to (_pnDiaper ? _plusLeakPoop : 1)>>
+	<span class="pink">
+	<<if _pnFloor>>
+		You couldn't hold it any longer and didn't make it to a toilet in time. With nothing on to catch it,
+		<<if _pnWhich is "plusBladder">>a puddle spreads across the _pnGround at your feet.
+		<<elseif _pnWhich is "plusBowels">>you leave a mess on the _pnGround beneath you.
+		<<else>>you leave a puddle and a mess on the _pnGround beneath you.
+		<</if>>
+	<<elseif _pnWhich is "plusBladder">>
+		You couldn't hold it any longer and didn't make it to a toilet in time. You have wet yourself.
+	<<elseif _pnWhich is "plusBowels">>
+		You couldn't hold it any longer and didn't make it to a toilet in time. You have soiled yourself.
+	<<else>>
+		You couldn't hold it any longer and didn't make it to a toilet in time. You have had an accident at both ends.
+	<</if>>
+	</span>
+	<<set _pnULwet to false>><<set _pnLwet to false>>
+	<<if !_pnFloor>>
+		/* Wet the clothing via the base game's own wetness ($underlowerwet / $lowerwet, 0-200; <<effects>> updates the stages and drying). */
+		<<if _pnWhich is "plusBladder">><<set _pnUL to 180>><<set _pnL to 40>><<elseif _pnWhich is "plusBowels">><<set _pnUL to 160>><<set _pnL to 30>><<else>><<set _pnUL to 200>><<set _pnL to 50>><</if>>
+		<<if _pnPeeFrac lt 1 and _pnWhich isnot "plusBowels">><<set _pnUL to Math.round(_pnUL * _pnPeeFrac)>><<set _pnL to Math.round(_pnL * _pnPeeFrac)>><</if>>
+		<<set _pnULwet to !$worn.under_lower.type.includes("naked") and !waterproofCheck($worn.under_lower)>>
+		<<set _pnLwet to !$worn.lower.type.includes("naked") and !waterproofCheck($worn.lower)>>
+		/* Accident wetness on under_lower is capped at 95 so it stays below the "soaked through" (100) stage. */
+		<<if _pnULwet>><<set _pnUL to Math.max(0, Math.min(_pnUL, 95 - $underlowerwet))>><<underlowerwet _pnUL>><</if>>
+		<<if _pnLwet>><<lowerwet _pnL>><</if>>
+		<<run plusClothesAccident(_pnWhich, _pnPoopFrac)>>
+		<<if _pnULwet>>Your $worn.under_lower.name <<underlowerplural>> soaked<<if _pnLwet>>, and a damp patch is spreading on your $worn.lower.name<</if>>.
+		<<elseif _pnLwet>>A damp patch spreads on your $worn.lower.name.
+		<</if>>
+	<</if>>
+	Your face burns with embarrassment<<if _pnULwet or _pnLwet>>, and your clothes will need a good wash<<elseif _pnFloor>>, and you hurry away from the _pnGround before anyone can connect it to you<</if>>.
+	<<if _pnDiaper>><<run plusDiaperExposure()>><</if>>
+	<<stress 12>><<gstress>><<set $hygiene to Math.clamp($hygiene + 400, 0, 2000)>>
+	<<set _pnSeen to plusAccidentSpotRoll(_pnFloor)>>
+	<</if>>
+	<<if _pnSeen gt 0>>
+		<<run plusContRepOnAccident(_pnSeen, { floor: !!_pnFloor, which: _pnWhich, absorbed: !!_pnAbsorbed })>>
+		<br><span class="red">
+		<<if _pnSeen is 2>>
+			<<if _pnFloor>>A group of students sees everything. Laughter and shrieks of disgust ring out, and by the end of the day it seems the whole school knows.<<else>>Some students notice straight away. Whispers and sniggers follow you down the corridor, and you know the story will spread.<</if>>
+		<<elseif _pnAbsorbed>>
+			<<print either("Someone nearby gives you an odd look, as if they can tell something happened.", "A passer-by notices you freeze and shift awkwardly, and raises an eyebrow.")>>
+		<<elseif _pnFloor>>
+			<<print either("Someone nearby sees the whole thing. They stare at the _pnGround, then at you, with open disgust.", "A passer-by stops dead and gapes at the _pnGround, then at you. Others turn to look.", "You hear a gasp behind you. Someone saw everything, and they're already pointing it out to others.")>>
+		<<else>>
+			<<print either("Someone nearby notices what happened. They wrinkle their nose and look away.", "A passer-by glances at your clothes and their expression turns to pity and disgust.", "You catch someone staring at you, then whispering to their friend.")>>
+		<</if>>
+		</span>
+		<<if !_pnDiaper or plusDiaperStressApplies("use")>>
+			<<if _pnFloor>><<stress 15>><<else>><<stress 10>><</if>><<gstress>>
+		<</if>>
+		<<if _pnSeen is 2>><<status -5>><<lcool>><</if>>
+	<</if>>
+<</widget>>
+
+:: Plus Needs Toilet [plusneeds]
+<<effects>><<pass 3>>
+<<if $plusBladder lt 1900 or $plusBowels lt 1900>>
+	You find a free stall and use the toilet, then wash your hands at the sink. You feel much more comfortable.
+<<else>>
+	You use the toilet, then wash your hands at the sink. You didn't really need to go.
+<</if>>
+<<run plusNeedsToilet("both")>><<plusDiaperToiletNote>>
+<br><br>
+<<plusDiaperChangeLink>>
+<<bathroomicon "sink">><<link [[Drink some water from the tap (0:01)|Plus Needs Toilet Drink]]>><<pass 1>><<run plusNeedsConsume(0, 400, "drink", 250)>><</link>>
+<br>
+<<getouticon>><<link [[Finish|$plusToiletReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Plus Needs Toilet Drink [plusneeds]
+<<effects>>
+You cup your hands under the tap and drink some cold water.
+<br><br>
+<<getouticon>><<link [[Finish|$plusToiletReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Plus Needs Kitchen Snack [plusneeds]
+<<effects>>
+You grab a quick snack and a glass of water.
+<<run plusNeedsConsume(900, 400, "snack", 250)>>
+<br><br>
+<<getouticon>><<link [[Finish|$plusToiletReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Widgets Plus Needs Mobile [widget plusneeds]
+<<widget "plusNeedsMobileStat">>
+	/* _args: label, name, value. Full (2000) = green, empty = red. */
+	<<mobileStatsColorSetIverted `Math.clamp(_args[2], 0, 2000)` 2000>>
+	<div @class="'stat plus-needs-mini ' + _mobileColor">
+		<mouse class="tooltip-centertop">_args[0]<span>_args[1]: <<print Math.round(_args[2])>> / 2000</span></mouse>
+	</div>
+<</widget>>
+
+<<widget "plusNeedsMobile">>
+	<<if Number.isFinite($plusHunger)>><<plusNeedsMobileStat "Hu" "Hunger" $plusHunger>><</if>>
+	<<if Number.isFinite($plusThirst)>><<plusNeedsMobileStat "Th" "Thirst" $plusThirst>><</if>>
+	<<if Number.isFinite($plusBladder)>><<plusNeedsMobileStat "Bl" "Bladder" $plusBladder>><</if>>
+	<<if Number.isFinite($plusBowels)>><<plusNeedsMobileStat "Bw" "Bowels" $plusBowels>><</if>>
+	<<if $plusFlat and $plusFlat.rented>><div class="teal"><<print plusFlatStatusLine()>></div><</if>>
+<</widget>>
+
+:: Widgets Plus Needs Statistics [widget plusneeds]
+<<widget "plusNeedsStatistics">>
+	<<run plusNeedsInit()>><<set _pns to plusNeedsStats()>>
+	<<foldout false "_plusNeedsFoldout">>
+		<span class="gold">Needs</span>
+		Total drunk: <<print (_pns.mlTotal / 1000).toFixed(2)>> litres (<<print _pns.mlTotal>> ml)
+		<br>
+		Drunk today: <<print _pns.mlToday>> ml
+		<br>
+		Drinks: _pns.drinks
+		<br>
+		Meals eaten: _pns.meals
+		<br>
+		Snacks eaten: _pns.snacks
+		<br>
+		Food eaten: about <<print _pns.kcal.toLocaleString()>> kcal
+		<br>
+		Toilet trips (bladder): _pns.pees
+		<br>
+		Toilet trips (bowels): _pns.poops
+		<br>
+		Times spotted relieving yourself outdoors: <<print _pns.spotted or 0>>
+		<br>
+		Continence: <<print plusContinenceNames[plusContinenceLevel()]>> (level $plusContinence / 6), progress <<print Math.trunc($plusContinenceXP)>> / 600 (level down at -600)
+		<br>
+		Continence reputation: <<print plusContRepLabel()>> (<<print Math.trunc($plusContRep)>> / 1000)
+		<br>
+		Accidents (wet/soiled/both at once): _pns.accWet/_pns.accSoiled/_pns.accBoth
+		<br>
+		Times you were starving (hunger hit 0): _pns.zeroHunger
+		<br>
+		Times you were parched (thirst hit 0): _pns.zeroThirst
+		<br>
+		Times someone noticed your diaper: <<print _pns.diaperNoticed or 0>>
+		<br>
+		Absorbed by diapers: <<print (_pns.mlAbsorbed or 0).toLocaleString()>> ml, <<print Math.round((_pns.lbAbsorbed or 0) * 100) / 100>> lb
+		<br>
+		Times people smelt your soiled clothes: _pns.smelt
+		<br>
+		Laundromat visits: _pns.laundromat
+		<br>
+		Accidents on the floor: _pns.accFloor
+		<br>
+		Times spotted having an accident: _pns.accSpotted
+		<br>
+		Accidents caught by a diaper: <<print _pns.accDiaper or 0>>
+		<br>
+		Diapers used (thrown away): <<print _pns.diapersUsed or 0>>
+		<br>
+		Nights you wet the bed: <<print _pns.bedwets or 0>>
+		<br>
+		Times you found a place to go in public: _pns.findPlace (spotted _pns.findPlaceSpotted)
+		<br><br>
+	<</foldout>>
+<</widget>>
+
+:: Widgets Plus Needs Spots [widget plusneeds]
+/* Public drinking spot. _args[0]: "fountain" | "stream" | "lake" | "cooler" | "cafe" | "shower" */
+/* Link icon for a drinking spot: vanilla icons where one fits, the mod's drinking fountain otherwise. */
+<<widget "plusDrinkIcon">>
+	<<switch _args[0]>>
+		<<case "lake" "stream">><<icon "lake.png">>
+		<<case "cooler" "cafe">><<icon "water-bottle.png">>
+		<<case "shower">><<bathroomicon "shower">>
+		<<default>><<icon "plusneeds/drink-fountain.png">>
+	<</switch>>
+<</widget>>
+
+<<widget "plusDrinkLink">>
+	<<set _pnSpot to _args[0]>>
+	<<if _pnSpot is "stream">><<set _pnLabel to "Drink from the stream">><<elseif _pnSpot is "lake">><<set _pnLabel to "Drink some water from the lake">><<elseif _pnSpot is "cafe">><<set _pnLabel to "Ask for a glass of water">><<else>><<set _pnLabel to "Drink some water">><</if>>
+	<<capture _pnSpot>><<plusDrinkIcon _pnSpot>><<link `_pnLabel + " (0:02)"` "Plus Needs Drink">><<set $plusDrinkSpot to _pnSpot>><<set $plusDrinkReturn to $passage>><</link>><</capture>>
+	<br>
+<</widget>>
+
+/* Outdoor toilet. _args[0]: "forest" | "park" | "beach" | "lake" | "wolfcave" */
+<<widget "plusOutdoorToiletLink">>
+	<<if _args[0] is "beach">><<set _pnLabel to "Relieve yourself behind the dunes (0:03)">><<elseif _args[0] is "park">><<set _pnLabel to "Relieve yourself behind some bushes (0:03)">><<elseif _args[0] is "wolfcave">><<set _pnLabel to "Relieve yourself at the edge of the clearing (0:03)">><<else>><<set _pnLabel to "Relieve yourself behind a tree (0:03)">><</if>>
+	<<set _pnOut to _args[0]>><<capture _pnOut>><<if _pnOut is "park" or _pnOut is "beach">><<icon "bush.png">><<else>><<foresticon>><</if>><<link _pnLabel "Plus Needs Outdoor Toilet">><<set $plusOutdoorSpot to _pnOut>><<set $plusToiletReturn to $passage>><</link>><</capture>>
+	<br>
+<</widget>>
+
+:: Plus Needs Drink [plusneeds]
+<<effects>><<pass 2>>
+<<set _pnSpot to $plusDrinkSpot>>
+<<if _pnSpot is "stream">>
+	You kneel by the stream, cup your hands in the cold, clear water and drink.
+	<<run plusNeedsConsume(0, 450, "drink", plusNeedsML["stream"])>>
+<<elseif _pnSpot is "lake">>
+	You crouch at the water's edge and drink a few handfuls of cool lake water.
+	<<run plusNeedsConsume(0, 450, "drink", plusNeedsML["lake"])>>
+<<elseif _pnSpot is "cooler">>
+	You fill a paper cup at the water cooler and drink it down.
+	<<run plusNeedsConsume(0, 400, "drink", plusNeedsML["water cooler"])>>
+<<elseif _pnSpot is "cafe">>
+	You ask for a glass of tap water. It's brought over with a polite smile, and you drink it gratefully.
+	<<run plusNeedsConsume(0, 450, "drink", plusNeedsML["cafe water"])>>
+<<elseif _pnSpot is "shower">>
+	You find the tap by the beach showers and drink some fresh water.
+	<<run plusNeedsConsume(0, 400, "drink", plusNeedsML["fountain"])>>
+<<else>>
+	You lean over the drinking fountain and take a long drink of cool water.
+	<<run plusNeedsConsume(0, 400, "drink", plusNeedsML["fountain"])>>
+<</if>>
+You feel refreshed.
+<br><br>
+<<getouticon>><<link [[Finish|$plusDrinkReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Plus Needs Outdoor Toilet [plusneeds]
+<<effects>><<pass 3>>
+<<set _pnChance to plusNeedsSpotChance($plusOutdoorSpot)>>
+<<set _pnSpotted to random(1, 1000) lte _pnChance * 1000>>
+<<if $plusOutdoorSpot is "beach">><<set _pnWhere to "behind a dune">><<elseif $plusOutdoorSpot is "park">><<set _pnWhere to "behind a clump of bushes">><<elseif $plusOutdoorSpot is "wolfcave">><<set _pnWhere to "at the edge of the clearing">><<else>><<set _pnWhere to "behind a thick tree">><</if>>
+<<if _pnSpotted>>
+	You find a spot _pnWhere and relieve yourself. Just as you finish, you hear footsteps. Someone walking by stops and stares at you, then quickly looks away.
+	<br><br>
+	<span class="red">Your cheeks burn with embarrassment.</span> You straighten your clothes and hurry off without looking back.
+	<<stress 6>><<gstress>>
+	<<run plusNeedsSpotted()>>
+<<else>>
+	You find a quiet spot _pnWhere and relieve yourself. Nobody seems to have noticed. You feel much more comfortable.
+<</if>>
+<<run plusNeedsToilet("both")>>
+<<plusDiaperToiletNote>>
+<br><br>
+<<plusDiaperChangeLink>>
+<<getouticon>><<link [[Continue|$plusToiletReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Widgets Plus Needs Notices [widget plusneeds]
+<<widget "plusNeedsNeedNotice">>
+	<<for _pnN range _plusNeedsNoticeList>>
+		<<if _pnN.tier gte 3>><span class="red">_pnN.text</span>
+		<<elseif _pnN.tier is 2>><span class="purple">_pnN.text</span>
+		<<else>><span class="lblue">_pnN.text</span><</if>>
+		<br>
+	<</for>>
+	<<if _plusNeedsNoticeStress>><<gstress>><</if>><<if _plusNeedsNoticePain>><<gpain>><</if>>
+<</widget>>
+
+
+:: Widgets Plus Needs Clothes [widget plusneeds]
+/* "Try to remove dirt" link: wardrobes, changing rooms, bathrooms and toilets. Shows the worn items' state when not clean. */
+<<widget "plusCleanLink">>
+	<<if plusClothesWorn().some(i => i.plusDirt gte 1 or i.plusSoiled gt 0)>>
+		<<icon "plusneeds/scrub-clothes.png">><<link [[Try to scrub the dirt and stains out of your clothes (0:05)|Plus Needs Clean]]>><<if $passage isnot "Plus Needs Clean">><<set $plusCleanReturn to $passage>><</if>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusClothesLines">>
+	<<set _pnLines to plusClothesItemLines().filter(l => !l.endsWith(" is clean.") and !l.endsWith(" are clean."))>>
+	<<if _pnLines.length gt 0>><span class="plus-needs-clothes"><<for _pnLine range _pnLines>>_pnLine <</for>></span><br><br><</if>>
+<</widget>>
+
+<<widget "plusNeedsSmellNotice">>
+	<<if _args[0] is 1>>
+	<<set _pnSmell to either(
+		"Someone nearby sniffs and glances around, frowning. You hope they can't tell where the faint smell is coming from.",
+		"A passer-by wrinkles their nose slightly as they walk past you. There's a faint whiff in the air.",
+		"You catch someone sniffing the air near you, then shrugging. The smell is faint, but it's there.")>>
+	<span class="purple">_pnSmell</span> <<if !plusDiaperWorn() or plusDiaperStressApplies("use")>><<run plusDiaperExposure()>><<stress 3>><<gstress>><<elseif plusDiaperWorn()>><<run plusDiaperExposure()>><</if>>
+	<<else>>
+	<<set _pnSmell to either(
+		"Someone nearby wrinkles their nose and steps away from you. The smell coming from you is unmistakable.",
+		"A passer-by recoils with a look of disgust. The smell coming from you is impossible to miss.",
+		"You hear someone mutter about a horrible smell. Heads turn towards you, and you feel your cheeks burn.",
+		"A couple of people glance at you and pull faces, covering their noses as they hurry past.",
+		"Someone loudly asks what that stink is. You know exactly what it is, and so does everyone looking at you.")>>
+	<span class="pink">_pnSmell</span> <<if !plusDiaperWorn() or plusDiaperStressApplies("use")>><<run plusDiaperExposure()>><<stress 6>><<gstress>><<elseif plusDiaperWorn()>><<run plusDiaperExposure()>><</if>>
+	<</if>>
+<</widget>>
+
+/* Laundromat link for High Street. */
+<<widget "plusLaundromatLink">>
+	<<if $exposed lte 0>>
+		<<icon "plusneeds/laundromat.png">><<link [[Laundromat (0:01)|Plus Needs Laundromat]]>><<pass 1>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+:: Plus Needs Clean [plusneeds]
+<<effects>><<pass 5>>
+<<if plusClothesClean()>>
+	You wet some paper towels and scrub at the worst marks on your clothes. It takes a few minutes, but they look and smell noticeably better.
+<<else>>
+	You scrub at your clothes for a few minutes, but the marks barely budge. You only manage to spread them around.
+<</if>>
+<br><br>
+<<plusClothesLines>>
+<<plusCleanLink>>
+<<getouticon>><<link [[Finish|$plusCleanReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Plus Needs Laundromat [plusneeds]
+<<effects>><<set $outside to 0>><<location "high">>
+A small laundromat sits off High Street. Rows of washing machines and tumble dryers hum along one wall, and a sign by the counter reads: "Service wash £5. Spare robes available while you wait."
+<br><br>
+<<plusClothesLines>>
+<<if $money gte plusLaundromatCost>>
+	<<icon "plusneeds/laundromat.png">><<link [[Have your clothes washed and dried (1:00, £5)|Plus Needs Laundromat Wash]]>><</link>>
+<<else>>
+	<span class="grey">Have your clothes washed and dried (1:00, £5) - you can't afford it.</span>
+<</if>>
+<br>
+<<getouticon>><<link [[Leave (0:01)|High Street]]>><<pass 1>><</link>>
+<br>
+
+:: Plus Needs Laundromat Wash [plusneeds]
+<<effects>>
+<<if $money gte plusLaundromatCost>><<pass 60>><</if>>
+<<if plusLaundromatWash()>>
+	You hand over £5 and the attendant gives you a clean, thick spare robe to wear while you wait. You change in a small cubicle, sit on a plastic chair and flick through an old magazine while your clothes go round.
+	<br><br>
+	An hour later you change back into your clothes, warm from the dryer and completely clean.
+<<else>>
+	You can't afford the service wash.
+<</if>>
+<br><br>
+<<getouticon>><<link [[Leave (0:01)|High Street]]>><<pass 1>><</link>>
+<br>
+
+:: Widgets Plus Needs Find Place [widget plusneeds]
+<<widget "plusFindPlaceLink">>
+	<<if plusFindPlaceAvailable()>>
+		<<set _pnFK to plusFindPlaceKind()>>
+		<<if _pnFK is "school">><<set _pnLabel to "Find somewhere out of sight to go (0:03)">><<elseif _pnFK is "busy">><<set _pnLabel to "Find a place to go (0:03)">><<else>><<set _pnLabel to "Find a quiet corner to go (0:03)">><</if>>
+		<<icon "plusneeds/find-place.png">><<link _pnLabel "Plus Needs Find Place">><<set $plusToiletReturn to $passage>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+:: Plus Needs Find Place [plusneeds]
+<<effects>><<pass 3>>
+<<set _pnFK to plusFindPlaceKind()>>
+<<if _pnFK is "school">>
+	<<set _pnWhere to either("You slip behind the bike sheds where you hope nobody will look", "You find a deserted corner behind the bins at the edge of the grounds", "You duck into the narrow gap behind the sports equipment store")>>
+<<elseif _pnFK is "busy">>
+	<<set _pnWhere to either("You duck into a narrow alley between two shops", "You squeeze behind a large dumpster at the back of a shop", "You slip into a recessed doorway, out of the flow of people")>>
+<<else>>
+	<<set _pnWhere to either("You find a shadowy corner where the street goes quiet", "You crouch behind a stack of crates in a quiet back lane", "You step into an overgrown gap between two buildings")>>
+<</if>>
+<<if plusFindPlaceRoll()>>
+	_pnWhere and relieve yourself as quickly as you can. Just as you finish, you realise you're not alone.
+	<<if _pnFK is "school">>A couple of students have seen you. They burst out laughing and hurry off, clearly eager to tell everyone.<<else>>Someone has stopped to stare at you, looking shocked and disgusted, before turning away.<</if>>
+	<br><br>
+	<span class="red">Your cheeks burn with embarrassment.</span> You straighten your clothes and leave as fast as you can.
+	<<stress 10>><<gstress>>
+	<<if _pnFK is "school">><<status -5>><<lcool>><</if>>
+<<else>>
+	_pnWhere and relieve yourself as quickly as you can. Nobody seems to have noticed. You feel much more comfortable, if a little ashamed.
+<</if>>
+<<run plusNeedsToilet("both")>>
+<<plusDiaperToiletNote>>
+<br><br>
+<<plusDiaperChangeLink>>
+<<getouticon>><<link [[Continue|$plusToiletReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Widgets Plus Needs Continence [widget plusneeds]
+<<widget "plusContinenceBox">>
+	<<silently>>
+		<<run plusContinenceLevel()>>
+		<<set _plusContinenceConfig = { name : "Continence", icon : "ui/sym-confidence", displayType : "level", currentValue : $plusContinence, percent : Math.clamp(($plusContinenceXP + 600) / 12, 0, 100), modTypes: { good: [], bad: [] },
+			states : [
+				{ requiredValue: 0, level: 0, color: 'red', description: 'Leaky: you struggle to hold it at all.'},
+				{ requiredValue: 1, level: 1, color: 'pink', description: 'Weak: you can\'t hold it for long.'},
+				{ requiredValue: 2, level: 2, color: 'purple', description: 'Unreliable: you sometimes lose control when you need to go.'},
+				{ requiredValue: 3, level: 3, color: 'blue', description: 'Normal: you can hold it like most people.'},
+				{ requiredValue: 4, level: 4, color: 'lblue', description: 'Strong: you can hold on a little past your limit.'},
+				{ requiredValue: 5, level: 5, color: 'teal', description: 'Iron: you can hold on well past your limit.'},
+				{ requiredValue: 6, level: 6, color: 'green', description: 'Steel: you can hold it for a very long time.'}
+			]
+		}>>
+	<</silently>>
+	<<characteristic-box _plusContinenceConfig>>
+	<br>
+	<label><<checkbox "$plusScheduleOn" false true autocheck>> Scheduled toilet habit — going while moderately full trains your continence (+40 progress).</label>
+<</widget>>
+
+/* Classroom request links (lesson passages) */
+<<widget "plusClassAskLinks">>
+	<<icon "plusneeds/class-ask.png">><<link "Ask to go to the restroom" "Plus Needs Class Ask">><<if plusClassAsk("toilet")>><<pass 5>><<else>><<pass 1>><</if>><</link>>
+	<br>
+	<<icon "plusneeds/drink-fountain.png">><<link "Ask to get a drink of water" "Plus Needs Class Ask">><<if plusClassAsk("drink")>><<pass 5>><<else>><<pass 1>><</if>><</link>>
+	<br>
+<</widget>>
+
+:: Plus Needs Class Ask [plusneeds]
+<<effects>>
+<<set _t to $plusClassTeacherName>>
+<<if $plusClassKind is "toilet">>You raise your hand and ask _t if you can go to the restroom.<<else>>You raise your hand and ask _t if you can go and get a drink of water.<</if>>
+<<if $plusClassRepeat gt 1>> It isn't the first time you've asked this lesson.<</if>>
+<br><br>
+<<if $plusClassGranted>>
+	<<if _t is "Sirris">>Sirris smiles. "Of course, go ahead. Don't be too long."
+	<<elseif _t is "River">>River glances at the clock. "Five minutes. Not a second more."
+	<<elseif _t is "Doren">>Doren waves you off. "Go on, then. Hurry back."
+	<<elseif _t is "Winter">>Winter nods without looking up from the book. "Very well. Be quick about it."
+	<<else>>Mason nods. "Go on. Mind the wet tiles."<</if>>
+	<br><br>
+	<<if $plusClassKind is "toilet">>
+		<<if $plusBladder gte 1400 and $plusBowels gte 1400>>
+			You don't really need to go, but it's nice to stretch your legs. You wander down the empty corridor to the toilets, wash your hands, and head back.
+		<<else>>
+			You hurry down the empty corridor to the school toilets. Relief washes over you as you finally get to go. You wash your hands and head back.
+		<</if>>
+		<<run plusNeedsToilet("both")>><<plusDiaperToiletNote>><br><<plusDiaperChangeLink>>
+	<<else>>
+		<<if $plusThirst gte 1600>>
+			You aren't especially thirsty, but you walk to the fountain in the corridor and take a few sips anyway.
+		<<else>>
+			You walk to the fountain in the corridor and drink deeply. The cool water is a relief.
+		<</if>>
+		<<run plusNeedsConsume(0, 400, "drink", 200)>>
+	<</if>>
+	<br><br>
+	You slip back into your seat. The lesson has carried on without you.
+<<else>>
+	<<if $plusClassRepeat gt 1>>"You've already asked," _t says flatly. "The answer is still no."
+	<<elseif _t is "Sirris">>Sirris gives you an apologetic look. "Not right now, I'm afraid. Please wait until the end of the lesson."
+	<<elseif _t is "River">>River doesn't even look up. "No. You can wait until the bell."
+	<<elseif _t is "Doren">>Doren crosses both arms. "Nice try. Sit back down and wait."
+	<<elseif _t is "Winter">>Winter peers at you. "Certainly not. Patience is a virtue."
+	<<else>>Mason frowns. "You'll have to hold on until the lesson's over."<</if>>
+	<br><br>
+	A few classmates snicker as you lower your hand. You'll have to wait.
+	<<stress 3>><<gstress>>
+<</if>>
+<br><br>
+<<link [[Next|$plusClassReturn]]>><<set $eventskip to 1>><</link>>
+
+
+:: Widgets Plus Needs Diapers [widget plusneeds]
+/* Flavour when using a toilet while wearing a diaper. */
+<<widget "plusDiaperToiletNote">>
+	<<set _pnD to plusDiaperWorn()>>
+	<<if _pnD>><br>You pull your _pnD.name down to use the toilet<<if _pnD.plusDiaperFill gt 0>>, grimacing at the weight of it,<</if>> and pull it back up afterwards.<</if>>
+<</widget>>
+/* "Change" link: throw away a used disposable diaper (toilets, wardrobes). */
+<<widget "plusDiaperChangeLink">>
+	<<if plusDiaperCanDispose()>>
+		<<icon "plusneeds/diaper-change.png">><<link [[Take off your used $worn.under_lower.name and throw it away|Plus Needs Diaper Change]]>><<if $passage isnot "Plus Needs Diaper Change">><<set $plusDiaperReturn to $passage>><</if>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+:: Plus Needs Diaper Change [plusneeds]
+<<effects>>
+<<run plusDiaperDispose()>>
+<<set _pnName to $worn.under_lower.name>>
+You take off your used _pnName, wrap it up and drop it in the bin. You feel cleaner already.
+<<underlowerruined true>>
+<<if $worn.under_lower.type.includes("naked")>> You aren't wearing anything under your clothes now.<</if>>
+<br><br>
+<<getouticon>><<link [[Continue|$plusDiaperReturn]]>><<set $eventskip to 1>><</link>>
+
+
+:: Widgets Plus Needs Intro [widget plusneeds]
+<<widget "plusNeedsIntroTip">>
+	<div class="plus-needs-intro">
+		You have a <span class="gold">continence</span> level, from Leaky to Steel, that affects how well you can hold it. Using the toilet when you need to — and practising bladder exercises at the hospital — will improve it. Accidents make it worse.
+		<<if $background.incontinent is true>>
+			<br><br>
+			<span class="purple">You start with Leaky continence and are wearing pull-ups. Keep spare clean ones in your wardrobe, and throw used disposables away at toilets or bins.</span>
+		<</if>>
+	</div>
+<</widget>>
+
+<<widget "plusBladderExerciseLink">>
+	<<icon "plusneeds/class-ask.png">>
+	<<if $money gte 1000>>
+		<<link [[Bladder exercises with a nurse (0:30, £10)|Plus Needs Bladder Exercise]]>><<set $plusExerciseReturn to $passage>><</link>>
+	<<else>>
+		<span class="blue">Bladder exercises with a nurse (0:30, £10)</span> — you can't afford this.
+	<</if>>
+	<br>
+<</widget>>
+
+<<widget "plusDiaperShop">>
+	<<set _plusShopLoc to (_args[0] or "clothing")>>
+	<<if _plusShopLoc is "adult" and not plusDiaperAdultShopOpen()>>
+	<<else>>
+	<div class="plus-diaper-shop">
+		<<if _plusShopLoc is "adult">>
+			<span class="gold">Larger continence supplies</span> — high-capacity packs sold here once the shop is open (20% off a pack of 5, 30% off a pack of 10).
+		<<else>>
+			<span class="gold">Continence supplies</span> — packs of disposable diapers and pull-ups, cheaper than buying them one at a time (20% off a pack of 5, 30% off a pack of 10). Large is the standard size; bigger capacities are stocked at the adult shop on Elk Street once it opens.
+		<</if>>
+		<br>
+		<<set _plusPacks to plusDiaperPackList(_plusShopLoc)>>
+		<<for _plusPI range _plusPacks>>
+			<<if _plusPI>>
+				<<capture _plusPI>>
+					<<icon "plusneeds/diaper-change.png">><<link `"Pack of " + _plusPI.count + " " + _plusPI.name + " (£" + (_plusPI.price / 100).toFixed(2) + ")"` "Plus Needs Diaper Buy">><<set $plusBuyName to _plusPI.name>><<set $plusBuyCount to _plusPI.count>><<set $plusBuyReturn to $passage>><</link>>
+					<span class="blue">(save <<print Math.round(_plusPI.disc * 100)>>%)</span>
+				<</capture>>
+				<br>
+			<</if>>
+		<</for>>
+		<br>
+	</div>
+	<</if>>
+<</widget>>
+
+:: Plus Needs Bladder Exercise [plusneeds]
+<<effects>>
+<<set _plusEx to plusBladderExercise()>>
+<<if _plusEx.ok>>
+	<<pass 30>>
+	A nurse shows you a set of simple bladder-control exercises and has you practise them for half an hour. It's dull work, but you feel a little more in control afterwards.
+	<br><br>
+	<span class="green">Continence progress +_plusEx.xp.</span> The visit costs £10.
+<<else>>
+	You ask about bladder-control exercises, but you don't have the £10 the clinic charges.
+<</if>>
+<br><br>
+<<getouticon>><<link [[Finish|$plusExerciseReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Plus Needs Diaper Buy [plusneeds]
+<<effects>>
+<<set _plusBuy to plusDiaperBuyPack($plusBuyName, $plusBuyCount)>>
+<<if _plusBuy.ok>>
+	You pay £<<print (_plusBuy.price / 100).toFixed(2)>> for a pack of _plusBuy.count _plusBuy.name. They're added to your wardrobe.
+	<<if _plusBuy.disc gt 0>><span class="green"> (<<print Math.round(_plusBuy.disc * 100)>>% bulk discount)</span><</if>>
+<<elseif _plusBuy.reason is "money">>
+	You can't afford a pack of $plusBuyCount $plusBuyName. It costs £<<print ((_plusBuy.price or 0) / 100).toFixed(2)>>.
+<<else>>
+	Those aren't in stock.
+<</if>>
+<br><br>
+<<getouticon>><<link [[Continue|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
+
+
+:: Widgets Plus Needs Attitudes [widget plusneeds]
+<<widget "plusDiaperInsecurity">>
+	<<run plusDiaperInitInsecurity()>>
+	<<if insecurityExists("diaper")>>
+		<span class="red">Insecurity: Diaper</span>
+		<div class="meter">
+			<<set _percent to Math.floor(($insecurity_diaper / 1000) * 100)>>
+			<<print '<div class="redbar" style="width:' + _percent + '%"></div>'>>
+		</div>
+		<<if $acceptance_diaper gte 1>>
+			<span class="green">Acceptance: Diaper</span>
+			<div class="meter">
+				<<set _percent to Math.floor(($acceptance_diaper / 1000) * 100)>>
+				<<print '<div class="greenbar" style="width:' + _percent + '%"></div>'>>
+			</div>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "plusDiaperAttitudes">>
+	<<run plusDiaperInitInsecurity()>>
+	<<set _plusUnlockDiaper to plusDiaperUnlockAttitudes()>>
+	<<if _plusUnlockDiaper or $uncomfortable.diaperSeen is false>>
+		<label><<checkbox "$uncomfortable.diaperSeen" false true autocheck>> Having your diaper seen by others</label>
+	<<else>>
+		<input type="checkbox" checked disabled /> <span class="black">Having your diaper seen by others</span>
+		<br>
+		<span class="blue small-description"><i>Requires higher exhibitionism or diaper acceptance.</i></span>
+	<</if>>
+	<br>
+	<<if _plusUnlockDiaper or $uncomfortable.diaperUse is false>>
+		<label><<checkbox "$uncomfortable.diaperUse" false true autocheck>> Peeing and messing in your diaper in front of others</label>
+	<<else>>
+		<input type="checkbox" checked disabled /> <span class="black">Peeing and messing in your diaper in front of others</span>
+		<br>
+		<span class="blue small-description"><i>Requires higher exhibitionism or diaper acceptance.</i></span>
+	<</if>>
+	<br>
+<</widget>>
+
+
+:: Widgets Plus Needs Restroom Ask [widget plusneeds]
+<<widget "plusAskRestroomLink">>
+	<<if plusRestroomCanAsk(_args[0], _args[1])>>
+		<<bathroomicon "toilet">><<link [[Ask to use their restroom|Plus Needs Restroom Ask]]>><<set $plusRestroomReturn to _args[0]>><<set $plusRestroomHouse to _args[1]>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+:: Plus Needs Restroom Ask [plusneeds]
+<<effects>>
+<<run plusRestroomResolve()>>
+<<if $plusRestroomLast.accepted>>
+	<<pass 10>>
+	<<if $plusRestroomLast.pleading>>
+		You explain, a little desperately, that you really cannot wait. <<if $plusRestroomLast.commented>><<if $plusRestroomLast.visible>>Their gaze dips to the outline of your diaper, and they hesitate. <</if>><<if $plusRestroomLast.smell>>They wrinkle their nose, then sigh. <</if>><</if>>"You look like you're about to burst," they say. "Fine. Be quick, and don't make a mess."
+	<<elseif $plusRestroomLast.commented>>
+		<<if $plusRestroomLast.visible>>They notice the outline of your diaper and raise an eyebrow, but they step aside anyway. "Bathroom's down the hall. Don't linger."<</if>>
+		<<if $plusRestroomLast.smell>>They catch a whiff of something and grimace, then point down the hall. "Bathroom's that way. Wash up after."<</if>>
+		<<run plusDiaperExposure()>>
+		<<if $plusRestroomLast.visible and plusDiaperStressApplies("seen")>><<stress 6>><<gstress>><</if>>
+		<<if $plusRestroomLast.smell and plusDiaperStressApplies("use")>><<stress 3>><<gstress>><</if>>
+	<<else>>
+		They look you over, then nod. "Alright. Bathroom's just down the hall. Don't be long."
+	<</if>>
+	<br><br>
+	You thank them and hurry inside. The bathroom is small and ordinary. You use the toilet, wash your hands, and feel much more comfortable.
+	<<run plusNeedsToilet("both")>><<plusDiaperToiletNote>>
+	<br><br>
+	<<plusDiaperChangeLink>>
+	<<getouticon>><<link [[Thank them and leave|$plusRestroomReturn]]>><<endevent>><<set $eventskip to 1>><</link>>
+<<else>>
+	<<pass 1>>
+	<<if $plusRestroomLast.commented and $plusRestroomLast.visible and $plusRestroomLast.smell>>
+		Their eyes drop to the outline of your diaper, and they wrinkle their nose. "No. Not in my house." The door closes in your face.
+	<<elseif $plusRestroomLast.visible>>
+		They glance down at the outline of your diaper. "Absolutely not." The door shuts firmly.
+	<<elseif $plusRestroomLast.smell>>
+		They wrinkle their nose. "What's that smell? No. Goodbye." The door closes.
+	<<elseif $plusRestroomLast.night>>
+		"Do you have any idea what time it is?" they say. "Come back in the morning." The door closes.
+	<<else>>
+		They shake their head. "Sorry. I don't let strangers use the bathroom." The door closes.
+	<</if>>
+	<<if $plusRestroomLast.commented>>
+		<<run plusDiaperExposure()>>
+		<<if $plusRestroomLast.visible and plusDiaperStressApplies("seen")>><<stress 6>><<gstress>><</if>>
+		<<if $plusRestroomLast.smell and plusDiaperStressApplies("use")>><<stress 3>><<gstress>><</if>>
+	<</if>>
+	<<stress 4>><<gstress>>
+	<br><br>
+	<<if $plusRestroomLast.accident>>
+		<<plusNeedsAccident `$plusRestroomLast.accidentWhich`>>
+		<br><br>
+	<</if>>
+	<<getouticon>><<link [[Leave|$plusRestroomReturn]]>><<endevent>><<set $eventskip to 1>><</link>>
+<</if>>
+
+
+:: Widgets Plus Needs Continence Reputation [widget plusneeds]
+<<widget "plusContRepFame">>
+	<<run plusContRepInit()>>
+	<<silently>>
+		<<set _plusContRepTextConfig = {
+			currentValue: $plusContRep,
+			preText: 'Continence:',
+			states: [
+				{ requiredValue: 0, color: 'green', description: ' Unknown' },
+				{ requiredValue: 30, color: 'teal', description: ' Obscure' },
+				{ requiredValue: 100, color: 'lblue', description: ' Low-key' },
+				{ requiredValue: 200, color: 'blue', description: ' Known' },
+				{ requiredValue: 400, color: 'purple', description: ' Recognised' },
+				{ requiredValue: 600, color: 'pink', description: ' Famous' },
+				{ requiredValue: 1000, color: 'red', description: ' Notorious' }
+			]
+		}>>
+		<<set _plusContRepBoxConfig = { description : '<<relation-text _plusContRepTextConfig>>' }>>
+	<</silently>>
+	<<relation-box-simple _plusContRepBoxConfig>>
+<</widget>>
+
+:: Widgets Plus Flat [widget plusneeds]
+<<widget "plusFlatSocial">>
+	<<if $plusFlat and $plusFlat.rented>>
+		<div class="relation-box">
+			<div class="relation-description"><span class="teal"><<print plusFlatStatusLine()>></span></div>
+		</div>
+	<</if>>
+<</widget>>
+
+<<widget "plusFlatStreetLinks">>
+	<<if $plusFlat and $plusFlat.rented>>
+		<<homeicon>><<link [[Your flat (0:01)|Plus Flat Bedroom]]>><<pass 1>><</link>>
+		<br>
+	<<else>>
+		<<homeicon>><<link [[Letting office (0:01)|Plus Flat Letting]]>><<pass 1>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusFlatDomusLink">>
+	<<if $plusFlat and $plusFlat.rented>>
+		<<homeicon>><<link [[Your flat (0:10)|Plus Flat Bedroom]]>><<pass 10>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusFlatNotices">>
+	<<if $plusFlat.msg is "remind">>
+		<span class="purple">A reminder note is taped to your door. Rent of £1,500 is due <<print plusFlatDueDateText()>>. Have the money ready in the next few days.</span>
+		<br><br>
+		<<run plusFlatClearMsg()>>
+	<<elseif $plusFlat.msg is "collected" or $plusFlat.msg is "paid">>
+		<span class="green">This month's rent of £1,500 has been paid. The next payment is due <<print plusFlatDueDateText()>>.</span>
+		<br><br>
+		<<run plusFlatClearMsg()>>
+	<<elseif $plusFlat.msg is "grace" or $plusFlat.msg is "unpaid">>
+		<span class="red">You missed the rent of £1,500 due <<print plusFlatDueDateText()>>. The landlord has given you a short grace period to pay before you are evicted.</span>
+		<br><br>
+		<<run plusFlatClearMsg()>>
+	<</if>>
+<</widget>>
+
+
+:: Plus Flat Letting [plusneeds]
+<<set $outside to 0>><<location "flats">><<effects>>
+You step into a small letting office beside the stairwell. A clerk looks up from a folder of papers.
+<br><br>
+<<if $plusFlat and $plusFlat.rented>>
+	"You're already down as the tenant of the upstairs flat," the clerk says. "Keys still work. Rent is £1,500 at the end of each month."
+	<br><br>
+	<<homeicon>><<link [[Go to your flat|Plus Flat Bedroom]]>><</link>>
+	<br>
+<<else>>
+	<<if not plusFlatIsWinter()>>
+		"We only let the vacant flat in winter," the clerk says, tapping the calendar. "Tenants move out of town when the weather turns, and that's when a place frees up. Come back then — and bring £3,000 for the down payment."
+		<br><br>
+	<<elseif not plusFlatHasDeposit()>>
+		"There's a one-bedroom flat free on an upper floor," the clerk says. "It's quiet, and you'd have your own bathroom. I need £3,000 as a down payment, then £1,500 at the end of each month."
+		<br><br>
+		You count what you have. It isn't enough. You need <<printmoney 300000 "pink">> to sign, and you only have <<printmoney $money>>.
+		<br><br>
+	<<else>>
+		"There's a one-bedroom flat free on an upper floor," the clerk says. "It's quiet, and you'd have your own bathroom. I need £3,000 as a down payment, then £1,500 at the end of each month."
+		<br><br>
+		The keys sit on the desk. If you sign, this would be your home instead of the orphanage.
+		<br><br>
+		<<link [[Sign the lease (£3,000)|Plus Flat Sign]]>><</link>>
+		<br>
+	<</if>>
+<</if>>
+<<getouticon>><<link [[Leave|Flats]]>><</link>>
+<br>
+
+
+:: Plus Flat Sign [plusneeds]
+<<set $outside to 0>><<location "flats">><<effects>>
+<<set _flatSign to plusFlatCanSign()>>
+<<if _flatSign.ok>>
+	<<run plusFlatSign()>>
+	You count out the down payment. The clerk writes your name against a first-floor flat, then slides a pair of keys across the desk.
+	<br><br>
+	"Rent is £1,500, due at the end of each month. Don't be late."
+	<br><br>
+	The orphanage is no longer your home. You have a door that is yours, for as long as you keep up the rent.
+	<br><br>
+	<<homeicon>><<link [[Go to your flat|Plus Flat Bedroom]]>><</link>>
+	<br>
+<<else>>
+	The clerk shakes their head. The offer isn't available right now.
+	<br><br>
+	<<link [[Back|Plus Flat Letting]]>><</link>>
+	<br>
+<</if>>
+
+
+:: Plus Flat Bedroom [plusneeds]
+<<if not $plusFlat or $plusFlat.msg is "evicted" or not $plusFlat.rented>>
+	<<if $plusFlat.msg is "evicted">>
+		<<goto "Plus Flat Evicted">>
+	<<else>>
+		<<goto "Plus Flat Letting">>
+	<</if>>
+<<else>>
+<<set $outside to 0>><<set $location to "flat">><<set $bus to "plus_flat">><<location "flats">><<effects>>
+You are in your rented flat, a modest one-bedroom on an upper floor of the Barb Street block. The walls are plain and recently painted. A narrow window looks out over the canal. The bed is made, and a wardrobe stands against the far wall. A bathroom opens off to one side.
+<br><br>
+<<plusFlatNotices>>
+<<print plusFlatStatusLine()>>
+<br><br>
+<<bedicon>><<link [[Get in bed|Plus Flat Bed]]>><</link>>
+<br>
+<<link [[Wardrobe|Plus Flat Wardrobe]]>><<set $wardrobe_location to "wardrobe">><</link>>
+<br>
+<<bathroomicon>><<link [[Bathroom (0:01)|Plus Flat Bathroom]]>><<pass 1>><</link>>
+<br>
+<<mirroricon>><<link [[Mirror|Plus Flat Mirror]]>><<preMirror>><</link>>
+<br>
+<<if plusFlatCanPay()>>
+	<<link [[Pay this month's rent (£1,500)|Plus Flat Pay]]>><</link>>
+	<br>
+<</if>>
+<<link [[End the lease and return to the orphanage|Plus Flat Move Out]]>><</link>>
+<br>
+<<getouticon>><<link [[Leave (0:01)|Flats]]>><<pass 1>><</link>>
+<br>
+<</if>>
+
+
+:: Plus Flat Bed [plusneeds]
+<<effects>>
+<<wearoutfit>>
+You settle under the covers in your own bed. The building is quieter than the orphanage at night.
+<br><br>
+<<generateSleepLinks "Plus Flat Sleep">>
+<<link [[Climb out of bed|Plus Flat Bedroom]]>><<storeon "bed">><<set $wardrobe_location to "wardrobe">><<loadTempHairStyle>><<endevent>><</link>>
+<br>
+
+
+:: Plus Flat Sleep [plusneeds]
+<<set _autosavehere to true>>
+<<sleep>>
+<<effects>>
+<<wakingEffects $sleepHoursTotal>>
+<<sleepeffects>>
+<<if $plusFlat and !$plusFlat.rented and $plusFlat.msg is "evicted">>
+	You wake to a knock and the sound of keys in the lock.
+	<br><br>
+	<<link [[Next|Plus Flat Evicted]]>><</link>>
+	<br>
+<<else>>
+	You sleep in your own bed and wake in the rented flat.
+	<br><br>
+	<<link [[Get up|Plus Flat Bedroom]]>><<set $wardrobe_location to "wardrobe">><<loadTempHairStyle>><</link>>
+	<br>
+<</if>>
+
+
+:: Plus Flat Bathroom [plusneeds]
+<<set $outside to 0>><<set $location to "flat">><<set $bus to "plus_flat">><<effects>>
+You are in your bathroom. The fittings are plain but clean: a toilet, a shower over the bath, and a small mirror above the sink.
+<br><br>
+<<bathroomicon "bath">><<link [[Have a bath or shower (0:30)|Plus Flat Wash]]>><<pass 30>><<stress -6>><<set $hygiene to 0>><</link>><<lstress>>
+<br>
+<<personalUpkeep>>
+<<plusToiletLink>>
+<br>
+<<bedicon>><<link [[Bedroom (0:01)|Plus Flat Bedroom]]>><<pass 1>><</link>>
+<br>
+
+
+:: Plus Flat Wash [plusneeds]
+<<effects>>
+You run the water and wash in the privacy of your own bathroom. Afterwards you feel cleaner and a little less tense.
+<br><br>
+<<link [[Next|Plus Flat Bathroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Wardrobe [plusneeds]
+<<effects>>
+<<set $wardrobe_location to "wardrobe">>
+<<wardrobeSelection>>
+You look in your wardrobe.
+<br><br>
+<<plusClothesLines>><<plusCleanLink>><<plusDiaperChangeLink>><br>
+<div id="wardrobewear"><<wardrobewear>></div>
+<div id="wardrobeExits"><<wardrobeExits>></div>
+<<wardrobe>>
+
+
+:: Plus Flat Mirror [plusneeds]
+<<effects>>
+<<bedicon>><<link [[Step away|Plus Flat Bedroom]]>><<unset $mirrorMenu>><<unset $bodywritingSet>><<postMirror>><</link>>
+<br>
+<<mirror>>
+<br><br>
+
+
+:: Plus Flat Pay [plusneeds]
+<<effects>>
+<<if not plusFlatCanPay()>>
+	You cannot pay the rent right now.
+	<br><br>
+<<else>>
+	<<run plusFlatPayRent()>>
+	You count out £1,500 and leave it for the landlord. The next payment will be due <<print plusFlatDueDateText()>>.
+	<br><br>
+<</if>>
+<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Move Out [plusneeds]
+<<effects>>
+You pack what you need and take the keys back to the letting office. The clerk notes that the lease is ended. The flat is no longer yours.
+<br><br>
+<<run plusFlatMoveOut()>>
+You walk back to Domus Street. The orphanage is your home again, and Bailey will expect the usual weekly payment in due course.
+<br><br>
+<<link [[Return to your old bedroom|Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Evicted [plusneeds]
+<<effects>>
+The landlord has had enough of unpaid rent. The locks are changed, and you are told to gather your things.
+<br><br>
+<<run plusFlatEvict()>>
+You carry what you can back to the orphanage. Your old bedroom is waiting, and Bailey's weekly payments will start again.
+<br><br>
+<<link [[Return to your old bedroom|Bedroom]]>><</link>>
+<br>
