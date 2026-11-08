@@ -127,6 +127,7 @@ There's <<printmoney $tip>>.
 <</if>>
 
 :: Clothing Shop Register
+<<plusDiaperShop "clothing">>
 
 <<set $outside to 0>><<effects>><<set $lock to 200>>
 A standard cash register sits on a counter. It's locked tight.

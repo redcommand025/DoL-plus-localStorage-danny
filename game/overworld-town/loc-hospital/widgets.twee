@@ -23,6 +23,7 @@
 <</widget>>
 
 :: Pharmacy Condoms Price [widget]
+<<plusDiaperShop "pharmacy">>
 <<widget condomsPrice>>
 	<<if _args[0] lte 50>>
 		<<set _price to _args[0] * 6000>>

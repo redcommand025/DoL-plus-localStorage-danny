@@ -193,6 +193,7 @@ The <<beasttype>> whimpers and flees into a bush. <<tearful>> you gather yoursel
 <<destination>>
 
 :: Men's Toilets
+<<plusToiletLink>>
 <<set $outside to 0>><<set $location to "park">><<effects>><<set $bus to "parkmens">>
 
 You are in the men's toilets in the park.
@@ -313,6 +314,7 @@ You bend over a sink and rinse out your mouth.
 <br>
 
 :: Women's Toilets
+<<plusToiletLink>>
 <<set $outside to 0>><<set $location to "park">><<effects>><<set $bus to "parkwomens">>
 
 You are in the women's toilets in the park.

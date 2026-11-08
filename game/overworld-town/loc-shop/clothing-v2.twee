@@ -1,4 +1,5 @@
 :: Clothing Shop v2 Widgets [widget]
+<<plusDiaperShop "clothing">>
 
 <<widget "exitclothingshop">>
 	<div class="button-back-to-shop div-link">

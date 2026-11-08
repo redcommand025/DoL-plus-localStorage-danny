@@ -1187,7 +1187,7 @@
 			<</if>>
 			<div class="wardrobeItem wardrobe-action no-numberify">
 				<<clothingicon _item _wardrobe_list>>
-				<<wearlink_norefresh _itemData.name_cap _i>>
+				<<wearlink_norefresh _itemData.name_cap _i>><<print plusDiaperFillLabel(_item)>>
 				<<if _item.gender is "m">>
 					<span class="blue">♂</span>
 				<<elseif _item.gender is "f">>

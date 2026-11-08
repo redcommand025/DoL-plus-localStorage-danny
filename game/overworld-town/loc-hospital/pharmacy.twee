@@ -1,4 +1,5 @@
 :: Pharmacy
+<<plusDiaperShop "pharmacy">>
 <<unset $pharmacyItem>>
 <<if $daily.pharm.closed>>
 	A "Closed" sign hangs on the door. You tug the door but it's locked.

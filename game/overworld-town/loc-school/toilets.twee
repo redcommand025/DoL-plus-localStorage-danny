@@ -393,6 +393,7 @@ You walk right up to the <<person>> and place your hand on <<his>> groin. "Silly
 <</if>>
 
 :: School Boy's Toilets
+<<plusToiletLink>>
 
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
 <<set $changingRoomGender to "boys">>
@@ -454,6 +455,7 @@ You are in the boys' toilets.
 <<storecleanup>>
 
 :: School Girl's Toilets
+<<plusToiletLink>>
 
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
 <<set $changingRoomGender to "girls">>
