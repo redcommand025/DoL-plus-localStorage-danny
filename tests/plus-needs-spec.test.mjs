@@ -188,26 +188,27 @@ describe("plus-needs published spec", () => {
 		assert.equal(both.State.variables.tiredness, 30);
 	});
 
-	it("QA-N008 [spec] needs pain is capped at 40 hunger and 60 thirst without using unrelated pain", () => {
-		const hunger = loadNeeds({ variables: { plusHunger: 0, plusThirst: 2000, pain: 0 } });
+	it("QA-N008 [spec] empty-need pain keeps growing until the game pain maximum of 200", () => {
+		const hunger = loadNeeds({ variables: { plusHunger: 0, plusThirst: 2000, pain: 0, plusNeedsPain: { plusHunger: 40, plusThirst: 60 } } });
 		withRandom(0.5, () => {
 			hunger.window.plusNeedsTick(60);
 			hunger.window.plusNeedsTick(60);
 			hunger.window.plusNeedsTick(60);
 		});
-		assert.equal(hunger.State.variables.pain, 40);
-		assert.equal(hunger.State.variables.plusNeedsPain.plusHunger, 40);
-		const thirst = loadNeeds({ variables: { plusHunger: 2000, plusThirst: 0, pain: 0 } });
+		assert.equal(hunger.State.variables.pain, 60);
+		const climb = loadNeeds({ variables: { plusHunger: 0, plusThirst: 2000, pain: 0 } });
 		withRandom(0.5, () => {
-			thirst.window.plusNeedsTick(60);
-			thirst.window.plusNeedsTick(60);
-			thirst.window.plusNeedsTick(60);
+			for (let i = 0; i < 12; i++) climb.window.plusNeedsTick(60);
 		});
-		assert.equal(thirst.State.variables.pain, 60);
+		assert.equal(climb.State.variables.pain, 200);
+		withRandom(0.5, () => climb.window.plusNeedsTick(60));
+		assert.equal(climb.State.variables.pain, 200);
+		const thirst = loadNeeds({ variables: { plusHunger: 2000, plusThirst: 0, pain: 180 } });
+		withRandom(0.5, () => thirst.window.plusNeedsTick(60));
+		assert.equal(thirst.State.variables.pain, 200);
 		const other = loadNeeds({ variables: { plusHunger: 0, plusThirst: 2000, pain: 50 } });
 		withRandom(0.5, () => other.window.plusNeedsTick(60));
 		assert.equal(other.State.variables.pain, 70);
-		assert.equal(other.State.variables.plusNeedsPain.plusHunger, 20);
 	});
 
 	it("QA-N009 [spec] accident risk starts at 1800/1200/600 for levels 0–2, at 0 for 3, and grace is 30/60/120", () => {

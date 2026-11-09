@@ -30,8 +30,7 @@ window.plusNowTs = function () {
 	const WEAK_FATIGUE_PER_HOUR = 15; // fatigue added per hour while starving or parched
 	// Stress / pain per hour while starving (hunger 0) or parched (thirst 0); they stack, thirst is a bit harsher.
 	const EMPTY_STRESS_PER_HOUR = { plusHunger: 80, plusThirst: 120 }; // $stress max is 10000; base game recovers ~60/h
-	const EMPTY_PAIN_PER_HOUR = { plusHunger: 20, plusThirst: 26 }; // $pain 0-200; base game heals some over time
-	const EMPTY_PAIN_CAP = { plusHunger: 40, plusThirst: 60 }; // pain from needs alone won't push past this (caps add when both are 0)
+	const EMPTY_PAIN_PER_HOUR = { plusHunger: 20, plusThirst: 26 }; // added each hour; clamped by the game's normal painClamp (0-200)
 	// A single long time skip (sleep, passing out, hospital) never causes an accident on its own.
 	const LONG_PASS = 180;
 	// During a long rest bladder/bowels stop at the sidebar's "You should find a toilet soon" tier (400-999),
@@ -59,9 +58,6 @@ window.plusNowTs = function () {
 		for (const k of Object.keys(RATE)) {
 			if (!Number.isFinite(V.plusNeedsDrift[k])) V.plusNeedsDrift[k] = 1;
 		}
-		if (!V.plusNeedsPain || typeof V.plusNeedsPain !== "object") V.plusNeedsPain = { plusHunger: 0, plusThirst: 0 };
-		if (!Number.isFinite(V.plusNeedsPain.plusHunger)) V.plusNeedsPain.plusHunger = 0;
-		if (!Number.isFinite(V.plusNeedsPain.plusThirst)) V.plusNeedsPain.plusThirst = 0;
 		if (!V.plusFlat || typeof V.plusFlat !== "object") V.plusFlat = { rented: false };
 	}
 	window.plusNeedsInit = init;
@@ -224,9 +220,6 @@ window.plusNowTs = function () {
 		V.plusThirst = clamp(V.plusThirst - loss.plusThirst);
 		if (wasH > 0 && V.plusHunger <= 0) S.zeroHunger++;
 		if (wasT > 0 && V.plusThirst <= 0) S.zeroThirst++;
-		if (!V.plusNeedsPain || typeof V.plusNeedsPain !== "object") V.plusNeedsPain = { plusHunger: 0, plusThirst: 0 };
-		if (V.plusHunger > 0) V.plusNeedsPain.plusHunger = 0;
-		if (V.plusThirst > 0) V.plusNeedsPain.plusThirst = 0;
 		if (V.plusHunger <= 0 || V.plusThirst <= 0) {
 			// Light effect: running on empty makes you tired. Hunger and thirst each add fatigue, and they stack.
 			try {
@@ -238,7 +231,7 @@ window.plusNowTs = function () {
 				}
 			} catch (e) {}
 			// Stress and pain each turn, skipped during combat (combat manages its own pain/stress).
-			// Pain contributed by each empty need is tracked separately and capped (40 hunger / 60 thirst).
+			// Pain keeps accumulating at 20/26 per hour and is clamped only by the game's normal painClamp (0-200).
 			try {
 				if (V.combat !== 1) {
 					let st = 0;
@@ -246,17 +239,20 @@ window.plusNowTs = function () {
 					for (const k of ["plusHunger", "plusThirst"])
 						if (V[k] <= 0) {
 							st += (EMPTY_STRESS_PER_HOUR[k] * minutes) / 60;
-							const add = (EMPTY_PAIN_PER_HOUR[k] * minutes) / 60;
-							const room = Math.max(0, EMPTY_PAIN_CAP[k] - (V.plusNeedsPain[k] || 0));
-							const give = Math.min(add, room);
-							V.plusNeedsPain[k] = (V.plusNeedsPain[k] || 0) + give;
-							pn += give;
+							pn += (EMPTY_PAIN_PER_HOUR[k] * minutes) / 60;
 						}
 					const smax = Number.isFinite(V.stressmax) ? V.stressmax : 10000;
 					if (Number.isFinite(V.stress)) V.stress = Math.clamp(V.stress + st, 0, smax);
-					if (Number.isFinite(V.pain) && V.gamemode !== "soft") {
-						const pmax = typeof C !== "undefined" && C.pain && Number.isFinite(C.pain.max) ? C.pain.max : 200;
-						V.pain = Math.clamp(V.pain + pn, 0, pmax);
+					if (Number.isFinite(V.pain)) {
+						V.pain += pn;
+						if (window.statChange && typeof window.statChange.painClamp === "function") {
+							window.statChange.painClamp();
+						} else if (V.gamemode === "soft") {
+							V.pain = 0;
+						} else {
+							/* Same ceiling as statChange.painClamp in game/base-system/stat-changes.js */
+							V.pain = Math.clamp(V.pain, 0, 200);
+						}
 					}
 				}
 			} catch (e) {}
