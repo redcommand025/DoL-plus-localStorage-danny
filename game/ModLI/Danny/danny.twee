@@ -11,15 +11,7 @@ A note: "At school. Back later."
 <</if>>
 
 :: Danny Room
-You enter Danny's room. <<npc "Danny">> looks up.
-<<if $dannyIntro isnot 1>>
-  <<set $dannyIntro to 1>>
-  "H-hey... I'm Danny. I live here too. I have a weak bladder. Please don't tell Bailey."
-  <<npcincr Danny love 5>>
-<</if>>
-<<link [[Talk|Danny Room]]>><<npcincr Danny love 2>><</link>>
-<<link [[Help with control training|Danny Room]]>><<set $danny.control += 5>><<npcincr Danny love 3>><</link>>
-<<link [[Offer dependency care|Danny Room]]>><<set $danny.dependency += 5>><<npcincr Danny love 4>><</link>>
+You enter Danny's room.
 <<link [[Leave|Bedroom]]>><</link>>
 
 :: Danny First Meeting Canteen
@@ -31,4 +23,16 @@ In the canteen Danny nearly bumps into you.
 <<widget "dannyroom_link">>
   <<bedroomicon>><<link [[Danny's room (0:01)|Danny Room Door]]>><<pass 1>><</link>>
   <br>
+<</widget>>
+
+:: Widgets Danny Init [widget]
+<<widget "dannyInit">>
+	<<if C.npc.Danny>>
+		<<if C.npc.Danny.continence is undefined>>
+			<<set C.npc.Danny.continence to 3000>>
+		<</if>>
+		<<if C.npc.Danny.acceptance is undefined>>
+			<<set C.npc.Danny.acceptance to 200>>
+		<</if>>
+	<</if>>
 <</widget>>

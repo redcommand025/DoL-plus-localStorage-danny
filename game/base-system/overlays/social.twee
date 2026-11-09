@@ -4,6 +4,7 @@
 	<div id="relation-display">
 		<<silently>>
 			<<poppySocialPrep>>
+			<<dannyInit>>
 			<<script>>
 				/* Black Wolf: keep original behavior, but don't crash if missing */
 				if (C.npc["Black Wolf"]) {
@@ -54,6 +55,27 @@
 							minValue : 0,
 							activeIcon : "img/ui/sym-poppy-rage.png",
 						},
+					},
+					"Danny" : {
+						important : true,
+						love : { maxValue : 100 },
+						continence : {
+							name : "Continence",
+							maxValue : 6000,
+							minValue : 0,
+							activeIcon : "img/ui/sym-continence.png",
+							inactiveIcon : "img/ui/sym-continence.png",
+							color : "teal"
+						},
+						acceptance : {
+							name : "Acceptance",
+							maxValue : 1000,
+							minValue : 0,
+							activeIcon : "img/ui/sym-acceptance.png",
+							inactiveIcon : "img/ui/sym-acceptance.png",
+							color : "purple"
+						},
+						lust : { requirements : V.loveInterest && V.loveInterest.primary == "Danny", maxValue : 100 }
 					},
 					"Great Hawk" : {
 						important : true,
