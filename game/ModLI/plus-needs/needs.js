@@ -59,6 +59,9 @@ window.plusNowTs = function () {
 		for (const k of Object.keys(RATE)) {
 			if (!Number.isFinite(V.plusNeedsDrift[k])) V.plusNeedsDrift[k] = 1;
 		}
+		if (!V.plusNeedsPain || typeof V.plusNeedsPain !== "object") V.plusNeedsPain = { plusHunger: 0, plusThirst: 0 };
+		if (!Number.isFinite(V.plusNeedsPain.plusHunger)) V.plusNeedsPain.plusHunger = 0;
+		if (!Number.isFinite(V.plusNeedsPain.plusThirst)) V.plusNeedsPain.plusThirst = 0;
 		if (!V.plusFlat || typeof V.plusFlat !== "object") V.plusFlat = { rented: false };
 	}
 	window.plusNeedsInit = init;
@@ -221,29 +224,40 @@ window.plusNowTs = function () {
 		V.plusThirst = clamp(V.plusThirst - loss.plusThirst);
 		if (wasH > 0 && V.plusHunger <= 0) S.zeroHunger++;
 		if (wasT > 0 && V.plusThirst <= 0) S.zeroThirst++;
+		if (!V.plusNeedsPain || typeof V.plusNeedsPain !== "object") V.plusNeedsPain = { plusHunger: 0, plusThirst: 0 };
+		if (V.plusHunger > 0) V.plusNeedsPain.plusHunger = 0;
+		if (V.plusThirst > 0) V.plusNeedsPain.plusThirst = 0;
 		if (V.plusHunger <= 0 || V.plusThirst <= 0) {
-			// Light effect: running on empty makes you tired.
+			// Light effect: running on empty makes you tired. Hunger and thirst each add fatigue, and they stack.
 			try {
 				if (Number.isFinite(V.tiredness)) {
 					const max = typeof C !== "undefined" && C.tiredness && C.tiredness.max ? C.tiredness.max : 2000;
-					V.tiredness = Math.clamp(V.tiredness + (WEAK_FATIGUE_PER_HOUR * minutes) / 60, 0, max);
+					let fatigue = 0;
+					for (const k of ["plusHunger", "plusThirst"]) if (V[k] <= 0) fatigue += (WEAK_FATIGUE_PER_HOUR * minutes) / 60;
+					V.tiredness = Math.clamp(V.tiredness + fatigue, 0, max);
 				}
 			} catch (e) {}
 			// Stress and pain each turn, skipped during combat (combat manages its own pain/stress).
+			// Pain contributed by each empty need is tracked separately and capped (40 hunger / 60 thirst).
 			try {
 				if (V.combat !== 1) {
 					let st = 0;
 					let pn = 0;
-					let cap = 0;
 					for (const k of ["plusHunger", "plusThirst"])
 						if (V[k] <= 0) {
-							cap += EMPTY_PAIN_CAP[k];
 							st += (EMPTY_STRESS_PER_HOUR[k] * minutes) / 60;
-							pn += (EMPTY_PAIN_PER_HOUR[k] * minutes) / 60;
+							const add = (EMPTY_PAIN_PER_HOUR[k] * minutes) / 60;
+							const room = Math.max(0, EMPTY_PAIN_CAP[k] - (V.plusNeedsPain[k] || 0));
+							const give = Math.min(add, room);
+							V.plusNeedsPain[k] = (V.plusNeedsPain[k] || 0) + give;
+							pn += give;
 						}
 					const smax = Number.isFinite(V.stressmax) ? V.stressmax : 10000;
 					if (Number.isFinite(V.stress)) V.stress = Math.clamp(V.stress + st, 0, smax);
-					if (Number.isFinite(V.pain) && V.gamemode !== "soft" && V.pain < cap) V.pain = Math.clamp(V.pain + pn, 0, cap);
+					if (Number.isFinite(V.pain) && V.gamemode !== "soft") {
+						const pmax = typeof C !== "undefined" && C.pain && Number.isFinite(C.pain.max) ? C.pain.max : 200;
+						V.pain = Math.clamp(V.pain + pn, 0, pmax);
+					}
 				}
 			} catch (e) {}
 		}
@@ -256,7 +270,8 @@ window.plusNowTs = function () {
 		for (const k of ["plusBladder", "plusBowels"]) {
 			const start = V[k];
 			let v = start - loss[k];
-			if (longPass && v < LONG_PASS_FLOOR) v = Math.min(start, LONG_PASS_FLOOR);
+			// Long skips never drop (or leave you) below the "find a toilet soon" floor.
+			if (longPass && v < LONG_PASS_FLOOR) v = LONG_PASS_FLOOR;
 			v = clamp(v);
 			V[k] = v;
 			// Night protection: a long rest (sleep) at low continence can cause bed-wetting if no diaper is worn.
@@ -311,11 +326,16 @@ window.plusNowTs = function () {
 				}
 			}
 			if (V[k] <= 0) {
+				// Sleep/long skips never cause a waking accident; bedwetting is handled above.
+				if (longPass) {
+					V[k] = LONG_PASS_FLOOR;
+					continue;
+				}
 				// High continence: a grace period at 0 before the accident.
 				const grace = CONT_GRACE[lvl] || 0;
 				const atZero = start > 0 ? minutes * Math.max(0, 1 - start / Math.max(loss[k], 1e-9)) : minutes;
 				G[k] = (G[k] || 0) + atZero;
-				if (grace > 0 && G[k] < grace && !(longPass && start <= 0)) {
+				if (grace > 0 && G[k] < grace) {
 					V[k] = 0;
 					const stage = G[k] >= grace * 0.75 ? 2 : 1;
 					const N = V.plusHoldNote || (V.plusHoldNote = {});
