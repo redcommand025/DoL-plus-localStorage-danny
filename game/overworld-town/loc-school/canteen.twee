@@ -1,7 +1,8 @@
 :: Canteen
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>><<sydneySchedule>>
 You are in the school canteen.
-<<if $dannyIntro isnot 1 and Time.schoolDay>>
+<<dannyPresence "canteen">>
+<<if $dannyIntro isnot 1 and Time.schoolDay and getDannyLocation() is "canteen">>
 	<<link [[Meet Danny|Danny First Meeting Canteen]]>><</link>>
 	<br>
 <</if>>

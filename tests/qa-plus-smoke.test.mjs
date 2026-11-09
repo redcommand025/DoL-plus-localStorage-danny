@@ -985,4 +985,14 @@ describe("QA plus-needs static integration boundaries", () => {
 		assert.match(danny, /<<link \[\[Continue\|Canteen\]\]>>/);
 		assert.doesNotMatch(danny, /School Canteen/);
 	});
+
+	it("QA-S016 [static] Danny presence hooks sit on the timetable locations", () => {
+		const danny = read("game/ModLI/Danny/danny.twee");
+		assert.match(danny, /<<widget "dannyPresence">>/);
+		assert.match(read("game/overworld-town/loc-school/canteen.twee"), /<<dannyPresence "canteen">>/);
+		assert.match(read("game/overworld-town/loc-school/canteen.twee"), /getDannyLocation\(\) is "canteen"/);
+		assert.match(read("game/overworld-town/loc-school/hallways.twee"), /<<dannyPresence "school">>/);
+		assert.match(read("game/overworld-town/loc-school/main.twee"), /<<dannyPresence "courtyard">>/);
+		assert.match(read("game/overworld-town/loc-photography/main.twee"), /<<dannyPresence "work">>/);
+	});
 });

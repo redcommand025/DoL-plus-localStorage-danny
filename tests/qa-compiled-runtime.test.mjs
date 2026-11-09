@@ -492,4 +492,156 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.knownLocation, true, JSON.stringify(info));
 		assert.notEqual(info.locUninit, "unknown", JSON.stringify(info));
 	});
+
+	it("QA-C018 [integration] timetable slots change the door and show Danny only at the matching place", async () => {
+		const info = await page.evaluate(() => {
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: d.textContent || "", err: /Error:/.test(d.textContent || "") };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e), err: true };
+				}
+			};
+			const addDay = () => {
+				const next = new DateTime(Time.date.year, Time.date.month, Time.date.day, Time.hour, Time.minute);
+				next.addDays(1);
+				Time.setDate(next);
+			};
+			const advanceTo = school => {
+				if (school) {
+					const y = Time.year || Time.date.year;
+					for (const [month, day] of [
+						[9, 15],
+						[10, 12],
+						[11, 12],
+						[2, 12],
+						[3, 12],
+						[5, 12],
+						[6, 12],
+					]) {
+						Time.setDate(new DateTime(y, month, day, Time.hour || 10, Time.minute || 0));
+						let g = 0;
+						while (!Time.schoolDay && Time.schoolTerm && g++ < 6) addDay();
+						if (Time.schoolDay) return true;
+					}
+				} else {
+					let g = 0;
+					while (Time.schoolDay && g++ < 8) addDay();
+					if (!Time.schoolDay) return true;
+					g = 0;
+					while (Time.weekDay !== 1 && Time.weekDay !== 7 && g++ < 8) addDay();
+				}
+				return !!Time.schoolDay === school;
+			};
+			const probe = (h, m) => {
+				Time.setTime(h, m);
+				const loc = getDannyLocation();
+				const door = wiki("<<include [[Danny Room Door]]>>");
+				const text = door.text || "";
+				const presence = {
+					school: wiki('<<dannyPresence "school">>').text.includes("You see Danny here."),
+					canteen: wiki('<<dannyPresence "canteen">>').text.includes("You see Danny here."),
+					courtyard: wiki('<<dannyPresence "courtyard">>').text.includes("You see Danny here."),
+					work: wiki('<<dannyPresence "work">>').text.includes("You see Danny here."),
+				};
+				const sleepNote = /Sleeping/.test(text);
+				const workNote = /Niki/.test(text);
+				const schoolNote = /At school/.test(text);
+				const knock = /Knock and enter/.test(text);
+				return {
+					h,
+					m,
+					loc,
+					schoolDay: !!Time.schoolDay,
+					doorOk: door.ok && !door.err,
+					sleepNote,
+					workNote,
+					schoolNote,
+					knock,
+					presence,
+				};
+			};
+			const result = { hasSetTime: typeof Time.setTime === "function", slots: [], errors: [] };
+			try {
+				if (!advanceTo(true)) result.errors.push("no-school-day");
+				const weekday = [
+					[6, 0, "sleep"],
+					[7, 15, "room"],
+					[8, 20, "walk"],
+					[8, 45, "school"],
+					[10, 0, "school"],
+					[12, 0, "canteen"],
+					[14, 0, "school"],
+					[15, 10, "courtyard"],
+					[15, 30, "work"],
+					[18, 0, "work"],
+					[20, 5, "room"],
+					[21, 0, "sleep"],
+				];
+				for (const [h, m, expected] of weekday) {
+					const row = probe(h, m);
+					row.expected = expected;
+					row.locOk = row.loc === expected;
+					row.doorMatches =
+						(expected === "sleep" && row.sleepNote && !row.knock) ||
+						(expected === "work" && row.workNote && !row.knock) ||
+						(["school", "walk", "canteen", "courtyard"].includes(expected) && row.schoolNote && !row.knock) ||
+						(expected === "room" && row.knock && !row.sleepNote && !row.workNote);
+					row.presenceOk =
+						row.presence.school === (expected === "school") &&
+						row.presence.canteen === (expected === "canteen") &&
+						row.presence.courtyard === (expected === "courtyard") &&
+						row.presence.work === (expected === "work");
+					result.slots.push(row);
+				}
+				if (!advanceTo(false)) result.errors.push("no-weekend");
+				const weekend = [
+					[8, 0, "room"],
+					[10, 0, "work"],
+					[16, 0, "room"],
+					[22, 0, "sleep"],
+				];
+				for (const [h, m, expected] of weekend) {
+					const row = probe(h, m);
+					row.expected = expected;
+					row.locOk = row.loc === expected;
+					row.doorMatches =
+						(expected === "sleep" && row.sleepNote && !row.knock) || (expected === "work" && row.workNote && !row.knock) || (expected === "room" && row.knock);
+					row.presenceOk =
+						row.presence.school === false && row.presence.canteen === false && row.presence.courtyard === false && row.presence.work === (expected === "work");
+					result.slots.push(row);
+				}
+			} catch (e) {
+				result.errors.push(String(e && e.message ? e.message : e));
+			}
+			result.allLocOk = result.slots.every(s => s.locOk);
+			result.allDoorOk = result.slots.every(s => s.doorOk && s.doorMatches);
+			result.allPresenceOk = result.slots.every(s => s.presenceOk);
+			result.failed = result.slots
+				.filter(s => !s.locOk || !s.doorMatches || !s.presenceOk || !s.doorOk)
+				.map(s => ({
+					h: s.h,
+					m: s.m,
+					loc: s.loc,
+					expected: s.expected,
+					schoolDay: s.schoolDay,
+					doorOk: s.doorOk,
+					doorMatches: s.doorMatches,
+					presenceOk: s.presenceOk,
+					sleepNote: s.sleepNote,
+					workNote: s.workNote,
+					schoolNote: s.schoolNote,
+					knock: s.knock,
+					presence: s.presence,
+				}));
+			return result;
+		});
+		assert.equal(info.hasSetTime, true, JSON.stringify(info));
+		assert.deepEqual(info.errors, [], JSON.stringify(info));
+		assert.equal(info.allLocOk, true, JSON.stringify(info.failed));
+		assert.equal(info.allDoorOk, true, JSON.stringify(info.failed));
+		assert.equal(info.allPresenceOk, true, JSON.stringify(info.failed));
+	});
 });

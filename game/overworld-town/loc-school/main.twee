@@ -1,6 +1,7 @@
 :: School Front Courtyard
 <<lockerClothesAutoStore>>
 <<set $outside to 1>><<set $location to "school">><<schooleffects>><<effects>><<set $bus to "schoolfrontcourtyard">>
+<<dannyPresence "courtyard">>
 
 <<if !["early", "late", "earlynoschool", "latenoschool", "daynoschool"].includes($schoolstate)>>
 	<<if $schoolstate is "morning">>

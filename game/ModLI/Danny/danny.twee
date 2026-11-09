@@ -41,6 +41,13 @@ In the canteen Danny nearly bumps into you.
   <br>
 <</widget>>
 
+<<widget "dannyPresence">>
+	<<if getDannyLocation() is _args[0]>>
+		You see Danny here.
+		<br>
+	<</if>>
+<</widget>>
+
 :: Widgets Danny Init [widget]
 <<widget "dannyInit">>
 	<<if C.npc.Danny>>
