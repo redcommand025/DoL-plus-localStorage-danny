@@ -137,7 +137,7 @@ describe("plus-needs native source hooks", () => {
 			["game/01-config/start.twee", "plusNeedsIntroTip"],
 			["game/01-config/start.twee", "plusIncontinentStart"],
 			["game/base-system/settings.twee", "$background.incontinent"],
-			["game/ModLI/Danny/danny.twee", "passTimeUntil 7"],
+			["game/ModLI/Danny/danny.twee", "getDannyLocation"],
 			["game/overworld-town/loc-school/canteen.twee", "Danny First Meeting Canteen"],
 		];
 		for (const [file, token] of expect) {

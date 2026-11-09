@@ -868,9 +868,9 @@ describe("QA plus-needs static integration boundaries", () => {
 		assert.match(mod, /\$danny\.dependency/);
 	});
 
-	it("QA-S002 [static] Danny wait-until-morning uses passTimeUntil instead of raw $time", () => {
+	it("QA-S002 [static] Danny door uses the schedule helper instead of raw $time writes", () => {
 		const danny = read("game/ModLI/Danny/danny.twee");
-		assert.match(danny, /<<passTimeUntil 7>>/);
+		assert.match(danny, /getDannyLocation\(\)/);
 		assert.doesNotMatch(danny, /<<set \$time to 420>>/);
 	});
 
@@ -968,5 +968,21 @@ describe("QA plus-needs static integration boundaries", () => {
 		assert.match(widgets, /Math\.clamp\(\$NPCName\[_i\]\.continence, 0, 6000\)/);
 		assert.ok(existsSync(join(root, "img/ui/sym-continence.png")));
 		assert.ok(existsSync(join(root, "img/ui/sym-acceptance.png")));
+	});
+
+	it("QA-S013 [static] Danny schedule drives the door without an init gate or broken Canteen link", () => {
+		const danny = read("game/ModLI/Danny/danny.twee");
+		const schedule = read("game/ModLI/Danny/schedule.js");
+		assert.match(schedule, /function getDannyLocation/);
+		assert.match(schedule, /window\.getDannyLocation = getDannyLocation/);
+		assert.doesNotMatch(schedule, /C\.npc\.Danny\.init/);
+		assert.doesNotMatch(schedule, /if \(!C\.npc\.Danny/);
+		assert.match(danny, /<<set _loc to getDannyLocation\(\)>>/);
+		assert.match(danny, /At Niki's photography/);
+		assert.match(danny, /Danny's room \(locked\)/);
+		assert.match(danny, /<<npc "Danny">>/);
+		assert.match(danny, /<<link \[\[Talk\|Danny Room\]\]>>/);
+		assert.match(danny, /<<link \[\[Continue\|Canteen\]\]>>/);
+		assert.doesNotMatch(danny, /School Canteen/);
 	});
 });

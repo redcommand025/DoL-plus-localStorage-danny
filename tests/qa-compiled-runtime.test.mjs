@@ -447,4 +447,49 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.socialHasContinence, true, JSON.stringify(info));
 		assert.equal(info.socialHasAcceptance, true, JSON.stringify(info));
 	});
+
+	it("QA-C017 [integration] Danny schedule works before named init and does not throw", async () => {
+		const info = await page.evaluate(() => {
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: d.textContent || "" };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e) };
+				}
+			};
+			const html = document.documentElement.innerHTML;
+			const result = {
+				hasFn: typeof window.getDannyLocation === "function",
+				hasLocked: html.includes("Danny's room (locked)") || html.includes("Danny&#39;s room (locked)"),
+				hasNiki: html.includes("Niki") && html.includes("photography"),
+				hasBrokenCanteen: html.includes("School Canteen"),
+				hasInitGate: /C\.npc\.Danny\.init !== 1/.test(html),
+			};
+			try {
+				if (window.C && C.npc && C.npc.Danny) C.npc.Danny.init = 0;
+				result.locUninit = window.getDannyLocation();
+				result.callOk = true;
+			} catch (e) {
+				result.callOk = false;
+				result.callError = String(e && e.message ? e.message : e);
+			}
+			const printed = wiki("<<set _loc to getDannyLocation()>><<print _loc>>");
+			result.printOk = printed.ok && !/Error/.test(printed.text || "");
+			result.printText = (printed.text || "").trim().slice(0, 80);
+			const known = ["sleep", "room", "walk", "school", "canteen", "courtyard", "work", "unknown"];
+			result.knownLocation = known.includes(result.locUninit) || known.includes(result.printText);
+			return result;
+		});
+		assert.equal(info.hasFn, true, JSON.stringify(info));
+		assert.equal(info.hasLocked, true, JSON.stringify(info));
+		assert.equal(info.hasNiki, true, JSON.stringify(info));
+		assert.equal(info.hasBrokenCanteen, false, JSON.stringify(info));
+		assert.equal(info.hasInitGate, false, JSON.stringify(info));
+		assert.equal(info.callOk, true, JSON.stringify(info));
+		assert.equal(info.printOk, true, JSON.stringify(info));
+		assert.equal(info.knownLocation, true, JSON.stringify(info));
+		assert.notEqual(info.locUninit, "unknown", JSON.stringify(info));
+	});
 });

@@ -1,8 +1,12 @@
 :: Danny Room Door
-<<if $time gte 1260 or $time lt 420>>
+<<set _loc to getDannyLocation()>>
+<<if _loc is "sleep">>
 A note on the door: "Sleeping. Please don't wake me."
-<<link [[Wait until morning|Danny Room Door]]>><<passTimeUntil 7>><</link>>
-<<elseif $schoolDay and $time gte 480 and $time lt 900>>
+<<link [[Leave|Bedroom]]>><</link>>
+<<elseif _loc is "work">>
+A note: "At Niki's photography. Back later."
+<<link [[Leave|Bedroom]]>><</link>>
+<<elseif _loc is "school" or _loc is "walk" or _loc is "canteen" or _loc is "courtyard">>
 A note: "At school. Back later."
 <<link [[Leave|Bedroom]]>><</link>>
 <<else>>
@@ -29,7 +33,11 @@ In the canteen Danny nearly bumps into you.
 
 :: Widgets Danny [widget]
 <<widget "dannyroom_link">>
-  <<bedroomicon>><<link [[Danny's room (0:01)|Danny Room Door]]>><<pass 1>><</link>>
+  <<if getDannyLocation() is "sleep">>
+    <<bedroomicon>><<link [[Danny's room (locked)|Danny Room Door]]>><<pass 1>><</link>>
+  <<else>>
+    <<bedroomicon>><<link [[Danny's room (0:01)|Danny Room Door]]>><<pass 1>><</link>>
+  <</if>>
   <br>
 <</widget>>
 
