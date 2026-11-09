@@ -949,4 +949,24 @@ describe("QA plus-needs static integration boundaries", () => {
 		assert.ok(existsSync(join(root, "img/ui/nnpc/blank.png")));
 		assert.equal(existsSync(join(root, "img/ui/nnpc/danny")), false);
 	});
+
+	it("QA-S012 [static] Danny social continence and acceptance are wired without stripping room interactions", () => {
+		const danny = read("game/ModLI/Danny/danny.twee");
+		const social = read("game/base-system/overlays/social.twee");
+		const widgets = read("game/base-system/widgets.twee");
+		assert.match(danny, /<<widget "dannyInit">>/);
+		assert.match(danny, /<<link \[\[Talk\|Danny Room\]\]>>/);
+		assert.match(danny, /<<link \[\[Help with control training\|Danny Room\]\]>>/);
+		assert.match(danny, /<<link \[\[Offer dependency care\|Danny Room\]\]>>/);
+		assert.match(danny, /<<npc "Danny">>/);
+		assert.match(social, /<<dannyInit>>/);
+		assert.match(social, /"Danny"\s*:\s*\{/);
+		assert.match(social, /maxValue : 6000/);
+		assert.match(social, /maxValue : 1000/);
+		assert.match(social, /T\.importantNpcOrder = \[[^\]]*\"Danny\"\]/);
+		assert.match(widgets, /"continence", "acceptance", "harmony", "ferocity"/);
+		assert.match(widgets, /Math\.clamp\(\$NPCName\[_i\]\.continence, 0, 6000\)/);
+		assert.ok(existsSync(join(root, "img/ui/sym-continence.png")));
+		assert.ok(existsSync(join(root, "img/ui/sym-acceptance.png")));
+	});
 });

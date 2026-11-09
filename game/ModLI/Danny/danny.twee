@@ -32,3 +32,17 @@ In the canteen Danny nearly bumps into you.
   <<bedroomicon>><<link [[Danny's room (0:01)|Danny Room Door]]>><<pass 1>><</link>>
   <br>
 <</widget>>
+
+:: Widgets Danny Init [widget]
+<<widget "dannyInit">>
+	<<if C.npc.Danny>>
+		<<if C.npc.Danny.continence is undefined>>
+			<<set C.npc.Danny.continence to 3000>>
+		<</if>>
+		<<if C.npc.Danny.acceptance is undefined>>
+			<<set C.npc.Danny.acceptance to 200>>
+		<</if>>
+		<<set C.npc.Danny.continence to Math.clamp(C.npc.Danny.continence, 0, 6000)>>
+		<<set C.npc.Danny.acceptance to Math.clamp(C.npc.Danny.acceptance, 0, 1000)>>
+	<</if>>
+<</widget>>

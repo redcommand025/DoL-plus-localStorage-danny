@@ -363,4 +363,88 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.error, undefined, JSON.stringify(info));
 		assert.equal(info.src, "img/ui/nnpc/blank.png");
 	});
+
+	it("QA-C016 [integration] Danny social stats initialize and room interactions remain", async () => {
+		const info = await page.evaluate(() => {
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					// eslint-disable-next-line no-undef
+					new Wikifier(d, src);
+					return { ok: true, text: d.textContent || "", html: d.innerHTML || "" };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e), html: d.innerHTML || "" };
+				}
+			};
+			const html = document.documentElement.innerHTML;
+			const V = window.SugarCube.State.variables;
+			if (!Array.isArray(V.NPCNameList) || !V.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
+			if (!V.danny || typeof V.danny !== "object") V.danny = { control: 0, dependency: 0 };
+			wiki('<<npc "Danny">>');
+			const init = wiki("<<dannyInit>>");
+			const after = window.C && C.npc && C.npc.Danny ? C.npc.Danny : null;
+			const defaults = after ? { c: after.continence, a: after.acceptance, initFlag: after.init } : {};
+			if (after) {
+				after.continence = 99999;
+				after.acceptance = -5;
+			}
+			const clamp = wiki("<<dannyInit>>");
+			const clamped = window.C && C.npc && C.npc.Danny ? { c: C.npc.Danny.continence, a: C.npc.Danny.acceptance } : {};
+			if (after) {
+				after.continence = 3000;
+				after.acceptance = 200;
+				after.init = 1;
+			}
+			const idx = (V.NPCNameList || []).indexOf("Danny");
+			if (idx >= 0 && Array.isArray(V.NPCName) && V.NPCName[idx]) {
+				V.NPCName[idx].init = 1;
+				V.NPCName[idx].continence = 3000;
+				V.NPCName[idx].acceptance = 200;
+			}
+			const box = wiki(
+				'<<set _idx to $NPCNameList.indexOf("Danny")>><<relation-box $NPCName[_idx] `{important:true, continence:{name:"Continence", maxValue:6000, minValue:0}, acceptance:{name:"Acceptance", maxValue:1000, minValue:0}}`>>'
+			);
+			const boxText = (box.text || "") + (box.html || "");
+			const social = wiki("<<social>>");
+			return {
+				hasInitWidget: html.includes("dannyInit"),
+				hasTalk: html.includes("Talk") && html.includes("Danny Room"),
+				hasHelp: html.includes("Help with control training"),
+				hasOffer: html.includes("Offer dependency care"),
+				hasContinenceIcon: html.includes("img/ui/sym-continence.png"),
+				initOk: init.ok,
+				clampOk: clamp.ok,
+				initFlag: defaults.initFlag,
+				continenceDefault: defaults.c,
+				acceptanceDefault: defaults.a,
+				continenceClamped: clamped.c,
+				acceptanceClamped: clamped.a,
+				sameObject: !!(after && idx >= 0 && V.NPCName[idx] === after),
+				namedInit: idx >= 0 && V.NPCName[idx] ? V.NPCName[idx].init : null,
+				boxOk: box.ok,
+				socialHasContinence: /Continence/.test(boxText),
+				socialHasAcceptance: /Acceptance/.test(boxText),
+				socialHasDanny: /Danny/.test(boxText),
+				socialOk: box.ok,
+				socialError: box.ok ? "" : (box.text || "").slice(0, 200),
+				whitelistError: /not whitelisted/.test(boxText + (init.text || "")),
+				rendererWired: html.includes("continence") && html.includes("acceptance") && html.includes('"Danny"'),
+			};
+		});
+		assert.equal(info.hasInitWidget, true, JSON.stringify(info));
+		assert.equal(info.hasTalk, true, JSON.stringify(info));
+		assert.equal(info.hasHelp, true, JSON.stringify(info));
+		assert.equal(info.hasOffer, true, JSON.stringify(info));
+		assert.equal(info.hasContinenceIcon, true, JSON.stringify(info));
+		assert.equal(info.initOk, true, JSON.stringify(info));
+		assert.equal(info.clampOk, true, JSON.stringify(info));
+		assert.equal(info.continenceDefault, 3000, JSON.stringify(info));
+		assert.equal(info.acceptanceDefault, 200, JSON.stringify(info));
+		assert.equal(info.continenceClamped, 6000, JSON.stringify(info));
+		assert.equal(info.acceptanceClamped, 0, JSON.stringify(info));
+		assert.equal(info.socialOk, true, info.socialError || JSON.stringify(info));
+		assert.equal(info.whitelistError, false, JSON.stringify(info));
+		assert.equal(info.socialHasContinence, true, JSON.stringify(info));
+		assert.equal(info.socialHasAcceptance, true, JSON.stringify(info));
+	});
 });

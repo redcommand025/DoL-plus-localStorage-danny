@@ -3560,8 +3560,8 @@
 					return true;
 			};
 
-			T.importantNpcStats = ["love", "lust", "patience", "anger", "dom", "trauma", "rage", "purity", "corruption", "harmony", "ferocity"];
-			T.otherNpcStats = ["love", "lust", "patience", "anger"];
+			T.importantNpcStats = ["love", "lust", "patience", "anger", "dom", "trauma", "rage", "purity", "corruption", "continence", "acceptance", "harmony", "ferocity"];
+			T.otherNpcStats = ["love", "lust", "patience", "anger", "continence", "acceptance"];
 
 			let statDefaults = {
 				"love" : {
@@ -3636,6 +3636,20 @@
 					value : (T.npcData?.anger ?? 0),
 					activeIcon : "img/ui/sym-poppy-rage.png",
 					color: "red"
+				},
+				"continence" : {
+					name : "Continence",
+					value : (T.npcData?.continence ?? 3000),
+					activeIcon : "img/ui/sym-continence.png",
+					inactiveIcon : "img/ui/sym-continence.png",
+					color: "teal"
+				},
+				"acceptance" : {
+					name : "Acceptance",
+					value : (T.npcData?.acceptance ?? 200),
+					activeIcon : "img/ui/sym-acceptance.png",
+					inactiveIcon : "img/ui/sym-acceptance.png",
+					color: "purple"
 				},
 			};
 
@@ -3938,6 +3952,16 @@
 		<<set $NPCName[_i].love = Math.clamp($NPCName[_i].love, 0, 100)>>
 		<<set $NPCName[_i].dom = Math.clamp($NPCName[_i].dom, -50, 50)>>
 		<<set $NPCName[_i].trust to Math.clamp($NPCName[_i].trust,- 100, 300)>>
+		<<if $NPCName[_i].continence is undefined>>
+			<<set $NPCName[_i].continence to 3000>>
+		<<else>>
+			<<set $NPCName[_i].continence to Math.clamp($NPCName[_i].continence, 0, 6000)>>
+		<</if>>
+		<<if $NPCName[_i].acceptance is undefined>>
+			<<set $NPCName[_i].acceptance to 200>>
+		<<else>>
+			<<set $NPCName[_i].acceptance to Math.clamp($NPCName[_i].acceptance, 0, 1000)>>
+		<</if>>
 	<</if>>
 <</widget>>
 
