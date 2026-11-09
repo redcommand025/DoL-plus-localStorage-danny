@@ -23,7 +23,7 @@
 	<!-- Type needs to conform to beast type: wolf, dog, etc. -->
 	<<set _tpe to ["human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "human", "wolf", "human", "human", "human", "human", "hawk", "human", "human", "human", "human", "creature", "human", "human", "human"]>>
 
-	<<set _swi to ["a","a","a","a","a","a","a","t","a","a","t","a","a","a","a","a","t","a","a","t","a","a","a","a","a","t","a","a","t","a","a","a","a", "a", "t"]>>
+	<<set _swi to ["a","a","a","a","a","a","a","t","a","a","t","a","a","a","a","a","t","a","a","t","a","a","a","a","a","t","a","a","t","a","a","a","a", "a", "a"]>>
 
 	<<for _i to 0; _i lt $NPCName.length; _i++>>
 
@@ -133,7 +133,8 @@
 			"ivorywraith": {nam : "Ivory Wraith", title: "reflection", insecurity: "looks", adult: 1},
 			"zephyr": {nam : "Zephyr", title: "captain", insecurity: "skill", adult: 1},
 			"nightmonster": {nam : "Night Monster", title: "horror", insecurity: "weak", adult: 1, type: "creature", claws: "claws"},
-			"poppy": {nam : "Poppy", title: "tolerant", insecurity: "skill", adult: 1}
+			"poppy": {nam : "Poppy", title: "tolerant", insecurity: "skill", adult: 1},
+			"danny": {nam : "Danny", title: "dependent", insecurity: "weak", adult: 1, teen: 0}
 		}>>
 		<<for _npc range Object.keys(_newNNPCs)>>
 			<<if !$NPCNameList.includes(_newNNPCs[_npc].nam)>>

@@ -2223,6 +2223,10 @@ Renderer.CanvasModels.main = {
 					return key;
 				};
 
+				// No legitimate Danny NNPC portrait assets exist in img/ui/nnpc.
+				// Do not invent artwork or reuse another named NPC's portrait folder; use the generic blank.
+				const dannyPortraitFallback = () => "img/ui/nnpc/blank.png";
+
 				const autoEnabled = V.options?.autoNNPCDisplay?.enabled === true;
 				const inOptions = !!T.optionsEnabled;
 
@@ -2236,6 +2240,7 @@ Renderer.CanvasModels.main = {
 					if (!active) return;
 
 					T.activeNNPC = active;
+					if (active === "danny") return dannyPortraitFallback();
 
 					const isBeast = (active === "black_wolf" || active === "great_hawk");
 
@@ -2308,6 +2313,7 @@ Renderer.CanvasModels.main = {
 					if (!active) return;
 
 					T.activeNNPC = active;
+					if (active === "danny") return dannyPortraitFallback();
 
 					const isBeast = (active === "black_wolf" || active === "great_hawk");
 
@@ -2403,6 +2409,7 @@ Renderer.CanvasModels.main = {
 				if (active === "ivory_wraith") active = "ivory_wraith";
 
 				T.activeNNPC = active;
+				if (active === "danny") return dannyPortraitFallback();
 
 				const isBeast = (active === "black_wolf" || active === "great_hawk");
 

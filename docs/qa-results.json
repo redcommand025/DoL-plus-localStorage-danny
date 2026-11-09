@@ -1,0 +1,1101 @@
+{
+	"meta": {
+		"sourceCommit": "7dccddef31ada38935fe490df8ca145997954518",
+		"sourceBranch": "test",
+		"describe": "7dccddef3-dirty",
+		"compiledHtml": "Degrees of Lewdity 7dccddef3-dirty.html",
+		"startedAt": "2026-11-08T22:57:25.002Z",
+		"command": "node --test --test-reporter tap tests/storage-fallback.test.mjs tests/prepend-storage-fallback.test.mjs tests/npc-count-invariant.test.mjs tests/plus-needs-native.test.mjs tests/plus-needs-behavior.test.mjs tests/plus-paperdoll-src.test.mjs tests/plus-old-save-migration.test.mjs tests/qa-plus-smoke.test.mjs tests/qa-compiled-runtime.test.mjs && node tests/tutorial-npc-count.mjs && node tests/no-storage-startup.mjs Degrees of Lewdity.html",
+		"finishedAt": "2026-11-08T22:58:02.136Z",
+		"nodeTestExit": 0,
+		"tutorialExit": 0,
+		"noStorageExit": 0
+	},
+	"summary": {
+		"total": 149,
+		"pass": 149,
+		"fail": 0,
+		"byKind": {
+			"integration": {
+				"total": 27,
+				"pass": 27,
+				"fail": 0
+			},
+			"behavioral": {
+				"total": 105,
+				"pass": 105,
+				"fail": 0
+			},
+			"static": {
+				"total": 17,
+				"pass": 17,
+				"fail": 0
+			}
+		}
+	},
+	"cases": [
+		{
+			"id": "QA-L001",
+			"name": "generateNPC sets enemyno from the filled slot index, not a call counter",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L002",
+			"name": "combatinit does not mark ungenerated stubs active",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L003",
+			"name": "does not add dummy combat fields to setup.baseNPC",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L004",
+			"name": "combines bladder and bowel accidents into one pending notice",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L005",
+			"name": "trains continence up at 600 XP and down on enough negative XP",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L006",
+			"name": "bedwets on a long rest at low continence without a diaper, but a diaper absorbs instead",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L007",
+			"name": "dirties individual worn items and laundromat/wash resets them; cloth diapers reset fill",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L008",
+			"name": "raises continence reputation only when an accident is seen, and fades across clean days",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L009",
+			"name": "scales outdoor spotting down with forest depth and at night",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L010",
+			"name": "leaks when over capacity, washes cloth, disposes used disposables, and sells bulk packs cheaper",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L011",
+			"name": "maps official clothing srcfn output into sag folders and does not wrap layer objects",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L012",
+			"name": "uses native plusneeds iconFile paths and concealment properties",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L013",
+			"name": "ticks needs from minutePassed and records long passes via passTime",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L014",
+			"name": "registers wearProp and official under_lower catalog hooks once",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L015",
+			"name": "removes undefined widgets and keeps shop widgets on real shop passages only",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L016",
+			"name": "wires location, overlay, caption, and creation hooks without doubling class-ask",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L017",
+			"name": "keeps a single compile-flow password gate in head.html and does not log secrets",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L018",
+			"name": "preserves NPC-count and storage fallback safeguards",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L019",
+			"name": "includes copied diaper sprites and action icons",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L020",
+			"name": "drifts needs once over an hour and does not apply a second hidden tick",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L021",
+			"name": "applies consumable ratios and school lunch only once per day",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L022",
+			"name": "exposes 15 diaper models with clothing/adult shop split, volumes, and leak overflow",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L023",
+			"name": "starts the Incontinent background in a pull-up with five wardrobe spares",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L024",
+			"name": "migrates old diaper names and charges/evicts the Barb Street flat with a 3-day grace",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L025",
+			"name": "migrates a synthesized old-test-compile state, not a user save",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L026",
+			"name": "resolves distinct loadable PNGs for empty, half-full, and overflowing plusdpm",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L027",
+			"name": "keeps official genlayer clothing src construction and native sag rewrite",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L028",
+			"name": "compiled paperdoll layer srcfn rewrites sag without monkeypatching the layer",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L029",
+			"name": "inserts the fallback immediately after <head> and is idempotent",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C001",
+			"name": "QA-C001 [integration] compiled page loads SugarCube with the password gate up",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C002",
+			"name": "QA-C002 [integration] evaluated page text does not include a leaked password field",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C003",
+			"name": "QA-C003 [integration] plusNeedsTick and plusDiaperItems are present on the compiled page",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C004",
+			"name": "QA-C004 [integration] compiled tick with Math.random stubbed drains hunger at the awake rate",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C005",
+			"name": "QA-C005 [integration] widget macros needed for UI captions exist",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C006",
+			"name": "QA-C006 [integration] caption extras and statistics widgets wikify without throwing",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C007",
+			"name": "QA-C007 [integration] class-ask and knock widgets wikify without throwing",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C008",
+			"name": "QA-C008 [integration] compiled clothing srcfn rewrites a half-full plusdpm path",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C009",
+			"name": "QA-C009 [integration] compiled module namespace deepMerge is a function",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C010",
+			"name": "QA-C010 [integration] compiled page can write and read localStorage when Web Storage exists",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C011",
+			"name": "QA-C011 [integration] generateNPC still sets enemyno from the filled slot, not a call counter",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C012",
+			"name": "QA-C012 [integration] compiled HTML contains one plusNeedsTick call site and no plusCanteenLunch",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C013",
+			"name": "QA-C013 [integration] compiled npcincr Talk and Help with control training raise Danny love without a whitelist error",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C014",
+			"name": "QA-C014 [integration] updateNewNamedNpcs migrates a save missing Danny",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-C015",
+			"name": "QA-C015 [integration] Danny portrait srcfn uses the generic blank fallback",
+			"kind": "integration",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B001",
+			"name": "QA-B001 [behavioral] controlled 60-minute awake drain matches base rates",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B002",
+			"name": "QA-B002 [behavioral] 180-minute long rest uses sleep rates",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B003",
+			"name": "QA-B003 [behavioral] long rest floors bladder at 400",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B004",
+			"name": "QA-B004 [behavioral] zero hunger for an hour adds 80 stress",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B005",
+			"name": "QA-B005 [behavioral] zero thirst for an hour adds 120 stress",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B006",
+			"name": "QA-B006 [behavioral] crossing zero hunger increments zeroHunger stat once",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B007",
+			"name": "QA-B007 [behavioral] coffee diuretic doubles bladder loss while active",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B008",
+			"name": "QA-B008 [behavioral] water does not apply a diuretic",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B009",
+			"name": "QA-B009 [behavioral] intro flag skips needs drain",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B010",
+			"name": "QA-B010 [behavioral] non-positive minutes do not drain",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B011",
+			"name": "QA-B011 [behavioral] consume meal raises hunger and fills bowels",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B012",
+			"name": "QA-B012 [behavioral] consume drink raises thirst and fills bladder",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B013",
+			"name": "QA-B013 [behavioral] school lunch applies meal plus water once",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B014",
+			"name": "QA-B014 [behavioral] second school lunch the same day is a no-op",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B015",
+			"name": "QA-B015 [behavioral] school lunch works again the next day",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B016",
+			"name": "QA-B016 [behavioral] water-bottle prop uses drink scale and ml table",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B017",
+			"name": "QA-B017 [behavioral] the same food prop is applied only once per passage",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B018",
+			"name": "QA-B018 [behavioral] snack hunger is doubled relative to the listed value",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B019",
+			"name": "QA-B019 [behavioral] tea prop applies a milder diuretic",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B020",
+			"name": "QA-B020 [behavioral] toilet bladder visit empties the bar and counts a pee",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B021",
+			"name": "QA-B021 [behavioral] combined toilet does not count a poop when bowels are above 1000",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B022",
+			"name": "QA-B022 [behavioral] combined toilet empties bowels when below the 1000 threshold",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B023",
+			"name": "QA-B023 [behavioral] holding-on relief XP is 120 at empty, 80 under 200, 0 at 400",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B024",
+			"name": "QA-B024 [behavioral] scheduled-toilet bonus applies only in the 200-1600 window",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B025",
+			"name": "QA-B025 [behavioral] first daily bladder exercise costs £10 and grants 90 XP",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B026",
+			"name": "QA-B026 [behavioral] later same-day bladder exercise grants 25 XP",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B027",
+			"name": "QA-B027 [behavioral] bladder exercise is refused without enough money",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B028",
+			"name": "QA-B028 [behavioral] leaky accident chance is zero at or above the 1800 threshold",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B029",
+			"name": "QA-B029 [behavioral] steel continence stays at 6 when XP is already at the cap",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B030",
+			"name": "QA-B030 [behavioral] leaky continence stays at 0 when negative XP is already at the floor",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B031",
+			"name": "QA-B031 [behavioral] high continence does not bedwet on a long rest",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B032",
+			"name": "QA-B032 [behavioral] steel grace holds at empty without an immediate accident",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B033",
+			"name": "QA-B033 [behavioral] steel grace expires into an accident after enough time at empty",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B034",
+			"name": "QA-B034 [behavioral] dirt keyword tiers match 500/1000/1500 thresholds",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B035",
+			"name": "QA-B035 [behavioral] dirt reduces allure and seduction multipliers",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B036",
+			"name": "QA-B036 [behavioral] clothes clean fails when random is at or above 0.6",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B037",
+			"name": "QA-B037 [behavioral] laundromat is refused without £5",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B038",
+			"name": "QA-B038 [behavioral] floor accidents add more reputation than hidden ones",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B039",
+			"name": "QA-B039 [behavioral] school and busy multipliers stack on witnessed accident reputation",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B040",
+			"name": "QA-B040 [behavioral] night halves witnessed accident reputation",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B041",
+			"name": "QA-B041 [behavioral] reputation is clamped at 1000 Notorious",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B042",
+			"name": "QA-B042 [behavioral] reputation labels match every published threshold",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B043",
+			"name": "QA-B043 [behavioral] clean-day fade uses the published decay table",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B044",
+			"name": "QA-B044 [behavioral] forest spotting uses depth 0, 100, and the 0.03 clamp",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B045",
+			"name": "QA-B045 [behavioral] beach, park, and wolf-cave use their own base chances",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B046",
+			"name": "QA-B046 [behavioral] night halves outdoor spotting chance",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B047",
+			"name": "QA-B047 [behavioral] class teacher names resolve from lesson passages",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B048",
+			"name": "QA-B048 [behavioral] class refuse chance rises with delinquency and repeat asks",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B049",
+			"name": "QA-B049 [behavioral] high teacher love lowers refuse chance",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B050",
+			"name": "QA-B050 [behavioral] class ask records return passage and respects a forced grant roll",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B051",
+			"name": "QA-B051 [behavioral] knock pool reduces Ask-for-work weights using reputation",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B052",
+			"name": "QA-B052 [behavioral] knock pool is unchanged outside house-knock passages",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B053",
+			"name": "QA-B053 [behavioral] restroom ask is one-shot per house",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B054",
+			"name": "QA-B054 [behavioral] unused disposables cannot be disposed",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B055",
+			"name": "QA-B055 [behavioral] used cloth diapers cannot be thrown away",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B056",
+			"name": "QA-B056 [behavioral] five-packs are 20% off and ten-packs are 30% off",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B057",
+			"name": "QA-B057 [behavioral] adult packs are hidden until the adult shop is unlocked",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B058",
+			"name": "QA-B058 [behavioral] clothing shop lists exclude oversize adult-only models",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B059",
+			"name": "QA-B059 [behavioral] each published model exposes the documented capacities and iconFile",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B060",
+			"name": "QA-B060 [behavioral] buying a pack deducts money and adds wardrobe copies",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B061",
+			"name": "QA-B061 [behavioral] buying a pack fails without enough money",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B062",
+			"name": "QA-B062 [behavioral] incontinent start does nothing without the background",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B063",
+			"name": "QA-B063 [behavioral] incontinent start equips a pull-up, five spares, and leaky continence",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B064",
+			"name": "QA-B064 [behavioral] spare count ignores a used wardrobe diaper",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B065",
+			"name": "QA-B065 [behavioral] supply warning fires once per day when spares run out",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B066",
+			"name": "QA-B066 [behavioral] jeans conceal 4 and gym bloomers conceal 0",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B067",
+			"name": "QA-B067 [behavioral] a medium plastic diaper stays hidden under jeans until it outgrows size 4",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B068",
+			"name": "QA-B068 [behavioral] sag tiers map empty, 25%, 50%, 75%, full, and overflow",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B069",
+			"name": "QA-B069 [behavioral] over-capacity plastic absorption records leak overflow",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B070",
+			"name": "QA-B070 [behavioral] washing cloth resets fill; disposing a used disposable succeeds",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B071",
+			"name": "QA-B071 [behavioral] old v1 names all map to published v2 models",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B072",
+			"name": "QA-B072 [behavioral] migrating a v1 pull-up converts wet/soil counts into ml and lb",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B081",
+			"name": "QA-B081 [behavioral] migrateAll retries later if the clothing catalog was not ready",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B073",
+			"name": "QA-B073 [behavioral] signing a winter lease charges the deposit and marks the flat rented",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B074",
+			"name": "QA-B074 [behavioral] lease cannot be signed outside winter or without deposit",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B075",
+			"name": "QA-B075 [behavioral] unpaid rent after the due month increments grace then evicts",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B076",
+			"name": "QA-B076 [behavioral] collecting rent when funded clears grace and advances the due month",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B077",
+			"name": "QA-B077 [behavioral] moving out ends the lease without eviction",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B078",
+			"name": "QA-B078 [behavioral] daily ml counter resets when the day key changes",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B079",
+			"name": "QA-B079 [behavioral] accepting a diaper exposure raises insecurity and acceptance together",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-B080",
+			"name": "QA-B080 [behavioral] full acceptance disables diaper-use stress",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S001",
+			"name": "QA-S001 [static] Start2 and modUpdate initialize $danny control and dependency",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S002",
+			"name": "QA-S002 [static] Danny wait-until-morning uses passTimeUntil instead of raw $time",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S003",
+			"name": "QA-S003 [static] Canteen links the existing Danny intro and home exposes dannyroom_link",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S004",
+			"name": "QA-S004 [static] Danny intro continue returns to Canteen",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S005",
+			"name": "QA-S005 [static] class-ask widgets sit on all five lesson files",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S006",
+			"name": "QA-S006 [static] official srcfn calls plusSagSrc and plusSagHook does not wrap layers",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S007",
+			"name": "QA-S007 [static] password gate exists only as the compile-flow head copy",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S008",
+			"name": "QA-S008 [static] time, prop, and catalog hooks are present exactly once",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S009",
+			"name": "QA-S009 [static] Danny is registered on native npcincr whitelist and relationshipclamp",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S010",
+			"name": "QA-S010 [static] Danny save migration and new-game adult flags",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-S011",
+			"name": "QA-S011 [static] Danny portrait uses blank fallback and does not invent or reuse another NNPC folder",
+			"kind": "static",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L030",
+			"name": "replaces throwing localStorage/sessionStorage getters and disables IDB",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L031",
+			"name": "disables IDB when native Web Storage is unavailable even if IDB looks present",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L032",
+			"name": "disables IDB when the factory getter throws",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L033",
+			"name": "disables IDB when open throws synchronously",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L034",
+			"name": "leaves a working IndexedDB factory alone when Web Storage works",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L035",
+			"name": "falls back when Storage.prototype methods throw",
+			"kind": "behavioral",
+			"status": "pass",
+			"source": "node:test"
+		},
+		{
+			"id": "QA-L036",
+			"name": "Tutorial NPC: stale count 1 + generate1",
+			"kind": "integration",
+			"status": "pass",
+			"source": "tests/tutorial-npc-count.mjs",
+			"expected": "enemyno matches generated slots; no personselect 1",
+			"actual": "enemyno=1 enemynomax=1 passage="
+		},
+		{
+			"id": "QA-L037",
+			"name": "Tutorial NPC: double generate1",
+			"kind": "integration",
+			"status": "pass",
+			"source": "tests/tutorial-npc-count.mjs",
+			"expected": "enemyno matches generated slots; no personselect 1",
+			"actual": "enemyno=1 enemynomax=1 passage="
+		},
+		{
+			"id": "QA-L038",
+			"name": "Tutorial NPC: Bailey without endevent",
+			"kind": "integration",
+			"status": "pass",
+			"source": "tests/tutorial-npc-count.mjs",
+			"expected": "enemyno matches generated slots; no personselect 1",
+			"actual": "enemyno=1 enemynomax=1 passage="
+		},
+		{
+			"id": "QA-L039",
+			"name": "Tutorial NPC: generate1 then generate2",
+			"kind": "integration",
+			"status": "pass",
+			"source": "tests/tutorial-npc-count.mjs",
+			"expected": "enemyno matches generated slots; no personselect 1",
+			"actual": "enemyno=2 enemynomax=2 passage="
+		},
+		{
+			"id": "QA-L040",
+			"name": "Tutorial NPC: Bailey then generate2",
+			"kind": "integration",
+			"status": "pass",
+			"source": "tests/tutorial-npc-count.mjs",
+			"expected": "enemyno matches generated slots; no personselect 1",
+			"actual": "enemyno=2 enemynomax=2 passage="
+		},
+		{
+			"id": "QA-L041",
+			"name": "Tutorial NPC: clean Start2/Tutorial",
+			"kind": "integration",
+			"status": "pass",
+			"source": "tests/tutorial-npc-count.mjs",
+			"expected": "enemyno matches generated slots; no personselect 1",
+			"actual": "enemyno=1 enemynomax=0 passage=Tutorial"
+		},
+		{
+			"id": "QA-L042",
+			"name": "No-storage compiled startup (getters, IDB null, password gate, modules)",
+			"kind": "integration",
+			"status": "pass",
+			"source": "tests/no-storage-startup.mjs",
+			"expected": "ok true, passwordGate true, indexedDBIsNull true, deepMerge function",
+			"actual": "ok=true passwordGate=true indexedDBIsNull=true deepMerge=function"
+		}
+	],
+	"limitations": [
+		"This automated pass is not a 7-day gameplay click-through. The parent workstream owns browser playthrough evidence.",
+		"Compiled runtime tests load the page behind the password gate and do not complete character creation or wander the map.",
+		"Old-save coverage remains a synthesized old-test-build state, not a player's personal save file.",
+		"Paperdoll checks cover official srcfn path rewrite and decoded sprites, not a composited on-model screenshot."
+	]
+}

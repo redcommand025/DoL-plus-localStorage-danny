@@ -1942,6 +1942,7 @@ window.plusNowTs = function () {
 		const V = State.variables;
 		if (!V || V.plusDiaperV2) return 0;
 		let n = 0;
+		let pending = 0;
 		const seen = new Set();
 		(function walk(o, depth) {
 			if (!o || typeof o !== "object" || seen.has(o) || depth > 8) return;
@@ -1950,12 +1951,16 @@ window.plusNowTs = function () {
 				if (migrate(o)) {
 					init(o);
 					n++;
+				} else {
+					pending++;
 				}
 				return;
 			}
 			for (const k of Object.keys(o)) walk(o[k], depth + 1);
 		})(V, 0);
-		V.plusDiaperV2 = 1;
+		// Only seal the save as v2 when every old name we saw could be rewritten.
+		// If the clothing catalog is not registered yet, leave plusDiaperV2 unset so a later hook can retry.
+		if (!pending) V.plusDiaperV2 = 1;
 		return n;
 	};
 	$(document).on(":passagestart", () => {
