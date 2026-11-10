@@ -15,8 +15,81 @@ A note: "At school. Back later."
 <</if>>
 
 :: Danny Room
-You enter Danny's room.
+You enter Danny's room. <<npc "Danny">> looks up.
+<<if $dannyIntro isnot 1>>
+  <<set $dannyIntro to 1>>
+  "H-hey... I'm Danny. I live here too."
+  <<npcincr Danny love 3>>
+<</if>>
+<br>
+<<link [[Talk|Danny Talk]]>><</link>>
+<br>
+<<link [[Work on science schoolwork|Danny Room]]>><<npcincr Danny love 2>><</link>>
+<br>
+<<link [[Buy a new camera for them|Danny Room]]>><<npcincr Danny love 5>><</link>>
+<br>
+<<if Time.isWeekEnd()>>
+  <<link [[Go somewhere together|Danny Outings]]>><</link>>
+  <br>
+<</if>>
+<<if $dannyAccidentKnown is 1>>
+  <<link [[Give diapers|Danny Room]]>><<npcincr Danny acceptance 5>><</link>>
+  <br>
+<</if>>
+<<if C.npc.Danny.love gte 50>>
+  <<link [[Hug|Danny Room]]>><<npcincr Danny love 2>><</link>>
+  <br>
+<</if>>
+<<if V.loveInterest and V.loveInterest.primary is "Danny">>
+  <<link [[Cuddle|Danny Room]]>><<npcincr Danny love 3>><</link>>
+  <br>
+  <<link [[Kiss|Danny Room]]>><<npcincr Danny love 4>><</link>>
+  <br>
+<</if>>
+<<if $promiscuity gte 2>>
+  <<link [[Flirt|Danny Room]]>><<npcincr Danny lust 3>><</link>>
+  <br>
+<</if>>
 <<link [[Leave|Bedroom]]>><</link>>
+
+:: Danny Talk
+<<npc "Danny">>
+What do you want to talk about?
+<br>
+<<link [[About day|Danny Room]]>><<npcincr Danny love 1>><</link>>
+<br>
+<<link [[About work|Danny Room]]>><<npcincr Danny love 1>><</link>>
+<br>
+<<link [[About them|Danny Room]]>><<npcincr Danny love 2>><</link>>
+<br>
+<<if $dannyAccidentKnown is 1>>
+  <<link [[About continence|Danny Room]]>><<npcincr Danny acceptance 2>><</link>>
+  <br>
+  <<link [[About accidents|Danny Room]]>><<npcincr Danny acceptance 2>><</link>>
+  <br>
+<</if>>
+<<if ($pain gte 50 or $trauma gte 50 or $control lte 20) and !$daily.dannyBreakdown>>
+  <<link [[Break down|Danny Room]]>><<set $daily.dannyBreakdown to 1>><<npcincr Danny love 3>><</link>>
+  <br>
+<</if>>
+<<link [[Complain|Danny Room]]>><<npcincr Danny love 1>><</link>>
+<br>
+<<link [[Back|Danny Room]]>><</link>>
+
+:: Danny Outings
+Where do you want to go?
+<br>
+<<if $dannyAccidentKnown is 1>>
+  <<link [[Store for diapers|Danny Room]]>><</link>>
+  <br>
+  <<link [[Adult Store for diapers|Danny Room]]>><</link>>
+  <br>
+<</if>>
+<<if C.npc.Danny.love gte 75>>
+  <<link [[Photo shoot|Danny Room]]>><<npcincr Danny love 3>><</link>>
+  <br>
+<</if>>
+<<link [[Back|Danny Room]]>><</link>>
 
 :: Danny First Meeting Canteen
 In the canteen Danny nearly bumps into you.
