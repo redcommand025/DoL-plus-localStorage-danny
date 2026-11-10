@@ -24,6 +24,7 @@ function loadPuppeteer() {
 
 describe("QA compiled isolated runtime", () => {
 	let browser, page;
+	const startupDialogs = [];
 	before(async () => {
 		assert.ok(existsSync(html), "compiled HTML missing: " + html);
 		const puppeteer = loadPuppeteer();
@@ -34,6 +35,10 @@ describe("QA compiled isolated runtime", () => {
 		});
 		page = await browser.newPage();
 		page.setDefaultTimeout(180000);
+		page.on("dialog", async d => {
+			startupDialogs.push(d.message().slice(0, 400));
+			await d.dismiss();
+		});
 		await page.goto(pathToFileURL(html).href, { waitUntil: "domcontentloaded", timeout: 180000 });
 		await new Promise(r => setTimeout(r, 8000));
 	});
@@ -643,5 +648,125 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.allLocOk, true, JSON.stringify(info.failed));
 		assert.equal(info.allDoorOk, true, JSON.stringify(info.failed));
 		assert.equal(info.allPresenceOk, true, JSON.stringify(info.failed));
+	});
+
+	it("QA-C019 [integration] startup raises no error dialogs and every diaper shop renders its packs without an <<icon>> error", async () => {
+		const info = await page.evaluate(() => {
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: d.textContent || "" };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e) };
+				}
+			};
+			const V = SugarCube.State.variables;
+			const widgetPassages = [...document.querySelectorAll("tw-passagedata")]
+				.filter(p => (p.getAttribute("tags") || "").split(/\s+/).includes("widget"))
+				.filter(p => /<<plusDiaperShop\s+"/.test(p.textContent))
+				.map(p => p.getAttribute("name"));
+			const shops = {};
+			const prevOpen = window.plusDiaperAdultShopOpen;
+			window.plusDiaperAdultShopOpen = () => true;
+			for (const loc of ["clothing", "pharmacy", "adult"]) {
+				const r = wiki('<<plusDiaperShop "' + loc + '">>');
+				shops[loc] = {
+					ok: r.ok,
+					error: /Error|cannot execute|reading 'images'/.test(r.text),
+					packs: (r.text.match(/Pack of/g) || []).length,
+					expected: window.plusDiaperPackList(loc).filter(Boolean).length,
+				};
+			}
+			window.plusDiaperAdultShopOpen = prevOpen;
+			return { optionsDefined: !!(V.options && "images" in V.options), widgetPassages, shops };
+		});
+		assert.deepEqual(startupDialogs, []);
+		assert.deepEqual(info.widgetPassages, []);
+		assert.equal(info.optionsDefined, true);
+		for (const [loc, r] of Object.entries(info.shops)) {
+			assert.equal(r.ok, true, loc + JSON.stringify(r));
+			assert.equal(r.error, false, loc + JSON.stringify(r));
+			assert.equal(r.packs, r.expected, loc + JSON.stringify(r));
+		}
+		assert.ok(info.shops.clothing.packs > 0, JSON.stringify(info.shops));
+	});
+
+	it("QA-C020 [integration] Danny's new room, Talk and Outings interactions run after a game start without npcincr errors", async () => {
+		const info = await page.evaluate(() => {
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " ") };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e) };
+				}
+			};
+			const bad = r => !r.ok || /Error|NPCINCR error|not whitelisted/.test(r.text);
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			const V = SugarCube.State.variables;
+			if (!Array.isArray(V.NPCNameList) || !V.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
+			V.danny = V.danny || { control: 0, dependency: 0 };
+			V.dannyAccidentKnown = 1;
+			V.promiscuity = 2;
+			const i = V.NPCNameList.indexOf("Danny");
+			const room = wiki("<<include [[Danny Room]]>>");
+			const r = V.NPCName[i];
+			r.love = 80;
+			const room2 = wiki("<<include [[Danny Room]]>>");
+			const talk = wiki("<<include [[Danny Talk]]>>");
+			const outings = wiki("<<include [[Danny Outings]]>>");
+			const acc0 = r.acceptance;
+			const give = wiki("<<npcincr Danny acceptance 5>>");
+			const acc1 = r.acceptance;
+			const flirt = wiki("<<npcincr Danny lust 3>>");
+			const lust1 = r.lust;
+			wiki("<<npcincr Danny acceptance 5000>><<npcincr Danny lust 500>>");
+			const robin = wiki("<<npcincr Robin acceptance 5>>");
+			return {
+				roomBad: bad(room) || bad(room2),
+				talkBad: bad(talk),
+				outingsBad: bad(outings),
+				giveBad: bad(give),
+				flirtBad: bad(flirt),
+				roomText: room2.text.slice(0, 400),
+				talkText: talk.text.slice(0, 300),
+				outingsText: outings.text.slice(0, 200),
+				noBlankNpcLine: !/room\. looks up/.test(room.text),
+				acc0,
+				acc1,
+				lust1,
+				accMax: r.acceptance,
+				lustMax: r.lust,
+				robinRejected: /someone other than Danny/.test(robin.text),
+			};
+		});
+		assert.equal(info.roomBad, false, info.roomText);
+		assert.equal(info.talkBad, false, info.talkText);
+		assert.equal(info.outingsBad, false, info.outingsText);
+		assert.equal(info.giveBad, false, JSON.stringify(info));
+		assert.equal(info.flirtBad, false, JSON.stringify(info));
+		assert.equal(info.noBlankNpcLine, true, info.roomText);
+		for (const link of [
+			"Talk",
+			"Work on science schoolwork",
+			"Buy a new camera for them",
+			"Help with control training",
+			"Offer dependency care",
+			"Give diapers",
+			"Hug",
+			"Flirt",
+			"Leave",
+		])
+			assert.ok(info.roomText.includes(link), link + " missing: " + info.roomText);
+		for (const link of ["About day", "About work", "About them", "About continence", "About accidents", "Complain", "Back"])
+			assert.ok(info.talkText.includes(link), link + " missing: " + info.talkText);
+		assert.ok(info.outingsText.includes("Store for diapers") && info.outingsText.includes("Photo shoot"), info.outingsText);
+		assert.equal(info.acc1, info.acc0 + 5, JSON.stringify(info));
+		assert.equal(info.lust1 >= 3, true, JSON.stringify(info));
+		assert.equal(info.accMax, 1000, JSON.stringify(info));
+		assert.equal(info.lustMax, 100, JSON.stringify(info));
+		assert.equal(info.robinRejected, true, JSON.stringify(info));
 	});
 });

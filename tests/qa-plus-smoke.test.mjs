@@ -955,7 +955,8 @@ describe("QA plus-needs static integration boundaries", () => {
 		const social = read("game/base-system/overlays/social.twee");
 		const widgets = read("game/base-system/widgets.twee");
 		assert.match(danny, /<<widget "dannyInit">>/);
-		assert.match(danny, /<<link \[\[Talk\|Danny Room\]\]>>/);
+		assert.match(danny, /<<link \[\[Talk\|Danny Talk\]\]>>/);
+		assert.match(danny, /^:: Danny Talk$/m);
 		assert.match(danny, /<<link \[\[Help with control training\|Danny Room\]\]>>/);
 		assert.match(danny, /<<link \[\[Offer dependency care\|Danny Room\]\]>>/);
 		assert.match(danny, /<<npc "Danny">>/);
@@ -981,7 +982,8 @@ describe("QA plus-needs static integration boundaries", () => {
 		assert.match(danny, /At Niki's photography/);
 		assert.match(danny, /Danny's room \(locked\)/);
 		assert.match(danny, /<<npc "Danny">>/);
-		assert.match(danny, /<<link \[\[Talk\|Danny Room\]\]>>/);
+		assert.match(danny, /<<link \[\[Talk\|Danny Talk\]\]>>/);
+		assert.match(danny, /^:: Danny Talk$/m);
 		assert.match(danny, /<<link \[\[Continue\|Canteen\]\]>>/);
 		assert.doesNotMatch(danny, /School Canteen/);
 	});

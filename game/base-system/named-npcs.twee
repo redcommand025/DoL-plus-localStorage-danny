@@ -1456,7 +1456,7 @@ Zohar
 	<<case lust>>
 		<<set _lustwhitelist to ["Robin", "Whitney", "Eden", "Kylar", "Avery", 
 								 "Alex", "Sydney", "Gwylan", "Poppy", "Bailey", 
-								 "Leighton", "Quinn", "Ivory Wraith", "Mason"]>>
+								 "Leighton", "Quinn", "Ivory Wraith", "Mason", "Danny"]>>
 		<<if !_lustwhitelist.includes(_nam)>>
 			<<error { message: "<<npcincr>> attempted to modify lust for non-whitelisted npc " + _nam + ". Make sure to add a lust clamp in <<relationshipclamp>> before whitelisting!" }>>
 		<</if>>
@@ -1506,6 +1506,11 @@ Zohar
 		<<else>>
 			<span class="red">NPCINCR error - anger is Poppy-only</span><br><br>
 		<</if>>
+	<<case continence acceptance>>
+		<<if _nam isnot "Danny">>
+			<<error { message: "<<npcincr>> attempted to modify " + _var + " for someone other than Danny (" + _nam + ")" }>>
+		<</if>>
+		<<set $NPCName[_i][_var] to (Number($NPCName[_i][_var]) || 0) + _val>>
 	<<case rage>>
 		<<if !["Avery", "Kylar"].includes(_nam)>>
 			<<error { message: "<<npcincr>> attempted to modify rage for someone other than Avery or Kylar (" + _nam + ")" }>>

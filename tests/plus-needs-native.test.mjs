@@ -294,4 +294,26 @@ describe("plus-needs runtime behaviour", () => {
 		assert.equal(State.variables.plusFlat.rented, false);
 		assert.equal(State.variables.plusFlat.last, "evicted");
 	});
+
+	it("diaper shop is never called from a [widget] passage, where it runs at startup before $options exists", () => {
+		const offenders = [];
+		const walk = dir => {
+			for (const name of readdirSync(dir)) {
+				const full = join(dir, name);
+				if (statSync(full).isDirectory()) walk(full);
+				else if (name.endsWith(".twee")) {
+					const parts = readFileSync(full, "utf8").split(/^(?=:: )/m);
+					for (const part of parts) {
+						const header = part.split("\n", 1)[0];
+						const tags = (header.match(/\[([^\]]*)\]/) || [, ""])[1].split(/\s+/);
+						if (!tags.includes("widget")) continue;
+						const body = part.replace(/<<widget "plusDiaperShop">>[\s\S]*?<<\/widget>>/, "");
+						if (/<<plusDiaperShop\b/.test(body)) offenders.push(full.slice(root.length + 1) + " :: " + header);
+					}
+				}
+			}
+		};
+		walk(join(root, "game"));
+		assert.deepEqual(offenders, []);
+	});
 });
