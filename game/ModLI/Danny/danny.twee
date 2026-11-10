@@ -77,60 +77,60 @@ What do you want to talk about?
 <<link [[Back|Danny Room]]>><</link>>
 
 :: Danny Talk Day
-You ask how Danny's day is going.
+<<set _lines to dannyDialogues.day>>
+<<set _p to _lines.player[random(0, 19)]>>
+<<set _d to _lines.danny[random(0, 19)]>>
+You: "<<= _p>>"
 <br><br>
-<<if Time.schoolDay>>
-  "School was... okay. Science was fine. I sat near the back again." <<npc "Danny">> fidgets with the camera strap. "How was yours?"
-<<else>>
-  "Pretty quiet. I worked most of the day at Niki's. Took some pictures of the shop window. How about you?"
-<</if>>
+<<npc "Danny">>: "<<= _d>>"
 <br>
-<<link [[It was fine|Danny Room]]>><<npcincr Danny love 1>><</link>>
-<<link [[Rough|Danny Room]]>><<npcincr Danny love 2>><</link>>
+<<link [[Continue|Danny Room]]>><<npcincr Danny love 1>><</link>>
 
 :: Danny Talk Work
-You ask about work.
+<<set _lines to dannyDialogues.work>>
+<<set _p to _lines.player[random(0, 19)]>>
+<<set _d to _lines.danny[random(0, 19)]>>
+You: "<<= _p>>"
 <br><br>
-"Niki's is good. They let me use the darkroom sometimes. I want to do portraits one day, but I'm still learning." <<npc "Danny">> smiles a little. "Do you like taking pictures?"
+<<npc "Danny">>: "<<= _d>>"
 <br>
-<<link [[Yeah|Danny Room]]>><<npcincr Danny love 2>><</link>>
-<<link [[Not really|Danny Room]]>><<npcincr Danny love 1>><</link>>
+<<link [[Continue|Danny Room]]>><<npcincr Danny love 1>><</link>>
 
 :: Danny Talk Them
-You ask about Danny.
+<<set _lines to dannyDialogues.them>>
+<<set _p to _lines.player[random(0, 19)]>>
+<<set _d to _lines.danny[random(0, 19)]>>
+You: "<<= _p>>"
 <br><br>
-"I'm just... me. I don't have a lot of friends. Photography is the thing I care about. And I don't want to cause problems for Bailey." <<npc "Danny">> looks down. "You're one of the only people who talks to me."
+<<npc "Danny">>: "<<= _d>>"
 <br>
-<<link [[I'm glad|Danny Room]]>><<npcincr Danny love 3>><</link>>
-<<link [[Back|Danny Room]]>><</link>>
+<<link [[Continue|Danny Room]]>><<npcincr Danny love 2>><</link>>
 
 :: Danny Talk Continence
-You ask about the bladder problem.
+<<set _lines to dannyDialogues.continence>>
+<<set _p to _lines.player[random(0, 19)]>>
+<<set _d to _lines.danny[random(0, 19)]>>
+You: "<<= _p>>"
 <br><br>
-<<if C.npc.Danny.acceptance gte 500>>
-  "It's... bad. I can't hold it for long. I've stopped fighting it as much." <<npc "Danny">> looks at you. "You're the only one who knows. Thank you for not telling."
-<<else>>
-  "I hate it. I wake up wet sometimes. I try to hide it. Please don't tell anyone." <<npc "Danny">> looks away, embarrassed.
-<</if>>
+<<npc "Danny">>: "<<= _d>>"
 <br>
-<<link [[I won't|Danny Room]]>><<npcincr Danny acceptance 3>><</link>>
+<<link [[I won't tell|Danny Room]]>><<npcincr Danny acceptance 2>><</link>>
 <<link [[We can work on it|Danny Room]]>><<npcincr Danny continence 2>><</link>>
 
 :: Danny Talk Accidents
-You ask if there have been any accidents.
+<<set _lines to dannyDialogues.accidents>>
+<<set _p to _lines.player[random(0, 19)]>>
+<<set _d to _lines.danny[random(0, 19)]>>
+You: "<<= _p>>"
 <br><br>
-<<if C.npc.Danny.continence lte 2000>>
-  "Yeah... this morning. I didn't make it. I cleaned up before anyone saw." <<npc "Danny">> fidgets. "It happens more when I'm stressed."
-<<else>>
-  "Not today. I've been careful. Still scared though."
-<</if>>
+<<npc "Danny">>: "<<= _d>>"
 <br>
 <<link [[Okay|Danny Room]]>><<npcincr Danny acceptance 2>><</link>>
 
 :: Danny Talk Breakdown
-You break down a little. Danny listens.
+You open up a little. Danny listens.
 <br><br>
-"Hey... it's okay. You don't have to be fine all the time." <<npc "Danny">> sits closer. "I get it. Want to just sit for a bit?"
+<<npc "Danny">>: "It's okay. You don't have to be fine. Want to just sit?"
 <br>
 <<set $daily.dannyBreakdown to 1>>
 <<link [[Thanks|Danny Room]]>><<npcincr Danny love 4>><</link>>
@@ -138,7 +138,7 @@ You break down a little. Danny listens.
 :: Danny Talk Complain
 You complain about something small.
 <br><br>
-<<npc "Danny">> listens, then says, "Yeah, that sucks. Want me to take your mind off it? I can show you some photos later."
+<<npc "Danny">>: "Yeah, that sucks. Want me to take your mind off it later?"
 <br>
 <<link [[Sure|Danny Room]]>><<npcincr Danny love 1>><</link>>
 <<link [[Maybe later|Danny Room]]>><</link>>
