@@ -77,55 +77,36 @@ What do you want to talk about?
 <<link [[Back|Danny Room]]>><</link>>
 
 :: Danny Talk Day
-<<set _lines to dannyDialogues.day>>
-<<set _p to _lines.player[random(0, 19)]>>
-<<set _d to _lines.danny[random(0, 19)]>>
-You: "<<= _p>>"
-<br><br>
-<<npc "Danny">>: "<<= _d>>"
+<<set _scene to dannyDialogues.day[random(0, 39)]>>
+<<= _scene>>
 <br>
 <<link [[Continue|Danny Room]]>><<npcincr Danny love 1>><</link>>
 
 :: Danny Talk Work
-<<set _lines to dannyDialogues.work>>
-<<set _p to _lines.player[random(0, 19)]>>
-<<set _d to _lines.danny[random(0, 19)]>>
-You: "<<= _p>>"
-<br><br>
-<<npc "Danny">>: "<<= _d>>"
+<<set _scene to dannyDialogues.work[random(0, 39)]>>
+<<= _scene>>
 <br>
 <<link [[Continue|Danny Room]]>><<npcincr Danny love 1>><</link>>
 
 :: Danny Talk Them
-<<set _lines to dannyDialogues.them>>
-<<set _p to _lines.player[random(0, 19)]>>
-<<set _d to _lines.danny[random(0, 19)]>>
-You: "<<= _p>>"
-<br><br>
-<<npc "Danny">>: "<<= _d>>"
+<<set _scene to dannyDialogues.them[random(0, 39)]>>
+<<= _scene>>
 <br>
 <<link [[Continue|Danny Room]]>><<npcincr Danny love 2>><</link>>
 
 :: Danny Talk Continence
-<<set _lines to dannyDialogues.continence>>
-<<set _p to _lines.player[random(0, 19)]>>
-<<set _d to _lines.danny[random(0, 19)]>>
-You: "<<= _p>>"
-<br><br>
-<<npc "Danny">>: "<<= _d>>"
+<<set _scene to dannyDialogues.continence[random(0, 39)]>>
+<<= _scene>>
 <br>
 <<link [[I won't tell|Danny Room]]>><<npcincr Danny acceptance 2>><</link>>
 <<link [[We can work on it|Danny Room]]>><<npcincr Danny continence 2>><</link>>
 
 :: Danny Talk Accidents
-<<set _lines to dannyDialogues.accidents>>
-<<set _p to _lines.player[random(0, 19)]>>
-<<set _d to _lines.danny[random(0, 19)]>>
-You: "<<= _p>>"
-<br><br>
-<<npc "Danny">>: "<<= _d>>"
+<<set _scene to dannyDialogues.accidents[random(0, 39)]>>
+<<= _scene>>
 <br>
 <<link [[Okay|Danny Room]]>><<npcincr Danny acceptance 2>><</link>>
+
 
 :: Danny Talk Breakdown
 You open up a little. Danny listens.
