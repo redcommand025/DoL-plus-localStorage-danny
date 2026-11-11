@@ -22,7 +22,14 @@ You enter Danny's room. <<npc "Danny">>Danny looks up.
   <<npcincr Danny love 3>>
 <</if>>
 <br>
-<<link [[Talk|Danny Talk]]>><</link>>
+<<if getDannyLocation() is "room">>
+  <<link [[Talk|Danny Conversation]]>><<run DannyTalk.start()>><</link>>
+  <br>
+<<else>>
+  <span class="black">Danny is about to head out, so there's no time for a proper talk.</span>
+  <br>
+<</if>>
+<<link [[Small talk|Danny Talk]]>><</link>>
 <br>
 <<link [[Work on science schoolwork|Danny Room]]>><<npcincr Danny love 2>><</link>>
 <br>
@@ -55,6 +62,30 @@ You enter Danny's room. <<npc "Danny">>Danny looks up.
   <br>
 <</if>>
 <<link [[Leave|Bedroom]]>><</link>>
+
+:: Danny Conversation
+<<set _dtNode to DannyTalk.node($dannyTalkTree, $dannyTalkNode)>>
+<<if !_dtNode>>
+	Danny's attention drifts back to <<nnpc_his "Danny">> camera, and the conversation fizzles out.
+	<br><br>
+	<<link [[Back to Danny's room|Danny Room]]>><<run DannyTalk.finish()>><</link>>
+<<else>>
+	<<if $dannyTalkNode is "0">><<pass 1>><<else>><<pass 2>><</if>>
+	<<print DannyTalk.text($dannyTalkTree, $dannyTalkNode)>>
+	<<print DannyTalk.fx($dannyTalkTree, $dannyTalkNode)>>
+	<br><br>
+	<<set _dtOpts to DannyTalk.options($dannyTalkTree, $dannyTalkNode)>>
+	<<if _dtOpts.length gt 0>>
+		<<for _dtI to 0; _dtI lt _dtOpts.length; _dtI++>>
+			<<capture _dtI, _dtOpts>>
+				<<print (_dtI + 1) + ".">> <<link _dtOpts[_dtI].label "Danny Conversation">><<set $dannyTalkNode to _dtOpts[_dtI].to>><</link>>
+				<br>
+			<</capture>>
+		<</for>>
+	<<else>>
+		<<link [[Back to Danny's room|Danny Room]]>><<run DannyTalk.finish()>><</link>>
+	<</if>>
+<</if>>
 
 :: Danny Talk
 <<npc "Danny">>
@@ -157,6 +188,8 @@ In the canteen Danny nearly bumps into you.
   <</if>>
   <br>
 <</widget>>
+
+<<widget "gdannyacceptance">><<if !$settings.blindStatsEnabled>> | <span class="green">+ Danny's Acceptance</span><</if>><</widget>>
 
 <<widget "dannyPresence">>
 	<<if getDannyLocation() is _args[0]>>

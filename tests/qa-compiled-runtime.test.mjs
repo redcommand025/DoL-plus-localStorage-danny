@@ -769,4 +769,145 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.lustMax, 100, JSON.stringify(info));
 		assert.equal(info.robinRejected, true, JSON.stringify(info));
 	});
+
+	it("QA-C021 [integration] Danny Talk walks every conversation path in the compiled game for low and high stat profiles", async () => {
+		const info = await page.evaluate(() => {
+			const SV = SugarCube.State.variables;
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " "), html: d.innerHTML };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e), html: "" };
+				}
+			};
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			if (!SV.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
+			wiki('<<npc "Danny">>');
+			const set = (name, stat, v) => {
+				const i = SV.NPCNameList.indexOf(name);
+				if (i >= 0) SV.NPCName[i][stat] = v;
+			};
+			const profiles = {
+				low: { love: 0, trust: 0, acceptance: 0, continence: 6000, known: 0, skill: 0, stress: 0, trauma: 0, control: 1000, money: 0, nnpc: 0 },
+				high: {
+					love: 100,
+					trust: 100,
+					acceptance: 1000,
+					continence: 500,
+					known: 1,
+					skill: 1000,
+					stress: 8000,
+					trauma: 4000,
+					control: 100,
+					money: 100000,
+					nnpc: 60,
+				},
+			};
+			const apply = p => {
+				set("Danny", "love", p.love);
+				set("Danny", "trust", p.trust);
+				set("Danny", "acceptance", p.acceptance);
+				set("Danny", "continence", p.continence);
+				set("Niki", "love", p.nnpc);
+				set("Robin", "love", p.nnpc);
+				SV.dannyAccidentKnown = p.known;
+				for (const k of ["science", "maths", "english", "history", "swimmingskill", "tending", "housekeeping"]) SV[k] = p.skill;
+				SV.stress = p.stress;
+				SV.trauma = p.trauma;
+				SV.control = p.control;
+				SV.money = p.money;
+			};
+			const bad = /Error|undefined|NaN|\[object|\{[nb]?(he|He|him|Him|his|His|himself|Himself)\}|NPCINCR/;
+			const result = { trees: 0, problems: [], visited: {}, terminals: 0, maxDepth: 0, gated: 0, statChanged: false, timePassed: false };
+			const trees = DannyTalk.trees();
+			result.trees = Object.keys(trees).length;
+			const t0 = Time.date.timeStamp;
+			const loveBefore = (() => {
+				apply(profiles.low);
+				return C.npc.Danny.love;
+			})();
+			for (const [pname, p] of Object.entries(profiles)) {
+				for (const id of Object.keys(trees)) {
+					const stack = ["0"];
+					while (stack.length) {
+						const key = stack.pop();
+						apply(p);
+						Time.setTime(20, 10);
+						SV.dannyTalkTree = id;
+						SV.dannyTalkNode = key;
+						const r = wiki('<<include "Danny Conversation">>');
+						result.visited[id + "/" + key] = true;
+						const depth = key === "0" ? 0 : key.split(".").length;
+						result.maxDepth = Math.max(result.maxDepth, depth);
+						if (!r.ok || bad.test(r.text)) {
+							result.problems.push({ pname, id, key, text: r.text.slice(0, 240) });
+							continue;
+						}
+						if (pname === "high" && key === "1" && C.npc.Danny.love !== p.love) result.statChanged = true;
+						const opts = DannyTalk.options(id, key);
+						const node = DannyTalk.node(id, key);
+						if (opts.length < node.o.length) result.gated++;
+						if (opts.length === 0) {
+							result.terminals++;
+							if (!/Back to Danny's room/.test(r.text)) result.problems.push({ pname, id, key, text: "terminal without back link" });
+						} else {
+							for (let i = 0; i < opts.length; i++) {
+								const label = opts[i].label.replace(/<[^>]+>/g, "");
+								if (!r.text.includes(i + 1 + ". " + label) && !r.text.includes(i + 1 + "." + label))
+									result.problems.push({ pname, id, key, text: "missing numbered option " + (i + 1) + " " + opts[i].label });
+							}
+							if (opts.length < 2) result.problems.push({ pname, id, key, text: "fewer than two options" });
+							for (const o of opts) stack.push(o.to);
+						}
+					}
+				}
+			}
+			for (const p of ["low", "high"]) apply(profiles[p]);
+			let totalNodes = 0;
+			const missed = [];
+			for (const [id, t] of Object.entries(trees))
+				for (const key of Object.keys(t.nodes)) {
+					totalNodes++;
+					if (!result.visited[id + "/" + key]) missed.push(id + "/" + key);
+				}
+			result.totalNodes = totalNodes;
+			result.visitedCount = Object.keys(result.visited).length;
+			result.missed = missed;
+			result.gateErrors = DannyTalk.gateErrors.slice();
+			result.timePassed = Time.date.timeStamp !== t0;
+			result.loveBefore = loveBefore;
+			// The room only offers Talk in Danny's room slot; Small talk keeps the user's menu.
+			Time.setTime(20, 10);
+			const roomIn = getDannyLocation() === "room" ? wiki("<<include [[Danny Room]]>>").text : "";
+			Time.setTime(23, 0);
+			const roomOut = wiki("<<include [[Danny Room]]>>").text;
+			result.roomTalkInSlot = /(^|\s)Talk\s/.test(roomIn) && roomIn.includes("Small talk");
+			result.roomTalkOutOfSlot = /no time for a proper talk/.test(roomOut) && roomOut.includes("Small talk");
+			// Starting from the room link picks a tree and records it as recent.
+			SV.dannyTalkRecent = "corrupt";
+			const picked = [];
+			for (let i = 0; i < 12; i++) {
+				const t = DannyTalk.start();
+				picked.push(t.id);
+			}
+			result.noRecentRepeat = picked.every((id, i) => !picked.slice(Math.max(0, i - 4), i).includes(id));
+			result.recentLen = SV.dannyTalkRecent.length;
+			return result;
+		});
+		assert.equal(info.trees, 12, JSON.stringify(info));
+		assert.deepEqual(info.problems, [], JSON.stringify(info.problems.slice(0, 5)));
+		assert.deepEqual(info.missed, [], "unreached nodes: " + info.missed.slice(0, 10).join(", "));
+		assert.equal(info.visitedCount, info.totalNodes);
+		assert.ok(info.totalNodes >= 500, String(info.totalNodes));
+		assert.equal(info.maxDepth, 10);
+		assert.ok(info.gated > 0, "some options gated in the low profile");
+		assert.deepEqual(info.gateErrors, []);
+		assert.equal(info.timePassed, true);
+		assert.equal(info.roomTalkInSlot, true, "Talk shown in room slot");
+		assert.equal(info.roomTalkOutOfSlot, true, "Talk hidden outside room slot");
+		assert.equal(info.noRecentRepeat, true);
+		assert.equal(info.recentLen, 4);
+	});
 });
