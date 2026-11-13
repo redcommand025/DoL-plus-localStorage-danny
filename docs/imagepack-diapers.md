@@ -6,15 +6,20 @@ paper doll (128px frames). The Aoki Utage packs (`au`, `aumasc`) use a 256px pap
 higher waist and longer legs, so with a pack on the base sprites were drawn 2× and landed ~27px
 too low and ~14px to the right of the pack body.
 
-`devTools/generate-pack-diapers.py` builds pack versions at
+`devTools/generate-pack-diapers.py` draws pack versions natively at the pack resolution
+(v2; v1 resampled the base art, which looked blocky next to the pack's clean style) at
 `imagepacks/<pack>/clothes/under-lower/<diaper>/...`:
 
-- The base→pack mapping is measured from garments both sets have (briefs, boxers, boyshorts,
-  long johns): x is a linear fit of their left/right edges, y a smooth quadratic fit through their
-  waistbands and leg openings.
-- Every sprite (both animation frames, all states and sag tiers) is resampled through that map
-  with 4×4 supersampling, alpha is hardened, and a 1px dark outline is re-drawn so the result
-  stays crisp pixel art. Sprites stay greyscale; the game tints them as before.
+- Silhouettes are smooth curves (8x8 supersampled, snapped to hard edges like the pack's
+  garments) with a 1px dark outline, a few flat grey tones with soft rounded shading, a light
+  waistband band and gathered leg cuffs. Greyscale, so the game's clothing tint still applies.
+- The waist hugs the pack body's hips; size and sag progression come from each base sprite's
+  bounding box mapped to the pack body (x linear, waist/crotch through a fit from briefs,
+  boxers, boyshorts and long johns; sag drop scaled 2x like the frame).
+- Plastic diapers: side tapes, landing strip, faint hourglass core. Cloth: rounder cut, side pins,
+  fold lines. Pull-ups: ribbed waistband, dashed side tear seams, slimmer cut.
+- frayed/torn/tattered add edge nicks and rips; sag5 adds small drips; `penis.png` is the same
+  garment (it is drawn over the penis layer, as in base).
 
 Run `python3 devTools/generate-pack-diapers.py` (needs Pillow + numpy) after changing a base
 diaper sprite, then rebuild (`compile.sh` regenerates `imagepacks-manifest.js`).

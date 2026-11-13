@@ -125,6 +125,23 @@ describe("image-pack diaper sprites", () => {
 			}
 			assert.equal(n, 600);
 		});
+		it(`${pack}: diapers are drawn in the pack's pixel style (hard edges, both frames identical)`, () => {
+			for (const d of DIAPERS) {
+				for (const f of ["full.png", "torn.png", "sag3/full.png"]) {
+					const { w, h, alpha } = decode(join(root, "imagepacks", pack, `clothes/under-lower/${d}/${f}`));
+					let soft = 0,
+						diff = 0;
+					for (let y = 0; y < h; y++)
+						for (let x = 0; x < w / 2; x++) {
+							const a = alpha[y * w + x];
+							if (a !== 0 && a !== 255) soft++;
+							if (a !== alpha[y * w + x + w / 2]) diff++;
+						}
+					assert.equal(soft, 0, `${pack} ${d}/${f}: semi-transparent pixels`);
+					assert.equal(diff, 0, `${pack} ${d}/${f}: frames differ`);
+				}
+			}
+		});
 		it(`${pack}: diapers sit on the pack body (waistband and centre match the pack briefs)`, () => {
 			const briefs = bbox(join(root, "imagepacks", pack, "clothes/under-lower/briefs/full.png"));
 			const baseBriefs = bbox(join(root, "img/clothes/under-lower/briefs/full.png"));
