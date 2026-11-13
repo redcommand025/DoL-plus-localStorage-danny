@@ -1,0 +1,88 @@
+:: Danny Morning Sendoff
+<<npc "Danny">>
+Danny is heading out with their bag and camera.
+<<if $dannyIntro isnot 1>>
+  <<set $dannyIntro to 1>>
+  They pause. "Oh. Hi. I'm Danny."
+  <<npcincr Danny love 2>>
+<<else>>
+  <<if C.npc.Danny.love gte 15>>
+    They slow for a second. "Morning."
+  <<else>>
+    They nod and keep moving.
+  <</if>>
+<</if>>
+<<if C.npc.Danny.continence lte 2000>>
+  They look hurried.
+<</if>>
+<br>
+<<link [[Comment on the camera|Danny Room]]>><<npcincr Danny love 1>><</link>>
+<<link [[Let them go|Orphanage]]>><</link>>
+
+:: Danny Sheets Event
+You see Danny bundling wet sheets, moving fast.
+<<npc "Danny">> freezes.
+<<if C.npc.Danny.love lt 20>>
+  "It's nothing." They finish quickly and avoid you.
+  <<npcincr Danny love -2>>
+<<else>>
+  Awkward silence. They mutter an excuse.
+<</if>>
+<br>
+<<link [[Offer to help|Danny Room]]>><<npcincr Danny acceptance 3>><</link>>
+<<link [[Leave them|Orphanage]]>><</link>>
+
+:: Danny Hallway Bathroom
+<<npc "Danny">> is coming out of the bathroom, bag adjusted.
+<<if C.npc.Danny.continence lte 2500>>
+  They look relieved.
+<</if>>
+<br>
+<<link [[Nod|Hallways]]>><</link>>
+<<link [[Ask if they're heading to class|Hallways]]>><<npcincr Danny love 1>><</link>>
+
+:: Danny Library Early
+Danny is at a back table, camera out.
+<<if C.npc.Danny.love gte 20>>
+  They glance up. "Hey."
+<<else>>
+  Short nod.
+<</if>>
+<br>
+<<link [[Sit nearby|School Library]]>><<npcincr Danny love 1>><</link>>
+<<link [[Leave|Hallways]]>><</link>>
+
+:: Danny Science Seat
+You try to sit next to Danny.
+<<if random(1, 100) lte 60>>
+  The seat is free. You sit. <<npc "Danny">> gives a small nod.
+  <<npcincr Danny love 1>>
+<<else>>
+  The seat is taken.
+  <<if C.npc.Danny.love gte 15>>
+    Danny mutters, "They were going to sit here."
+  <</if>>
+<</if>>
+<br>
+<<link [[Continue|Science Classroom]]>><</link>>
+
+:: Danny Courtyard After
+Danny is on the bleachers with their camera.
+<<if C.npc.Danny.love gte 10>>
+  They show you a shot.
+  <<npcincr Danny love 2>>
+<</if>>
+<<if C.npc.Danny.continence lte 2000>>
+  They keep the session short.
+<</if>>
+<br>
+<<link [[Leave|School Rear Courtyard]]>><</link>>
+
+:: Danny Cafeteria Edge
+Danny sits at the edge, eating quickly.
+<<if C.npc.Danny.continence lte 2500>>
+  They finish fast.
+<</if>>
+<br>
+<<link [[Sit nearby|Canteen]]>><<npcincr Danny love 1>><</link>>
+<<link [[Leave|Canteen]]>><</link>>
