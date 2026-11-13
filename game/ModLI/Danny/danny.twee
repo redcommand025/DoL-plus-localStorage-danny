@@ -29,8 +29,6 @@ You enter Danny's room. <<npc "Danny">>Danny looks up.
   <span class="black">Danny is about to head out, so there's no time for a proper talk.</span>
   <br>
 <</if>>
-<<link [[Small talk|Danny Talk]]>><</link>>
-<br>
 <<link [[Work on science schoolwork|Danny Room]]>><<npcincr Danny love 2>><</link>>
 <br>
 <<link [[Buy a new camera for them|Danny Room]]>><<npcincr Danny love 5>><</link>>
@@ -86,78 +84,6 @@ You enter Danny's room. <<npc "Danny">>Danny looks up.
 		<<link [[Back to Danny's room|Danny Room]]>><<run DannyTalk.finish()>><</link>>
 	<</if>>
 <</if>>
-
-:: Danny Talk
-<<npc "Danny">>
-What do you want to talk about?
-<br>
-<<link [[About day|Danny Talk Day]]>><</link>>
-<br>
-<<link [[About work|Danny Talk Work]]>><</link>>
-<br>
-<<link [[About them|Danny Talk Them]]>><</link>>
-<br>
-<<if $dannyAccidentKnown is 1>>
-  <<link [[About continence|Danny Talk Continence]]>><</link>>
-  <br>
-  <<link [[About accidents|Danny Talk Accidents]]>><</link>>
-  <br>
-<</if>>
-<<if ($pain gte 50 or $trauma gte 50 or $control lte 20) and !$daily.dannyBreakdown>>
-  <<link [[Break down|Danny Talk Breakdown]]>><</link>>
-  <br>
-<</if>>
-<<link [[Complain|Danny Talk Complain]]>><</link>>
-<br>
-<<link [[Back|Danny Room]]>><</link>>
-
-:: Danny Talk Day
-<<set _scene to dannyDialogues.day[random(0, 39)]>>
-<<= _scene>>
-<br>
-<<link [[Continue|Danny Room]]>><<npcincr Danny love 1>><</link>>
-
-:: Danny Talk Work
-<<set _scene to dannyDialogues.work[random(0, 39)]>>
-<<= _scene>>
-<br>
-<<link [[Continue|Danny Room]]>><<npcincr Danny love 1>><</link>>
-
-:: Danny Talk Them
-<<set _scene to dannyDialogues.them[random(0, 39)]>>
-<<= _scene>>
-<br>
-<<link [[Continue|Danny Room]]>><<npcincr Danny love 2>><</link>>
-
-:: Danny Talk Continence
-<<set _scene to dannyDialogues.continence[random(0, 39)]>>
-<<= _scene>>
-<br>
-<<link [[I won't tell|Danny Room]]>><<npcincr Danny acceptance 2>><</link>>
-<<link [[We can work on it|Danny Room]]>><<npcincr Danny continence 2>><</link>>
-
-:: Danny Talk Accidents
-<<set _scene to dannyDialogues.accidents[random(0, 39)]>>
-<<= _scene>>
-<br>
-<<link [[Okay|Danny Room]]>><<npcincr Danny acceptance 2>><</link>>
-
-
-:: Danny Talk Breakdown
-You open up a little. Danny listens.
-<br><br>
-<<npc "Danny">>: "It's okay. You don't have to be fine. Want to just sit?"
-<br>
-<<set $daily.dannyBreakdown to 1>>
-<<link [[Thanks|Danny Room]]>><<npcincr Danny love 4>><</link>>
-
-:: Danny Talk Complain
-You complain about something small.
-<br><br>
-<<npc "Danny">>: "Yeah, that sucks. Want me to take your mind off it later?"
-<br>
-<<link [[Sure|Danny Room]]>><<npcincr Danny love 1>><</link>>
-<<link [[Maybe later|Danny Room]]>><</link>>
 
 :: Danny Outings
 Where do you want to go?

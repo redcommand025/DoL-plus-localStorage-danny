@@ -715,7 +715,6 @@ describe("QA compiled isolated runtime", () => {
 			const r = V.NPCName[i];
 			r.love = 80;
 			const room2 = wiki("<<include [[Danny Room]]>>");
-			const talk = wiki("<<include [[Danny Talk]]>>");
 			const outings = wiki("<<include [[Danny Outings]]>>");
 			const acc0 = r.acceptance;
 			const give = wiki("<<npcincr Danny acceptance 5>>");
@@ -726,12 +725,11 @@ describe("QA compiled isolated runtime", () => {
 			const robin = wiki("<<npcincr Robin acceptance 5>>");
 			return {
 				roomBad: bad(room) || bad(room2),
-				talkBad: bad(talk),
 				outingsBad: bad(outings),
 				giveBad: bad(give),
 				flirtBad: bad(flirt),
 				roomText: room2.text.slice(0, 400),
-				talkText: talk.text.slice(0, 300),
+				dannyTalkPassage: SugarCube.Story.has("Danny Talk"),
 				outingsText: outings.text.slice(0, 200),
 				noBlankNpcLine: !/room\. looks up/.test(room.text),
 				acc0,
@@ -743,7 +741,7 @@ describe("QA compiled isolated runtime", () => {
 			};
 		});
 		assert.equal(info.roomBad, false, info.roomText);
-		assert.equal(info.talkBad, false, info.talkText);
+		assert.equal(info.dannyTalkPassage, false, "old Small talk passage still compiled");
 		assert.equal(info.outingsBad, false, info.outingsText);
 		assert.equal(info.giveBad, false, JSON.stringify(info));
 		assert.equal(info.flirtBad, false, JSON.stringify(info));
@@ -760,8 +758,7 @@ describe("QA compiled isolated runtime", () => {
 			"Leave",
 		])
 			assert.ok(info.roomText.includes(link), link + " missing: " + info.roomText);
-		for (const link of ["About day", "About work", "About them", "About continence", "About accidents", "Complain", "Back"])
-			assert.ok(info.talkText.includes(link), link + " missing: " + info.talkText);
+		assert.ok(!info.roomText.includes("Small talk"), "Small talk still offered: " + info.roomText);
 		assert.ok(info.outingsText.includes("Store for diapers") && info.outingsText.includes("Photo shoot"), info.outingsText);
 		assert.equal(info.acc1, info.acc0 + 5, JSON.stringify(info));
 		assert.equal(info.lust1 >= 3, true, JSON.stringify(info));
@@ -878,13 +875,13 @@ describe("QA compiled isolated runtime", () => {
 			result.gateErrors = DannyTalk.gateErrors.slice();
 			result.timePassed = Time.date.timeStamp !== t0;
 			result.loveBefore = loveBefore;
-			// The room only offers Talk in Danny's room slot; Small talk keeps the user's menu.
+			// The room only offers Talk in Danny's room slot, and never the removed Small talk menu.
 			Time.setTime(20, 10);
 			const roomIn = getDannyLocation() === "room" ? wiki("<<include [[Danny Room]]>>").text : "";
 			Time.setTime(23, 0);
 			const roomOut = wiki("<<include [[Danny Room]]>>").text;
-			result.roomTalkInSlot = /(^|\s)Talk\s/.test(roomIn) && roomIn.includes("Small talk");
-			result.roomTalkOutOfSlot = /no time for a proper talk/.test(roomOut) && roomOut.includes("Small talk");
+			result.roomTalkInSlot = /(^|\s)Talk\s/.test(roomIn) && !roomIn.includes("Small talk");
+			result.roomTalkOutOfSlot = /no time for a proper talk/.test(roomOut) && !roomOut.includes("Small talk");
 			// Starting from the room link picks a tree and records it as recent.
 			SV.dannyTalkRecent = "corrupt";
 			const picked = [];

@@ -71,9 +71,4 @@ All the writing is second person ("You…"), with narration of what Danny and th
 
 ## What happened to the earlier Talk content
 
-The user's Talk menu is still reachable as **Small talk** → `Danny Talk`, and none of it was deleted:
-
-- About day / work / them, using the 40-scene banks in `game/ModLI/Danny/dialogues.js`
-- About continence / accidents
-- Break down
-- Complain
+The old **Small talk** menu (`Danny Talk`: About day / work / them, About continence / accidents, Break down, Complain) and its scene banks in `game/ModLI/Danny/dialogues.js` were removed at the user's request. **Talk** (this conversation system) is the only way to chat with Danny in his room.

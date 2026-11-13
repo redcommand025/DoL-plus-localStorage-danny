@@ -2,7 +2,7 @@
  * Danny room Talk system: static graph validation and engine behaviour (node vm, no browser).
  */
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -113,7 +113,7 @@ describe("Danny Talk static graph", () => {
 
 	it("gates and in-text conditions only use defined variables and known helpers", () => {
 		const src = gameSource();
-		// $dannyAccidentKnown is the user's own Danny flag: their room, Small talk and Outings already gate on it.
+		// $dannyAccidentKnown is the user's own Danny flag: their room and Outings already gate on it.
 		const userFlags = new Set(["dannyAccidentKnown"]);
 		assert.match(read("game/ModLI/Danny/danny.twee"), /<<if \$dannyAccidentKnown is 1>>/);
 		const helpers = new Set(["dannyLove", "dannyTrust", "dannyAcceptance", "dannyContinence", "npcLove"]);
@@ -285,21 +285,12 @@ describe("Danny Talk selection", () => {
 
 describe("Danny Talk wiring", () => {
 	const danny = read("game/ModLI/Danny/danny.twee");
-	it("room Talk starts a conversation only in Danny's room slot and keeps the user's Small talk menu", () => {
+	it("room Talk starts a conversation only in Danny's room slot; the old Small talk menu is gone", () => {
 		assert.match(danny, /<<if getDannyLocation\(\) is "room">>\s*<<link \[\[Talk\|Danny Conversation\]\]>><<run DannyTalk\.start\(\)>><<\/link>>/);
-		assert.match(danny, /<<link \[\[Small talk\|Danny Talk\]\]>>/);
-		for (const p of [
-			"Danny Talk",
-			"Danny Talk Day",
-			"Danny Talk Work",
-			"Danny Talk Them",
-			"Danny Talk Continence",
-			"Danny Talk Accidents",
-			"Danny Talk Breakdown",
-			"Danny Talk Complain",
-		])
-			assert.match(danny, new RegExp("^:: " + p + "$", "m"), p);
-		assert.match(read("game/ModLI/Danny/dialogues.js"), /window\.dannyDialogues/);
+		assert.doesNotMatch(danny, /Small talk/i);
+		assert.doesNotMatch(danny, /^:: Danny Talk/m);
+		assert.doesNotMatch(danny, /dannyDialogues|dannyBreakdown/);
+		assert.equal(existsSync(join(root, "game/ModLI/Danny/dialogues.js")), false);
 	});
 	it("conversation passage renders node text, effects, numbered options and passes time", () => {
 		assert.match(danny, /<<print DannyTalk\.text\(\$dannyTalkTree, \$dannyTalkNode\)>>/);
