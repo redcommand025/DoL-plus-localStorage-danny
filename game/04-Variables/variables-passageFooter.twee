@@ -1,4 +1,5 @@
 :: PassageFooter
+<<update-audio>>
 <div id="gameVersionDisplay">
 	<<if $options.passageCount is "total">>
 		Passage Count: <<print $passageCount>> |

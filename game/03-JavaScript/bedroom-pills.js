@@ -39,8 +39,7 @@ setup.pills = [
 		description:
 			"Each pill contains 500mg of Praberrhol, a derived molecule crafted specifically to attach to the triglyceride present in your buttocks and dissolve them over time.",
 		onTakeMessage: "You take the pills intended to reduce your butt's size. You hope it will be as effective as advertised.",
-		warning_label:
-			"Warning: Severe side effects upon exceeding the maximum dose prescribed per day. Not to be associated with any other hormonal treatment.",
+		warning_label: "Warning: Severe side effects upon exceeding the maximum dose prescribed per day. Not to be associated with any other hormonal treatment.",
 		autoTake() {
 			return V.sexStats.pills["pills"][this.name].autoTake;
 		},
@@ -62,9 +61,7 @@ setup.pills = [
 			return this.owned() > 0 ? 1 : 0;
 		},
 		take_condition() {
-			return this.doseTaken() < 2 &&
-				V.sexStats.pills["pills"]["bottom growth"].doseTaken === 0 &&
-				V.sexStats.pills["pills"]["bottom blocker"].doseTaken === 0
+			return this.doseTaken() < 2 && V.sexStats.pills["pills"]["bottom growth"].doseTaken === 0 && V.sexStats.pills["pills"]["bottom blocker"].doseTaken === 0
 				? 1
 				: 0;
 		},
@@ -170,9 +167,7 @@ setup.pills = [
 			return this.owned() > 0 ? 1 : 0;
 		},
 		take_condition() {
-			return this.doseTaken() < 2 &&
-				V.sexStats.pills["pills"]["breast growth"].doseTaken === 0 &&
-				V.sexStats.pills["pills"]["breast blocker"].doseTaken === 0
+			return this.doseTaken() < 2 && V.sexStats.pills["pills"]["breast growth"].doseTaken === 0 && V.sexStats.pills["pills"]["breast blocker"].doseTaken === 0
 				? 1
 				: 0;
 		},
@@ -278,9 +273,7 @@ setup.pills = [
 			return V.player.penisExist && this.owned() > 0 ? 1 : 0;
 		},
 		take_condition() {
-			return this.doseTaken() < 2 &&
-				V.sexStats.pills["pills"]["penis growth"].doseTaken === 0 &&
-				V.sexStats.pills["pills"]["penis blocker"].doseTaken === 0
+			return this.doseTaken() < 2 && V.sexStats.pills["pills"]["penis growth"].doseTaken === 0 && V.sexStats.pills["pills"]["penis blocker"].doseTaken === 0
 				? 1
 				: 0;
 		},
@@ -314,9 +307,7 @@ setup.pills = [
 			return V.player.penisExist && this.owned() > 0 ? 1 : 0;
 		},
 		take_condition() {
-			return this.doseTaken() < 2 &&
-				V.sexStats.pills["pills"]["penis reduction"].doseTaken === 0 &&
-				V.sexStats.pills["pills"]["penis blocker"].doseTaken === 0
+			return this.doseTaken() < 2 && V.sexStats.pills["pills"]["penis reduction"].doseTaken === 0 && V.sexStats.pills["pills"]["penis blocker"].doseTaken === 0
 				? 1
 				: 0;
 		},
@@ -350,9 +341,7 @@ setup.pills = [
 			return V.player.penisExist && this.owned() > 0 ? 1 : 0;
 		},
 		take_condition() {
-			return this.doseTaken() === 0 &&
-				V.sexStats.pills["pills"]["penis growth"].doseTaken === 0 &&
-				V.sexStats.pills["pills"]["penis reduction"].doseTaken === 0
+			return this.doseTaken() === 0 && V.sexStats.pills["pills"]["penis growth"].doseTaken === 0 && V.sexStats.pills["pills"]["penis reduction"].doseTaken === 0
 				? 1
 				: 0;
 		},
@@ -376,9 +365,7 @@ setup.pills = [
 		},
 		hpi_doseTaken() {
 			if (V.sexStats.pills["pills"][this.name].doseTaken) {
-				return (
-					"Effective for " + V.sexStats.pills["pills"][this.name].doseTaken + " day" + (V.sexStats.pills["pills"][this.name].doseTaken > 1 ? "s" : "")
-				);
+				return "Effective for " + V.sexStats.pills["pills"][this.name].doseTaken + " day" + (V.sexStats.pills["pills"][this.name].doseTaken > 1 ? "s" : "");
 			} else {
 				return "Not Applied";
 			}
@@ -419,9 +406,7 @@ setup.pills = [
 		},
 		hpi_doseTaken() {
 			if (V.sexStats.pills["pills"][this.name].doseTaken) {
-				return (
-					"Effective for " + V.sexStats.pills["pills"][this.name].doseTaken + " day" + (V.sexStats.pills["pills"][this.name].doseTaken > 1 ? "s" : "")
-				);
+				return "Effective for " + V.sexStats.pills["pills"][this.name].doseTaken + " day" + (V.sexStats.pills["pills"][this.name].doseTaken > 1 ? "s" : "");
 			} else {
 				return "Not Applied";
 			}
@@ -465,9 +450,7 @@ setup.pills = [
 		},
 		hpi_doseTaken() {
 			if (V.sexStats.pills["pills"][this.name].doseTaken) {
-				return (
-					"Effective for " + V.sexStats.pills["pills"][this.name].doseTaken + " day" + (V.sexStats.pills["pills"][this.name].doseTaken > 1 ? "s" : "")
-				);
+				return "Effective for " + V.sexStats.pills["pills"][this.name].doseTaken + " day" + (V.sexStats.pills["pills"][this.name].doseTaken > 1 ? "s" : "");
 			} else {
 				return "Not Applied";
 			}
@@ -571,9 +554,7 @@ setup.pills = [
 		},
 		hpi_doseTaken() {
 			if (V.sexStats.pills["pills"][this.name].doseTaken) {
-				return (
-					"Effective for " + V.sexStats.pills["pills"][this.name].doseTaken + " day" + (V.sexStats.pills["pills"][this.name].doseTaken > 1 ? "s" : "")
-				);
+				return "Effective for " + V.sexStats.pills["pills"][this.name].doseTaken + " day" + (V.sexStats.pills["pills"][this.name].doseTaken > 1 ? "s" : "");
 			} else {
 				return "Not Applied";
 			}
@@ -653,9 +634,7 @@ function onHomePillItemClick(itemName) {
 				</div>`;
 				window.initPillContextButtons(item);
 				document.getElementById("hpi_desc_img").innerHTML =
-					(item.frontIcon
-						? `<img${item.shape === "galenic" ? ` style="margin-left: 17%;"` : ""} class="icon infront" src="${item.frontIcon}"/>`
-						: "") +
+					(item.frontIcon ? `<img${item.shape === "galenic" ? ` style="margin-left: 17%;"` : ""} class="icon infront" src="${item.frontIcon}"/>` : "") +
 					`<img${item.shape === "galenic" ? ` style="margin-left: 17%;"` : ""} src="${item.icon}" />` +
 					`<div id="hpi_indicator" class="hpi_indicator"></div>`;
 				window.addIndicators(item);
@@ -769,6 +748,7 @@ window.redetermineMostTaken = redetermineMostTaken;
 
 function onTakeClick(itemName) {
 	V.sexStats.pills["pills"][itemName].owned -= 1;
+	if (window.GameAudio) window.GameAudio.effect("meds");
 
 	switch (itemName) {
 		case "Anti-Parasite Cream":

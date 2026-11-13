@@ -133,6 +133,7 @@ Weather.Renderer.Effects.add({
 			const strikeProbability = strikesPerSecond * dt;
 
 			if (Math.random() < strikeProbability) {
+				if (window.GameAudio) window.GameAudio.lightning(this.renderInstance);
 				const viewWidth = this.canvas.element.width;
 				const viewHeight = this.canvas.element.height;
 

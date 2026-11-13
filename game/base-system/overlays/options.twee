@@ -908,6 +908,48 @@ IMPORTANT:
 
 <<widget "optionsperformance">>
 	<<setupOptions>>
+	<<run GameAudio.ensureDefaults()>>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">Audio</div>
+		<div class="settingsToggleItem" onchange="GameAudio.update()">
+			<label><<checkbox "$options.audio" 0 1 autocheck>> Enable audio</label>
+			<span class="tooltip-anchor linkBlue" tooltip="Background music for locations, encounters and some characters, plus weather ambience. Browsers start sound after your first click or key press.">(?)</span>
+		</div>
+		<div class="settingsToggleItem" onchange="GameAudio.update()">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.muteonhide" 0 1 autocheck>> Mute on hide</label>
+			<span class="tooltip-anchor linkBlue" tooltip="Mutes the game while its tab or window is hidden or minimised.">(?)</span>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0">
+				<span class="gold">Master volume:</span>
+				<span class="tooltip-anchor linkBlue" tooltip="Overall volume of all game audio.">(?)</span>
+				<<numberslider "$options.mastervolume" $options.mastervolume 0 1 0.01 {
+					onInputChange: value => GameAudio.update(),
+					value: value => Math.round(value * 100) + "%"
+				}>>
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0">
+				<span class="gold">Music:</span>
+				<span class="tooltip-anchor linkBlue" tooltip="Background music volume. 0% turns music off.">(?)</span>
+				<<numberslider "$options.bgm_volume" $options.bgm_volume 0 1 0.01 {
+					onInputChange: value => GameAudio.update(),
+					value: value => Math.round(value * 100) + "%"
+				}>>
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0">
+				<span class="gold">Ambience:</span>
+				<span class="tooltip-anchor linkBlue" tooltip="Rain, snow, thunder and small sound effects. Quieter indoors. 0% turns them off.">(?)</span>
+				<<numberslider "$options.ambience_volume" $options.ambience_volume 0 1 0.01 {
+					onInputChange: value => GameAudio.update(),
+					value: value => Math.round(value * 100) + "%"
+				}>>
+			</label>
+		</div>
+	</div>
 	<<if StartConfig.enableImages is true>>
 		<div class="settingsGrid">
 			<div class="settingsHeader options">Images</div>

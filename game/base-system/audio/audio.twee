@@ -1,0 +1,4 @@
+:: Audio Widgets [widget]
+<<widget "update-audio">>
+	<<run GameAudio.update()>>
+<</widget>>

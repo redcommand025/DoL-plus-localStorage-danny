@@ -1371,6 +1371,7 @@ const statChange = (() => {
 			}
 
 			V.money += amount;
+			if (amount < 0 && window.GameAudio) window.GameAudio.effect("money");
 		}
 		if (!source || source === "prostitution") {
 			const mod = source === "prostitution" ? "Prostitution" : "";
