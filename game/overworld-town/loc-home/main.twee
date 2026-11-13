@@ -396,6 +396,7 @@ The hallway outside connects to the rest of the orphanage.
 			<<bathroomLink>>
 			<br>
 			<<robinroom_link>><<dannyroom_link>>
+<<if Time.hour is 7 and Time.minute lt 30 and getDannyLocation() is "room">><<link [[See Danny leaving|Danny Morning Sendoff]]>><</link>><br><</if>>
 			<br>
 			<<home_outside>>
 			<br><br>
