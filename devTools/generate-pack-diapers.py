@@ -18,7 +18,9 @@ This script draws every diaper sprite natively at the pack resolution:
     padded centre panel and ruffled leg cuffs; cloth diapers (pluscd*, plusclothdiaper) a rounder
     shape, side pins and soft fold lines; pull-ups (pluspu*) a ribbed waistband, side tear seams
     and a slimmer underwear-like cut.
-  * frayed / torn / tattered add progressively more edge nicks and rips; sag5 (overflowing) adds a
+  * 15 sag stages (sag1-sag15) per diaper, chosen in game by plusSagStage so that every step in
+    concealment size starts a new stage; shapes interpolate the base sag tiers by fill.
+  * frayed / torn / tattered add progressively more edge nicks and rips; sag15 (overflowing) adds a
     few small drips. penis.png is the same garment drawn over the penis layer, exactly as in base.
   * Greyscale only (the game tints clothing), both animation frames identical.
 
@@ -116,9 +118,43 @@ CAPACITY = {
     "pluspuxs": 0.0, "pluspus": 0.1, "pluspum": 0.2, "pluspullup": 0.2, "pluspul": 0.45,
 }
 REGULAR = {"dp": "plusdpm", "cd": "pluscdm", "pu": "pluspum"}
+# base sprites have 5 sag tiers at these fills (tier 5 = overflowing); pack sprites have 15 stages
+FILL_ANCHORS = [0.0, 0.25, 0.5, 0.75, 1.0]
+# legacy sprite folders (no shop model) use a current model's stage table
+LEGACY_MODEL = {"plusdiaper": "plusdpm", "plusdiapersmall": "plusdps", "plusdiaperlarge": "plusdpl", "plusclothdiaper": "pluscdm", "pluspullup": "pluspum"}
+SAG_STAGES = 15
 
 
-def make_spec(d, rel, base_box, dry_box, reg_box, xmap, ymap, sx, cx, half, frame):
+def stage_tables():
+    """Stage knots per model from the game itself (needs.js plusSagStageTable), so sprite stages match
+    the in-game stage selection exactly."""
+    import json
+    import subprocess
+
+    out = subprocess.run(["node", os.path.join(ROOT, "devTools/diaper-sag-stages.mjs"), "--json"], check=True, capture_output=True, text=True).stdout
+    return json.loads(out)
+
+
+def stage_fills(knots):
+    """Representative fill for each sag stage 1-13 (where it starts; the middle for stage 1), 14 full."""
+    def fill_at(w):
+        for (f0, s0), (f1, s1) in zip(knots, knots[1:]):
+            if w <= s1:
+                return f0 + (w - s0) / (s1 - s0) * (f1 - f0)
+        return 1.0
+
+    fills = {s: fill_at(s - 1 if s > 1 else 0.5) for s in range(1, 14)}
+    fills[14] = 1.0
+    return fills
+
+
+def interp_box(tier_boxes, fill, overflow):
+    if overflow:
+        return tier_boxes[5]
+    return tuple(float(np.interp(fill, FILL_ANCHORS, [tier_boxes[t][i] for t in range(5)])) for i in range(4))
+
+
+def make_spec(d, stage, state, fill, overflow, base_box, dry_box, reg_box, xmap, ymap, sx, cx, half, frame):
     """Shape parameters for one sprite from its base bbox, its dry bbox and the regular type's dry bbox.
 
     Larger-capacity types are drawn slimmer than base when dry (close to the regular diaper) but
@@ -127,9 +163,9 @@ def make_spec(d, rel, base_box, dry_box, reg_box, xmap, ymap, sx, cx, half, fram
     s = Spec()
     s.cat = category(d)
     s.size = frame
-    parts = rel.split(os.sep)
-    s.tier = int(parts[0][3:]) if parts[0].startswith("sag") else 0
-    s.state = os.path.splitext(parts[-1])[0]
+    s.tier = stage  # 0 dry .. 15 (sag stage, see stage_fills)
+    s.overflow = overflow
+    s.state = state
     big = float(np.clip((CAPACITY.get(d, 0.2) - 0.2) / 0.8, 0, 1))  # 0 regular and below .. 1 biggest
     s.big = big
     x0, y0, x1, y1 = base_box
@@ -144,11 +180,14 @@ def make_spec(d, rel, base_box, dry_box, reg_box, xmap, ymap, sx, cx, half, fram
     # sag drop scales with the frame (2x), not with the leg-length fit, so a sagging diaper hangs
     # as far relative to the body as it does in base; bigger types hang further
     base_drop = 2.0 * (y1 - dy1)
-    # big types hang much lower as they fill. The game's sag tiers are fill levels (sag1 25%,
-    # sag2 50%, sag3 75%, sag4 100%, sag5 overflowing); the biggest (hyper) reaches the doll's feet
-    # at 75% and hangs past them when full; other big types scale in between by capacity.
+    # big types hang much lower as they fill: the biggest (hyper) reaches the doll's feet at 75%
+    # fill and hangs past them when full (further when overflowing); other big types scale in
+    # between by capacity. Smooth in fill, so all 15 sag stages progress evenly.
     feet = float(np.nonzero(half > 0)[0].max())
-    hyper_bottom = {0: dryB, 1: dryB + 0.15 * (feet - dryB), 2: dryB + 0.45 * (feet - dryB), 3: feet, 4: feet + 22, 5: feet + 40}[s.tier]
+    if overflow:
+        hyper_bottom = feet + 40
+    else:
+        hyper_bottom = float(np.interp(fill, FILL_ANCHORS, [dryB, dryB + 0.15 * (feet - dryB), dryB + 0.45 * (feet - dryB), feet, feet + 22]))
     s.B = dryB + (1 - big) * base_drop + big * (hyper_bottom - dryB)
     s.B = min(s.B, half.shape[0] - 10)  # keep room for drips inside the sprite frame
     s.thick = float(np.clip((ey1 - ey0 - 11) / 5.0, 0, 1))  # 0 small .. 1 thick
@@ -338,7 +377,7 @@ def draw(s, H=256, W=256):
                     g[yk, xk] = OUTLINE
                     if 0 <= xk + 1 < W and m[yk, xk + 1]:
                         g[yk, xk + 1] = min(g[yk, xk + 1], TONES[1])
-    if s.tier == 5:
+    if s.overflow:
         # overflowing: a few small drips under the bottom edge
         lowc = [x for x in cols if bot[x] >= bot[cols].max() - 2]
         for x in lowc[:: max(1, len(lowc) // 3)][:3]:
@@ -365,23 +404,24 @@ def main(packs):
         H = size[1]
         print(f"{pack}: body centre x={cx}, base rows 57/71/92 -> {[round(ymap(v), 1) for v in (57, 71, 92)]}")
         count = 0
+        tables = stage_tables()
         for d in diaper_dirs():
             dry_box = bbox(load_alpha(os.path.join(BASE, d, "full.png")))
             reg_box = bbox(load_alpha(os.path.join(BASE, REGULAR[category(d)], "full.png")))
-            for dirpath, _, names in os.walk(os.path.join(BASE, d)):
-                for name in sorted(names):
-                    if not name.endswith(".png"):
-                        continue
-                    rel = os.path.relpath(os.path.join(dirpath, name), os.path.join(BASE, d))
-                    sub = os.path.dirname(rel)
-                    # sag tier shape comes from that tier's full sprite; states share it
-                    shape_src = os.path.join(BASE, d, sub, "full.png")
-                    s = make_spec(d, rel, bbox(load_alpha(shape_src)), dry_box, reg_box, xmap, ymap, sx, cx, half, None)
+            tier_boxes = [dry_box] + [bbox(load_alpha(os.path.join(BASE, d, f"sag{t}", "full.png"))) for t in range(1, 6)]
+            fills = stage_fills(tables[LEGACY_MODEL.get(d, d)]["knots"])
+            for stage in range(0, SAG_STAGES + 1):
+                overflow = stage == SAG_STAGES
+                fill = 0.0 if stage == 0 else 1.0 if overflow else fills[stage]
+                box = interp_box(tier_boxes, fill, overflow)
+                sub = f"sag{stage}" if stage else ""
+                for state in STATES:
+                    s = make_spec(d, stage, state, fill, overflow, box, dry_box, reg_box, xmap, ymap, sx, cx, half, None)
                     if s.state == "penis":
                         s.state = "full"
                     frame = draw(s, H, H)
                     out = np.concatenate([frame, frame], axis=1)
-                    dest = os.path.join(ROOT, "imagepacks", pack, "clothes/under-lower", d, rel)
+                    dest = os.path.join(ROOT, "imagepacks", pack, "clothes/under-lower", d, sub, state + ".png")
                     os.makedirs(os.path.dirname(dest), exist_ok=True)
                     Image.fromarray(out, "RGBA").save(dest, optimize=True)
                     count += 1

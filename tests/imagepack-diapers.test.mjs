@@ -125,6 +125,37 @@ describe("image-pack diaper sprites", () => {
 			}
 			assert.equal(n, 600);
 		});
+		it(`${pack}: every diaper has all 15 sag stages (5 states each), listed in the manifest`, () => {
+			for (const d of DIAPERS) {
+				for (let st = 1; st <= 15; st++)
+					for (const state of ["full", "frayed", "torn", "tattered", "penis"]) {
+						const rel = `clothes/under-lower/${d}/sag${st}/${state}.png`;
+						const file = join(root, "imagepacks", pack, rel);
+						assert.ok(existsSync(file), `${pack}: missing ${rel}`);
+						assert.deepEqual(size(file), [512, 256], `${pack}: ${rel} size`);
+						assert.ok(listed(pack, rel), `${pack}: ${rel} not in manifest`);
+					}
+			}
+		});
+		it(`${pack}: sag stages grow progressively; hyper reaches the feet at 75% and hangs past them when full`, () => {
+			const body = decode(join(root, "imagepacks", pack, "body/base-classic.png"));
+			let feet = 0;
+			for (let y = 0; y < body.h; y++) for (let x = 60; x < 150; x++) if (body.alpha[y * body.w + x] > 127) feet = y;
+			for (const d of DIAPERS) {
+				let prev = bbox(join(root, "imagepacks", pack, `clothes/under-lower/${d}/full.png`)).y1;
+				for (let st = 1; st <= 15; st++) {
+					const y1 = bbox(join(root, "imagepacks", pack, `clothes/under-lower/${d}/sag${st}/full.png`)).y1;
+					assert.ok(y1 >= prev - 1, `${pack} ${d}: sag${st} bottom ${y1} above previous ${prev}`);
+					prev = Math.max(prev, y1);
+				}
+			}
+			const hyper = st => bbox(join(root, "imagepacks", pack, `clothes/under-lower/plusdphyper/${st ? `sag${st}/` : ""}full.png`)).y1;
+			// stage 11 starts at 75% fill for Hyper (see plusSagStageTable), 14 = full, 15 = overflowing
+			assert.ok(Math.abs(hyper(11) - feet) <= 4, `${pack}: hyper sag11 bottom ${hyper(11)} vs feet ${feet}`);
+			assert.ok(hyper(14) > feet + 10, `${pack}: hyper full ${hyper(14)} not past the feet ${feet}`);
+			assert.ok(hyper(15) > hyper(14), `${pack}: overflow not lower than full`);
+			assert.ok(hyper(0) < feet - 60, `${pack}: dry hyper not slim/short`);
+		});
 		it(`${pack}: diapers are drawn in the pack's pixel style (hard edges, both frames identical)`, () => {
 			for (const d of DIAPERS) {
 				for (const f of ["full.png", "torn.png", "sag3/full.png"]) {

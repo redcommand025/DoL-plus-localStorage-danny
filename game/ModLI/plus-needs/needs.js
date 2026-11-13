@@ -2552,8 +2552,8 @@ window.plusNowTs = function () {
 		V.plusDiaperSeen = school ? 2 : 1;
 		return V.plusDiaperSeen;
 	};
-	/* Sag tiers (sprites + stage text): 0 <25%, 1 25%, 2 50%, 3 75%, 4 100%, 5 overflowing.
-	 * Sprites: img/clothes/under-lower/<variable>/sag<N>/<integrity|penis>.png (tier 0 = the base sprite). */
+	/* Sag tiers (stage text and base sprites): 0 <25%, 1 25%, 2 50%, 3 75%, 4 100%, 5 overflowing.
+	 * Base sprites: img/clothes/under-lower/<variable>/sag<N>/<integrity|penis>.png, N 1-5 (tier 0 = the base sprite). */
 	window.plusSagTier = function (it) {
 		const d = def(it);
 		if (!d) return 0;
@@ -2561,14 +2561,89 @@ window.plusNowTs = function () {
 		const f = window.plusDiaperFillFrac(it);
 		return f >= 1 - 1e-9 ? 4 : f >= 0.75 ? 3 : f >= 0.5 ? 2 : f >= 0.25 ? 1 : 0;
 	};
+	/* Sag stages (image-pack sprites): 15 stages that line up with concealment.
+	 * 0 empty, 1-13 partly filled, 14 full, 15 overflowing. Every fill at which the effective size
+	 * (plusDiaperSize, the 0-15 concealment scale) steps up starts a new stage, so one stage never
+	 * spans two concealment sizes. Between those points the stages are spread evenly by fill.
+	 * d.sagKnots: [fill, stage boundary] pairs, piecewise linear from [0, 0] to [1, 13]. */
+	const SAG_STAGES = 15;
+	const SAG_FULL = 14;
+	const SAG_PARTIAL = 13;
+	window.plusSagStageCount = SAG_STAGES;
+	for (const d of Object.values(DEF)) {
+		const steps = [];
+		for (let st = 1; st < d.stages; st++) {
+			if (Math.floor((st * d.grow) / d.stages) !== Math.floor(((st - 1) * d.grow) / d.stages)) steps.push(st / d.stages);
+		}
+		const knots = [[0, 0]];
+		steps.forEach((f, i) => {
+			const lo = knots[knots.length - 1][1] + 1;
+			const hi = SAG_PARTIAL - (steps.length - i);
+			knots.push([f, Math.min(hi, Math.max(lo, Math.round(f * SAG_PARTIAL)))]);
+		});
+		knots.push([1, SAG_PARTIAL]);
+		d.sagKnots = knots;
+	}
+	window.plusSagStageForFill = function (d, f, overflow) {
+		if (typeof d === "string") d = DEF[d] || Object.values(DEF).find(x => x.variable === d);
+		if (!d || !d.sagKnots) return 0;
+		if (overflow) return SAG_STAGES;
+		if (!(f > 0)) return 0;
+		if (f >= 1 - 1e-9) return SAG_FULL;
+		const k = d.sagKnots;
+		for (let i = 0; i < k.length - 1; i++) {
+			const [f0, s0] = k[i];
+			const [f1, s1] = k[i + 1];
+			if (f < f1 - 1e-9) return Math.min(SAG_PARTIAL, Math.floor(s0 + ((f - f0) / (f1 - f0)) * (s1 - s0) + 1e-9) + 1);
+		}
+		return SAG_PARTIAL;
+	};
+	window.plusSagStage = function (it) {
+		const d = def(it);
+		if (!d) return 0;
+		return window.plusSagStageForFill(d, window.plusDiaperFillFrac(it), !!it.plusOverflow);
+	};
+	/* Per model: the fill at which each stage starts and the concealment size it shows (for tools, docs, tests). */
+	window.plusSagStageTable = function () {
+		const out = {};
+		for (const d of Object.values(DEF)) {
+			const k = d.sagKnots;
+			const fillAt = w => {
+				for (let i = 0; i < k.length - 1; i++) if (w <= k[i + 1][1]) return k[i][0] + ((w - k[i][1]) / (k[i + 1][1] - k[i][1])) * (k[i + 1][0] - k[i][0]);
+				return 1;
+			};
+			const sizeAt = (f, over) => {
+				const st = over ? d.stages + 1 : Math.min(d.stages, Math.floor(f * d.stages + 1e-9));
+				return Math.min(SIZE_MAX, d.base + Math.floor((Math.min(st, d.stages) * d.grow) / d.stages) + (st > d.stages ? 1 : 0));
+			};
+			const rows = [{ stage: 0, from: 0, size: sizeAt(0) }];
+			for (let s = 1; s <= SAG_PARTIAL; s++) {
+				const from = s === 1 ? 0 : fillAt(s - 1);
+				rows.push({ stage: s, from: Math.round(from * 10000) / 10000, size: sizeAt(from + 1e-7) });
+			}
+			rows.push({ stage: SAG_FULL, from: 1, size: sizeAt(1) });
+			rows.push({ stage: SAG_STAGES, from: "overflow", size: sizeAt(1, true) });
+			out[d.variable] = { name: d.name, cat: d.cat, size: d.size, knots: k.map(x => x.slice()), stages: rows };
+		}
+		return out;
+	};
+	const SAG_SRC = /^(img\/clothes\/under-lower\/plus[a-z]+)\/((?:full|frayed|torn|tattered|penis)\.png)$/;
 	window.plusSagSrc = function (src, it) {
 		try {
 			if (typeof src !== "string") return src;
 			const item = it && it.name ? it : window.plusDiaperWorn && window.plusDiaperWorn();
 			if (!item) return src;
+			const m = SAG_SRC.exec(src);
+			if (!m) return src;
+			const stage = window.plusSagStage(item);
+			if (stage <= 0) return src;
+			/* image packs ship all 15 stages; use one when the active pack has it */
+			const staged = `${m[1]}/sag${stage}/${m[2]}`;
+			const IP = window.ImagePacks;
+			if (IP && typeof IP.resolve === "function" && IP.resolve(staged) !== staged) return staged;
+			/* base sprites only have sag1-5: fall back to the fill tier */
 			const tier = window.plusSagTier(item);
-			if (tier <= 0) return src;
-			return src.replace(/^(img\/clothes\/under-lower\/plus[a-z]+)\/((?:full|frayed|torn|tattered|penis)\.png)$/, "$1/sag" + tier + "/$2");
+			return tier > 0 ? `${m[1]}/sag${tier}/${m[2]}` : src;
 		} catch (e) {
 			return src;
 		}
