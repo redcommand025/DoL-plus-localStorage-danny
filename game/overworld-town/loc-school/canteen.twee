@@ -6,6 +6,7 @@ You are in the school canteen.
 	<<link [[Meet Danny|Danny First Meeting Canteen]]>><</link>>
 	<br>
 <</if>>
+<<dannyEvents "canteen">>
 <<if Time.schoolDay>>
 	<<if $schoolstate is "early" or $schoolstate is "late">>
 		The room is empty.

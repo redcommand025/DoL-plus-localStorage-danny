@@ -85,6 +85,33 @@ You enter Danny's room. <<npc "Danny">>Danny looks up.
 	<</if>>
 <</if>>
 
+:: Danny Event
+<<set _deId to $dannyEv and $dannyEv.id>>
+<<if !_deId or !DannyEvents.event(_deId)>>
+	Danny has already gone.
+	<br><br>
+	<<set _deRet to DannyEvents.finish()>>
+	<<link "Continue" _deRet>><</link>>
+<<else>>
+	<<set $dannyEv.node to DannyEvents.resolve(_deId, $dannyEv.node) or "0">>
+	<<pass 1>>
+	<<print DannyEvents.text(_deId, $dannyEv.node)>>
+	<<print DannyEvents.fx(_deId, $dannyEv.node)>>
+	<br><br>
+	<<set _deOpts to DannyEvents.options(_deId, $dannyEv.node)>>
+	<<if _deOpts.length gt 0>>
+		<<for _deI to 0; _deI lt _deOpts.length; _deI++>>
+			<<capture _deI, _deOpts>>
+				<<print (_deI + 1) + ".">> <<link _deOpts[_deI].label "Danny Event">><<set $dannyEv.node to _deOpts[_deI].to>><</link>>
+				<br>
+			<</capture>>
+		<</for>>
+	<<else>>
+		<<set _deRet to $dannyEv.ret or "Hallways">>
+		<<link "Continue" _deRet>><<run DannyEvents.finish()>><</link>>
+	<</if>>
+<</if>>
+
 :: Danny Outings
 Where do you want to go?
 <br>
@@ -116,6 +143,31 @@ In the canteen Danny nearly bumps into you.
 <</widget>>
 
 <<widget "gdannyacceptance">><<if !$settings.blindStatsEnabled>> | <span class="green">+ Danny's Acceptance</span><</if>><</widget>>
+
+<<widget "ldannyacceptance">><<if !$settings.blindStatsEnabled>> | <span class="red">- Danny's Acceptance</span><</if>><</widget>>
+
+<<widget "dannyForcedAcceptanceText">>
+	<br><span class="red">Danny has shut you out of this part of <<nnpc_his "Danny">> life. (Forced Acceptance: failed)</span>
+<</widget>>
+
+/* <<dannyEvents "place">>: offer a Danny location event here if one is available and its daily roll hit.
+   Returns to the current passage when the scene ends. See game/ModLI/Danny/events/engine.js. */
+<<widget "dannyEvents">>
+	<<set _dannyEventShown to false>>
+	<<if $exposed lte 0 and $stress lt $stressmax and !$possessed and window.DannyEvents>>
+		<<set _dEv to DannyEvents.pick(_args[0])>>
+		<<if _dEv>>
+			<<set _dannyEventShown to true>>
+			<<set _dEvLabel to DannyEvents.link(_dEv.id)>>
+			<span class="teal"><<print DannyEvents.teaser(_dEv.id)>></span>
+			<br>
+			<<capture _dEv, _dEvLabel>>
+				<<socialiseicon>><<link _dEvLabel "Danny Event">><<run DannyEvents.begin(_dEv.id, passage())>><</link>>
+			<</capture>>
+			<br><br>
+		<</if>>
+	<</if>>
+<</widget>>
 
 <<widget "dannyPresence">>
 	<<if getDannyLocation() is _args[0]>>

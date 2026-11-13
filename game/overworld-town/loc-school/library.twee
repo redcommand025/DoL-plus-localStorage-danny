@@ -15,6 +15,7 @@ You are in the school library.
 	The library is devoid of people.
 <</if>>
 <br><br>
+<<dannyEvents "library">>
 There are several shelves with typical academic literature. You see books on engineering, biology, social sciences and language learning. Everything that is useful in catching up.
 
 Next to the shelf is a small basket with returned and not yet sorted books.

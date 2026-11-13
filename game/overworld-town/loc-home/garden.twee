@@ -3,6 +3,7 @@
 <<set $outside to 1>><<set $location to "home">><<home_effects>><<effects>>
 You are in the garden behind the orphanage.
 <br><br>
+<<dannyEvents "garden">>
 <<if $mason_pond is 3>>
 	A portion of the garden has been cordoned off.
 	<<if Time.dayState is "night">>

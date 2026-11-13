@@ -1,6 +1,7 @@
 :: Hallways
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
 <<dannyPresence "school">>
+<<dannyEvents "hallways">>
 
 <<if !["early", "late", "earlynoschool", "latenoschool", "daynoschool"].includes($schoolstate)>>
 	You are in the school hallways.

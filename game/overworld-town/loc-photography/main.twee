@@ -105,6 +105,7 @@ Niki nods. "You know where I am if you change your mind."
 :: Photo
 <<set $outside to 0>><<set $location to "studio">><<effects>>
 <<dannyPresence "work">>
+<<dannyEvents "studio">>
 
 <<if $photo.niki_event is undefined and C.npc.Niki.love gte 10 and $brothelintro gte 1>>
 	<<set $photo.niki_event to 1>>

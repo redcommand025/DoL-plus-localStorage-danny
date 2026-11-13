@@ -907,4 +907,84 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.noRecentRepeat, true);
 		assert.equal(info.recentLen, 4);
 	});
+	it("QA-C022 [integration] every Danny event scene renders in the compiled game, and a location hook starts and returns", async () => {
+		const info = await page.evaluate(() => {
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " "), html: d.innerHTML };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e), html: "" };
+				}
+			};
+			const bad = r => !r.ok || /Error|NPCINCR error|not whitelisted|macro <<|bad evaluation/i.test(r.text);
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			const V = SugarCube.State.variables;
+			if (!Array.isArray(V.NPCNameList) || !V.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
+			wiki("<<dannyInit>>");
+			V.dannyIntro = 1;
+			const E = DannyEvents;
+			const problems = [];
+			let rendered = 0;
+			for (const prof of [
+				{ love: 5, continence: 300, acceptance: 100, roll: 10 },
+				{ love: 60, continence: 4000, acceptance: 600, roll: 80 },
+			]) {
+				const d = C.npc.Danny;
+				for (const id of Object.keys(E.events())) {
+					Object.assign(d, { love: prof.love, continence: prof.continence, acceptance: prof.acceptance });
+					E.begin(id, "Hallways", () => prof.roll / 100);
+					for (const key of Object.keys(E.event(id).nodes)) {
+						const r = wiki(E.text(id, key) + E.fx(id, key) + E.teaser(id));
+						rendered++;
+						if (bad(r)) problems.push(id + "/" + key + ": " + r.text.slice(0, 160));
+					}
+					E.finish();
+				}
+			}
+			Object.assign(C.npc.Danny, { love: 30, continence: 3000, acceptance: 300 });
+			const forcedBefore = C.npc.Danny.acceptance;
+			const forced = wiki(E.FX.forced);
+			const forcedAfter = C.npc.Danny.acceptance;
+			/* hook: force today's roll for the hallway event at 7:45 on a school day */
+			Time.setTime(7, 45);
+			const S = E.state();
+			delete S.done.hallway;
+			S.avoid = {};
+			S.rolls.hallway = { d: Time.days, hit: true };
+			const hook = Time.schoolDay ? wiki('<<dannyEvents "hallways">>') : { ok: true, text: "not a school day", html: "" };
+			const offered = !Time.schoolDay || /Say hello/.test(hook.text);
+			E.begin("hallway", "Hallways", () => 0.5);
+			const scene = wiki("<<include [[Danny Event]]>>");
+			const options = (scene.html.match(/<a /g) || []).length;
+			S.node = "6";
+			const end = wiki("<<include [[Danny Event]]>>");
+			return {
+				rendered,
+				problems,
+				forcedOk: forced.ok && /Forced Acceptance/.test(forced.text) && forcedAfter === Math.max(0, forcedBefore - 150),
+				flag: !!S.forcedAcceptance,
+				schoolDay: Time.schoolDay,
+				hookBad: bad(hook),
+				offered,
+				hookText: hook.text.slice(0, 200),
+				sceneBad: bad(scene),
+				options,
+				sceneText: scene.text.slice(0, 200),
+				endBad: bad(end),
+				endContinue: /Continue/.test(end.text),
+			};
+		});
+		assert.ok(info.rendered > 400, String(info.rendered));
+		assert.deepEqual(info.problems, [], info.problems.slice(0, 5).join("\n"));
+		assert.equal(info.forcedOk, true, JSON.stringify(info));
+		assert.equal(info.flag, true);
+		assert.equal(info.hookBad, false, info.hookText);
+		assert.equal(info.offered, true, info.hookText);
+		assert.equal(info.sceneBad, false, info.sceneText);
+		assert.equal(info.options, 6, info.sceneText);
+		assert.equal(info.endBad, false);
+		assert.equal(info.endContinue, true);
+	});
 });

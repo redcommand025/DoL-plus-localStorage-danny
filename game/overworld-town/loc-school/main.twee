@@ -2,6 +2,7 @@
 <<lockerClothesAutoStore>>
 <<set $outside to 1>><<set $location to "school">><<schooleffects>><<effects>><<set $bus to "schoolfrontcourtyard">>
 <<dannyPresence "courtyard">>
+<<dannyEvents "schoolFront">>
 
 <<if !["early", "late", "earlynoschool", "latenoschool", "daynoschool"].includes($schoolstate)>>
 	<<if $schoolstate is "morning">>
@@ -142,6 +143,7 @@
 	The rear courtyard is empty.
 	<br><br>
 <</if>>
+<<dannyEvents "schoolRear">>
 
 <<schoolperiodtext>>
 <<if ["intro", "discover"].includes($weekly.schoolNightPoolParty) and Time.hour gte 21 and $passagePrev is "hallway">><<set $weekly.schoolNightPoolParty to "admission">><</if>>

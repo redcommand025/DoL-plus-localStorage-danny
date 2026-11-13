@@ -110,8 +110,9 @@
 <<elseif $schoolstate is "morning">>
 	<<lockerClothesAutoEquip>>
 	<<classRoomEarSlime "science">>
-	You enter the science classroom. No one else has arrived yet. You could use the extra time to study.
+	You enter the science classroom. <<if !(window.DannyEvents and DannyEvents.pick("scienceEarly"))>>No one else has arrived yet. <</if>>You could use the extra time to study.
 	<br><br>
+	<<dannyEvents "scienceEarly">>
 
 	<<classgrades>>
 	<<schoolperiodtext>>
@@ -372,6 +373,7 @@ Sirris looks exasperated. "Right. I'll have to inform the head of your behaviour
 	<<pregnancyPassout "schoolScience">>
 <<else>>
 	<<if Time.minute lt 5>>
+		<<dannyEvents "scienceLesson">>
 		The science lesson begins. How do you want to conduct yourself?
 		<br><br>
 		<<classgrades>>

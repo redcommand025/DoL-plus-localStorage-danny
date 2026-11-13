@@ -926,6 +926,7 @@ When you wake up, you notice a note pushed under your door. You read it.
 
 You are in the bathroom.
 <br><br>
+<<dannyEvents "orphanageBathroom">>
 <<if $stress gte $stressmax>>
 	<<passouthome>>
 	<<exitAll>>
@@ -2534,6 +2535,7 @@ You are in the main hall of the orphanage.
 <</if>>
 
 <br><br>
+<<dannyEvents "orphanage">>
 
 <<baileyConfiscationNotice>> /* Bailey Confiscation System */
 
@@ -4782,6 +4784,7 @@ You nod in response, passing <<him>> by and continuing on your way.
 
 You are in the orphanage kitchen. High cupboards line the walls, above spotless wooden counters. A couple of ovens sit beside each other, opposite a fridge, and a large freezer.
 <br><br>
+<<dannyEvents "kitchen">>
 <<if !$loft_river>>
 	<<robinorphanagekitchen>>
 <</if>>
