@@ -2561,69 +2561,41 @@ window.plusNowTs = function () {
 		const f = window.plusDiaperFillFrac(it);
 		return f >= 1 - 1e-9 ? 4 : f >= 0.75 ? 3 : f >= 0.5 ? 2 : f >= 0.25 ? 1 : 0;
 	};
-	/* Sag stages (image-pack sprites): 15 stages that line up with concealment.
-	 * 0 empty, 1-13 partly filled, 14 full, 15 overflowing. Every fill at which the effective size
-	 * (plusDiaperSize, the 0-15 concealment scale) steps up starts a new stage, so one stage never
-	 * spans two concealment sizes. Between those points the stages are spread evenly by fill.
-	 * d.sagKnots: [fill, stage boundary] pairs, piecewise linear from [0, 0] to [1, 13]. */
-	const SAG_STAGES = 15;
-	const SAG_FULL = 14;
-	const SAG_PARTIAL = 13;
-	window.plusSagStageCount = SAG_STAGES;
-	for (const d of Object.values(DEF)) {
-		const steps = [];
-		for (let st = 1; st < d.stages; st++) {
-			if (Math.floor((st * d.grow) / d.stages) !== Math.floor(((st - 1) * d.grow) / d.stages)) steps.push(st / d.stages);
-		}
-		const knots = [[0, 0]];
-		steps.forEach((f, i) => {
-			const lo = knots[knots.length - 1][1] + 1;
-			const hi = SAG_PARTIAL - (steps.length - i);
-			knots.push([f, Math.min(hi, Math.max(lo, Math.round(f * SAG_PARTIAL)))]);
-		});
-		knots.push([1, SAG_PARTIAL]);
-		d.sagKnots = knots;
-	}
-	window.plusSagStageForFill = function (d, f, overflow) {
-		if (typeof d === "string") d = DEF[d] || Object.values(DEF).find(x => x.variable === d);
-		if (!d || !d.sagKnots) return 0;
-		if (overflow) return SAG_STAGES;
-		if (!(f > 0)) return 0;
-		if (f >= 1 - 1e-9) return SAG_FULL;
-		const k = d.sagKnots;
-		for (let i = 0; i < k.length - 1; i++) {
-			const [f0, s0] = k[i];
-			const [f1, s1] = k[i + 1];
-			if (f < f1 - 1e-9) return Math.min(SAG_PARTIAL, Math.floor(s0 + ((f - f0) / (f1 - f0)) * (s1 - s0) + 1e-9) + 1);
-		}
-		return SAG_PARTIAL;
-	};
-	window.plusSagStage = function (it) {
+	/* Image-pack sprites: one picture per concealment size. The sprite is chosen directly from the
+	 * diaper's current effective size (plusDiaperSize, the same 0-15 scale garments' "Can hide" uses):
+	 * <variable>/size<N>/<integrity|penis>.png, so the picture changes exactly when concealment does and a
+	 * size-N diaper looks the same bulk whatever its model (dry Hyper = size 8, a full Hyper = 15).
+	 * Overflowing (leaking) diapers use <variable>/leak<N>/: the same size-N shape with drips. That keeps
+	 * overflow visible even where it adds no size (a full Hyper is already 15). */
+	window.plusSagSizeKey = function (it) {
 		const d = def(it);
-		if (!d) return 0;
-		return window.plusSagStageForFill(d, window.plusDiaperFillFrac(it), !!it.plusOverflow);
+		if (!d) return "";
+		return (it.plusOverflow ? "leak" : "size") + window.plusDiaperSize(it);
 	};
-	/* Per model: the fill at which each stage starts and the concealment size it shows (for tools, docs, tests). */
-	window.plusSagStageTable = function () {
+	/* Per model: the sizes it can show and the fill at which each starts (for tools, docs, tests). */
+	window.plusSagSizeTable = function () {
 		const out = {};
 		for (const d of Object.values(DEF)) {
-			const k = d.sagKnots;
-			const fillAt = w => {
-				for (let i = 0; i < k.length - 1; i++) if (w <= k[i + 1][1]) return k[i][0] + ((w - k[i][1]) / (k[i + 1][1] - k[i][1])) * (k[i + 1][0] - k[i][0]);
-				return 1;
-			};
 			const sizeAt = (f, over) => {
 				const st = over ? d.stages + 1 : Math.min(d.stages, Math.floor(f * d.stages + 1e-9));
 				return Math.min(SIZE_MAX, d.base + Math.floor((Math.min(st, d.stages) * d.grow) / d.stages) + (st > d.stages ? 1 : 0));
 			};
-			const rows = [{ stage: 0, from: 0, size: sizeAt(0) }];
-			for (let s = 1; s <= SAG_PARTIAL; s++) {
-				const from = s === 1 ? 0 : fillAt(s - 1);
-				rows.push({ stage: s, from: Math.round(from * 10000) / 10000, size: sizeAt(from + 1e-7) });
+			const steps = [{ size: sizeAt(0), from: 0 }];
+			for (let st = 1; st <= d.stages; st++) {
+				const f = st / d.stages;
+				const z = sizeAt(f);
+				if (z !== steps[steps.length - 1].size) steps.push({ size: z, from: Math.round(f * 10000) / 10000 });
 			}
-			rows.push({ stage: SAG_FULL, from: 1, size: sizeAt(1) });
-			rows.push({ stage: SAG_STAGES, from: "overflow", size: sizeAt(1, true) });
-			out[d.variable] = { name: d.name, cat: d.cat, size: d.size, knots: k.map(x => x.slice()), stages: rows };
+			out[d.variable] = {
+				name: d.name,
+				cat: d.cat,
+				size: d.size,
+				steps,
+				sizes: steps.map(x => x.size),
+				overflow: sizeAt(1, true),
+				/* size shown at the base game's 5 sag tiers (dry, 25%, 50%, 75%, full, overflowing) */
+				tiers: [sizeAt(0), sizeAt(0.25), sizeAt(0.5), sizeAt(0.75), sizeAt(1), sizeAt(1, true)],
+			};
 		}
 		return out;
 	};
@@ -2635,13 +2607,14 @@ window.plusNowTs = function () {
 			if (!item) return src;
 			const m = SAG_SRC.exec(src);
 			if (!m) return src;
-			const stage = window.plusSagStage(item);
-			if (stage <= 0) return src;
-			/* image packs ship all 15 stages; use one when the active pack has it */
-			const staged = `${m[1]}/sag${stage}/${m[2]}`;
+			/* image packs: one picture per concealment size, when the active pack has it */
+			const key = window.plusSagSizeKey(item);
 			const IP = window.ImagePacks;
-			if (IP && typeof IP.resolve === "function" && IP.resolve(staged) !== staged) return staged;
-			/* base sprites only have sag1-5: fall back to the fill tier */
+			if (key && IP && typeof IP.resolve === "function") {
+				const sized = `${m[1]}/${key}/${m[2]}`;
+				if (IP.resolve(sized) !== sized) return sized;
+			}
+			/* base sprites: 5 sag tiers by fill */
 			const tier = window.plusSagTier(item);
 			return tier > 0 ? `${m[1]}/sag${tier}/${m[2]}` : src;
 		} catch (e) {

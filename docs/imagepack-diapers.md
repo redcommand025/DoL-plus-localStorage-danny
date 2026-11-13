@@ -13,67 +13,62 @@ too low and ~14px to the right of the pack body.
 - Silhouettes are smooth curves (8x8 supersampled, snapped to hard edges like the pack's
   garments) with a 1px dark outline, a few flat grey tones with soft rounded shading, a light
   waistband band and gathered leg cuffs. Greyscale, so the game's clothing tint still applies.
-- The waist hugs the pack body's hips; size and sag progression come from each base sprite's
-  bounding box mapped to the pack body (x linear, waist/crotch through a fit from briefs,
-  boxers, boyshorts and long johns; sag drop scaled 2x like the frame).
+- The waist hugs the pack body's hips; placement comes from the regular base diaper mapped to the
+  pack body (x linear, waist/crotch through a fit from briefs, boxers, boyshorts and long johns).
 - Plastic diapers: side tapes, landing strip, faint hourglass core. Cloth: rounder cut, side pins,
   fold lines. Pull-ups: ribbed waistband, dashed side tear seams, slimmer cut.
-- frayed/torn/tattered add edge nicks and rips; sag15 (overflowing) adds small drips; `penis.png` is the same
+- frayed/torn/tattered add edge nicks and rips; `leak<N>` (overflowing) adds small drips; `penis.png` is the same
   garment (it is drawn over the penis layer, as in base).
 
-Larger capacities are slimmer but saggier. Each diaper's capacity (0 for small sizes, up to 1
-for hyper) blends its dry shape toward the regular size of its kind, so big ones stay slim when
-dry. As they fill they droop lower and lower over the 15 sag stages (below). Hyper reaches the
-doll's feet at 75% fill, hangs past them when full and sags further when overflowing; the other
-large sizes scale down in proportion (max, ultra, xl, large, cloth xl/large, pull-up large).
-Small and regular sizes get the same 15 stages with a gentle sag. Frames
-are 256px tall and the feet sit around y191, so there is room to draw past the feet with no
-clipping.
+## One picture per concealment size
 
-## 15 sag stages (aligned with concealment)
+Pack diapers are drawn per concealment size, not per fill level. Concealment uses the effective
+diaper size (`plusDiaperSize`, 1-15: the same scale as each garment's "Can hide" value; a garment
+hides the diaper while size <= its value). `plusSagSizeKey(item)` in
+`game/ModLI/plus-needs/needs.js` picks `<diaper>/size<N>/<state>.png` for the current size, so the
+picture changes exactly when concealment does, and a size-N diaper has the same length and width
+whichever model it is (within a category the pictures are identical; plastic, cloth and pull-up
+keep their own cut and details: tapes and landing strip, pins and folds, ribbed waistband).
 
-Pack diapers have 15 sag stages, `sag1` to `sag15`, instead of the base game's 5 tiers. The stage
-comes from `plusSagStage(item)` in `game/ModLI/plus-needs/needs.js`:
+- Sizes 1-8 grow gently (a dry Hyper is size 8, so big diapers start slim). From size 9 they get
+  longer and droopier rather than wider: size 13 (a Hyper at 75%) reaches the doll's feet and 15
+  (a full Hyper) hangs past them. Frames are 256px tall and the feet sit around y191, so there is
+  room below the feet and nothing is clipped.
+- Overflowing (leaking) diapers use `leak<N>/`: the size-N shape with drips. Overflow adds one size
+  to most models, but a full Hyper is already 15, so the separate leak picture keeps overflow
+  visible there too.
+- Each diaper folder only has the sizes its model can reach (plus its leak size): 100 pictures x
+  5 states per pack. The root and `sag1`-`sag5` (the paths the base game uses) hold the matching
+  size picture too, so even the base-tier fallback fits the pack doll.
+- `node devTools/diaper-sag-sizes.mjs` prints each model's sizes and the fill where each starts;
+  `plusSagSizeTable()` returns it in game and the sprite generator reads it.
 
-- 0 = empty (the unsagged sprite), 1-13 = partly filled, 14 = full, 15 = overflowing.
-- Concealment uses the effective diaper size (`plusDiaperSize`, the same 0-15 scale as each
-  garment's "Can hide" value). For every model, each fill at which that size steps up starts a new
-  sag stage, so a stage never spans two concealment sizes and the picture changes exactly when
-  clothes stop (or start) hiding the diaper. Between those points the stages are spread evenly.
-- `node devTools/diaper-sag-stages.mjs` prints the table (stage: start fill / concealment size);
-  `plusSagStageTable()` returns it in game, and the sprite generator reads it, so sprites and
-  in-game selection cannot drift.
+| Model               | sizes by fill                                                | overflow |
+| ------------------- | ------------------------------------------------------------ | -------- |
+| Hyper               | 0% 8, 15% 9, 30% 10, 45% 11, 60% 12, 75% 13, 90% 14, 100% 15 | leak15   |
+| Max                 | 0% 7, 20% 8, 33% 9, 53% 10, 67% 11, 87% 12, 100% 13          | leak14   |
+| Ultra               | 0% 6, 20% 7, 40% 8, 60% 9, 80% 10, 100% 11                   | leak12   |
+| Extra Large         | 0% 5, 25% 6, 50% 7, 75% 8, 100% 9                            | leak10   |
+| Large               | 0% 4, 40% 5, 80% 6, 100% 7                                   | leak8    |
+| Medium              | 0% 3, 50% 4, 75% 5, 100% 6                                   | leak7    |
+| Small               | 0% 2, 67% 3, 100% 4                                          | leak5    |
+| Cloth XL            | 0% 5, 40% 6, 60% 7, 80% 8, 100% 9                            | leak10   |
+| Cloth Large         | 0% 4, 50% 5, 75% 6, 100% 7                                   | leak8    |
+| Cloth Medium        | 0% 3, 67% 4, 100% 5                                          | leak6    |
+| Cloth Small         | 0% 2, 100% 3                                                 | leak4    |
+| Pull-up Large       | 0% 4, 50% 5, 75% 6, 100% 7                                   | leak8    |
+| Pull-up Medium      | 0% 3, 67% 4, 100% 5                                          | leak6    |
+| Pull-up Small       | 0% 2, 67% 3, 100% 4                                          | leak5    |
+| Pull-up Extra Small | 0% 1, 100% 2                                                 | leak3    |
 
-Concealment size steps (fill -> size) and the stage that starts there:
+Base (non-pack) sprites keep their 5 tiers. `plusSagSrc` uses `size<N>`/`leak<N>` only when the
+active image pack has that file (`ImagePacks.resolve`); otherwise it uses the base tier for the
+fill (`plusSagTier`: sag1 25%, sag2 50%, sag3 75%, sag4 full, sag5 overflowing), so no missing
+path is ever requested. The base tiers still drive the sag messages. The base game's wet-clothing
+transparency still applies to diapers (kept on purpose).
 
-| Model               | dry size | steps: fill% = size (stage)                                       | full    | overflow |
-| ------------------- | -------- | ----------------------------------------------------------------- | ------- | -------- |
-| Hyper               | 8        | 15=9 (3), 30=10 (5), 45=11 (7), 60=12 (9), 75=13 (11), 90=14 (13) | 15 (14) | 15 (15)  |
-| Max                 | 7        | 20=8 (4), 33=9 (5), 53=10 (8), 67=11 (10), 87=12 (12)             | 13      | 14       |
-| Ultra               | 6        | 20=7 (4), 40=8 (6), 60=9 (9), 80=10 (11)                          | 11      | 12       |
-| Extra Large         | 5        | 25=6 (4), 50=7 (8), 75=8 (11)                                     | 9       | 10       |
-| Large               | 4        | 40=5 (6), 80=6 (11)                                               | 7       | 8        |
-| Medium              | 3        | 50=4 (8), 75=5 (11)                                               | 6       | 7        |
-| Small               | 2        | 67=3 (10)                                                         | 4       | 5        |
-| Cloth XL            | 5        | 40=6 (6), 60=7 (9), 80=8 (11)                                     | 9       | 10       |
-| Cloth Large         | 4        | 50=5 (8), 75=6 (11)                                               | 7       | 8        |
-| Cloth Medium        | 3        | 67=4 (10)                                                         | 5       | 6        |
-| Cloth Small         | 2        | none                                                              | 3       | 4        |
-| Pull-up Large       | 4        | 50=5 (8), 75=6 (11)                                               | 7       | 8        |
-| Pull-up Medium      | 3        | 67=4 (10)                                                         | 5       | 6        |
-| Pull-up Small       | 2        | 67=3 (10)                                                         | 4       | 5        |
-| Pull-up Extra Small | 1        | none                                                              | 2       | 3        |
-
-Full is always stage 14 and overflowing stage 15. Hyper's stage 11 starts at 75% fill: that is where
-it reaches the doll's feet; at 14 (full) it hangs past them and at 15 lower still.
-
-Base (non-pack) sprites keep their 5 tiers. `plusSagSrc` uses `sag<stage>` only when the active
-image pack has that file (`ImagePacks.resolve`); otherwise it uses the base tier for the fill
-(`plusSagTier`: sag1 25%, sag2 50%, sag3 75%, sag4 full, sag5 overflowing), so no base path to a
-missing `sag6`-`sag15` is ever requested. The base tiers still drive the sag messages.
-
-Legacy sprite folders without a shop model use a current model's table (`plusdiaper` and
-`plusdiapersmall`/`plusdiaperlarge` -> plastic Medium/Small/Large, `plusclothdiaper` -> cloth
+Legacy sprite folders without a shop model use a current model's sizes (`plusdiaper`,
+`plusdiapersmall`, `plusdiaperlarge` -> plastic Medium/Small/Large, `plusclothdiaper` -> cloth
 Medium, `pluspullup` -> pull-up Medium).
 
 Run `python3 devTools/generate-pack-diapers.py` (needs Pillow + numpy) after changing a base

@@ -12,6 +12,9 @@ import zlib from "node:zlib";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PACKS = ["au", "aumasc"];
 const BASE = join(root, "img/clothes/under-lower");
+const { loadSizeTable } = await import("../devTools/diaper-sag-sizes.mjs");
+const SIZES = loadSizeTable();
+const LEGACY = { plusdiaper: "plusdpm", plusdiapersmall: "plusdps", plusdiaperlarge: "plusdpl", plusclothdiaper: "pluscdm", pluspullup: "pluspum" };
 const DIAPERS = readdirSync(BASE)
 	.filter(d => d.startsWith("plus") && statSync(join(BASE, d)).isDirectory())
 	.sort();
@@ -125,36 +128,59 @@ describe("image-pack diaper sprites", () => {
 			}
 			assert.equal(n, 600);
 		});
-		it(`${pack}: every diaper has all 15 sag stages (5 states each), listed in the manifest`, () => {
+		it(`${pack}: every diaper has a picture for each concealment size it can reach (+ leak), listed in the manifest`, () => {
+			let n = 0;
 			for (const d of DIAPERS) {
-				for (let st = 1; st <= 15; st++)
+				const row = SIZES[LEGACY[d] || d];
+				for (const key of [...row.sizes.map(z => `size${z}`), `leak${row.overflow}`])
 					for (const state of ["full", "frayed", "torn", "tattered", "penis"]) {
-						const rel = `clothes/under-lower/${d}/sag${st}/${state}.png`;
+						const rel = `clothes/under-lower/${d}/${key}/${state}.png`;
 						const file = join(root, "imagepacks", pack, rel);
 						assert.ok(existsSync(file), `${pack}: missing ${rel}`);
 						assert.deepEqual(size(file), [512, 256], `${pack}: ${rel} size`);
 						assert.ok(listed(pack, rel), `${pack}: ${rel} not in manifest`);
+						n++;
+					}
+			}
+			assert.equal(n, 500); // 100 size/leak pictures x 5 states
+		});
+		it(`${pack}: a size looks the same in every model (identical within a category, same length/width across)`, () => {
+			const byKey = {};
+			for (const d of DIAPERS)
+				for (const z of SIZES[LEGACY[d] || d].sizes) {
+					const file = join(root, "imagepacks", pack, `clothes/under-lower/${d}/size${z}/full.png`);
+					(byKey[z] ||= []).push({
+						d,
+						cat: d.startsWith("pluspu") ? "pu" : d.startsWith("pluscd") || d === "plusclothdiaper" ? "cd" : "dp",
+						file,
+						box: bbox(file),
+						bytes: readFileSync(file),
+					});
+				}
+			for (const [z, list] of Object.entries(byKey)) {
+				for (const a of list)
+					for (const b of list) {
+						if (a.cat === b.cat) assert.ok(a.bytes.equals(b.bytes), `${pack} size${z}: ${a.d} and ${b.d} differ`);
+						assert.ok(Math.abs(a.box.y1 - b.box.y1) <= 3, `${pack} size${z}: ${a.d} bottom ${a.box.y1} vs ${b.d} ${b.box.y1}`);
+						assert.ok(Math.abs(a.box.x1 - a.box.x0 - (b.box.x1 - b.box.x0)) <= 6, `${pack} size${z}: ${a.d} vs ${b.d} width`);
 					}
 			}
 		});
-		it(`${pack}: sag stages grow progressively; hyper reaches the feet at 75% and hangs past them when full`, () => {
+		it(`${pack}: bigger sizes hang lower; size 13 (Hyper at 75%) reaches the feet, 15 (full Hyper) is past them`, () => {
 			const body = decode(join(root, "imagepacks", pack, "body/base-classic.png"));
 			let feet = 0;
 			for (let y = 0; y < body.h; y++) for (let x = 60; x < 150; x++) if (body.alpha[y * body.w + x] > 127) feet = y;
-			for (const d of DIAPERS) {
-				let prev = bbox(join(root, "imagepacks", pack, `clothes/under-lower/${d}/full.png`)).y1;
-				for (let st = 1; st <= 15; st++) {
-					const y1 = bbox(join(root, "imagepacks", pack, `clothes/under-lower/${d}/sag${st}/full.png`)).y1;
-					assert.ok(y1 >= prev - 1, `${pack} ${d}: sag${st} bottom ${y1} above previous ${prev}`);
-					prev = Math.max(prev, y1);
-				}
-			}
-			const hyper = st => bbox(join(root, "imagepacks", pack, `clothes/under-lower/plusdphyper/${st ? `sag${st}/` : ""}full.png`)).y1;
-			// stage 11 starts at 75% fill for Hyper (see plusSagStageTable), 14 = full, 15 = overflowing
-			assert.ok(Math.abs(hyper(11) - feet) <= 4, `${pack}: hyper sag11 bottom ${hyper(11)} vs feet ${feet}`);
-			assert.ok(hyper(14) > feet + 10, `${pack}: hyper full ${hyper(14)} not past the feet ${feet}`);
-			assert.ok(hyper(15) > hyper(14), `${pack}: overflow not lower than full`);
-			assert.ok(hyper(0) < feet - 60, `${pack}: dry hyper not slim/short`);
+			const at = z => {
+				const d =
+					DIAPERS.find(x => x.startsWith("plusdp") && SIZES[x] && SIZES[x].sizes.includes(z)) || DIAPERS.find(x => SIZES[LEGACY[x] || x].sizes.includes(z));
+				return bbox(join(root, "imagepacks", pack, `clothes/under-lower/${d}/size${z}/full.png`)).y1;
+			};
+			for (let z = 2; z <= 15; z++) assert.ok(at(z) > at(z - 1), `${pack}: size${z} bottom ${at(z)} not below size${z - 1} ${at(z - 1)}`);
+			assert.ok(Math.abs(at(13) - feet) <= 4, `${pack}: size13 bottom ${at(13)} vs feet ${feet}`);
+			assert.ok(at(15) > feet + 10, `${pack}: size15 ${at(15)} not past the feet ${feet}`);
+			assert.ok(at(8) < feet - 40, `${pack}: dry Hyper (size 8) not short`);
+			const hyper = k => bbox(join(root, "imagepacks", pack, `clothes/under-lower/plusdphyper/${k}/full.png`)).y1;
+			assert.ok(hyper("leak15") >= hyper("size15"), `${pack}: leak15 shorter than size15`);
 		});
 		it(`${pack}: diapers are drawn in the pack's pixel style (hard edges, both frames identical)`, () => {
 			for (const d of DIAPERS) {
