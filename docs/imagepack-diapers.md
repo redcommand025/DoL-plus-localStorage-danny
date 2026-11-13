@@ -21,6 +21,15 @@ too low and ~14px to the right of the pack body.
 - frayed/torn/tattered add edge nicks and rips; sag5 adds small drips; `penis.png` is the same
   garment (it is drawn over the penis layer, as in base).
 
+Larger capacities are slimmer but saggier. Each diaper's capacity (0 for small sizes, up to 1
+for hyper) blends its dry shape toward the regular size of its kind, so big ones stay slim when
+dry. As they fill they droop lower in stages that follow the Plus sag tiers (sag1 25%, sag2 50%,
+sag3 75%, sag4 100%, sag5 overflow). Hyper reaches the doll's feet at sag3 (75%), hangs past them
+at sag4 (100%) and sags further at overflow; the other large sizes scale down in proportion (max,
+ultra, xl, large, cloth xl/large, pull-up large). Small and regular sizes are unchanged. Frames
+are 256px tall and the feet sit around y191, so there is room to draw past the feet with no
+clipping.
+
 Run `python3 devTools/generate-pack-diapers.py` (needs Pillow + numpy) after changing a base
 diaper sprite, then rebuild (`compile.sh` regenerates `imagepacks-manifest.js`).
 `tests/imagepack-diapers.test.mjs` checks that every base sprite has a 2× pack counterpart in the

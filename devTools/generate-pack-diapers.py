@@ -108,46 +108,68 @@ class Spec:
     pass
 
 
-def make_spec(d, rel, base_box, dry_box, xmap, ymap, sx, cx, half, frame):
-    """Shape parameters for one sprite from its base bbox (and the dry sprite's bbox)."""
+# relative capacity within each type (0 = smallest, ~0.2 = the regular/medium one, 1 = biggest)
+CAPACITY = {
+    "plusdps": 0.0, "plusdiapersmall": 0.0, "plusdpm": 0.2, "plusdiaper": 0.2, "plusdpl": 0.4, "plusdiaperlarge": 0.4,
+    "plusdpxl": 0.55, "plusdpultra": 0.7, "plusdpmax": 0.85, "plusdphyper": 1.0,
+    "pluscds": 0.0, "pluscdm": 0.2, "plusclothdiaper": 0.2, "pluscdl": 0.5, "pluscdxl": 0.75,
+    "pluspuxs": 0.0, "pluspus": 0.1, "pluspum": 0.2, "pluspullup": 0.2, "pluspul": 0.45,
+}
+REGULAR = {"dp": "plusdpm", "cd": "pluscdm", "pu": "pluspum"}
+
+
+def make_spec(d, rel, base_box, dry_box, reg_box, xmap, ymap, sx, cx, half, frame):
+    """Shape parameters for one sprite from its base bbox, its dry bbox and the regular type's dry bbox.
+
+    Larger-capacity types are drawn slimmer than base when dry (close to the regular diaper) but
+    sag further as they fill: their sag drop is amplified and their sideways growth reduced, so the
+    extra capacity shows as a deeper, lower, droopier bulge rather than bulk at the hips."""
     s = Spec()
     s.cat = category(d)
     s.size = frame
     parts = rel.split(os.sep)
     s.tier = int(parts[0][3:]) if parts[0].startswith("sag") else 0
     s.state = os.path.splitext(parts[-1])[0]
+    big = float(np.clip((CAPACITY.get(d, 0.2) - 0.2) / 0.8, 0, 1))  # 0 regular and below .. 1 biggest
+    s.big = big
     x0, y0, x1, y1 = base_box
     dx0, dy0, dx1, dy1 = dry_box
+    # slim dry shape: only a quarter of the base size difference over the regular type is kept
+    keep = 1.0 - 0.75 * big
+    rx0, ry0, rx1, ry1 = reg_box
+    ex0, ey0, ex1, ey1 = (rx0 + keep * (dx0 - rx0), ry0 + keep * (dy0 - ry0), rx1 + keep * (dx1 - rx1), ry1 + keep * (dy1 - ry1))
     s.cx = cx
     s.T = ymap(y0) + 0.3
-    dryB = ymap(dy1) - 0.5
+    dryB = ymap(ey1) - 0.5
     # sag drop scales with the frame (2x), not with the leg-length fit, so a sagging diaper hangs
-    # as far relative to the body as it does in base
-    s.B = dryB + 2.0 * (y1 - dy1)
-    s.thick = float(np.clip((dy1 - dy0 - 11) / 5.0, 0, 1))  # 0 small .. 1 hyper/max
-    target = (x1 - x0) * sx / 2  # half width of the base sprite on the pack body
-    dry_target = (dx1 - dx0) * sx / 2
+    # as far relative to the body as it does in base; bigger types hang further
+    base_drop = 2.0 * (y1 - dy1)
+    # big types hang much lower as they fill. The game's sag tiers are fill levels (sag1 25%,
+    # sag2 50%, sag3 75%, sag4 100%, sag5 overflowing); the biggest (hyper) reaches the doll's feet
+    # at 75% and hangs past them when full; other big types scale in between by capacity.
+    feet = float(np.nonzero(half > 0)[0].max())
+    hyper_bottom = {0: dryB, 1: dryB + 0.15 * (feet - dryB), 2: dryB + 0.45 * (feet - dryB), 3: feet, 4: feet + 22, 5: feet + 40}[s.tier]
+    s.B = dryB + (1 - big) * base_drop + big * (hyper_bottom - dryB)
+    s.B = min(s.B, half.shape[0] - 10)  # keep room for drips inside the sprite frame
+    s.thick = float(np.clip((ey1 - ey0 - 11) / 5.0, 0, 1))  # 0 small .. 1 thick
     hips = float(half[int(s.T) : int(s.T) + 14].max())
-    if s.cat == "dp":
-        target -= 1.5  # the base width includes the tape tips; tapes are drawn separately here
-        dry_target -= 1.5
-    if s.cat == "pu":
-        target -= 0.5
-        dry_target -= 0.5
+    trim = 1.5 if s.cat == "dp" else 0.5 if s.cat == "pu" else 0.0  # base widths include tape tips etc.
+    dry_target = (ex1 - ex0) * sx / 2 - trim
     pad = 1.2 + 1.6 * s.thick
-    s.Wmax = max(target, hips + pad)
     dryW = max(dry_target, hips + pad)
-    s.grow = max(0.0, s.Wmax - dryW)  # extra width from sagging
+    full_w = max((x1 - x0) * sx / 2 - trim, hips + pad)  # base width of this tier on the pack body
+    s.grow = max(0.0, full_w - dryW) * (1 - 0.5 * big)  # bigger types: more downward than outward
+    s.Wmax = dryW + s.grow
     s.drop = max(0.0, s.B - dryB)
     waist = float(half[int(round(s.T)) + 1]) + pad
-    s.Wtop = min(s.Wmax, waist + 0.6 + 0.15 * s.grow)
+    s.Wtop = min(s.Wmax, waist + 0.6 + 0.15 * (1 - 0.6 * big) * s.grow)
     sag = min(1.0, s.drop / 40.0)
     s.sag = sag
     # widest at the hips, then the leg openings run in toward the crotch; sagging pushes the
-    # widest point down and rounds the bottom into a hanging bulge
-    s.tm = {"dp": 0.30, "cd": 0.34, "pu": 0.26}[s.cat] + 0.36 * sag
-    s.q = {"dp": 1.05, "cd": 1.35, "pu": 0.95}[s.cat] + 1.0 * sag
-    s.cw = {"dp": 4.0, "cd": 5.0, "pu": 3.5}[s.cat] + 2.0 * s.thick + 0.45 * s.grow + 0.12 * s.drop
+    # widest point down and rounds the bottom into a hanging bulge (lower and rounder for big types)
+    s.tm = {"dp": 0.30, "cd": 0.34, "pu": 0.26}[s.cat] + (0.36 + 0.18 * big) * sag
+    s.q = {"dp": 1.05, "cd": 1.35, "pu": 0.95}[s.cat] + (1.0 + 0.4 * big) * sag
+    s.cw = {"dp": 4.0, "cd": 5.0, "pu": 3.5}[s.cat] + 2.0 * s.thick + 0.45 * s.grow + (0.12 - 0.04 * big) * s.drop
     return s
 
 
@@ -345,6 +367,7 @@ def main(packs):
         count = 0
         for d in diaper_dirs():
             dry_box = bbox(load_alpha(os.path.join(BASE, d, "full.png")))
+            reg_box = bbox(load_alpha(os.path.join(BASE, REGULAR[category(d)], "full.png")))
             for dirpath, _, names in os.walk(os.path.join(BASE, d)):
                 for name in sorted(names):
                     if not name.endswith(".png"):
@@ -353,7 +376,7 @@ def main(packs):
                     sub = os.path.dirname(rel)
                     # sag tier shape comes from that tier's full sprite; states share it
                     shape_src = os.path.join(BASE, d, sub, "full.png")
-                    s = make_spec(d, rel, bbox(load_alpha(shape_src)), dry_box, xmap, ymap, sx, cx, half, None)
+                    s = make_spec(d, rel, bbox(load_alpha(shape_src)), dry_box, reg_box, xmap, ymap, sx, cx, half, None)
                     if s.state == "penis":
                         s.state = "full"
                     frame = draw(s, H, H)
