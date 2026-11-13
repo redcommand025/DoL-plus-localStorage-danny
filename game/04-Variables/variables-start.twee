@@ -33,6 +33,8 @@
 		mapMarkers: _globalGeneralDefaults.mapMarkers or false,
 		mapTop: _globalGeneralDefaults.mapTop or false,
 		images: 1,
+		imagePack: "default",
+		imagePackMysterious: false,
 		combatImages: 1,
 		bodywritingImages: true,
 		silhouetteEnabled: true,
