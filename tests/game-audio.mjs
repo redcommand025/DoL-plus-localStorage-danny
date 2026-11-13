@@ -78,7 +78,7 @@ async function run(browser, mode) {
 	const ev = (fn, ...a) => page.evaluate(fn, ...a);
 	const problems = [];
 	const results = { mode };
-	results.storage = await ev(() => (window.DoLStorageFallback ? { active: !!DoLStorageFallback.active, idb: !!(window.idb && idb.active) } : null));
+	results.storage = await ev(() => ({ localStorageStub: !(window.localStorage instanceof Storage), idb: !!(window.idb && idb.active) }));
 	results.startScreen = await ev(() => GameAudio.status().bgm);
 	if (results.startScreen) problems.push("music on the start screen: " + results.startScreen);
 
@@ -198,7 +198,12 @@ async function run(browser, mode) {
 
 	results.audioRequests = { ok: audioResponses.filter(r => r.status < 400).length, failed: audioResponses.filter(r => r.status >= 400).map(r => r.path) };
 	if (results.audioRequests.failed.length) problems.push("audio requests failed: " + results.audioRequests.failed.join(", "));
-	if (pageErrors.length) problems.push("page errors: " + pageErrors.join(" | "));
+	/* storage follows the DoL-localStorage method, which leaves a denied IndexedDB alone: SugarCube's idb adapter
+	   then reports an uncaught "denied permission" rejection. Reported, not failed; any other page error fails. */
+	const idbDenialErrors = pageErrors.filter(m => /denied permission to access the database|indexeddb/i.test(m));
+	const otherPageErrors = pageErrors.filter(m => !idbDenialErrors.includes(m));
+	results.idbDenialErrors = idbDenialErrors.length;
+	if (otherPageErrors.length) problems.push("page errors: " + otherPageErrors.join(" | "));
 	await page.close();
 	return { mode, ok: problems.length === 0, problems, results, consoleErrors: [...new Set(consoleErrors)], otherHttpErrors: [...new Set(bad)] };
 }

@@ -22,15 +22,13 @@
 		</ul>
 	<</if>>
 
-	<<storageFallbackSaves>>
-	/* a denied IndexedDB leaves idb.active on; switch to the slot list so Save buttons render */
-	<<run window.DoLStorageFallback && DoLStorageFallback.applyToIdb()>>
+	<<savesCopyPasteNote>>
 	<div id="saveList">
-		<<if idb.active and !$ironmanmode and !sessionStorage.getItem("noidb")>>
+		<<if idb.active and !$ironmanmode and !sessionStorage.getItem("noidb") and window.indexedDB>>
 			<<run setTimeout(() => idb.saveList())>>
 		<<else>>
 			/* record idb status between page reloads within the same session */
-			<<run sessionStorage.setItem("noidb", true); idb.active = false>>
+			<<run sessionStorage.setItem("noidb", true); idb.active = false>> /* localStorage copy/paste mode (the reference put this comment inside <<run>>, which SugarCube rejects) */
 			<<saveList>>
 		<</if>>
 	</div>
@@ -60,11 +58,10 @@
 	<<elseif tags().includes("nosave")>>
 		<h3 class="red">You can't save here!</h3>
 	<</if>>
-	<p>Saves here will be lost if your browser cache is cleared. Exporting is recommended to prevent the loss of saves from occurring.</p>
 	<p>
 		<i class="description">__Where are my saves?__</i>
 		<mouse class="tooltip linkBlue">(?)<span>
-			If you can't find your saves, it's possible you saved them using a different storage method. Try toggling the "Enable IndexedDB" option below the list of saves.
+			If you can't find your saves, try toggling "Enable IndexedDB" below. On older browsers (no IndexedDB), use the Copy Text Area / Export buttons — localStorage is a temporary copy/paste method.
 		</span></mouse>
 	</p>
 	<<set _saveDetails = getSaveDetails()>>

@@ -24,12 +24,11 @@ const meta = {
 		: null,
 	startedAt: new Date().toISOString(),
 	command:
-		"node --test --test-reporter tap tests/storage-fallback.test.mjs tests/prepend-storage-fallback.test.mjs tests/npc-count-invariant.test.mjs tests/plus-needs-native.test.mjs tests/plus-needs-behavior.test.mjs tests/plus-paperdoll-src.test.mjs tests/plus-old-save-migration.test.mjs tests/qa-plus-smoke.test.mjs tests/qa-compiled-runtime.test.mjs && node tests/tutorial-npc-count.mjs && node tests/no-storage-startup.mjs Degrees of Lewdity.html",
+		"node --test --test-reporter tap tests/storage-fallback.test.mjs tests/npc-count-invariant.test.mjs tests/plus-needs-native.test.mjs tests/plus-needs-behavior.test.mjs tests/plus-paperdoll-src.test.mjs tests/plus-old-save-migration.test.mjs tests/qa-plus-smoke.test.mjs tests/qa-compiled-runtime.test.mjs && node tests/tutorial-npc-count.mjs && node tests/no-storage-startup.mjs Degrees of Lewdity.html",
 };
 
 const testFiles = [
 	"tests/storage-fallback.test.mjs",
-	"tests/prepend-storage-fallback.test.mjs",
 	"tests/npc-count-invariant.test.mjs",
 	"tests/plus-needs-native.test.mjs",
 	"tests/plus-needs-behavior.test.mjs",

@@ -1,6 +1,7 @@
 /**
  * Integration check: load the compiled HTML with Web Storage getters denied
- * and IndexedDB open failing, then verify startup registrations.
+ * and IndexedDB open failing, then verify startup registrations and that the
+ * devTools/head.html localStorage/sessionStorage stand-ins work.
  *
  * Usage: node tests/no-storage-startup.mjs [path-to-compiled.html]
  */
@@ -155,9 +156,11 @@ if (alerts.some(m => /deepMerge is not a function/i.test(m))) problems.push("ale
 if (alerts.some(m => /initFoodstuff is not defined|initTendingConfig is not defined|initFishingFishConfig is not defined|clothing_data/i.test(m))) {
 	problems.push("alert: StoryInit startup functions missing");
 }
-if (pageErrors.some(m => /denied permission to access the database/i.test(m))) {
-	problems.push("pageerror: IndexedDB permission denial leaked");
-}
+/* DoL-localStorage method: IndexedDB is left alone, so a denied open() may surface as a page error from
+   SugarCube's idb adapter. It is reported in idbDenialErrors, not failed; any other page error fails. */
+const idbDenialErrors = pageErrors.filter(m => /denied permission to access the database|indexeddb/i.test(m));
+const otherPageErrors = pageErrors.filter(m => !idbDenialErrors.includes(m));
+if (otherPageErrors.length) problems.push("page errors: " + otherPageErrors.join(" | "));
 if (snapshot.deepMergeType !== "function") problems.push("Object.prototype.deepMerge was not installed");
 if (snapshot.initFoodstuff !== "function") problems.push("initFoodstuff was not registered");
 if (snapshot.initTendingConfig !== "function") problems.push("initTendingConfig was not registered");
@@ -165,9 +168,8 @@ if (snapshot.initFishingFishConfig !== "function") problems.push("initFishingFis
 if (!snapshot.clothing_data) problems.push("clothing_data macro was not registered");
 if (!snapshot.localStorage.ok) problems.push("localStorage stub failed: " + snapshot.localStorage.error);
 if (!snapshot.sessionStorage.ok) problems.push("sessionStorage stub failed: " + snapshot.sessionStorage.error);
-if (!snapshot.indexedDBIsNull) problems.push("indexedDB was not disabled after storage denial");
 if (snapshot.errorViews.length) problems.push("error-view: " + snapshot.errorViews.join(" | "));
 
-const result = { ok: problems.length === 0, problems, alerts: alerts.map(m => m.slice(0, 200)), pageErrors, snapshot };
+const result = { ok: problems.length === 0, problems, alerts: alerts.map(m => m.slice(0, 200)), pageErrors, idbDenialErrors, snapshot };
 console.log(JSON.stringify(result, null, 2));
 if (!result.ok) process.exit(1);

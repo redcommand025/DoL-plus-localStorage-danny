@@ -1,4 +1,8 @@
+// devTools/head.html storage stand-in and SugarCube's updateSettings, as in the DoL-localStorage mod
+// (redcommand025/DoL-localStorage-copy): when localStorage/sessionStorage are missing or throw, an in-memory
+// stand-in replaces them; IndexedDB is left alone.
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { describe, it } from "node:test";
@@ -7,179 +11,132 @@ import vm from "node:vm";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const head = readFileSync(join(root, "devTools/head.html"), "utf8");
-const start = head.indexOf("<script>");
-const end = head.indexOf("</script>");
-const fallbackSource = head.slice(start + "<script>".length, end);
+const scriptEnd = head.indexOf("</script>\n") + "</script>\n".length;
+const headScript = head.slice(0, scriptEnd);
+const source = headScript.slice("<script>".length, -"</script>\n".length);
+/* SHA-256 of the first <script> block of DoL-localStorage-copy's index.html (commit 4480cfb1) */
+const REFERENCE_SHA256 = "495e23437c0305c3ffc9353f2752525fd27713fed090f0d041358629c536f1b7";
 
-class SecurityError extends Error {
-	constructor(message) {
-		super(message);
-		this.name = "SecurityError";
-	}
+function denied(name) {
+	return () => {
+		const e = new Error(`Failed to read the '${name}' property from 'Window': Access is denied for this document.`);
+		e.name = "SecurityError";
+		throw e;
+	};
 }
 
-function denyGetter(target, name) {
-	Object.defineProperty(target, name, {
-		configurable: true,
-		enumerable: true,
-		get() {
-			throw new SecurityError(`Failed to read the '${name}' property`);
-		},
-		set() {
-			throw new SecurityError(`Failed to read the '${name}' property`);
-		},
-	});
-}
-
-function workingStorage() {
+function working() {
 	const mem = {};
 	return {
-		getItem(k) {
-			return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
-		},
-		setItem(k, v) {
+		getItem: k => (Object.hasOwn(mem, k) ? mem[k] : null),
+		setItem: (k, v) => {
 			mem[k] = String(v);
 		},
-		removeItem(k) {
+		removeItem: k => {
 			delete mem[k];
 		},
-		clear() {
-			for (const key of Object.keys(mem)) delete mem[key];
-		},
-		key(i) {
-			return Object.keys(mem)[i] || null;
-		},
+		clear() {},
+		key: () => null,
 		get length() {
 			return Object.keys(mem).length;
 		},
 	};
 }
 
-function workingIDB() {
-	return {
-		open() {
-			return { onerror: null, onsuccess: null, result: {} };
-		},
-		deleteDatabase() {
-			return { onerror: null, onsuccess: null };
-		},
-	};
+function run(setup) {
+	const win = {};
+	setup(win);
+	win.window = win;
+	vm.runInNewContext(source, win);
+	return win;
 }
 
-function runFallback(setup) {
-	const window = {
-		Object,
-		__plusneedsMem: undefined,
-		plusneedsMemoryStore: undefined,
-		navigator: {},
-	};
-	setup(window);
-	window.window = window;
-	vm.runInNewContext(fallbackSource, window);
-	return window;
-}
-
-function storageWorks(storage) {
-	storage.setItem("__t", "1");
-	const ok = storage.getItem("__t") === "1";
-	storage.removeItem("__t");
-	return ok;
-}
-
-describe("storage fallback", () => {
-	it("replaces throwing localStorage/sessionStorage getters and disables IDB", () => {
-		const window = runFallback(w => {
-			denyGetter(w, "localStorage");
-			denyGetter(w, "sessionStorage");
-			w.indexedDB = {
-				open() {
-					throw new Error("The user denied permission to access the database.");
-				},
-			};
-		});
-		assert.equal(storageWorks(window.localStorage), true);
-		assert.equal(storageWorks(window.sessionStorage), true);
-		assert.equal(window.indexedDB, null);
-		window.localStorage.setItem("verifiedAge", "true");
-		assert.equal(window.localStorage.getItem("verifiedAge"), "true");
+describe("storage stand-in (devTools/head.html)", () => {
+	it("is the first script in head.html and identical to the DoL-localStorage script", () => {
+		assert.ok(head.startsWith("<script>\n/* Storage fallback for devices with no storage"));
+		assert.equal(createHash("sha256").update(headScript).digest("hex"), REFERENCE_SHA256);
 	});
 
-	it("disables IDB when native Web Storage is unavailable even if IDB looks present", () => {
-		const window = runFallback(w => {
-			denyGetter(w, "localStorage");
-			denyGetter(w, "sessionStorage");
-			let opened = false;
-			w.indexedDB = {
-				open() {
-					opened = true;
-					return { onerror: null, onsuccess: null };
-				},
-			};
-			w._opened = () => opened;
-		});
-		assert.equal(window.indexedDB, null);
-		assert.equal(typeof window.localStorage.getItem, "function");
+	it("leaves working storage alone", () => {
+		const ls = working();
+		const ss = working();
+		const win = run(w => Object.assign(w, { localStorage: ls, sessionStorage: ss }));
+		assert.equal(win.localStorage, ls);
+		assert.equal(win.sessionStorage, ss);
+		assert.equal(ls.getItem("__dol_localStorage_test"), null, "probe key removed");
 	});
 
-	it("disables IDB when the factory getter throws", () => {
-		const window = runFallback(w => {
-			w.localStorage = workingStorage();
-			w.sessionStorage = workingStorage();
-			denyGetter(w, "indexedDB");
+	it("replaces storage whose getter throws with a working in-memory stand-in", () => {
+		const win = run(w => {
+			Object.defineProperty(w, "localStorage", { configurable: true, get: denied("localStorage") });
+			Object.defineProperty(w, "sessionStorage", { configurable: true, get: denied("sessionStorage") });
 		});
-		assert.equal(window.indexedDB, null);
-		assert.equal(storageWorks(window.localStorage), true);
+		for (const name of ["localStorage", "sessionStorage"]) {
+			const s = win[name];
+			s.setItem("a", 1);
+			assert.equal(s.getItem("a"), "1");
+			assert.equal(s.length, 1);
+			assert.equal(s.key(0), "a");
+			s.removeItem("a");
+			assert.equal(s.getItem("a"), null);
+			s.setItem("b", "x");
+			s.clear();
+			assert.equal(s.length, 0);
+		}
+		assert.notEqual(win.localStorage, win.sessionStorage, "separate stores");
 	});
 
-	it("disables IDB when open throws synchronously", () => {
-		const window = runFallback(w => {
-			w.localStorage = workingStorage();
-			w.sessionStorage = workingStorage();
-			w.indexedDB = {
-				open() {
-					throw new Error("The user denied permission to access the database.");
-				},
-			};
-		});
-		assert.equal(window.indexedDB, null);
+	it("replaces null storage and storage whose setItem throws (quota)", () => {
+		const quota = working();
+		quota.setItem = () => {
+			const e = new Error("The quota has been exceeded.");
+			e.name = "QuotaExceededError";
+			throw e;
+		};
+		const win = run(w => Object.assign(w, { localStorage: null, sessionStorage: quota }));
+		win.localStorage.setItem("k", "v");
+		win.sessionStorage.setItem("k", "w");
+		assert.equal(win.localStorage.getItem("k"), "v");
+		assert.equal(win.sessionStorage.getItem("k"), "w");
 	});
 
-	it("leaves a working IndexedDB factory alone when Web Storage works", () => {
-		const idb = workingIDB();
-		const window = runFallback(w => {
-			w.localStorage = workingStorage();
-			w.sessionStorage = workingStorage();
-			w.indexedDB = idb;
-		});
-		assert.equal(window.indexedDB, idb);
-		assert.equal(typeof window.indexedDB.open, "function");
+	it("does not touch IndexedDB", () => {
+		const fakeIdb = { open() {} };
+		const win = run(w => Object.assign(w, { localStorage: null, sessionStorage: null, indexedDB: fakeIdb }));
+		assert.equal(win.indexedDB, fakeIdb);
+		assert.doesNotMatch(source, /indexedDB/);
+	});
+});
+
+describe("SugarCube updateSettings (story format)", () => {
+	const format = readFileSync(join(root, "devTools/tweego/storyFormats/sugarcube-2/format.js"), "utf8");
+	const formatSource = JSON.parse(format.slice(format.indexOf("{"), format.lastIndexOf("}") + 1)).source;
+	const start = formatSource.indexOf("function updateSettings(setting,value){");
+	const end = formatSource.indexOf("}}updateSettings();", start) + 2;
+	const fn = formatSource.slice(start, end);
+
+	function settings(win) {
+		const ctx = { window: win, V: {}, console: { warn() {} }, _settings: null, _active: null };
+		vm.runInNewContext(`${fn}; updateSettings(); this.result = { s: _settings, a: _active }; this.updateSettings = updateSettings;`, ctx);
+		return ctx;
+	}
+
+	it("guards every localStorage access with try/catch", () => {
+		assert.match(fn, /var ls=null;try\{ls=window\.localStorage\}catch\(e\)\{ls=null\}/);
+		assert.match(fn, /try\{if\(ls&&typeof ls\.setItem==="function"\)ls\.setItem\("idb-settings",JSON\.stringify\(_settings\)\)\}catch\(e\)\{\}/);
 	});
 
-	it("falls back when Storage.prototype methods throw", () => {
-		function ThrowingStorage() {}
-		ThrowingStorage.prototype.getItem = function () {
-			throw new SecurityError("denied");
-		};
-		ThrowingStorage.prototype.setItem = function () {
-			throw new SecurityError("denied");
-		};
-		ThrowingStorage.prototype.removeItem = function () {
-			throw new SecurityError("denied");
-		};
-		ThrowingStorage.prototype.clear = function () {
-			throw new SecurityError("denied");
-		};
-		ThrowingStorage.prototype.key = function () {
-			throw new SecurityError("denied");
-		};
-		const ls = new ThrowingStorage();
-		const window = runFallback(w => {
-			w.Storage = ThrowingStorage;
-			w.localStorage = ls;
-			w.sessionStorage = new ThrowingStorage();
-			w.indexedDB = workingIDB();
-		});
-		assert.equal(storageWorks(window.localStorage), true);
-		assert.equal(window.indexedDB, null);
+	it("falls back to defaults when localStorage is missing or throws, and saves when it works", () => {
+		const nul = settings({ localStorage: null });
+		assert.equal(nul.result.a, true);
+		const throwing = {};
+		Object.defineProperty(throwing, "localStorage", { get: denied("localStorage") });
+		const t = settings(throwing);
+		assert.equal(t.result.s.useDelta, true);
+		t.updateSettings("warnSave", true);
+		const ls = working();
+		const ok = settings({ localStorage: ls });
+		ok.updateSettings("active", false);
+		assert.equal(JSON.parse(ls.getItem("idb-settings")).active, false);
 	});
 });
