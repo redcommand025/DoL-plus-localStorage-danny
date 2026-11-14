@@ -627,49 +627,15 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 		<<for _plusPI range _plusPacks>>
 			<<if _plusPI>>
 				<<capture _plusPI>>
-					<<icon "plusneeds/diaper-change.png">><<link `"Pack of " + _plusPI.count + " " + _plusPI.name + " (£" + (_plusPI.price / 100).toFixed(2) + ")"` "Plus Needs Diaper Buy">><<set $plusBuyName to _plusPI.name>><<set $plusBuyCount to _plusPI.count>><<set $plusBuyReturn to $passage>><</link>>
+					<<icon "plusneeds/diaper-change.png">><<link `"Pack of " + _plusPI.count + " " + _plusPI.name + " (£" + (_plusPI.price / 100).toFixed(2) + ")"` "Plus Needs Diaper Customise">><<set $plusBuyName to _plusPI.name>><<set $plusBuyCount to _plusPI.count>><<set $plusBuyReturn to $passage>><<unset $colouraction>><<unset $patternaction>><<unset $plusBuyColour>><<unset $plusBuyPattern>><<unset $plusBuyColourCustom>><</link>>
 					<span class="blue">(save <<print Math.round(_plusPI.disc * 100)>>%)</span>
 				<</capture>>
 				<br>
 			<</if>>
 		<</for>>
 		<br>
-		<<plusDiaperPrints>>
 	</div>
 	<</if>>
-<</widget>>
-
-/* Diaper prints: unlock a print once, then it is offered in the clothing shop's pattern picker, printed on
- * packs bought here, or printed on clean diapers you already own. */
-<<widget "plusDiaperPrints">>
-	<<run plusDiaperPatternSync()>>
-	<span class="gold">Diaper prints</span> — buy a print once and it's yours: new packs come printed with it, and the shop's pattern picker offers it.
-	<br>
-	<<for _plusPrint range plusDiaperPatternDefs>>
-		<<capture _plusPrint>>
-			<<if plusDiaperPatternOwned(_plusPrint.id)>>
-				<span class="green">✓ _plusPrint.name</span> <span class="grey">(_plusPrint.desc)</span>
-			<<else>>
-				<<link `"Buy the " + _plusPrint.name + " print (£" + (_plusPrint.price / 100).toFixed(2) + ")"` "Plus Needs Diaper Print Buy">><<set $plusPrintBuy to _plusPrint.id>><<set $plusBuyReturn to $passage>><</link>>
-				<span class="grey">(_plusPrint.desc)</span>
-			<</if>>
-		<</capture>>
-		<br>
-	<</for>>
-	<<if $plusDiaperPatterns.length gt 0>>
-		<<set _plusPrintOpts to {"Plain": ""}>>
-		<<for _plusPrint range plusDiaperPatternDefs>><<if plusDiaperPatternOwned(_plusPrint.id)>><<set _plusPrintOpts[_plusPrint.name] to _plusPrint.id>><</if>><</for>>
-		<<if $plusDiaperPatternNext is undefined>><<set $plusDiaperPatternNext to "">><</if>>
-		Print for new packs and reprints: <<listbox "$plusDiaperPatternNext" autoselect>><<optionsfrom _plusPrintOpts>><</listbox>>
-		<br>
-		<<if plusDiaperWorn()>>
-			<<link "Print the diaper you're wearing (clean diapers only)" "Plus Needs Diaper Print Apply">><<set $plusPrintTarget to "worn">><<set $plusBuyReturn to $passage>><</link>>
-			<br>
-		<</if>>
-		<<link "Print the clean diapers in your wardrobe" "Plus Needs Diaper Print Apply">><<set $plusPrintTarget to "spares">><<set $plusBuyReturn to $passage>><</link>>
-		<br>
-	<</if>>
-	<br>
 <</widget>>
 
 :: Plus Needs Bladder Exercise [plusneeds]
@@ -686,53 +652,134 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 <br><br>
 <<getouticon>><<link [[Finish|$plusExerciseReturn]]>><<set $eventskip to 1>><</link>>
 
+:: Plus Needs Diaper Customise [plusneeds]
+<<effects>>
+<<run plusDiaperPatternMigrate()>>
+<<set _plusInfo to plusDiaperPackPrice($plusBuyName, $plusBuyCount)>>
+<<if !_plusInfo or setup.clothes.under_lower.findIndex(c => c.name === $plusBuyName) lt 0>>
+	Those aren't in stock.
+	<br><br>
+	<<getouticon>><<link [[Back|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
+<<else>>
+	<<set $clothingShopSlot to "under_lower">>
+	<<set $clothes_choice to setup.clothes.under_lower.findIndex(c => c.name === $plusBuyName)>>
+	<<set _realSlot to "under_lower">>
+	<<set _realIndex to $clothes_choice>>
+	<<set _temp_choice to clone(setup.clothes.under_lower[$clothes_choice])>>
+	<<if !$shopDefaults>>
+		<<set $shopDefaults to {
+			"color": "pale white",
+			"colorSet": null,
+			"secColor": "black",
+			"secColorSet": null,
+			"disableReturn": false,
+			"alwaysBackToShopButton": false,
+			"noHelp": false,
+			"noTraits": false,
+			"highContrast": false,
+			"mannequinGender": "same",
+			"mannequinGenderFromClothes": false,
+			"colourItems": "default",
+			"compactMode": false,
+		}>>
+	<</if>>
+	<<if !$colouraction or !_temp_choice.colour_options.includes($colouraction)>>
+		<<set $colouraction to "pale white">>
+	<</if>>
+	<<if !$patternaction or !_temp_choice.pattern_options.includes($patternaction)>>
+		<<set $patternaction to "plain">>
+	<</if>>
+	A pack of _plusInfo.count <<print _plusInfo.name>>. You can pick a colour and a pattern the same way as other clothes; every diaper in the pack will match.
+	Costs £<<print (_plusInfo.price / 100).toFixed(2)>>.
+	<<if _plusInfo.disc gt 0>><span class="green"> (<<print Math.round(_plusInfo.disc * 100)>>% bulk discount)</span><</if>>
+	<br><br>
+	<div class="clothing-colours-div">
+		<<set _hiddenMannequin = $options.images is 1 ? "" : "hidden">>
+		<div id="mannequin" @class="'mannequin ' + _hiddenMannequin">
+			<<mannequin "under_lower" $clothes_choice>>
+		</div>
+		<<set _translate = $options.images is 1 ? "translate-colours-container" : "">>
+		<div @class="'colours-container ' + _translate">
+			<div @class="'mannequin-placeholder ' + _hiddenMannequin"></div>
+			<<if _temp_choice.colour_options.length gt 1>>
+				<<run _temp_choice.colour_options.pushUnique("random")>>
+				There's a range of colours to choose from:
+				<br>
+				<<printShopColourOptions>>
+			<</if>>
+			<<if _temp_choice.pattern_options and _temp_choice.pattern_options.length gt 1>>
+				<br>
+				<<if _temp_choice.pattern_options.length gte 15>>
+					Patterns:
+					<br>
+					<<set _highContrast = $shopDefaults.highContrast ? "colour-name-span-highcontrast" : "colour-name-span">>
+					<div class="colour-options-div no-numberify pattern">
+						<<listbox "$patternaction" autoselect>>
+							<<optionsfrom _temp_choice.pattern_options>>
+						<</listbox>>
+						<div class="colour-button div-link">
+							<div class="bg-random">
+								<<if $options.images is 1>>
+									<img src="img/ui/random.png">
+								<</if>>
+								<span @class="'capitalize ' + _highContrast">Random</span>
+								<<link "">>
+									<<set _colour to _temp_choice.pattern_options.filter(x => x !== "random").pluck()>>
+									<<set $patternaction to _colour>>
+									<<updatemannequin "under_lower" $clothes_choice>>
+								<</link>>
+							</div>
+						</div>
+					</div>
+					<<run $(() => {
+						$("#listbox-patternaction").on("change", () => {
+							Wikifier.wikifyEval('<<updatemannequin "under_lower" ' + State.variables.clothes_choice + '>>');
+						});
+					})>>
+				<<else>>
+					<<run _temp_choice.pattern_options.pushUnique("random")>>
+					Patterns:
+					<<printShopColourOptions "pattern">>
+				<</if>>
+				<br>
+			<</if>>
+		</div>
+	</div>
+	<<run attachCustomColourHooks($clothingShopSlot)>>
+	<br>
+	<<if $money gte _plusInfo.price>>
+		<<link "Buy the pack" "Plus Needs Diaper Buy">>
+			<<if $colouraction is "custom" and $customColors and $customColors.color>>
+				<<set $plusBuyColourCustom to customColour($customColors.color.primary, $customColors.saturation.primary, $customColors.brightness.primary, $customColors.contrast.primary, $customColors.sepia.primary)>>
+			<<else>>
+				<<unset $plusBuyColourCustom>>
+			<</if>>
+			<<set $plusBuyColour to $colouraction>>
+			<<set $plusBuyPattern to $patternaction>>
+		<</link>>
+	<<else>>
+		<span class="blue">You can't afford this pack. It costs £<<print (_plusInfo.price / 100).toFixed(2)>>.</span>
+	<</if>>
+	<br>
+	<<getouticon>><<link [[Back|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
+<</if>>
+
 :: Plus Needs Diaper Buy [plusneeds]
 <<effects>>
-<<set _plusBuy to plusDiaperBuyPack($plusBuyName, $plusBuyCount)>>
+<<set _plusBuy to plusDiaperBuyPack($plusBuyName, $plusBuyCount, {
+	colour: $plusBuyColour,
+	pattern: $plusBuyPattern,
+	colourCustom: $plusBuyColourCustom,
+})>>
 <<if _plusBuy.ok>>
 	You pay £<<print (_plusBuy.price / 100).toFixed(2)>> for a pack of _plusBuy.count _plusBuy.name. They're added to your wardrobe.
+	<<if _plusBuy.colour and _plusBuy.colour isnot "pale white">> They are <<print _plusBuy.colour>>.<</if>>
+	<<if _plusBuy.pattern and _plusBuy.pattern isnot "plain">> They have the <<print plusDiaperPatternName(_plusBuy.pattern)>> print.<</if>>
 	<<if _plusBuy.disc gt 0>><span class="green"> (<<print Math.round(_plusBuy.disc * 100)>>% bulk discount)</span><</if>>
 <<elseif _plusBuy.reason is "money">>
 	You can't afford a pack of $plusBuyCount $plusBuyName. It costs £<<print ((_plusBuy.price or 0) / 100).toFixed(2)>>.
 <<else>>
 	Those aren't in stock.
-<</if>>
-<br><br>
-<<getouticon>><<link [[Continue|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
-
-:: Plus Needs Diaper Print Buy [plusneeds]
-<<effects>>
-<<set _plusPB to plusDiaperPatternBuy($plusPrintBuy)>>
-<<if _plusPB.ok>>
-	You pay £<<print (_plusPB.price / 100).toFixed(2)>> for the _plusPB.name print. From now on you can have your diapers printed with it.
-<<elseif _plusPB.reason is "money">>
-	You can't afford the _plusPB.name print. It costs £<<print (_plusPB.price / 100).toFixed(2)>>.
-<<elseif _plusPB.reason is "owned">>
-	You already have the _plusPB.name print.
-<<else>>
-	That print isn't available.
-<</if>>
-<br><br>
-<<getouticon>><<link [[Continue|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
-
-:: Plus Needs Diaper Print Apply [plusneeds]
-<<effects>>
-<<set _plusPrintId to plusDiaperPatternNext()>>
-<<set _plusPrintName to (_plusPrintId ? plusDiaperPatternName(_plusPrintId) : "plain")>>
-<<if $plusPrintTarget is "worn">>
-	<<if plusDiaperPatternApplyWorn(_plusPrintId)>>
-		<<if _plusPrintId>>The diaper you're wearing now has the _plusPrintName print.<<else>>The diaper you're wearing is plain again.<</if>>
-		<<updatesidebarimg>>
-	<<else>>
-		Only a clean diaper can be printed.
-	<</if>>
-<<else>>
-	<<set _plusPrintN to plusDiaperPatternApplySpares(_plusPrintId)>>
-	<<if _plusPrintN gt 0>>
-		_plusPrintN clean <<print _plusPrintN is 1 ? "diaper in your wardrobe now has" : "diapers in your wardrobe now have">> <<if _plusPrintId>>the _plusPrintName print<<else>>no print<</if>>.
-	<<else>>
-		There are no clean diapers in your wardrobe to change.
-	<</if>>
 <</if>>
 <br><br>
 <<getouticon>><<link [[Continue|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>

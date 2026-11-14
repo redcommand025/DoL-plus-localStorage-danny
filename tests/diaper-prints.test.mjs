@@ -1,6 +1,7 @@
-/* Diaper prints: bought at the diaper shops, stored on the native clothing `pattern` field and drawn on the
- * native secondary pattern layer (acc-<integrity>-<pattern>.png), with overlays for every image-pack size
- * picture and every base sag tier that stretch with the diaper's silhouette. */
+/* Diaper prints: native clothing colour_options and pattern_options, chosen in the shop like other
+ * patterned clothes, stored on item.pattern / item.colour and drawn on the native secondary pattern
+ * layer (acc-<integrity>-<pattern>.png), with overlays for every image-pack size picture and every base
+ * sag tier that stretch with the diaper's silhouette. */
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -105,78 +106,162 @@ function catKeys() {
 }
 
 describe("diaper prints: shop and native pattern field", () => {
-	it("15 original prints (10 themed, 5 unique) with prices, names and file ids", () => {
+	const NAMES = [
+		"Starry Dreams",
+		"Dino Stomp",
+		"Paw Parade",
+		"Bunny Meadow",
+		"Little Crowns",
+		"Croc Smiles",
+		"Puppy Pals",
+		"Candy Hearts",
+		"Rainbow Clouds",
+		"Pastel Plaid",
+		"Photo Reel",
+		"Autumn Leaves",
+		"Ocean Waves",
+		"Galaxy Swirl",
+		"Polka Pop",
+	];
+	const COLOURS = ["black", "blue", "brown", "green", "pink", "purple", "red", "pale tangerine", "teal", "pale white", "pale yellow", "custom"];
+
+	it("15 original prints (10 themed, 5 unique) with names and file ids, no third-party names", () => {
 		const { window } = load();
 		const defs = window.plusDiaperPatternDefs;
 		assert.equal(defs.length, 15);
 		assert.equal(defs.filter(d => d.unique).length, 5);
+		assert.deepEqual(
+			[...defs].map(d => d.name),
+			NAMES
+		);
+		assert.equal(typeof window.plusDiaperPatternBuy, "undefined");
 		for (const d of defs) {
-			assert.ok(d.price >= 500 && d.price <= 2000, d.id);
 			assert.equal(d.file, d.id.replace(/ /g, "-"));
 			assert.match(d.file, /^[a-z0-9-]+$/);
+			assert.equal(d.price, undefined);
 		}
 		const banned = /peekabu|littlepawz|little kings|alphagator|dinorawr|bunnyhopps|tinytails|huskies|cushies|abu/i;
 		for (const d of defs) assert.doesNotMatch(`${d.id} ${d.name} ${d.desc}`, banned);
 	});
 
-	it("buying unlocks a print once, takes the money, and refuses without enough money", () => {
-		const { window, V } = load({ money: 1000 });
-		assert.deepEqual(window.plusDiaperPatternBuy("galaxy swirl").reason, "money");
-		assert.equal(V.money, 1000);
-		const r = window.plusDiaperPatternBuy("polka pop");
-		assert.ok(r.ok);
-		assert.equal(V.money, 300);
-		assert.ok(window.plusDiaperPatternOwned("polka pop"));
-		assert.equal(window.plusDiaperPatternBuy("polka pop").reason, "owned");
-		assert.equal(window.plusDiaperPatternBuy("nope").reason, "item");
-		assert.deepEqual([...V.plusDiaperPatterns], ["polka pop"]);
-	});
-
-	it("native pattern_options of every Plus diaper are plain + owned prints", () => {
+	it("every Plus diaper has the native colour and full pattern pickers", () => {
 		const { window, setup } = load();
 		const plus = setup.clothes.under_lower.filter(c => c.modder === "plusneeds");
 		assert.ok(plus.length >= 15);
+		const patterns = window.plusDiaperPatternOptions();
+		assert.deepEqual([...patterns], ["plain", ...[...window.plusDiaperPatternDefs].map(d => d.id)]);
+		assert.equal(patterns.length, 16);
+		assert.deepEqual([...window.plusDiaperColourOptions], COLOURS);
 		for (const c of plus) {
 			assert.equal(c.pattern_layer, "secondary");
 			assert.equal(c.accessory_integrity_img, 1);
-			assert.deepEqual([...c.pattern_options], ["plain"]);
+			assert.equal(c.pattern_caption, true);
+			assert.equal(c.colour_sidebar, 1);
+			assert.deepEqual([...c.pattern_options], [...patterns]);
+			assert.deepEqual([...c.colour_options], COLOURS);
+			assert.deepEqual([...c.accessory_colour_options], []);
 		}
-		window.plusDiaperPatternBuy("dino stomp");
-		window.plusDiaperPatternBuy("candy hearts");
-		for (const c of plus) assert.deepEqual([...c.pattern_options], ["plain", "dino stomp", "candy hearts"]);
 	});
 
-	it("packs bought after choosing a print come printed; plain otherwise", () => {
+	it("pharmacy sells the same packs as the clothing shop; adult stays oversized", () => {
+		const { window } = load();
+		const clothing = window.plusDiaperPackList("clothing");
+		const pharmacy = window.plusDiaperPackList("pharmacy");
+		assert.ok(clothing.length > 0);
+		assert.deepEqual(
+			pharmacy.map(p => p.name + "@" + p.count),
+			clothing.map(p => p.name + "@" + p.count)
+		);
+		assert.ok(clothing.every(p => !/Hyper|Max|Ultra|Extra Large/.test(p.name)));
+		window.plusDiaperAdultShopOpen = () => true;
+		const adult = window.plusDiaperPackList("adult");
+		assert.ok(adult.some(p => /Hyper/.test(p.name)));
+		assert.ok(adult.every(p => /Extra Large|Ultra|Max|Hyper/.test(p.name)));
+		const adultKeys = new Set(adult.map(p => p.name + "@" + p.count));
+		assert.ok(clothing.every(p => !adultKeys.has(p.name + "@" + p.count)));
+	});
+
+	it("buying a pack applies the chosen colour and pattern, or pale white and plain by default", () => {
 		const { window, V } = load({ money: 100000 });
-		assert.equal(window.plusDiaperPatternSetNext("croc smiles"), false, "not owned");
-		window.plusDiaperBuyPack(MED, window.plusDiaperPackPrice(MED, 1) ? 1 : 10);
+		const count = [1, 5, 10].find(n => window.plusDiaperPackPrice(MED, n));
+		assert.ok(window.plusDiaperBuyPack(MED, count).ok);
 		assert.ok(V.wardrobe.under_lower.length > 0);
-		assert.ok(V.wardrobe.under_lower.every(it => window.plusDiaperPatternOf(it) === 0));
-		window.plusDiaperPatternBuy("croc smiles");
-		assert.ok(window.plusDiaperPatternSetNext("croc smiles"));
+		assert.ok(V.wardrobe.under_lower.every(it => it.colour === "pale white" && it.pattern === "plain" && window.plusDiaperPatternOf(it) === 0));
 		const before = V.wardrobe.under_lower.length;
-		const counts = [1, 5, 10, 20, 30, 40, 50].filter(n => window.plusDiaperPackPrice(MED, n));
-		assert.ok(window.plusDiaperBuyPack(MED, counts[0]).ok);
+		const r = window.plusDiaperBuyPack(MED, count, { colour: "pink", pattern: "dino stomp" });
+		assert.ok(r.ok);
+		assert.equal(r.colour, "pink");
+		assert.equal(r.pattern, "dino stomp");
 		const fresh = V.wardrobe.under_lower.slice(before);
-		assert.ok(fresh.length > 0 && fresh.every(it => it.pattern === "croc smiles" && window.plusDiaperPatternOf(it) === "croc smiles"));
+		assert.ok(
+			fresh.length === count && fresh.every(it => it.colour === "pink" && it.pattern === "dino stomp" && window.plusDiaperPatternOf(it) === "dino stomp")
+		);
+		const unknown = window.plusDiaperBuyPack(MED, count, { colour: "chartreuse", pattern: "not a print" });
+		assert.ok(unknown.ok);
+		assert.equal(unknown.colour, "pale white");
+		assert.equal(unknown.pattern, "plain");
 	});
 
-	it("prints go on clean diapers only, need ownership, and can be removed", () => {
+	it("existing prints stay on the item; leftover print-ownership state is cleared", () => {
+		const { window, item, V, setup } = load();
+		const printed = item(HYPER);
+		printed.pattern = "paw parade";
+		const plain = item(MED);
+		plain.pattern = "plain";
+		const junk = item(HYPER);
+		junk.pattern = "not a print";
+		V.wardrobe.under_lower.push(printed, plain, junk);
+		V.worn.under_lower = item(HYPER);
+		V.worn.under_lower.pattern = "galaxy swirl";
+		V.plusDiaperPatterns = ["paw parade", "galaxy swirl"];
+		V.plusDiaperPatternNext = "paw parade";
+		assert.equal(window.plusDiaperPatternMigrate(), 1);
+		assert.equal(V.plusDiaperPatternNative, 1);
+		assert.equal(V.plusDiaperPatterns, undefined);
+		assert.equal(V.plusDiaperPatternNext, undefined);
+		assert.equal(window.plusDiaperPatternOf(printed), "paw parade");
+		assert.equal(printed.pattern, "paw parade");
+		assert.equal(window.plusDiaperPatternOf(plain), 0);
+		window.plusDiaperInit(junk);
+		assert.equal(junk.pattern, "plain");
+		assert.equal(window.plusDiaperPatternOf(V.worn.under_lower), "galaxy swirl");
+		assert.equal(window.plusDiaperPatternMigrate(), 0, "idempotent");
+		assert.equal(V.plusDiaperPatterns, undefined);
+		const c = setup.clothes.under_lower.find(x => x.modder === "plusneeds");
+		assert.deepEqual([...c.pattern_options], [...window.plusDiaperPatternOptions()]);
+	});
+
+	it("plusDiaperPatternSync keeps the full native list on every Plus diaper", () => {
+		const { window, setup } = load();
+		const c = setup.clothes.under_lower.find(x => x.modder === "plusneeds");
+		c.pattern_options = ["plain"];
+		c.colour_options = ["pale white"];
+		c.colour_sidebar = 0;
+		assert.ok(window.plusDiaperPatternSync() > 0);
+		assert.deepEqual([...c.pattern_options], [...window.plusDiaperPatternOptions()]);
+		assert.deepEqual([...c.colour_options], [...window.plusDiaperColourOptions]);
+		assert.equal(c.colour_sidebar, 1);
+	});
+
+	it("shop mannequin previews the selected dry pattern; the doll uses the worn diaper's fill", () => {
 		const { window, item, V } = load();
-		const it = item(HYPER);
-		assert.equal(window.plusDiaperPatternApply(it, "paw parade"), false, "not owned");
-		window.plusDiaperPatternBuy("paw parade");
-		assert.ok(window.plusDiaperPatternApply(it, "paw parade"));
-		assert.equal(window.plusDiaperPatternOf(it), "paw parade");
 		const wet = item(HYPER);
-		wet.plusMl = 50;
-		assert.equal(window.plusDiaperPatternApply(wet, "paw parade"), false);
-		assert.ok(window.plusDiaperPatternApply(it, ""));
-		assert.equal(it.pattern, "plain");
-		assert.equal(window.plusDiaperPatternOf(it), 0);
-		V.wardrobe.under_lower.push(item(HYPER), item(HYPER), wet);
-		assert.equal(window.plusDiaperPatternApplySpares("paw parade"), 2);
-		assert.equal(window.plusDiaperPatternOf({ ...it, pattern: "plain" }), 0);
+		wet.plusMl = wet.plusCapMl * 0.75;
+		wet.pattern = "dino stomp";
+		V.worn.under_lower = wet;
+		const setupItem = { name: HYPER, variable: "plusdphyper", modder: "plusneeds", pattern_layer: "secondary", type: ["normal"] };
+		const mannequin = window.plusDiaperCanvasItem({ mannequin: true }, { setup: setupItem, index: wet.index, pattern: "polka pop", colour: "pink" });
+		assert.equal(mannequin.pattern, "polka pop");
+		assert.equal(mannequin.colour, "pink");
+		assert.equal(mannequin.plusMl, 0);
+		assert.equal(window.plusDiaperPatternOf(mannequin), "polka pop");
+		assert.equal(window.plusSagSizeKey(mannequin), "size8");
+		assert.equal(window.plusDiaperSoil(mannequin), null);
+		const doll = window.plusDiaperCanvasItem({ mannequin: false }, { setup: setupItem, index: wet.index, pattern: "polka pop", colour: "pink" });
+		assert.equal(doll, wet);
+		assert.equal(window.plusDiaperPatternOf(doll), "dino stomp");
+		assert.equal(window.plusSagSizeKey(doll), "size13");
+		assert.equal(window.plusDiaperSoil(doll).key, "heavy-pee");
 	});
 });
 
@@ -220,10 +305,15 @@ describe("diaper prints: picture routing", () => {
 		const acc = cm.slice(cm.indexOf("under_lower_acc"), cm.indexOf("under_lower_penis_acc") + 3000);
 		assert.match(acc, /plusDiaperPatternOf/);
 		assert.match(acc, /plusSagSrc/);
+		assert.match(acc, /plusDiaperCanvasItem/);
 		const w = readFileSync(join(root, "game/ModLI/plus-needs/widgets.twee"), "utf8");
-		assert.match(w, /<<plusDiaperPrints>>/);
-		assert.match(w, /:: Plus Needs Diaper Print Buy/);
-		assert.match(w, /:: Plus Needs Diaper Print Apply/);
+		assert.match(w, /:: Plus Needs Diaper Customise/);
+		assert.match(w, /<<printShopColourOptions>>/);
+		assert.match(w, /<<mannequin "under_lower"/);
+		assert.doesNotMatch(w, /plusDiaperPrints|Plus Needs Diaper Print Buy|Plus Needs Diaper Print Apply/);
+		const shop = readFileSync(join(root, "game/overworld-town/loc-shop/clothing-v2.twee"), "utf8");
+		assert.match(shop, /pattern_options.length gt 1/);
+		assert.match(shop, /printShopColourOptions/);
 	});
 });
 

@@ -86,26 +86,28 @@ the `plainpanties` reference), so neither needed pack diapers.
 
 ## Diaper prints (native pattern layer)
 
-Fifteen original prints can be bought at every counter that sells Plus diapers (`<<plusDiaperShop>>`: the
-clothing shop, the pharmacy and the adult shop), in a "Diaper prints" section under the packs. A print is
-bought once (`$plusDiaperPatterns`), then:
+Fifteen original prints are native `pattern_options` on every Plus diaper, plus "plain". When you buy a
+diaper in the clothing shop or adult shop catalogue, or a pack at a continence-supplies counter
+(`<<plusDiaperShop>>` in the clothing shop, the pharmacy and the adult shop), you pick a colour and a
+pattern the same way as other patterned clothes: the shop's colour buttons, pattern list (a listbox,
+because there are 16 options) and mannequin preview. Packs use the same widgets on
+`Plus Needs Diaper Customise` and stamp the chosen colour and pattern on every item in the pack
+(`plusDiaperBuyPack`). Patterns do not cost extra (vanilla does not charge for patterns). The pharmacy
+sells the same packs as the clothing shop (Large and below). There is no separate "Diaper prints"
+purchase, no one-time print unlock, and no "print worn / print all clean" action.
 
-- chosen as the "print for new packs" (`$plusDiaperPatternNext`); packs bought afterwards come printed;
-- printed on the diaper you're wearing or on every clean diaper in your wardrobe (clean diapers only);
-- offered by the native clothing shop's pattern picker and shown in the wardrobe's "(colour pattern)" label,
-  because every Plus diaper's `pattern_options` is kept at `["plain", ...owned prints]`
-  (`plusDiaperPatternSync`, on passage start and after a purchase).
+Existing saves keep each diaper's print as its native `pattern`. Leftover print-ownership state
+(`$plusDiaperPatterns`, `$plusDiaperPatternNext`) is cleared once (`plusDiaperPatternMigrate`, on
+passage start). This also works in no-storage mode.
 
-| Print         | Price  |     | Print                  | Price  |
-| ------------- | ------ | --- | ---------------------- | ------ |
-| Starry Dreams | £9.00  |     | Rainbow Clouds         | £11.00 |
-| Dino Stomp    | £10.00 |     | Pastel Plaid           | £12.00 |
-| Paw Parade    | £8.00  |     | Photo Reel (unique)    | £15.00 |
-| Bunny Meadow  | £9.00  |     | Autumn Leaves (unique) | £13.00 |
-| Little Crowns | £12.00 |     | Ocean Waves (unique)   | £13.00 |
-| Croc Smiles   | £10.00 |     | Galaxy Swirl (unique)  | £16.00 |
-| Puppy Pals    | £10.00 |     | Polka Pop (unique)     | £7.00  |
-| Candy Hearts  | £8.00  |     |                        |        |
+Colours use the same list as briefs (`black`, `blue`, `brown`, `green`, `pink`, `purple`, `red`,
+`pale tangerine`, `teal`, `pale white`, `pale yellow`, `custom`), with `colour_sidebar: 1` and a default
+of pale white. The greyscale diaper sprite takes the clothing tint; print overlays stay untinted
+(their colours are baked in). `pattern_caption: true` shows the pattern in the wardrobe label.
+
+The 15 prints (the last five are unique to this game): Starry Dreams, Dino Stomp, Paw Parade,
+Bunny Meadow, Little Crowns, Croc Smiles, Puppy Pals, Candy Hearts, Rainbow Clouds, Pastel Plaid,
+Photo Reel, Autumn Leaves, Ocean Waves, Galaxy Swirl, Polka Pop.
 
 All prints are original artwork (common baby-print themes plus five unique designs); no third-party
 artwork, logos or product names.
@@ -113,7 +115,9 @@ artwork, logos or product names.
 **Rendering.** The print is the base game's clothing pattern: `item.pattern` holds the print id ("plain" =
 none), the item setup has `pattern_layer: "secondary"` and `accessory_integrity_img: 1`, so the native
 accessory layer draws `acc-<integrity>-<pattern>.png` on top of the diaper (untinted, and see-through when
-wet like the diaper itself). `plusSagSrc` routes that path to the overlay matching the diaper picture:
+wet like the diaper itself). `plusSagSrc` routes that path to the overlay matching the diaper picture.
+The shop mannequin uses a dry item with the selected colour and pattern (`plusDiaperCanvasItem`); the
+in-game doll uses the worn diaper so sag and soil follow fill.
 
 - image packs: `pluspatterns/<dp|cd|pu>/<size<N>|leak<N>>/<integrity>-<print>.png` (one per category and
   size picture, as those pictures are identical within a category);

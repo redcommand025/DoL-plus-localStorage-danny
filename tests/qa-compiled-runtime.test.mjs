@@ -987,4 +987,133 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.endBad, false);
 		assert.equal(info.endContinue, true);
 	});
+
+	it("QA-C023 [integration] buying a diaper pack with a colour and pattern at the shop counter stamps the wardrobe and renders on the doll", async () => {
+		const info = await page.evaluate(() => {
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " "), html: d.innerHTML, el: d };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e), html: "", el: d };
+				}
+			};
+			const bad = r => !r.ok || /Error|cannot execute|macro does not exist/.test(r.text);
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			const V = SugarCube.State.variables;
+			V.money = 1000000;
+			V.options = V.options || {};
+			V.options.images = 1;
+			if (!V.wardrobe) V.wardrobe = {};
+			if (!Array.isArray(V.wardrobe.under_lower)) V.wardrobe.under_lower = [];
+			const shop = wiki('<<plusDiaperShop "clothing">>');
+			const pharmacy = wiki('<<plusDiaperShop "pharmacy">>');
+			const prevOpen = window.plusDiaperAdultShopOpen;
+			window.plusDiaperAdultShopOpen = () => true;
+			const adult = wiki('<<plusDiaperShop "adult">>');
+			window.plusDiaperAdultShopOpen = prevOpen;
+			const hasPrintsSection = /Diaper prints/.test(shop.text + pharmacy.text + adult.text);
+			const customiseHref = /Plus Needs Diaper Customise/.test(shop.html + pharmacy.html);
+			V.plusBuyName = "plastic-backed diaper (Medium)";
+			V.plusBuyCount = 5;
+			V.plusBuyReturn = "Start";
+			delete V.colouraction;
+			delete V.patternaction;
+			delete V.plusBuyColour;
+			delete V.plusBuyPattern;
+			const custom = wiki("<<include [[Plus Needs Diaper Customise]]>>");
+			const pink = custom.el && custom.el.querySelector(".colour-options-div.primary .bg-pink a");
+			if (pink) pink.click();
+			const listbox = custom.el && custom.el.querySelector("#listbox-patternaction");
+			if (listbox) {
+				listbox.value = "dino stomp";
+				listbox.dispatchEvent(new Event("change", { bubbles: true }));
+			}
+			/* listbox change events are SugarCube-specific; set the same variable the widget writes. */
+			V.patternaction = "dino stomp";
+			const before = V.wardrobe.under_lower.length;
+			const bought = window.plusDiaperBuyPack(V.plusBuyName, V.plusBuyCount, {
+				colour: V.colouraction,
+				pattern: V.patternaction,
+			});
+			const fresh = V.wardrobe.under_lower.slice(before);
+			const worn = fresh[0] && JSON.parse(JSON.stringify(fresh[0]));
+			if (worn) {
+				window.plusDiaperInit(worn);
+				V.worn = V.worn || {};
+				V.worn.under_lower = worn;
+			}
+			const M = window.Renderer && window.Renderer.CanvasModels && window.Renderer.CanvasModels.main;
+			const acc = M && M.layers && M.layers.under_lower_acc;
+			const main = M && M.layers && M.layers.under_lower;
+			const setupItem = Object.assign({ altdisabled: [] }, worn || {});
+			const options = {
+				show_clothes: true,
+				mannequin: false,
+				belly_hides_under_lower: false,
+				hood_down: false,
+				alt_override: false,
+				worn: {
+					under_lower: {
+						index: worn && worn.index ? worn.index : 1,
+						integrity: "full",
+						alt: "",
+						pattern: worn && worn.pattern,
+						colour: worn && worn.colour,
+						setup: setupItem,
+					},
+				},
+			};
+			return {
+				shopBad: bad(shop),
+				pharmacyBad: bad(pharmacy),
+				adultBad: bad(adult),
+				shopPacks: (shop.text.match(/Pack of/g) || []).length,
+				pharmacyPacks: (pharmacy.text.match(/Pack of/g) || []).length,
+				hasPrintsSection,
+				customiseHref,
+				customBad: bad(custom),
+				hasColours: !!(custom.el && custom.el.querySelector(".colour-options-div.primary")),
+				hasPatterns: !!(listbox || (custom.el && custom.el.querySelector(".colour-options-div.pattern"))),
+				hasMannequin: !!(custom.el && custom.el.querySelector("#mannequin")),
+				hasBuy: /Buy the pack/.test(custom.text),
+				colouraction: V.colouraction,
+				patternaction: V.patternaction,
+				boughtOk: !!(bought && bought.ok),
+				boughtColour: bought && bought.colour,
+				boughtPattern: bought && bought.pattern,
+				freshN: fresh.length,
+				freshColour: fresh[0] && fresh[0].colour,
+				freshPattern: fresh[0] && fresh[0].pattern,
+				of: worn ? window.plusDiaperPatternOf(worn) : 0,
+				mainSrc: main && worn ? main.srcfn(options) : "",
+				accShow: acc && worn ? !!acc.showfn(options) : false,
+				accSrc: acc && worn ? acc.srcfn(options) : "",
+			};
+		});
+		assert.equal(info.shopBad, false, JSON.stringify(info));
+		assert.equal(info.pharmacyBad, false, JSON.stringify(info));
+		assert.equal(info.customBad, false, JSON.stringify(info));
+		assert.ok(info.shopPacks > 0, JSON.stringify(info));
+		assert.equal(info.pharmacyPacks, info.shopPacks);
+		assert.equal(info.hasPrintsSection, false, "old print shop should be gone");
+		assert.equal(info.customiseHref, true);
+		assert.equal(info.hasColours, true, JSON.stringify(info));
+		assert.equal(info.hasPatterns, true, JSON.stringify(info));
+		assert.equal(info.hasMannequin, true);
+		assert.equal(info.hasBuy, true);
+		assert.equal(info.colouraction, "pink");
+		assert.equal(info.patternaction, "dino stomp");
+		assert.equal(info.boughtOk, true);
+		assert.equal(info.boughtColour, "pink");
+		assert.equal(info.boughtPattern, "dino stomp");
+		assert.equal(info.freshN, 5);
+		assert.equal(info.freshColour, "pink");
+		assert.equal(info.freshPattern, "dino stomp");
+		assert.equal(info.of, "dino stomp");
+		assert.match(info.mainSrc, /plusdpm/);
+		assert.equal(info.accShow, true, JSON.stringify(info));
+		assert.match(info.accSrc, /dino-stomp/);
+	});
 });

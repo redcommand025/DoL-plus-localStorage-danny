@@ -3901,7 +3901,7 @@ Renderer.CanvasModels.main = {
 						&& !options.belly_hides_under_lower
 						&& typeof window !== "undefined"
 						&& typeof window.plusDiaperPatternOf === "function"
-						&& !!window.plusDiaperPatternOf(typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
+						&& !!window.plusDiaperPatternOf(typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, w) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null));
 				}
 				return options.show_clothes
 					&& w.index > 0
@@ -3915,7 +3915,7 @@ Renderer.CanvasModels.main = {
 				const pattern = w.pattern && setup.pattern_layer === "secondary" ? "-" + w.pattern?.replace(/ /g,"-") : '';
 				let src = `img/clothes/under-lower/${setup.variable}/acc${integrity}${pattern}.png`;
 				if (typeof window !== "undefined" && typeof window.plusSagSrc === "function") {
-					const wornItem = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+					const wornItem = typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, w) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
 					src = window.plusSagSrc(src, wornItem);
 				}
 				return src;
@@ -3933,7 +3933,7 @@ Renderer.CanvasModels.main = {
 				return options.worn.under_lower.alpha;
 			},
 			srcfn(options) {
-				const w = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+				const w = typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, options.worn.under_lower) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
 				return window.plusDiaperSoilSrc(w, options.worn.under_lower.integrity);
 			},
 			showfn(options) {
@@ -3944,7 +3944,7 @@ Renderer.CanvasModels.main = {
 					&& !options.belly_hides_under_lower
 					&& typeof window !== "undefined"
 					&& typeof window.plusDiaperSoil === "function"
-					&& window.plusDiaperSoil(typeof V !== "undefined" && V.worn ? V.worn.under_lower : null));
+					&& window.plusDiaperSoil(typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, w) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null)));
 			},
 			masksrcfn(options) {
 				return options.underLowerMask;
@@ -3964,7 +3964,7 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				let src = `img/clothes/under-lower/${options.worn.under_lower.setup.variable}/penis.png`;
 				if (typeof window !== "undefined" && typeof window.plusSagSrc === "function") {
-					const wornItem = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+					const wornItem = typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, options.worn.under_lower) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
 					src = window.plusSagSrc(src, wornItem);
 				}
 				return src;
@@ -3990,7 +3990,7 @@ Renderer.CanvasModels.main = {
 				const w = options.worn.under_lower;
 				if (w.setup.modder === "plusneeds" && w.pattern && typeof window !== "undefined" && typeof window.plusSagSrc === "function") {
 					/* Plus diaper print over the penis layer (same garment shape as full) */
-					const wornItem = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+					const wornItem = typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, w) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
 					return window.plusSagSrc(`img/clothes/under-lower/${w.setup.variable}/acc-penis-${w.pattern.replace(/ /g,"-")}.png`, wornItem);
 				}
 				return `img/clothes/under-lower/${w.setup.variable}/acc-penis.png`;
@@ -4005,7 +4005,7 @@ Renderer.CanvasModels.main = {
 						&& calculatePenisBulge() > 0
 						&& typeof window !== "undefined"
 						&& typeof window.plusDiaperPatternOf === "function"
-						&& !!window.plusDiaperPatternOf(typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
+						&& !!window.plusDiaperPatternOf(typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, w) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null));
 				}
 				return options.show_clothes
 					&& !options.belly_hides_under_lower
@@ -4026,7 +4026,7 @@ Renderer.CanvasModels.main = {
 				return options.worn.under_lower.alpha;
 			},
 			srcfn(options) {
-				const w = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+				const w = typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, options.worn.under_lower) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
 				return window.plusDiaperSoilSrc(w, "penis");
 			},
 			showfn(options) {
@@ -4039,7 +4039,7 @@ Renderer.CanvasModels.main = {
 					&& calculatePenisBulge() > 0
 					&& typeof window !== "undefined"
 					&& typeof window.plusDiaperSoil === "function"
-					&& window.plusDiaperSoil(typeof V !== "undefined" && V.worn ? V.worn.under_lower : null));
+					&& window.plusDiaperSoil(typeof window.plusDiaperCanvasItem === "function" ? window.plusDiaperCanvasItem(options, options.worn.under_lower) : (typeof V !== "undefined" && V.worn ? V.worn.under_lower : null)));
 			},
 			masksrcfn(options) {
 				return options.underLowerMask;
@@ -5844,7 +5844,9 @@ function genlayer_clothing_main(slot, overrideOptions) {
 			const end = isHoodDown ? '-down' : isAltPosition ? '-alt' : '';
 			let src = `img/clothes/${folder}/${setup.variable}/${options.worn[slot].integrity}${pattern}${end}.png`;
 			if (typeof window !== "undefined" && typeof window.plusSagSrc === "function") {
-				const wornItem = typeof V !== "undefined" && V.worn ? V.worn[slot] : null;
+				const wornItem = slot === "under_lower" && typeof window.plusDiaperCanvasItem === "function"
+					? window.plusDiaperCanvasItem(options, options.worn.under_lower)
+					: (typeof V !== "undefined" && V.worn ? V.worn[slot] : null);
 				src = window.plusSagSrc(src, wornItem);
 			}
 			return src;
