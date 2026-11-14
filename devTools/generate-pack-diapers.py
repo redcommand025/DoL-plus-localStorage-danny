@@ -10,9 +10,11 @@ and too wide and look blocky when scaled 2x.
 This script draws every diaper sprite natively at the pack resolution:
   * Silhouettes are smooth curves (shield shape for dry diapers, a rounder hanging bulge for bigger
     sizes) evaluated with 8x8 supersampling and snapped to binary alpha like the pack's garments.
-  * The waistband sits on the pack waist (the pack briefs, with a small diaper rise). Width hugs the
-    pack body's hips plus a little padding and is clamped through the hands so the sides stay inside
-    the hip line and never cover the idle hands (which the game draws under under_lower).
+  * The waistband sits on the pack waist (the pack briefs, with a small diaper rise) and matches
+    the pack briefs / body outline (about 0-1px of padding). The upper part follows the hip
+    curve tightly. Through the hands the sides stay inside the hip line so they never cover the
+    idle hands (which the game draws under under_lower). Sag still fills out toward the bottom
+    below the hands.
   * Length still follows the base sprites, mapped through a fit from briefs, boxers, boyshorts and
     long johns: bigger sizes hang lower, reaching the feet at 13 and past them at 15.
   * Per type: plastic diapers (plusdp*, plusdiaper*) get side tapes, a front landing strip, a
@@ -123,8 +125,8 @@ def hand_bottom(pack):
     return int(ys.max()) if len(ys) else 114
 
 
-def safe_half(half, hands_y, pad=2.0):
-    """Max half-width through the waist and hands: pack body plus a small padding, never over the hands.
+def safe_half(half, hands_y, pad=1.0):
+    """Max half-width through the waist and hands: pack body plus at most 1px, never over the hands.
     Below the hands the seat may be a little fuller, so there is no cap there."""
     safe = np.full(half.shape[0], np.inf)
     for y in range(0, min(hands_y + 3, half.shape[0])):
@@ -187,14 +189,18 @@ def size_spec(cat, size, state, leak, ctx):
     s.thick = float(np.clip((size - 1) / 6.0, 0, 1))
     big = float(np.clip((size - 8) / 7.0, 0, 1))
     hips = float(half[int(s.T) : int(s.T) + 14].max())
-    # modest thickness: bigger sizes hang lower, they do not grow outward over the hands
+    # modest thickness below the hands: bigger sizes hang lower, they do not grow outward over the hands
     pad = 1.3 + 0.15 * min(size, 8) + 0.08 * max(0, size - 8)
     s.Wmax = hips + pad
     s.grow = max(0.0, s.Wmax - (hips + 1.3))
     s.drop = max(0.0, s.B - d0)
-    waist = float(half[int(round(s.T)) + 1]) + 1.15
-    s.Wtop = min(s.Wmax, waist + 0.35)
+    # waistband matches the body/briefs outline, plus about 0.5px
+    wy = int(round(s.T)) + 1
+    waist = float(half[wy]) if 0 <= wy < len(half) and half[wy] > 0 else float(half[int(s.T) : int(s.T) + 4].max())
+    s.Wtop = min(s.Wmax, waist + 0.5)
     s.safe = ctx["safe"]
+    s.half = half
+    s.hands_y = ctx.get("hands_y", 113)
     s.sag = min(1.0, s.drop / 40.0)
     s.tm = {"dp": 0.30, "cd": 0.34, "pu": 0.26}[cat] + (0.36 + 0.18 * big) * s.sag
     s.q = {"dp": 1.05, "cd": 1.35, "pu": 0.95}[cat] + (1.0 + 0.4 * big) * s.sag
@@ -214,7 +220,24 @@ def halfwidth(s, y):
     k = np.clip((t - (1 - e)) / e, 0, 1)
     h = h * np.sqrt(np.clip(1 - k**2, 0, 1))
     h = np.where((t >= 0) & (t <= 1), h, -1)
-    # keep the sides inside the pack hip line through the hands
+    # follow the hip curve tightly from the waist through the hands (body + 0.5..1px)
+    body = getattr(s, "half", None)
+    hands_y = getattr(s, "hands_y", None)
+    if body is not None and hands_y is not None:
+        yi = np.clip(np.rint(y).astype(int), 0, len(body) - 1)
+        bh = body[yi]
+        # pad 0.5px at the waist, 1px by the hands
+        span = max(1.0, float(hands_y) - s.T)
+        pad = 0.5 + 0.5 * np.clip((y - s.T) / span, 0, 1)
+        # track the body on the upper garment (not the bottom cuff): at least body+0.5, at most body+pad
+        track = (bh > 0) & (h >= 0) & (y <= hands_y + 2) & (y <= s.T + 16) & (s.B > y + 6)
+        lo = bh + 0.5
+        hi = bh + pad
+        h = np.where(track, np.clip(h, lo, hi), h)
+        # below that, still never wider than body+pad through the hands
+        cap = np.where((bh > 0) & (y <= hands_y + 2), bh + pad, np.inf)
+        h = np.where(np.isfinite(cap) & (h >= 0), np.minimum(h, cap), h)
+    # hard cap: never past body+1px through the hands (keeps the idle hands clear)
     if getattr(s, "safe", None) is not None:
         yi = np.clip(np.rint(y).astype(int), 0, len(s.safe) - 1)
         cap = s.safe[yi]
@@ -402,12 +425,12 @@ def main(packs):
         H = size[1]
         briefs = bbox(load_alpha(briefs_path))
         hands_y = hand_bottom(pack)
-        safe = safe_half(half, hands_y, pad=2.0)
+        safe = safe_half(half, hands_y, pad=1.0)
         print(f"{pack}: body centre x={cx:.1f}, briefs waist y={briefs[1]}, hands y={hands_y}, feet y={int(np.nonzero(half > 0)[0].max())}")
         count = 0
         tables = size_tables()
         feet = float(np.nonzero(half > 0)[0].max())
-        ctx = {"cx": cx, "half": half, "feet": feet, "T": {}, "d0": {}, "safe": safe}
+        ctx = {"cx": cx, "half": half, "feet": feet, "T": {}, "d0": {}, "safe": safe, "hands_y": hands_y}
         # waistband sits on the pack waist (the briefs), with a small diaper rise
         for cat, reg in REGULAR.items():
             rise = {"dp": 1.5, "cd": 1.5, "pu": 1.0}[cat]
@@ -450,5 +473,108 @@ def main(packs):
         print(f"{pack}: wrote {count} sprites")
 
 
+OUTLINE_TONE = 48
+
+
+def _frame_split(arr):
+    """Yield (x0, frame) for each  square-ish frame in a possibly two-frame strip."""
+    h, w = arr.shape[0], arr.shape[1]
+    if w >= int(h * 1.8):
+        return [(0, arr[:, :h]), (h, arr[:, h:h * 2] if w >= h * 2 else None)]
+    return [(0, arr)]
+
+
+def tighten_base_waistbands():
+    """If a base (no-pack) diaper's waistband is wider than the base body waist, trim it to
+    body + 1px. Only the waistband and the very top of the hips are touched; sag below is kept."""
+    body_path = os.path.join(ROOT, "img/body/base-classic.png")
+    body = np.asarray(Image.open(body_path).convert("RGBA"))
+    body_a = body[..., 3] > 127
+    n = 0
+    for d in diaper_dirs():
+        base = os.path.join(BASE, d)
+        for dirpath, _, files in os.walk(base):
+            # skip generated overlays
+            for fn in files:
+                if not fn.endswith(".png") or fn.startswith("acc-") or fn.startswith("soil-"):
+                    continue
+                path = os.path.join(dirpath, fn)
+                im = Image.open(path)
+                arr = np.asarray(im.convert("RGBA")).copy()
+                changed = False
+                frames = _frame_split(arr)
+                for x0, fr in frames:
+                    if fr is None:
+                        continue
+                    # matching body frame
+                    bf = body_a[:, x0:x0 + fr.shape[1]] if body_a.shape[1] >= x0 + fr.shape[1] else body_a[:, :fr.shape[1]]
+                    if bf.shape[1] != fr.shape[1] or bf.shape[0] != fr.shape[0]:
+                        # body and garment should both be 128 tall in frame space
+                        if bf.shape[0] != fr.shape[0]:
+                            continue
+                    mask = fr[..., 3] > 127
+                    ys = np.nonzero(mask.any(axis=1))[0]
+                    if not len(ys):
+                        continue
+                    y0 = int(ys[0])
+                    # waistband region: first ~5 rows with a real width
+                    waist_rows = []
+                    for y in range(y0, min(y0 + 8, mask.shape[0])):
+                        xs = np.nonzero(mask[y])[0]
+                        if len(xs) >= 8:
+                            waist_rows.append(y)
+                        if len(waist_rows) >= 5:
+                            break
+                    if not waist_rows:
+                        continue
+                    for i, y in enumerate(waist_rows):
+                        bxs = np.nonzero(bf[y])[0]
+                        xs = np.nonzero(mask[y])[0]
+                        if not len(bxs) or not len(xs):
+                            continue
+                        bl, br = int(bxs[0]), int(bxs[-1]) + 1
+                        # 1px pad at the top, easing to 2px on the last waist row
+                        pad = 1 + int(round(i / max(1, len(waist_rows) - 1)))
+                        lo, hi = bl - pad, br + pad
+                        extra = (int(xs[0]) < lo) or (int(xs[-1]) + 1 > hi)
+                        if not extra:
+                            continue
+                        # drop pixels outside the cap
+                        for x in list(xs):
+                            if x < lo or x >= hi:
+                                fr[y, x] = 0
+                                mask[y, x] = False
+                                changed = True
+                    if changed:
+                        # rebuild a 1px outline on the touched rows and fill newly interior outline
+                        ylo, yhi = waist_rows[0], waist_rows[-1]
+                        for y in range(max(0, ylo - 1), min(mask.shape[0], yhi + 2)):
+                            xs = np.nonzero(mask[y])[0]
+                            if not len(xs):
+                                continue
+                            for x in xs:
+                                edge = False
+                                for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+                                    if not (0 <= ny < mask.shape[0] and 0 <= nx < mask.shape[1] and mask[ny, nx]):
+                                        edge = True
+                                        break
+                                if edge:
+                                    fr[y, x, :3] = OUTLINE_TONE
+                                    fr[y, x, 3] = 255
+                                elif fr[y, x, 3] > 127 and int(fr[y, x, 0]) <= OUTLINE_TONE + 8:
+                                    # old outline now inside: use a nearby padding tone
+                                    fr[y, x, :3] = 150
+                    if changed:
+                        arr[:, x0:x0 + fr.shape[1]] = fr
+                if changed:
+                    Image.fromarray(arr, "RGBA").save(path, optimize=True)
+                    n += 1
+    print(f"base: tightened waistband on {n} sprites")
+
+
 if __name__ == "__main__":
-    main(sys.argv[1:] or ["au", "aumasc"])
+    args = [a for a in sys.argv[1:] if a != "--no-base"]
+    do_base = "--no-base" not in sys.argv[1:]
+    main(args or ["au", "aumasc"])
+    if do_base:
+        tighten_base_waistbands()

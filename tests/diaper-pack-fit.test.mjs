@@ -132,8 +132,18 @@ describe("pack diaper fit on the Aoki Utage body", () => {
 			}
 		}
 
-		it(`${pack}: waistband sits on the pack waist and matches the hip width`, () => {
+		it(`${pack}: waistband sits on the pack waist and matches the briefs width`, () => {
 			assert.ok(handPx > 100, `${pack}: expected idle hands`);
+			const briefsWaist = widthAt(join(root, "imagepacks", pack, "clothes/under-lower/briefs/full.png"), briefs.y0);
+			// A hip row a little below the waist, where the body has flared
+			let hipY = briefs.y0 + 8;
+			for (let y = briefs.y0 + 4; y <= briefs.y0 + 12; y++) {
+				const s = torsoSpan(body, y);
+				if (s && s.r - s.l >= (torsoSpan(body, briefs.y0) || { r: 0, l: 0 }).r - (torsoSpan(body, briefs.y0) || { l: 0 }).l + 2) {
+					hipY = y;
+					break;
+				}
+			}
 			for (const d of DIAPERS) {
 				const row = SIZES[LEGACY[d] || d];
 				for (const key of [...row.sizes.map(z => `size${z}`), `leak${row.overflow}`]) {
@@ -142,7 +152,14 @@ describe("pack diaper fit on the Aoki Utage body", () => {
 					assert.ok(box.y0 >= briefs.y0 - 2 && box.y0 <= briefs.y0, `${pack} ${d}/${key}: waistband row ${box.y0} vs briefs ${briefs.y0}`);
 					assert.ok(Math.abs(box.cx - briefs.cx) <= 2, `${pack} ${d}/${key}: centre ${box.cx} vs briefs ${briefs.cx}`);
 					const ww = widthAt(file, box.y0 + 1);
-					assert.ok(Math.abs(ww - boxers.w) <= 4, `${pack} ${d}/${key}: waist width ${ww} vs boxers ${boxers.w}`);
+					// body/briefs outline plus about 0-1px per side (2px total)
+					assert.ok(ww >= briefsWaist && ww <= briefsWaist + 2, `${pack} ${d}/${key}: waist width ${ww} vs briefs ${briefsWaist}`);
+					const hs = torsoSpan(body, hipY);
+					if (hs && box.y1 > hipY + 6) {
+						const hw = widthAt(file, hipY);
+						const bodyW = hs.r - hs.l;
+						assert.ok(hw >= bodyW && hw <= bodyW + 2, `${pack} ${d}/${key}: hip width ${hw} vs body ${bodyW} at y${hipY}`);
+					}
 				}
 			}
 		});

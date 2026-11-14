@@ -13,11 +13,12 @@ too low and ~14px to the right of the pack body.
 - Silhouettes are smooth curves (8x8 supersampled, snapped to hard edges like the pack's
   garments) with a 1px dark outline, a few flat grey tones with soft rounded shading, a light
   waistband band and gathered leg cuffs. Greyscale, so the game's clothing tint still applies.
-- The waistband sits on the pack waist (the pack briefs, with a small diaper rise) and the width hugs
-  the pack body's hips plus a little padding. Through the hands the sides are clamped to the hip line
-  so they never cover the idle hands (the game draws under_lower above the arms). Length still comes
-  from the regular base diaper mapped through a fit from briefs, boxers, boyshorts and long johns:
-  bigger sizes hang lower rather than growing wider.
+- The waistband sits on the pack waist (the pack briefs, with a small diaper rise) and matches the
+  pack briefs / body outline (about 0-1px of padding). The upper part follows the hip curve tightly.
+  Through the hands the sides stay inside the hip line so they never cover the idle hands (the game
+  draws under_lower above the arms). Sag still fills out toward the bottom below the hands. Length
+  still comes from the regular base diaper mapped through a fit from briefs, boxers, boyshorts and
+  long johns: bigger sizes hang lower rather than growing wider.
 - Plastic diapers: side tapes, landing strip, faint hourglass core. Cloth: rounder cut, side pins,
   fold lines. Pull-ups: ribbed waistband, dashed side tear seams, slimmer cut.
 - frayed/torn/tattered add edge nicks and rips; `leak<N>` (overflowing) adds small drips; `penis.png` is the same
@@ -64,7 +65,9 @@ keep their own cut and details: tapes and landing strip, pins and folds, ribbed 
 | Pull-up Small       | 0% 2, 67% 3, 100% 4                                          | leak5    |
 | Pull-up Extra Small | 0% 1, 100% 2                                                 | leak3    |
 
-Base (non-pack) sprites keep their 5 tiers. `plusSagSrc` uses `size<N>`/`leak<N>` only when the
+Base (non-pack) sprites keep their 5 tiers. Their waistbands were tightened to the base body
+outline (about 0-1px of padding) where they were wider than the waist; sag below the waistband
+is unchanged. `plusSagSrc` uses `size<N>`/`leak<N>` only when the
 active image pack has that file (`ImagePacks.resolve`); otherwise it uses the base tier for the
 fill (`plusSagTier`: sag1 25%, sag2 50%, sag3 75%, sag4 full, sag5 overflowing), so no missing
 path is ever requested. The base tiers still drive the sag messages. The base game's wet-clothing

@@ -43,9 +43,9 @@
         "x0": 89,
         "x1": 120,
         "width": 31,
-        "hip_w": 21,
+        "hip_w": 31,
         "crotch_w": 9,
-        "beyond_hips": -4.0,
+        "beyond_hips": 1.0,
         "bulge": -10.0,
         "below_crotch": 1,
         "below_knees": -43,
@@ -61,9 +61,9 @@
         "x1": 120,
         "width": 31,
         "hip_w": 31,
-        "crotch_w": 25,
+        "crotch_w": 29,
         "beyond_hips": 1.0,
-        "bulge": -2.0,
+        "bulge": 0.0,
         "below_crotch": 6,
         "below_knees": -38,
         "below_feet": -83,
@@ -74,13 +74,13 @@
         "models": 10,
         "y0": 88,
         "bottom": 113,
-        "x0": 88,
-        "x1": 121,
-        "width": 33,
-        "hip_w": 33,
-        "crotch_w": 29,
-        "beyond_hips": 2.0,
-        "bulge": 0.0,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 11,
         "below_knees": -33,
         "below_feet": -78,
@@ -91,12 +91,12 @@
         "models": 13,
         "y0": 88,
         "bottom": 118,
-        "x0": 88,
-        "x1": 121,
-        "width": 33,
-        "hip_w": 33,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
         "crotch_w": 31,
-        "beyond_hips": 2.0,
+        "beyond_hips": 1.0,
         "bulge": 1.0,
         "below_crotch": 16,
         "below_knees": -28,
@@ -108,13 +108,13 @@
         "models": 12,
         "y0": 88,
         "bottom": 122,
-        "x0": 88,
-        "x1": 121,
-        "width": 33,
-        "hip_w": 33,
-        "crotch_w": 33,
-        "beyond_hips": 2.0,
-        "bulge": 2.0,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 20,
         "below_knees": -24,
         "below_feet": -69,
@@ -125,13 +125,13 @@
         "models": 9,
         "y0": 88,
         "bottom": 127,
-        "x0": 88,
-        "x1": 121,
-        "width": 33,
-        "hip_w": 33,
-        "crotch_w": 33,
-        "beyond_hips": 2.0,
-        "bulge": 2.0,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 25,
         "below_knees": -19,
         "below_feet": -64,
@@ -146,9 +146,9 @@
         "x1": 121,
         "width": 33,
         "hip_w": 31,
-        "crotch_w": 33,
+        "crotch_w": 31,
         "beyond_hips": 1.0,
-        "bulge": 2.0,
+        "bulge": 1.0,
         "below_crotch": 30,
         "below_knees": -14,
         "below_feet": -59,
@@ -163,9 +163,9 @@
         "x1": 122,
         "width": 35,
         "hip_w": 31,
-        "crotch_w": 33,
+        "crotch_w": 31,
         "beyond_hips": 1.0,
-        "bulge": 2.0,
+        "bulge": 1.0,
         "below_crotch": 35,
         "below_knees": -9,
         "below_feet": -54,
@@ -180,9 +180,9 @@
         "x1": 122,
         "width": 35,
         "hip_w": 31,
-        "crotch_w": 33,
+        "crotch_w": 31,
         "beyond_hips": 1.0,
-        "bulge": 2.0,
+        "bulge": 1.0,
         "below_crotch": 40,
         "below_knees": -4,
         "below_feet": -49,
@@ -213,9 +213,9 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
+        "hip_w": 31,
         "crotch_w": 31,
-        "beyond_hips": 0.0,
+        "beyond_hips": 1.0,
         "bulge": 1.0,
         "below_crotch": 61,
         "below_knees": 17,
@@ -230,9 +230,9 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
+        "hip_w": 31,
         "crotch_w": 31,
-        "beyond_hips": 0.0,
+        "beyond_hips": 1.0,
         "bulge": 1.0,
         "below_crotch": 74,
         "below_knees": 30,
@@ -247,9 +247,9 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
+        "hip_w": 31,
         "crotch_w": 31,
-        "beyond_hips": 0.0,
+        "beyond_hips": 1.0,
         "bulge": 1.0,
         "below_crotch": 88,
         "below_knees": 44,
@@ -264,10 +264,10 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
-        "crotch_w": 29,
-        "beyond_hips": 0.0,
-        "bulge": 0.0,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 100,
         "below_knees": 56,
         "below_feet": 11,
@@ -281,10 +281,10 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
-        "crotch_w": 29,
-        "beyond_hips": 0.0,
-        "bulge": 0.0,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 111,
         "below_knees": 67,
         "below_feet": 22,
@@ -298,10 +298,10 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
-        "crotch_w": 29,
-        "beyond_hips": 0.0,
-        "bulge": 0.0,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 114,
         "below_knees": 70,
         "below_feet": 25,
@@ -317,9 +317,9 @@
         "x0": 89,
         "x1": 120,
         "width": 31,
-        "hip_w": 21,
+        "hip_w": 31,
         "crotch_w": 9,
-        "beyond_hips": -4.0,
+        "beyond_hips": 1.0,
         "bulge": -10.0,
         "below_crotch": 1,
         "below_knees": -43,
@@ -335,9 +335,9 @@
         "x1": 120,
         "width": 31,
         "hip_w": 31,
-        "crotch_w": 25,
+        "crotch_w": 29,
         "beyond_hips": 1.0,
-        "bulge": -2.0,
+        "bulge": 0.0,
         "below_crotch": 6,
         "below_knees": -38,
         "below_feet": -83,
@@ -348,13 +348,13 @@
         "models": 10,
         "y0": 88,
         "bottom": 113,
-        "x0": 88,
-        "x1": 121,
-        "width": 33,
-        "hip_w": 33,
-        "crotch_w": 29,
-        "beyond_hips": 2.0,
-        "bulge": 0.0,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 11,
         "below_knees": -33,
         "below_feet": -78,
@@ -365,12 +365,12 @@
         "models": 13,
         "y0": 88,
         "bottom": 118,
-        "x0": 88,
-        "x1": 121,
-        "width": 33,
-        "hip_w": 33,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
         "crotch_w": 31,
-        "beyond_hips": 2.0,
+        "beyond_hips": 1.0,
         "bulge": 1.0,
         "below_crotch": 16,
         "below_knees": -28,
@@ -382,13 +382,13 @@
         "models": 12,
         "y0": 88,
         "bottom": 122,
-        "x0": 88,
-        "x1": 121,
-        "width": 33,
-        "hip_w": 33,
-        "crotch_w": 33,
-        "beyond_hips": 2.0,
-        "bulge": 2.0,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 20,
         "below_knees": -24,
         "below_feet": -69,
@@ -399,13 +399,13 @@
         "models": 9,
         "y0": 88,
         "bottom": 127,
-        "x0": 88,
-        "x1": 121,
-        "width": 33,
-        "hip_w": 33,
-        "crotch_w": 33,
-        "beyond_hips": 2.0,
-        "bulge": 2.0,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 25,
         "below_knees": -19,
         "below_feet": -64,
@@ -420,9 +420,9 @@
         "x1": 121,
         "width": 33,
         "hip_w": 31,
-        "crotch_w": 33,
+        "crotch_w": 31,
         "beyond_hips": 1.0,
-        "bulge": 2.0,
+        "bulge": 1.0,
         "below_crotch": 30,
         "below_knees": -14,
         "below_feet": -59,
@@ -437,9 +437,9 @@
         "x1": 122,
         "width": 35,
         "hip_w": 31,
-        "crotch_w": 33,
+        "crotch_w": 31,
         "beyond_hips": 1.0,
-        "bulge": 2.0,
+        "bulge": 1.0,
         "below_crotch": 35,
         "below_knees": -9,
         "below_feet": -54,
@@ -454,9 +454,9 @@
         "x1": 122,
         "width": 35,
         "hip_w": 31,
-        "crotch_w": 33,
+        "crotch_w": 31,
         "beyond_hips": 1.0,
-        "bulge": 2.0,
+        "bulge": 1.0,
         "below_crotch": 40,
         "below_knees": -4,
         "below_feet": -49,
@@ -487,9 +487,9 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
+        "hip_w": 31,
         "crotch_w": 31,
-        "beyond_hips": 0.0,
+        "beyond_hips": 1.0,
         "bulge": 1.0,
         "below_crotch": 61,
         "below_knees": 17,
@@ -504,9 +504,9 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
+        "hip_w": 31,
         "crotch_w": 31,
-        "beyond_hips": 0.0,
+        "beyond_hips": 1.0,
         "bulge": 1.0,
         "below_crotch": 74,
         "below_knees": 30,
@@ -521,9 +521,9 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
+        "hip_w": 31,
         "crotch_w": 31,
-        "beyond_hips": 0.0,
+        "beyond_hips": 1.0,
         "bulge": 1.0,
         "below_crotch": 88,
         "below_knees": 44,
@@ -538,10 +538,10 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
-        "crotch_w": 29,
-        "beyond_hips": 0.0,
-        "bulge": 0.0,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 100,
         "below_knees": 56,
         "below_feet": 11,
@@ -555,10 +555,10 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
-        "crotch_w": 29,
-        "beyond_hips": 0.0,
-        "bulge": 0.0,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 111,
         "below_knees": 67,
         "below_feet": 22,
@@ -572,10 +572,10 @@
         "x0": 87,
         "x1": 122,
         "width": 35,
-        "hip_w": 29,
-        "crotch_w": 29,
-        "beyond_hips": 0.0,
-        "bulge": 0.0,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
         "below_crotch": 114,
         "below_knees": 70,
         "below_feet": 25,
@@ -608,8 +608,8 @@
         "path": "img/clothes/under-lower/plusdphyper/sag2/full.png",
         "y0": 114,
         "bottom": 159,
-        "width": 56,
-        "x0": 90,
+        "width": 52,
+        "x0": 94,
         "x1": 146
       },
       {
@@ -617,8 +617,8 @@
         "path": "img/clothes/under-lower/plusdphyper/sag3/full.png",
         "y0": 114,
         "bottom": 175,
-        "width": 66,
-        "x0": 84,
+        "width": 62,
+        "x0": 88,
         "x1": 150
       },
       {
@@ -626,8 +626,8 @@
         "path": "img/clothes/under-lower/plusdphyper/sag4/full.png",
         "y0": 114,
         "bottom": 183,
-        "width": 72,
-        "x0": 80,
+        "width": 66,
+        "x0": 86,
         "x1": 152
       },
       {
@@ -635,8 +635,8 @@
         "path": "img/clothes/under-lower/plusdphyper/sag5/full.png",
         "y0": 114,
         "bottom": 183,
-        "width": 66,
-        "x0": 84,
+        "width": 62,
+        "x0": 88,
         "x1": 150
       }
     ],
@@ -656,25 +656,25 @@
       {
         "tier": "sag2",
         "bottom": 149,
-        "width": 42,
+        "width": 40,
         "y0": 116
       },
       {
         "tier": "sag3",
         "bottom": 155,
-        "width": 46,
+        "width": 42,
         "y0": 116
       },
       {
         "tier": "sag4",
         "bottom": 159,
-        "width": 46,
+        "width": 44,
         "y0": 116
       },
       {
         "tier": "sag5",
         "bottom": 163,
-        "width": 46,
+        "width": 44,
         "y0": 116
       }
     ]
@@ -683,7 +683,7 @@
     "sundress skirt": 5,
     "pyjama bottoms": 12,
     "towel skirt": 3,
-    "waist apron": 1,
+    "waist apron": 5,
     "shorts": 3,
     "school shorts": 3,
     "school skirt": 5,
@@ -714,7 +714,7 @@
     "girl's oversized sweater bottom": 0,
     "christmas trousers": 4,
     "christmas skirt": 6,
-    "monk's habit skirt": 0,
+    "monk's habit skirt": 12,
     "cowboy chaps": 10,
     "belly dancer's bottoms": 5,
     "straightjacket bottom": 5,
@@ -722,7 +722,7 @@
     "patterned skirt": 5,
     "overall bottoms": 12,
     "cheongsam skirt": 3,
-    "short cheongsam skirt": 3,
+    "short cheongsam skirt": 2,
     "micro pleated skirt": 4,
     "chinos": 6,
     "gothic skirt": 13,
@@ -750,7 +750,7 @@
     "catsuit bottoms": 6,
     "kilt": 5,
     "bathrobe bottom": 12,
-    "rag skirt": 0,
+    "rag skirt": 1,
     "retro trousers": 6,
     "retro shorts": 4,
     "monster skirt": 4,
@@ -822,7 +822,7 @@
     "loose pyjama bottoms": 12,
     "pleated joggers": 8,
     "baggy pleated joggers": 6,
-    "short keyhole cheongsam skirt": 3,
+    "short keyhole cheongsam skirt": 2,
     "cut skirt": 6,
     "pencil skirt": 7,
     "seaweed skirt": 0,
@@ -847,7 +847,7 @@
     "confessor's habit skirt": 12,
     "exorcist's cassock trousers": 9,
     "exorcist's habit skirt": 1,
-    "monk's sparring loincloth": 1,
+    "monk's sparring loincloth": 0,
     "nun's sparring skirt": 1,
     "gothic witch skirt": 0,
     "pumpkin skirt": 4,
@@ -980,7 +980,7 @@
       "name": "waist apron",
       "variable": "waistapron",
       "slot": "lower",
-      "hide": 1,
+      "hide": 5,
       "source": "pack",
       "hem_au": 126,
       "hem_aumasc": 126,
@@ -989,15 +989,15 @@
           "src": "pack",
           "hem": 126,
           "n": 965,
-          "hide": 1,
-          "first_visible": 2
+          "hide": 5,
+          "first_visible": 6
         },
         "aumasc": {
           "src": "pack",
           "hem": 126,
           "n": 965,
-          "hide": 1,
-          "first_visible": 2
+          "hide": 5,
+          "first_visible": 6
         }
       }
     },
@@ -1365,14 +1365,14 @@
           "hem": 179,
           "n": 2939,
           "hide": 12,
-          "first_visible": 11
+          "first_visible": 13
         },
         "aumasc": {
           "src": "pack",
           "hem": 179,
           "n": 2939,
           "hide": 12,
-          "first_visible": 11
+          "first_visible": 13
         }
       }
     },
@@ -2123,7 +2123,7 @@
       "name": "monk's habit skirt",
       "variable": "monk",
       "slot": "lower",
-      "hide": 0,
+      "hide": 12,
       "source": "pack",
       "hem_au": 188,
       "hem_aumasc": 188,
@@ -2132,15 +2132,15 @@
           "src": "pack",
           "hem": 188,
           "n": 2211,
-          "hide": 0,
-          "first_visible": 1
+          "hide": 12,
+          "first_visible": 13
         },
         "aumasc": {
           "src": "pack",
           "hem": 188,
           "n": 2211,
-          "hide": 0,
-          "first_visible": 1
+          "hide": 12,
+          "first_visible": 13
         }
       }
     },
@@ -2323,7 +2323,7 @@
       "name": "short cheongsam skirt",
       "variable": "cheongsamshort",
       "slot": "lower",
-      "hide": 3,
+      "hide": 2,
       "source": "pack",
       "hem_au": 122,
       "hem_aumasc": 122,
@@ -2332,15 +2332,15 @@
           "src": "pack",
           "hem": 122,
           "n": 892,
-          "hide": 3,
-          "first_visible": 4
+          "hide": 2,
+          "first_visible": 3
         },
         "aumasc": {
           "src": "pack",
           "hem": 122,
           "n": 892,
-          "hide": 3,
-          "first_visible": 4
+          "hide": 2,
+          "first_visible": 3
         }
       }
     },
@@ -2907,14 +2907,14 @@
           "hem": 174,
           "n": 2309,
           "hide": 11,
-          "first_visible": 10
+          "first_visible": 12
         },
         "aumasc": {
           "src": "pack",
           "hem": 174,
           "n": 2309,
           "hide": 11,
-          "first_visible": 10
+          "first_visible": 12
         }
       }
     },
@@ -2997,7 +2997,7 @@
       "name": "rag skirt",
       "variable": "rag",
       "slot": "lower",
-      "hide": 0,
+      "hide": 1,
       "source": "pack",
       "hem_au": 113,
       "hem_aumasc": 113,
@@ -3006,15 +3006,15 @@
           "src": "pack",
           "hem": 113,
           "n": 611,
-          "hide": 0,
-          "first_visible": 1
+          "hide": 1,
+          "first_visible": 2
         },
         "aumasc": {
           "src": "pack",
           "hem": 113,
           "n": 611,
-          "hide": 0,
-          "first_visible": 1
+          "hide": 1,
+          "first_visible": 2
         }
       }
     },
@@ -5136,7 +5136,7 @@
       "name": "short keyhole cheongsam skirt",
       "variable": "cheongsamshortkeyhole",
       "slot": "lower",
-      "hide": 3,
+      "hide": 2,
       "source": "pack",
       "hem_au": 122,
       "hem_aumasc": 122,
@@ -5145,15 +5145,15 @@
           "src": "pack",
           "hem": 122,
           "n": 892,
-          "hide": 3,
-          "first_visible": 4
+          "hide": 2,
+          "first_visible": 3
         },
         "aumasc": {
           "src": "pack",
           "hem": 122,
           "n": 892,
-          "hide": 3,
-          "first_visible": 4
+          "hide": 2,
+          "first_visible": 3
         }
       }
     },
@@ -5346,14 +5346,14 @@
           "hem": 174,
           "n": 2309,
           "hide": 11,
-          "first_visible": 10
+          "first_visible": 12
         },
         "aumasc": {
           "src": "pack",
           "hem": 174,
           "n": 2309,
           "hide": 11,
-          "first_visible": 10
+          "first_visible": 12
         }
       }
     },
@@ -5735,7 +5735,7 @@
       "name": "monk's sparring loincloth",
       "variable": "monkspar",
       "slot": "lower",
-      "hide": 1,
+      "hide": 0,
       "source": "pack",
       "hem_au": 112,
       "hem_aumasc": 112,
@@ -5744,15 +5744,15 @@
           "src": "pack",
           "hem": 112,
           "n": 507,
-          "hide": 1,
-          "first_visible": 2
+          "hide": 0,
+          "first_visible": 1
         },
         "aumasc": {
           "src": "pack",
           "hem": 112,
           "n": 507,
-          "hide": 1,
-          "first_visible": 2
+          "hide": 0,
+          "first_visible": 1
         }
       }
     },
@@ -5986,13 +5986,13 @@
             {
               "size": 1,
               "below": 0,
-              "side": 0,
+              "side": 2,
               "covered": true
             },
             {
               "size": 2,
               "below": 0,
-              "side": 6,
+              "side": 10,
               "covered": true
             },
             {
@@ -6004,72 +6004,72 @@
             {
               "size": 4,
               "below": 125,
-              "side": 32,
+              "side": 18,
               "covered": false
             },
             {
               "size": 5,
               "below": 263,
-              "side": 56,
-              "covered": false
-            },
-            {
-              "size": 6,
-              "below": 428,
-              "side": 60,
-              "covered": false
-            },
-            {
-              "size": 7,
-              "below": 599,
-              "side": 58,
-              "covered": false
-            },
-            {
-              "size": 8,
-              "below": 770,
-              "side": 54,
-              "covered": false
-            },
-            {
-              "size": 9,
-              "below": 981,
-              "side": 50,
-              "covered": false
-            },
-            {
-              "size": 10,
-              "below": 1291,
-              "side": 34,
-              "covered": false
-            },
-            {
-              "size": 11,
-              "below": 1682,
-              "side": 28,
-              "covered": false
-            },
-            {
-              "size": 12,
-              "below": 2133,
               "side": 24,
               "covered": false
             },
             {
-              "size": 13,
-              "below": 2619,
+              "size": 6,
+              "below": 422,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 593,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 764,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 975,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 1279,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 1672,
               "side": 20,
               "covered": false
             },
             {
+              "size": 12,
+              "below": 2113,
+              "side": 14,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 2589,
+              "side": 12,
+              "covered": false
+            },
+            {
               "size": 14,
-              "below": 3007,
-              "side": 16,
+              "below": 2975,
+              "side": 12,
               "covered": false
             },
             {
               "size": 15,
-              "below": 3394,
+              "below": 3358,
               "side": 12,
               "covered": false
             }
@@ -6085,13 +6085,13 @@
             {
               "size": 1,
               "below": 0,
-              "side": 0,
+              "side": 2,
               "covered": true
             },
             {
               "size": 2,
               "below": 0,
-              "side": 6,
+              "side": 10,
               "covered": true
             },
             {
@@ -6103,72 +6103,72 @@
             {
               "size": 4,
               "below": 125,
-              "side": 32,
+              "side": 18,
               "covered": false
             },
             {
               "size": 5,
               "below": 263,
-              "side": 56,
-              "covered": false
-            },
-            {
-              "size": 6,
-              "below": 428,
-              "side": 60,
-              "covered": false
-            },
-            {
-              "size": 7,
-              "below": 599,
-              "side": 58,
-              "covered": false
-            },
-            {
-              "size": 8,
-              "below": 770,
-              "side": 54,
-              "covered": false
-            },
-            {
-              "size": 9,
-              "below": 981,
-              "side": 50,
-              "covered": false
-            },
-            {
-              "size": 10,
-              "below": 1291,
-              "side": 34,
-              "covered": false
-            },
-            {
-              "size": 11,
-              "below": 1682,
-              "side": 28,
-              "covered": false
-            },
-            {
-              "size": 12,
-              "below": 2133,
               "side": 24,
               "covered": false
             },
             {
-              "size": 13,
-              "below": 2619,
+              "size": 6,
+              "below": 422,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 593,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 764,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 975,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 1279,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 1672,
               "side": 20,
               "covered": false
             },
             {
+              "size": 12,
+              "below": 2113,
+              "side": 14,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 2589,
+              "side": 12,
+              "covered": false
+            },
+            {
               "size": 14,
-              "below": 3007,
-              "side": 16,
+              "below": 2975,
+              "side": 12,
               "covered": false
             },
             {
               "size": 15,
-              "below": 3394,
+              "below": 3358,
               "side": 12,
               "covered": false
             }
