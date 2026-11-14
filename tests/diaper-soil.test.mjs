@@ -195,22 +195,41 @@ describe("soiled overlays: art", () => {
 						}
 		assert.equal(n, 15 * 6 * 4 * 9);
 	});
-	/* opaque rows/area of an overlay's left frame */
-	const stats = p => {
+	/* visible stain in the overlay's left frame (alpha > 40 ignores faint padding grime) */
+	const stats = (p, thr = 40) => {
 		const o = rgba(p);
 		let n = 0,
 			sy = 0,
+			sx = 0,
 			top = 1e9,
-			bot = -1;
+			bot = -1,
+			sumL = 0;
+		const pts = [];
 		for (let y = 0; y < o.h; y++)
-			for (let x = 0; x < o.w / 2; x++)
-				if (o.alpha(y * o.w + x) > 0) {
+			for (let x = 0; x < o.w / 2; x++) {
+				const a = o.alpha(y * o.w + x);
+				if (a > thr) {
 					n++;
 					sy += y;
+					sx += x;
 					top = Math.min(top, y);
 					bot = Math.max(bot, y);
+					const i = y * o.w + x;
+					sumL += o.px[i * 4] + o.px[i * 4 + 1] + o.px[i * 4 + 2];
+					pts.push([x, y, a, i]);
 				}
-		return { n, cy: sy / Math.max(1, n), top, bot, o };
+			}
+		return { n, cy: sy / Math.max(1, n), cx: sx / Math.max(1, n), top, bot, o, lum: sumL / Math.max(1, n) / 3, pts };
+	};
+	const padCount = spr => {
+		const s = rgba(spr);
+		let n = 0;
+		for (let y = 0; y < s.h; y++)
+			for (let x = 0; x < s.w / 2; x++) {
+				const i = y * s.w + x;
+				if (s.alpha(i) > 0 && s.grey(i) > 106 && s.grey(i) <= 170) n++;
+			}
+		return n;
 	};
 	it("clipped to the diaper's padding (inside the garment, outlines and rips left clean)", () => {
 		const check = (ov, spr, line) => {
@@ -249,5 +268,53 @@ describe("soiled overlays: art", () => {
 		assert.ok(poo.cy > pee.cy + 5, `poo ${poo.cy} below pee ${pee.cy}`);
 		const dry = stats(join(root, P, "size8/full-heavy-poo.png"));
 		assert.ok(poo.bot > dry.bot + 20, "seat stain hangs lower on the sagged picture");
+	});
+	it("covers more of the padding at every intensity; heavy both covers most of the diaper", () => {
+		const P = "imagepacks/au/clothes/under-lower/plussoil/dp";
+		const pad = padCount(join(root, "imagepacks/au/clothes/under-lower/plusdphyper/size15/full.png"));
+		const frac = (l, t) => stats(join(root, P, "size15", `full-${l}-${t}.png`)).n / pad;
+		assert.ok(frac("light", "pee") >= 0.2 && frac("light", "poo") >= 0.15, "light still a clear patch");
+		assert.ok(frac("medium", "pee") >= 0.45 && frac("medium", "poo") >= 0.3, "medium covers a large area");
+		assert.ok(frac("heavy", "pee") >= 0.6, `heavy pee most of the crotch: ${frac("heavy", "pee")}`);
+		assert.ok(frac("heavy", "poo") >= 0.45, `heavy poo most of the seat: ${frac("heavy", "poo")}`);
+		assert.ok(frac("heavy", "both") >= 0.7, `heavy both most of the diaper: ${frac("heavy", "both")}`);
+		// base sag too
+		const bpad = padCount(join(root, "img/clothes/under-lower/plusdphyper/sag4/full.png"));
+		const bboth = stats(join(root, "img/clothes/under-lower/plusdphyper/sag4/soil-full-heavy-both.png")).n / bpad;
+		assert.ok(bboth >= 0.7, `base heavy both ${bboth}`);
+	});
+	it("stains are dingy and darker toward the centre, with uneven blotchy edges", () => {
+		const P = "imagepacks/au/clothes/under-lower/plussoil/dp/size15";
+		const pee = stats(join(root, P, "full-heavy-pee.png"));
+		const poo = stats(join(root, P, "full-heavy-poo.png"));
+		assert.ok(pee.lum < 160, `pee should be dingy amber, not pale yellow (${pee.lum})`);
+		assert.ok(poo.lum < 90, `poo should be a dark muddy brown (${poo.lum})`);
+		const coreVsEdge = st => {
+			let core = 0,
+				nC = 0,
+				edge = 0,
+				nE = 0,
+				ringR = [];
+			for (const [x, y, a, i] of st.pts) {
+				const d = Math.hypot(x - st.cx, y - st.cy);
+				const L = (st.o.px[i * 4] + st.o.px[i * 4 + 1] + st.o.px[i * 4 + 2]) / 3;
+				if (d < 12) {
+					core += L;
+					nC++;
+				} else if (d > 22) {
+					edge += L;
+					nE++;
+				}
+				if (a > 50 && a < 140) ringR.push(d);
+			}
+			const mean = ringR.reduce((s, v) => s + v, 0) / Math.max(1, ringR.length);
+			const varr = ringR.reduce((s, v) => s + (v - mean) ** 2, 0) / Math.max(1, ringR.length);
+			return { core: core / Math.max(1, nC), edge: edge / Math.max(1, nE), ringStd: Math.sqrt(varr), nC, nE, nRing: ringR.length };
+		};
+		const pe = coreVsEdge(pee);
+		const po = coreVsEdge(poo);
+		assert.ok(pe.nC > 20 && pe.nE > 20 && pe.core < pe.edge - 8, `pee core ${pe.core} should be darker than edge ${pe.edge}`);
+		assert.ok(po.nC > 20 && po.nE > 20 && po.core < po.edge - 5, `poo core ${po.core} should be darker than edge ${po.edge}`);
+		assert.ok(pe.ringStd > 6 && po.ringStd > 6, `edges should be blotchy, not a smooth oval (std ${pe.ringStd} ${po.ringStd})`);
 	});
 });

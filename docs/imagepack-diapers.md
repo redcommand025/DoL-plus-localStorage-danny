@@ -138,12 +138,18 @@ So a dry Hyper (size 8) has no overlay, and Hyper goes light at sizes 9–10, me
 13–15. A full Hyper (size 15) with both shows heavy both.
 
 **Placement** (`devTools/generate-diaper-soil.py`, the same garment u/v mapping as prints, so stains stretch
-and drop with the sag): pee is a translucent yellow tint on the **crotch**, centred across the padding in
-its middle-lower part. Poo is a soft olive-brown discolouration on the **seat**. The sprites are front views,
-so the seat is drawn as the low, sagging bottom of the padding, rising from the bottom edge, slightly darker
-towards the bottom bulge. Both = both areas. Higher intensity covers more area and is stronger. Only padding
-tones are tinted: outlines, seams, rips, the waistband and the tapes stay clean.
+and drop with the sag): pee is a dingy amber to yellow-brown tint on the **crotch**, centred across the
+padding in its middle-lower part, darker toward the centre. Poo is a muddy brown discolouration on the
+**seat**. The sprites are front views, so the seat is drawn as the low, sagging bottom of the padding,
+rising from the bottom edge, darker toward the centre and the bottom bulge. Both = both areas; at heavy,
+the meeting zone is a muddy blend. Higher intensity covers more area and is stronger: light is already a
+clear patch, heavy pee covers most of the crotch, heavy poo most of the seat, and heavy both most of the
+diaper. Edges are uneven and blotchy (noise plus irregular tide-mark rings where the stain dries), not
+smooth ovals. Medium and heavy also add a faint dingy greying across the padding. The blotch pattern is
+sampled in garment (u, v) with a seed that is stable across size/sag pictures of the same garment, so it
+stretches with the sag instead of flickering. Only padding tones are tinted: outlines, seams, rips, the
+waistband and the tapes stay clean. A short clean band is left under the waistband.
 
 Files: `imagepacks/<pack>/clothes/under-lower/plussoil/<dp|cd|pu>/<size<N>|leak<N>>/<integrity>-<level>-<type>.png`
 (1,584 per pack) and `img/clothes/under-lower/<diaper>/[sag<N>/]soil-<integrity>-<level>-<type>.png` (3,240).
-The penis layer uses the `full` overlay. About 6.5 MB in total.
+The penis layer uses the `full` overlay. About 15 MB in total.
