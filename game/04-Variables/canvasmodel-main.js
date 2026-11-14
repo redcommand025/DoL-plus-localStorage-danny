@@ -3891,6 +3891,35 @@ Renderer.CanvasModels.main = {
 			masksrcfn(options) {
 				return options.underLowerMask;
 			},
+			/* Plus diaper prints: the native secondary pattern layer (acc-<integrity>-<pattern>.png), shown
+			 * only when a print is set, and routed to the size/sag picture by plusSagSrc. */
+			showfn(options) {
+				const w = options.worn.under_lower;
+				if (w.setup && w.setup.modder === "plusneeds" && w.setup.pattern_layer === "secondary") {
+					return options.show_clothes
+						&& w.index > 0
+						&& !options.belly_hides_under_lower
+						&& typeof window !== "undefined"
+						&& typeof window.plusDiaperPatternOf === "function"
+						&& !!window.plusDiaperPatternOf(typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
+				}
+				return options.show_clothes
+					&& w.index > 0
+					&& w.setup.accImage !== 0
+					&& w.setup.accessory === 1;
+			},
+			srcfn(options) {
+				const w = options.worn.under_lower;
+				const setup = w.setup;
+				const integrity = setup.accessory_integrity_img ? `-${w.integrity}` : '';
+				const pattern = w.pattern && setup.pattern_layer === "secondary" ? "-" + w.pattern?.replace(/ /g,"-") : '';
+				let src = `img/clothes/under-lower/${setup.variable}/acc${integrity}${pattern}.png`;
+				if (typeof window !== "undefined" && typeof window.plusSagSrc === "function") {
+					const wornItem = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+					src = window.plusSagSrc(src, wornItem);
+				}
+				return src;
+			},
 		}),
 		"under_lower_detail": genlayer_clothing_detail("under_lower", {
 			masksrcfn(options) {
@@ -3929,9 +3958,26 @@ Renderer.CanvasModels.main = {
 
 			//ToDo: expand the existing bulk images by providing a small bulge when `calculatePenisBulge()` is less than 8 (max is 15). check against pregnancy belly
 			srcfn(options) {
-				return `img/clothes/under-lower/${options.worn.under_lower.setup.variable}/acc-penis.png`;
+				const w = options.worn.under_lower;
+				if (w.setup.modder === "plusneeds" && w.pattern && typeof window !== "undefined" && typeof window.plusSagSrc === "function") {
+					/* Plus diaper print over the penis layer (same garment shape as full) */
+					const wornItem = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+					return window.plusSagSrc(`img/clothes/under-lower/${w.setup.variable}/acc-penis-${w.pattern.replace(/ /g,"-")}.png`, wornItem);
+				}
+				return `img/clothes/under-lower/${w.setup.variable}/acc-penis.png`;
 			},
 			showfn(options) {
+				const w = options.worn.under_lower;
+				if (w.setup && w.setup.modder === "plusneeds" && w.setup.pattern_layer === "secondary") {
+					return options.show_clothes
+						&& !options.belly_hides_under_lower
+						&& w.index > 0
+						&& w.setup.penis_img === 1
+						&& calculatePenisBulge() > 0
+						&& typeof window !== "undefined"
+						&& typeof window.plusDiaperPatternOf === "function"
+						&& !!window.plusDiaperPatternOf(typeof V !== "undefined" && V.worn ? V.worn.under_lower : null);
+				}
 				return options.show_clothes
 					&& !options.belly_hides_under_lower
 					&& options.worn.under_lower.index > 0

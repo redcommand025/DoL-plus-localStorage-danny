@@ -634,8 +634,42 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 			<</if>>
 		<</for>>
 		<br>
+		<<plusDiaperPrints>>
 	</div>
 	<</if>>
+<</widget>>
+
+/* Diaper prints: unlock a print once, then it is offered in the clothing shop's pattern picker, printed on
+ * packs bought here, or printed on clean diapers you already own. */
+<<widget "plusDiaperPrints">>
+	<<run plusDiaperPatternSync()>>
+	<span class="gold">Diaper prints</span> — buy a print once and it's yours: new packs come printed with it, and the shop's pattern picker offers it.
+	<br>
+	<<for _plusPrint range plusDiaperPatternDefs>>
+		<<capture _plusPrint>>
+			<<if plusDiaperPatternOwned(_plusPrint.id)>>
+				<span class="green">✓ _plusPrint.name</span> <span class="grey">(_plusPrint.desc)</span>
+			<<else>>
+				<<link `"Buy the " + _plusPrint.name + " print (£" + (_plusPrint.price / 100).toFixed(2) + ")"` "Plus Needs Diaper Print Buy">><<set $plusPrintBuy to _plusPrint.id>><<set $plusBuyReturn to $passage>><</link>>
+				<span class="grey">(_plusPrint.desc)</span>
+			<</if>>
+		<</capture>>
+		<br>
+	<</for>>
+	<<if $plusDiaperPatterns.length gt 0>>
+		<<set _plusPrintOpts to {"Plain": ""}>>
+		<<for _plusPrint range plusDiaperPatternDefs>><<if plusDiaperPatternOwned(_plusPrint.id)>><<set _plusPrintOpts[_plusPrint.name] to _plusPrint.id>><</if>><</for>>
+		<<if $plusDiaperPatternNext is undefined>><<set $plusDiaperPatternNext to "">><</if>>
+		Print for new packs and reprints: <<listbox "$plusDiaperPatternNext" autoselect>><<optionsfrom _plusPrintOpts>><</listbox>>
+		<br>
+		<<if plusDiaperWorn()>>
+			<<link "Print the diaper you're wearing (clean diapers only)" "Plus Needs Diaper Print Apply">><<set $plusPrintTarget to "worn">><<set $plusBuyReturn to $passage>><</link>>
+			<br>
+		<</if>>
+		<<link "Print the clean diapers in your wardrobe" "Plus Needs Diaper Print Apply">><<set $plusPrintTarget to "spares">><<set $plusBuyReturn to $passage>><</link>>
+		<br>
+	<</if>>
+	<br>
 <</widget>>
 
 :: Plus Needs Bladder Exercise [plusneeds]
@@ -666,6 +700,42 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 <br><br>
 <<getouticon>><<link [[Continue|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
 
+:: Plus Needs Diaper Print Buy [plusneeds]
+<<effects>>
+<<set _plusPB to plusDiaperPatternBuy($plusPrintBuy)>>
+<<if _plusPB.ok>>
+	You pay £<<print (_plusPB.price / 100).toFixed(2)>> for the _plusPB.name print. From now on you can have your diapers printed with it.
+<<elseif _plusPB.reason is "money">>
+	You can't afford the _plusPB.name print. It costs £<<print (_plusPB.price / 100).toFixed(2)>>.
+<<elseif _plusPB.reason is "owned">>
+	You already have the _plusPB.name print.
+<<else>>
+	That print isn't available.
+<</if>>
+<br><br>
+<<getouticon>><<link [[Continue|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
+
+:: Plus Needs Diaper Print Apply [plusneeds]
+<<effects>>
+<<set _plusPrintId to plusDiaperPatternNext()>>
+<<set _plusPrintName to (_plusPrintId ? plusDiaperPatternName(_plusPrintId) : "plain")>>
+<<if $plusPrintTarget is "worn">>
+	<<if plusDiaperPatternApplyWorn(_plusPrintId)>>
+		<<if _plusPrintId>>The diaper you're wearing now has the _plusPrintName print.<<else>>The diaper you're wearing is plain again.<</if>>
+		<<updatesidebarimg>>
+	<<else>>
+		Only a clean diaper can be printed.
+	<</if>>
+<<else>>
+	<<set _plusPrintN to plusDiaperPatternApplySpares(_plusPrintId)>>
+	<<if _plusPrintN gt 0>>
+		_plusPrintN clean <<print _plusPrintN is 1 ? "diaper in your wardrobe now has" : "diapers in your wardrobe now have">> <<if _plusPrintId>>the _plusPrintName print<<else>>no print<</if>>.
+	<<else>>
+		There are no clean diapers in your wardrobe to change.
+	<</if>>
+<</if>>
+<br><br>
+<<getouticon>><<link [[Continue|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
 
 :: Widgets Plus Needs Attitudes [widget plusneeds]
 <<widget "plusDiaperInsecurity">>

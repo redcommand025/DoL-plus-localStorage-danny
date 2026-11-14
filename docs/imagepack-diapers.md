@@ -78,3 +78,46 @@ manifest and that each diaper's waistband and centre line up with the pack's bri
 
 Not covered: Mysterious only replaces `sex/` art, and diapers have no combat sprites (combat uses
 the `plainpanties` reference), so neither needed pack diapers.
+
+## Diaper prints (native pattern layer)
+
+Fifteen original prints can be bought at every counter that sells Plus diapers (`<<plusDiaperShop>>`: the
+clothing shop, the pharmacy and the adult shop), in a "Diaper prints" section under the packs. A print is
+bought once (`$plusDiaperPatterns`), then:
+
+- chosen as the "print for new packs" (`$plusDiaperPatternNext`); packs bought afterwards come printed;
+- printed on the diaper you're wearing or on every clean diaper in your wardrobe (clean diapers only);
+- offered by the native clothing shop's pattern picker and shown in the wardrobe's "(colour pattern)" label,
+  because every Plus diaper's `pattern_options` is kept at `["plain", ...owned prints]`
+  (`plusDiaperPatternSync`, on passage start and after a purchase).
+
+| Print         | Price  |     | Print                  | Price  |
+| ------------- | ------ | --- | ---------------------- | ------ |
+| Starry Dreams | £9.00  |     | Rainbow Clouds         | £11.00 |
+| Dino Stomp    | £10.00 |     | Pastel Plaid           | £12.00 |
+| Paw Parade    | £8.00  |     | Photo Reel (unique)    | £15.00 |
+| Bunny Meadow  | £9.00  |     | Autumn Leaves (unique) | £13.00 |
+| Little Crowns | £12.00 |     | Ocean Waves (unique)   | £13.00 |
+| Croc Smiles   | £10.00 |     | Galaxy Swirl (unique)  | £16.00 |
+| Puppy Pals    | £10.00 |     | Polka Pop (unique)     | £7.00  |
+| Candy Hearts  | £8.00  |     |                        |        |
+
+All prints are original artwork (common baby-print themes plus five unique designs); no third-party
+artwork, logos or product names.
+
+**Rendering.** The print is the base game's clothing pattern: `item.pattern` holds the print id ("plain" =
+none), the item setup has `pattern_layer: "secondary"` and `accessory_integrity_img: 1`, so the native
+accessory layer draws `acc-<integrity>-<pattern>.png` on top of the diaper (untinted, and see-through when
+wet like the diaper itself). `plusSagSrc` routes that path to the overlay matching the diaper picture:
+
+- image packs: `pluspatterns/<dp|cd|pu>/<size<N>|leak<N>>/<integrity>-<print>.png` (one per category and
+  size picture, as those pictures are identical within a category);
+- base sprites: `<diaper>/[sag<N>/]acc-<integrity>-<print>.png`;
+- the penis layer uses the `full` overlay.
+
+**Stretching.** `devTools/generate-diaper-prints.py` maps each picture's garment to (u, v): u across each
+row between the garment's left and right edge, v from waistband to bottom. Prints are sampled at
+`(u·width/2, v·length)` where width and length grow with the garment to the power 0.4, so motifs get taller
+and follow the bulge as the diaper sags. Only padding tones are printed (outlines, seams, rips, waistband and
+tapes stay), and the print colour is multiplied by the diaper's shading. Overlays: 2,640 per pack
+(au, aumasc) and 5,400 base, about 11 MB in total.

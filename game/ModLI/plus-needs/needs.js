@@ -1905,6 +1905,11 @@ window.plusNowTs = function () {
 					accessory: 0,
 					accessory_colour: 0,
 					accessory_colour_options: [],
+					/* prints (plusDiaperPatternDefs) use the native secondary pattern layer: item.pattern ->
+					 * acc-<integrity>-<pattern>.png on the uncoloured accessory layer, routed by plusSagSrc */
+					pattern_layer: "secondary",
+					accessory_integrity_img: 1,
+					pattern_options: ["plain"], // + owned prints (plusDiaperPatternSync)
 					penis_img: 1,
 					high_img: 0,
 					cursed: 0,
@@ -2267,6 +2272,8 @@ window.plusNowTs = function () {
 			const it = JSON.parse(JSON.stringify(tpl));
 			window.plusDiaperInit(it);
 			it.colour = (it.colour_options && it.colour_options[0]) || it.colour;
+			const print = window.plusDiaperPatternNext ? window.plusDiaperPatternNext() : "";
+			it.pattern = print || "plain"; // native pattern field ("plain" = no print)
 			V.wardrobe.under_lower.push(it);
 		}
 		if (typeof statChange !== "undefined" && statChange.money) statChange.money(-info.price, "plusneeds");
@@ -2599,27 +2606,131 @@ window.plusNowTs = function () {
 		}
 		return out;
 	};
-	const SAG_SRC = /^(img\/clothes\/under-lower\/plus[a-z]+)\/((?:full|frayed|torn|tattered|penis)\.png)$/;
+	const SAG_SRC = /^(img\/clothes\/under-lower\/(plus[a-z]+))\/((?:full|frayed|torn|tattered|penis)\.png)$/;
+	const PRINT_SRC = /^(img\/clothes\/under-lower\/(plus[a-z]+))\/acc-(full|frayed|torn|tattered|penis)-([a-z0-9-]+)\.png$/;
+	const CAT_KEY = { [P]: "dp", [C]: "cd", [U]: "pu" };
 	window.plusSagSrc = function (src, it) {
 		try {
 			if (typeof src !== "string") return src;
 			const item = it && it.name ? it : window.plusDiaperWorn && window.plusDiaperWorn();
 			if (!item) return src;
+			const IP = window.ImagePacks;
+			const packHas = p => !!(IP && typeof IP.resolve === "function" && IP.resolve(p) !== p);
+			const key = window.plusSagSizeKey(item);
+			const tier = window.plusSagTier(item);
+			const pm = PRINT_SRC.exec(src);
+			if (pm) {
+				/* prints: image packs share one overlay per category and size picture; base sprites have one per
+				 * diaper folder and sag tier. The penis layer uses the full overlay (same garment shape). */
+				const integrity = pm[3] === "penis" ? "full" : pm[3];
+				const d = def(item);
+				if (key && d) {
+					const shared = `img/clothes/under-lower/pluspatterns/${CAT_KEY[d.cat]}/${key}/${integrity}-${pm[4]}.png`;
+					if (packHas(shared)) return shared;
+				}
+				return `${pm[1]}/${tier > 0 ? `sag${tier}/` : ""}acc-${integrity}-${pm[4]}.png`;
+			}
 			const m = SAG_SRC.exec(src);
 			if (!m) return src;
 			/* image packs: one picture per concealment size, when the active pack has it */
-			const key = window.plusSagSizeKey(item);
-			const IP = window.ImagePacks;
-			if (key && IP && typeof IP.resolve === "function") {
-				const sized = `${m[1]}/${key}/${m[2]}`;
-				if (IP.resolve(sized) !== sized) return sized;
+			if (key) {
+				const sized = `${m[1]}/${key}/${m[3]}`;
+				if (packHas(sized)) return sized;
 			}
 			/* base sprites: 5 sag tiers by fill */
-			const tier = window.plusSagTier(item);
-			return tier > 0 ? `${m[1]}/sag${tier}/${m[2]}` : src;
+			return tier > 0 ? `${m[1]}/sag${tier}/${m[3]}` : src;
 		} catch (e) {
 			return src;
 		}
+	};
+	/* ---- Diaper prints. Bought once at any shop that sells diapers (unlocks the print), then printed on
+	 * packs bought afterwards or on clean diapers you own. Original kid-print designs; the first ten follow
+	 * common baby-print themes, the last five are unique to this game. ---- */
+	const PRINTS = [
+		["starry dreams", "Starry Dreams", 900, "Pastel stars and little moons."],
+		["dino stomp", "Dino Stomp", 1000, "Chubby green and teal dinosaurs."],
+		["paw parade", "Paw Parade", 800, "Rows of tiny paw prints."],
+		["bunny meadow", "Bunny Meadow", 900, "Lavender bunnies with floppy ears."],
+		["little crowns", "Little Crowns", 1200, "Gold crowns with ruby gems."],
+		["croc smiles", "Croc Smiles", 1000, "Grinning little crocodiles."],
+		["puppy pals", "Puppy Pals", 1000, "Round puppy faces with floppy ears."],
+		["candy hearts", "Candy Hearts", 800, "Pink and red hearts."],
+		["rainbow clouds", "Rainbow Clouds", 1100, "Rainbows peeking over blue clouds."],
+		["pastel plaid", "Pastel Plaid", 1200, "Soft blue, pink and cream plaid."],
+		["photo reel", "Photo Reel", 1500, "Film strips and tiny cameras."],
+		["autumn leaves", "Autumn Leaves", 1300, "Falling maple and oak leaves."],
+		["ocean waves", "Ocean Waves", 1300, "Rolling blue waves."],
+		["galaxy swirl", "Galaxy Swirl", 1600, "A deep purple galaxy full of stars."],
+		["polka pop", "Polka Pop", 700, "Bright mint, coral and yellow polka dots."],
+	];
+	const PRINT_DEF = {};
+	window.plusDiaperPatternDefs = PRINTS.map(
+		([id, name, price, desc], i) => (PRINT_DEF[id] = { id, name, price, desc, unique: i >= 10, file: id.replace(/ /g, "-") })
+	);
+	const owned = () => {
+		const V = State.variables;
+		if (!Array.isArray(V.plusDiaperPatterns)) V.plusDiaperPatterns = [];
+		return V.plusDiaperPatterns;
+	};
+	window.plusDiaperPatternOwned = id => owned().includes(id);
+	/* The native pattern list of every Plus diaper (setup.clothes pattern_options) is "plain" plus the prints
+	 * you own, so the clothing shop's pattern picker, the wardrobe's "(colour pattern)" label and native
+	 * equips offer exactly the unlocked prints. */
+	window.plusDiaperPatternSync = function () {
+		if (typeof setup === "undefined" || !setup.clothes || !Array.isArray(setup.clothes.under_lower)) return 0;
+		const list = ["plain", ...window.plusDiaperPatternDefs.map(p => p.id).filter(id => owned().includes(id))];
+		let n = 0;
+		for (const c of setup.clothes.under_lower)
+			if (c && c.modder === "plusneeds" && c.pattern_layer === "secondary") {
+				c.pattern_options = list.slice();
+				n++;
+			}
+		return n;
+	};
+	window.plusDiaperPatternName = id => (PRINT_DEF[id] ? PRINT_DEF[id].name : "plain");
+	window.plusDiaperPatternOf = it => (it && def(it) && PRINT_DEF[it.pattern] ? it.pattern : 0);
+	window.plusDiaperPatternBuy = function (id) {
+		const V = State.variables;
+		const p = PRINT_DEF[id];
+		if (!p) return { ok: false, reason: "item" };
+		if (owned().includes(id)) return { ok: false, reason: "owned", ...p };
+		if (!Number.isFinite(V.money) || V.money < p.price) return { ok: false, reason: "money", ...p };
+		if (typeof statChange !== "undefined" && statChange.money) statChange.money(-p.price, "plusneeds");
+		else V.money -= p.price;
+		owned().push(id);
+		window.plusDiaperPatternSync();
+		return { ok: true, ...p };
+	};
+	/* Print used for packs bought from now on ("" = plain). */
+	window.plusDiaperPatternSetNext = function (id) {
+		const V = State.variables;
+		if (id && !owned().includes(id)) return false;
+		V.plusDiaperPatternNext = id || "";
+		return true;
+	};
+	window.plusDiaperPatternNext = function () {
+		const V = State.variables;
+		const id = V.plusDiaperPatternNext;
+		return id && PRINT_DEF[id] && owned().includes(id) ? id : "";
+	};
+	const clean = it => !(it.plusMl > 0) && !(it.plusLb > 0) && !it.plusOverflow;
+	/* Print on one diaper (owned print, clean diaper only; "" removes it). */
+	window.plusDiaperPatternApply = function (it, id) {
+		if (!it || !def(it)) return false;
+		if (id && (!PRINT_DEF[id] || !owned().includes(id))) return false;
+		window.plusDiaperInit(it);
+		if (!clean(it)) return false;
+		it.pattern = id || "plain";
+		return true;
+	};
+	window.plusDiaperPatternApplyWorn = id => window.plusDiaperPatternApply(window.plusDiaperWorn(), id);
+	/* Print on every clean diaper in the wardrobe; returns how many changed. */
+	window.plusDiaperPatternApplySpares = function (id) {
+		const W = State.variables.wardrobe;
+		if (!W || !Array.isArray(W.under_lower)) return 0;
+		let n = 0;
+		for (const it of W.under_lower) if (def(it) && window.plusDiaperPatternOf(it) !== (id || 0) && window.plusDiaperPatternApply(it, id)) n++;
+		return n;
 	};
 	/* Official clothing srcfn (genlayer_clothing_main / under_lower_penis) calls plusSagSrc.
 	 * Do not wrap Renderer.CanvasModels.main.layers after init. */
@@ -2675,6 +2786,7 @@ window.plusNowTs = function () {
 		const V = State.variables;
 		try {
 			window.plusConcealSetup();
+			if (V && window.plusDiaperPatternSync) window.plusDiaperPatternSync();
 			if (!V || V.intro || !V.worn || V.combat === 1) return;
 			const it = window.plusDiaperWorn();
 			if (it) window.plusSwellUpdate(it);
