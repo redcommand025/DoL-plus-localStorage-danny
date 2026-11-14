@@ -2609,6 +2609,7 @@ window.plusNowTs = function () {
 	const SAG_SRC = /^(img\/clothes\/under-lower\/(plus[a-z]+))\/((?:full|frayed|torn|tattered|penis)\.png)$/;
 	const PRINT_SRC = /^(img\/clothes\/under-lower\/(plus[a-z]+))\/acc-(full|frayed|torn|tattered|penis)-([a-z0-9-]+)\.png$/;
 	const CAT_KEY = { [P]: "dp", [C]: "cd", [U]: "pu" };
+	const SOIL_SRC = /^(img\/clothes\/under-lower\/(plus[a-z]+))\/soil-(full|frayed|torn|tattered|penis)-(light|medium|heavy)-(pee|poo|both)\.png$/;
 	window.plusSagSrc = function (src, it) {
 		try {
 			if (typeof src !== "string") return src;
@@ -2618,6 +2619,17 @@ window.plusNowTs = function () {
 			const packHas = p => !!(IP && typeof IP.resolve === "function" && IP.resolve(p) !== p);
 			const key = window.plusSagSizeKey(item);
 			const tier = window.plusSagTier(item);
+			const sm = SOIL_SRC.exec(src);
+			if (sm) {
+				/* soiled overlays: same routing as prints (pack: per category and size picture; base: sag tier) */
+				const integrity = sm[3] === "penis" ? "full" : sm[3];
+				const d = def(item);
+				if (key && d) {
+					const shared = `img/clothes/under-lower/plussoil/${CAT_KEY[d.cat]}/${key}/${integrity}-${sm[4]}-${sm[5]}.png`;
+					if (packHas(shared)) return shared;
+				}
+				return `${sm[1]}/${tier > 0 ? `sag${tier}/` : ""}soil-${integrity}-${sm[4]}-${sm[5]}.png`;
+			}
 			const pm = PRINT_SRC.exec(src);
 			if (pm) {
 				/* prints: image packs share one overlay per category and size picture; base sprites have one per
@@ -2731,6 +2743,32 @@ window.plusNowTs = function () {
 		let n = 0;
 		for (const it of W.under_lower) if (def(it) && window.plusDiaperPatternOf(it) !== (id || 0) && window.plusDiaperPatternApply(it, id)) n++;
 		return n;
+	};
+	/* ---- Soiled overlays. One of 9 per diaper picture, drawn above the diaper (and its print):
+	 *   type      pee (only ml held), poo (only solids held), both;
+	 *   intensity from how full it is (plusDiaperFillFrac, the same fill that drives the sag/size picture):
+	 *             >0 to <1/3 light, 1/3 to <2/3 medium, 2/3 and over (or overflowing) heavy.
+	 * Empty = no overlay. Pee discolours the crotch (centre of the padding), poo the seat (the low,
+	 * sagging bottom of the padding); both = both areas. E.g. a dry Hyper (size 8) shows nothing and a
+	 * full one (size 15) heavy both. ---- */
+	window.plusDiaperSoilLevels = ["light", "medium", "heavy"];
+	window.plusDiaperSoil = function (it) {
+		if (!it || !def(it)) return null;
+		init(it);
+		const pee = it.plusMl > 0;
+		const poo = it.plusLb > 0;
+		if (!pee && !poo) return null;
+		const f = it.plusOverflow ? 1 : window.plusDiaperFillFrac(it);
+		if (!(f > 0)) return null;
+		const level = f >= 2 / 3 - 1e-9 ? "heavy" : f >= 1 / 3 - 1e-9 ? "medium" : "light";
+		const type = pee && poo ? "both" : pee ? "pee" : "poo";
+		return { level, type, key: `${level}-${type}` };
+	};
+	/* Paper-doll source for the soiled layer (integrity: full/frayed/torn/tattered, or penis). */
+	window.plusDiaperSoilSrc = function (it, integrity) {
+		const s = window.plusDiaperSoil(it);
+		if (!s) return "";
+		return window.plusSagSrc(`img/clothes/under-lower/${def(it).variable}/soil-${integrity}-${s.key}.png`, it);
 	};
 	/* Official clothing srcfn (genlayer_clothing_main / under_lower_penis) calls plusSagSrc.
 	 * Do not wrap Renderer.CanvasModels.main.layers after init. */

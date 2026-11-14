@@ -3921,6 +3921,35 @@ Renderer.CanvasModels.main = {
 				return src;
 			},
 		}),
+		/* Plus diaper soiled overlay (plusDiaperSoil): above the diaper and its print, untinted, with the
+		 * diaper's own alpha so it goes see-through when wet like the garment. */
+		"under_lower_soil": {
+			animation: "idle",
+			filters: [],
+			zfn(options) {
+				return (options.worn.lower.setup.high_img ? ZIndices.under_lower_high : ZIndices.under_lower) + 0.5;
+			},
+			alphafn(options) {
+				return options.worn.under_lower.alpha;
+			},
+			srcfn(options) {
+				const w = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+				return window.plusDiaperSoilSrc(w, options.worn.under_lower.integrity);
+			},
+			showfn(options) {
+				const w = options.worn.under_lower;
+				return !!(options.show_clothes
+					&& w.index > 0
+					&& w.setup && w.setup.modder === "plusneeds"
+					&& !options.belly_hides_under_lower
+					&& typeof window !== "undefined"
+					&& typeof window.plusDiaperSoil === "function"
+					&& window.plusDiaperSoil(typeof V !== "undefined" && V.worn ? V.worn.under_lower : null));
+			},
+			masksrcfn(options) {
+				return options.underLowerMask;
+			},
+		},
 		"under_lower_detail": genlayer_clothing_detail("under_lower", {
 			masksrcfn(options) {
 				return options.underLowerMask;
@@ -3984,6 +4013,33 @@ Renderer.CanvasModels.main = {
 					&& options.worn.under_lower.setup.penis_acc_img === 1
 					&& options.worn.under_lower.setup.accessory === 1
 					&& calculatePenisBulge() > 0;
+			},
+			masksrcfn(options) {
+				return options.underLowerMask;
+			},
+		},
+		"under_lower_penis_soil": {
+			animation: "idle",
+			filters: [],
+			z: ZIndices.under_lower_top + 0.5,
+			alphafn(options) {
+				return options.worn.under_lower.alpha;
+			},
+			srcfn(options) {
+				const w = typeof V !== "undefined" && V.worn ? V.worn.under_lower : null;
+				return window.plusDiaperSoilSrc(w, "penis");
+			},
+			showfn(options) {
+				const w = options.worn.under_lower;
+				return !!(options.show_clothes
+					&& w.index > 0
+					&& w.setup && w.setup.modder === "plusneeds"
+					&& w.setup.penis_img === 1
+					&& !options.belly_hides_under_lower
+					&& calculatePenisBulge() > 0
+					&& typeof window !== "undefined"
+					&& typeof window.plusDiaperSoil === "function"
+					&& window.plusDiaperSoil(typeof V !== "undefined" && V.worn ? V.worn.under_lower : null));
 			},
 			masksrcfn(options) {
 				return options.underLowerMask;

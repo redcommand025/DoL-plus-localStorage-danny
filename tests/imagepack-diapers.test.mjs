@@ -24,7 +24,7 @@ function walk(dir, rel = "") {
 	for (const name of readdirSync(dir)) {
 		const p = join(dir, name);
 		if (statSync(p).isDirectory()) out.push(...walk(p, rel + name + "/"));
-		else if (name.endsWith(".png") && !name.startsWith("acc-")) out.push(rel + name); // acc-* = print overlays (diaper-prints test)
+		else if (name.endsWith(".png") && !name.startsWith("acc-") && !name.startsWith("soil-")) out.push(rel + name); // acc-* prints, soil-* soiled overlays (own tests)
 	}
 	return out;
 }
