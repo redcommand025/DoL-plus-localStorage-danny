@@ -138,8 +138,8 @@ So a dry Hyper (size 8) has no overlay, and Hyper goes light at sizes 9–10, me
 13–15. A full Hyper (size 15) with both shows heavy both.
 
 **Placement** (`devTools/generate-diaper-soil.py`, the same garment u/v mapping as prints, so stains stretch
-and drop with the sag): pee is a dingy amber to yellow-brown tint on the **crotch**, centred across the
-padding in its middle-lower part, darker toward the centre. Poo is a muddy brown discolouration on the
+and drop with the sag): pee is a dingy yellow tint on the **crotch**, centred across the
+padding in its middle-lower part, darker yellow toward the centre. Poo is a muddy brown discolouration on the
 **seat**. The sprites are front views, so the seat is drawn as the low, sagging bottom of the padding,
 rising from the bottom edge, darker toward the centre and the bottom bulge. Both = both areas; at heavy,
 the meeting zone is a muddy blend. Higher intensity covers more area and is stronger: light is already a

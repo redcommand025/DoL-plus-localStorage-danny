@@ -287,7 +287,19 @@ describe("soiled overlays: art", () => {
 		const P = "imagepacks/au/clothes/under-lower/plussoil/dp/size15";
 		const pee = stats(join(root, P, "full-heavy-pee.png"));
 		const poo = stats(join(root, P, "full-heavy-poo.png"));
-		assert.ok(pee.lum < 160, `pee should be dingy amber, not pale yellow (${pee.lum})`);
+		assert.ok(pee.lum < 160, `pee should be dingy, not a pale clean yellow (${pee.lum})`);
+		let pr = 0,
+			pg = 0,
+			pb = 0;
+		for (const [, , , i] of pee.pts) {
+			pr += pee.o.px[i * 4];
+			pg += pee.o.px[i * 4 + 1];
+			pb += pee.o.px[i * 4 + 2];
+		}
+		pr /= pee.pts.length;
+		pg /= pee.pts.length;
+		pb /= pee.pts.length;
+		assert.ok(pg / pr >= 0.8 && pb < pg * 0.4, `pee should be yellow, not orange (rgb ${pr.toFixed(0)},${pg.toFixed(0)},${pb.toFixed(0)})`);
 		assert.ok(poo.lum < 90, `poo should be a dark muddy brown (${poo.lum})`);
 		const coreVsEdge = st => {
 			let core = 0,
@@ -313,7 +325,18 @@ describe("soiled overlays: art", () => {
 		};
 		const pe = coreVsEdge(pee);
 		const po = coreVsEdge(poo);
-		assert.ok(pe.nC > 20 && pe.nE > 20 && pe.core < pe.edge - 8, `pee core ${pe.core} should be darker than edge ${pe.edge}`);
+		// Tide-mark rings also darken, so compare the centre to the solid outer body (high alpha, far from the centroid), not to every far pixel.
+		let outer = 0,
+			nO = 0;
+		for (const [x, y, a, i] of pee.pts) {
+			const d = Math.hypot(x - pee.cx, y - pee.cy);
+			if (a > 160 && d > 30) {
+				outer += (pee.o.px[i * 4] + pee.o.px[i * 4 + 1] + pee.o.px[i * 4 + 2]) / 3;
+				nO++;
+			}
+		}
+		outer /= Math.max(1, nO);
+		assert.ok(pe.nC > 20 && nO > 20 && pe.core < outer - 8, `pee core ${pe.core} should be darker than the outer yellow ${outer}`);
 		assert.ok(po.nC > 20 && po.nE > 20 && po.core < po.edge - 5, `poo core ${po.core} should be darker than edge ${po.edge}`);
 		assert.ok(pe.ringStd > 6 && po.ringStd > 6, `edges should be blotchy, not a smooth oval (std ${pe.ringStd} ${po.ringStd})`);
 	});

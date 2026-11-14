@@ -4,7 +4,7 @@
 Garment-level discolouration, clearly soiled and dirty, but still stains on the fabric only
 (no shapes, lumps or graphic detail):
 
-  * pee  - a dingy amber to yellow-brown tint on the CROTCH, darker toward the centre,
+  * pee  - a dingy yellow tint on the CROTCH, darker yellow toward the centre,
            covering most of the crotch at heavy;
   * poo  - a muddy brown discolouration on the SEAT (front view: the low, sagging bottom
            of the padding), darker toward the centre and the bottom bulge, covering most
@@ -40,8 +40,8 @@ LEVELS = ["light", "medium", "heavy"]
 TYPES = ["pee", "poo", "both"]
 
 # Dirtier, less transparent colours. Edge is the outer stain; core is the darker centre.
-PEE_EDGE = np.array([212, 146, 34], float)
-PEE_CORE = np.array([150, 88, 16], float)
+PEE_EDGE = np.array([222, 198, 42], float)
+PEE_CORE = np.array([176, 148, 18], float)
 POO_EDGE = np.array([102, 72, 34], float)
 POO_CORE = np.array([52, 34, 16], float)
 GRIME = np.array([90, 82, 68], float)
