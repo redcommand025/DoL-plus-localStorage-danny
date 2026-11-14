@@ -70,6 +70,68 @@ fill (`plusSagTier`: sag1 25%, sag2 50%, sag3 75%, sag4 full, sag5 overflowing),
 path is ever requested. The base tiers still drive the sag messages. The base game's wet-clothing
 transparency still applies to diapers (kept on purpose).
 
+## Can hide (derived from the pack sprites)
+
+Each lower / over_lower garment has a "Can hide" value on the same 0-15 scale. A diaper is
+visible when `size > Can hide` (or when nothing is worn there). Noticing is still 3% per size
+point over, capped at 25%: the measurements did not suggest changing that.
+
+The size-by-fill mapping above is unchanged. After the fit fix the pack pictures still grow in
+length, not width: size 1 sits at the crotch (bottom y103, width 31), a dry Hyper (size 8) is
+above the knees (y137, width 35), size 13 reaches the feet (y190 vs feet y191), and size 15 hangs
+past them (y213). Base (no-pack) sag pictures are shorter and wider than the pack set (a dry
+Hyper is bottom 147 / width 44 at 2×); they keep their 5 fill tiers and are not used for Can hide.
+
+`devTools/diaper-concealment-table.py` measures every pack `size<N>` (the union of every model's
+cut at that size, plus leak15 for extents) against each garment's pack `full.png` on both `au` and
+`aumasc`. A size is hidden when it stays inside the garment's **outer silhouette**:
+
+- it does not hang more than 10px below the hem, and
+- at rows above the hem, its left and right edges stay within 2px of the garment's outer
+  left/right (with a 24px budget for leftover outline slivers).
+
+The gap between trouser legs is treated as inside the garment, so a crotch curve sitting in the
+inseam is not "sticking out." Open-front clothes (a monk's habit, gift wrap, a patient gown whose
+skirt starts at the hips) can score 0 even when they are long. Cloth cuts are slightly wider than
+plastic ones, so the union can make a garment lose a size that a plastic diaper alone would still
+hide (jeans hide 6 because cloth size 7 is a little wider). A pack file that is actually 128px
+tall, or a 2× base sprite, is not measured on the pack doll (it would sit too low and to the
+right); those items get a first-match keyword median from the pack-measured clothes. Empty or stub
+pack files (an aumasc sprite with a handful of pixels) are ignored in favour of the real one.
+
+Effective conceal is still the max of worn `lower` and `over_lower`. Re-run
+`python3 devTools/diaper-concealment-table.py --write` after changing diaper or clothing art;
+`--preview` writes cropped threshold pictures to `/workspace/diaper-pack-previews/concealment/`.
+
+| Garment                                 |       old Can hide | new Can hide | notes                                           |
+| --------------------------------------- | -----------------: | -----------: | ----------------------------------------------- |
+| gym bloomers                            |                  0 |            0 | hem at the crotch; even size 1 peeks out        |
+| leather miniskirt                       |                  3 |            2 | hem y108, covers size 2                         |
+| shorts                                  |                  1 |            3 | hem y113, covers size 3                         |
+| school shorts                           |                  1 |            3 | hem y115                                        |
+| cycle shorts                            |                  0 |            3 | hem y112                                        |
+| witch skirt                             | 15 (robe fallback) |            3 | hem y116; the item is a short skirt, not a robe |
+| school skirt                            |                  7 |            5 | hem y123                                        |
+| shortalls                               |                  5 |            5 | hem y124                                        |
+| jeans                                   |                  4 |            6 | long, but cloth size 7 is slightly wider        |
+| trousers / school trousers / yoga pants |          4 / 4 / 0 |            6 | same slim-leg envelope as jeans                 |
+| cargo pants                             |                 11 |            8 | baggy enough for a dry Hyper                    |
+| long skirt                              |                 10 |            9 | hem y150; size 10 peeks under the hem           |
+| kimono skirt                            |                 10 |            9 | hem y184, slightly open at the front            |
+| overall bottoms                         |                 12 |           12 | hem y178, wide                                  |
+| wide leg trousers                       |                  6 |           12 | wide enough to hide until size 13 hangs out     |
+| pyjama bottoms                          |                  6 |           12 | same                                            |
+| maid skirt                              |                  8 |           12 | hem y178, wide                                  |
+| evening gown skirt                      |                 15 |           12 | hem y186; size 13 reaches the feet              |
+| bathrobe bottom                         |                 15 |           12 | hem y189                                        |
+| hanfu skirt                             |                 10 |           13 | covers up to the feet                           |
+| patient gown skirt                      |                  8 |            0 | pack skirt starts at the hips, waistband shows  |
+
+There is no "baggy jeans" or "mini skirt" item. Close real items: low-rise jeans 6, micro pleated
+skirt 4. Names without a pack-native sprite use the fallback medians (tight 3, mini 3, shorts 3,
+skirt 4, dress 5, baggy 6, trousers 6, overall 7, sweat 8, long_over 10, long 11; slot defaults
+lower 5, over_lower 13).
+
 Legacy sprite folders without a shop model use a current model's sizes (`plusdiaper`,
 `plusdiapersmall`, `plusdiaperlarge` -> plastic Medium/Small/Large, `plusclothdiaper` -> cloth
 Medium, `pluspullup` -> pull-up Medium).

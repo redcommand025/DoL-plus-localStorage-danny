@@ -227,8 +227,9 @@ describe("plus-needs behavioral matrix", () => {
 		const items = window.plusDiaperItems();
 		setup.clothes.under_lower = items;
 		assert.ok(items.every(it => String(it.iconFile).startsWith("plusneeds/")));
-		assert.equal(window.plusConcealOf({ name: "jeans", type: ["normal"] }, "lower"), 4);
-		assert.equal(window.plusConcealOf({ name: "school skirt", type: ["normal"] }, "lower"), 7);
-		assert.equal(window.plusConcealOf({ name: "micro skirt", type: ["normal"] }, "lower"), 1);
+		assert.equal(window.plusConcealOf({ name: "jeans", type: ["normal"] }, "lower"), 6);
+		assert.equal(window.plusConcealOf({ name: "school skirt", type: ["normal"] }, "lower"), 5);
+		assert.equal(window.plusConcealOf({ name: "leather miniskirt", type: ["normal"] }, "lower"), 2);
+		assert.equal(window.plusConcealOf({ name: "micro skirt", type: ["normal"] }, "lower"), 3);
 	});
 });

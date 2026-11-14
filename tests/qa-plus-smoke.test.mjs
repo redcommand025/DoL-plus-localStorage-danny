@@ -671,23 +671,26 @@ describe("QA plus-needs behavioral cases", () => {
 		assert.equal(second, "");
 	});
 
-	it("QA-B066 [behavioral] jeans conceal 4 and gym bloomers conceal 0", () => {
+	it("QA-B066 [behavioral] jeans conceal 6 and gym bloomers conceal 0", () => {
 		const { window } = loadNeeds();
-		assert.equal(window.plusConcealOf({ name: "jeans", type: ["normal"] }, "lower"), 4);
+		assert.equal(window.plusConcealOf({ name: "jeans", type: ["normal"] }, "lower"), 6);
 		assert.equal(window.plusConcealOf({ name: "gym bloomers", type: ["normal"] }, "lower"), 0);
-		assert.equal(window.plusConcealOf({ name: "witch robe", type: ["normal"] }, "over_lower"), 15);
+		assert.equal(window.plusConcealOf({ name: "witch robe", type: ["normal"] }, "over_lower"), 10);
 	});
 
-	it("QA-B067 [behavioral] a medium plastic diaper stays hidden under jeans until it outgrows size 4", () => {
+	it("QA-B067 [behavioral] a medium plastic diaper stays hidden under jeans until it outgrows size 6", () => {
 		const ctx = loadNeeds();
 		const it = wearNamed(ctx, "plastic-backed diaper (Medium)");
 		it.plusMl = 0;
 		const hidden = ctx.window.plusDiaperVisibility();
-		assert.equal(hidden.conceal, 4);
+		assert.equal(hidden.conceal, 6);
+		assert.equal(hidden.size, 3);
+		assert.equal(hidden.visible, false);
 		it.plusMl = it.plusCapMl;
 		it.plusOverflow = 1;
 		const shown = ctx.window.plusDiaperVisibility();
-		assert.ok(shown.size >= hidden.size);
+		assert.equal(shown.size, 7);
+		assert.equal(shown.visible, true);
 	});
 
 	it("QA-B068 [behavioral] sag tiers map empty, 25%, 50%, 75%, full, and overflow", () => {

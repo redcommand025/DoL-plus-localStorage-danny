@@ -1,0 +1,7256 @@
+{
+  "method": "outer-silhouette",
+  "side_slack": 2,
+  "below_tolerance": 10,
+  "side_tolerance": 24,
+  "landmarks": {
+    "au": {
+      "pack": "au",
+      "waist": 89,
+      "briefs_bottom": 101,
+      "crotch": 102,
+      "hips": 97,
+      "hip_w": 29,
+      "hip_span": [
+        90,
+        119
+      ],
+      "knees": 146,
+      "feet": 191
+    },
+    "aumasc": {
+      "pack": "aumasc",
+      "waist": 89,
+      "briefs_bottom": 101,
+      "crotch": 102,
+      "hips": 97,
+      "hip_w": 29,
+      "hip_span": [
+        90,
+        119
+      ],
+      "knees": 146,
+      "feet": 191
+    }
+  },
+  "sizes": {
+    "au": [
+      {
+        "key": "size1",
+        "models": 1,
+        "y0": 88,
+        "bottom": 103,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 21,
+        "crotch_w": 9,
+        "beyond_hips": -4.0,
+        "bulge": -10.0,
+        "below_crotch": 1,
+        "below_knees": -43,
+        "below_feet": -88,
+        "rel": "at crotch"
+      },
+      {
+        "key": "size2",
+        "models": 5,
+        "y0": 88,
+        "bottom": 108,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
+        "crotch_w": 25,
+        "beyond_hips": 1.0,
+        "bulge": -2.0,
+        "below_crotch": 6,
+        "below_knees": -38,
+        "below_feet": -83,
+        "rel": "above knees"
+      },
+      {
+        "key": "size3",
+        "models": 10,
+        "y0": 88,
+        "bottom": 113,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 33,
+        "crotch_w": 29,
+        "beyond_hips": 2.0,
+        "bulge": 0.0,
+        "below_crotch": 11,
+        "below_knees": -33,
+        "below_feet": -78,
+        "rel": "above knees"
+      },
+      {
+        "key": "size4",
+        "models": 13,
+        "y0": 88,
+        "bottom": 118,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 33,
+        "crotch_w": 31,
+        "beyond_hips": 2.0,
+        "bulge": 1.0,
+        "below_crotch": 16,
+        "below_knees": -28,
+        "below_feet": -73,
+        "rel": "above knees"
+      },
+      {
+        "key": "size5",
+        "models": 12,
+        "y0": 88,
+        "bottom": 122,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 33,
+        "crotch_w": 33,
+        "beyond_hips": 2.0,
+        "bulge": 2.0,
+        "below_crotch": 20,
+        "below_knees": -24,
+        "below_feet": -69,
+        "rel": "above knees"
+      },
+      {
+        "key": "size6",
+        "models": 9,
+        "y0": 88,
+        "bottom": 127,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 33,
+        "crotch_w": 33,
+        "beyond_hips": 2.0,
+        "bulge": 2.0,
+        "below_crotch": 25,
+        "below_knees": -19,
+        "below_feet": -64,
+        "rel": "above knees"
+      },
+      {
+        "key": "size7",
+        "models": 8,
+        "y0": 88,
+        "bottom": 132,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 31,
+        "crotch_w": 33,
+        "beyond_hips": 1.0,
+        "bulge": 2.0,
+        "below_crotch": 30,
+        "below_knees": -14,
+        "below_feet": -59,
+        "rel": "above knees"
+      },
+      {
+        "key": "size8",
+        "models": 5,
+        "y0": 88,
+        "bottom": 137,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 31,
+        "crotch_w": 33,
+        "beyond_hips": 1.0,
+        "bulge": 2.0,
+        "below_crotch": 35,
+        "below_knees": -9,
+        "below_feet": -54,
+        "rel": "above knees"
+      },
+      {
+        "key": "size9",
+        "models": 5,
+        "y0": 88,
+        "bottom": 142,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 31,
+        "crotch_w": 33,
+        "beyond_hips": 1.0,
+        "bulge": 2.0,
+        "below_crotch": 40,
+        "below_knees": -4,
+        "below_feet": -49,
+        "rel": "above knees"
+      },
+      {
+        "key": "size10",
+        "models": 3,
+        "y0": 88,
+        "bottom": 152,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
+        "below_crotch": 50,
+        "below_knees": 6,
+        "below_feet": -39,
+        "rel": "above feet"
+      },
+      {
+        "key": "size11",
+        "models": 3,
+        "y0": 88,
+        "bottom": 163,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 31,
+        "beyond_hips": 0.0,
+        "bulge": 1.0,
+        "below_crotch": 61,
+        "below_knees": 17,
+        "below_feet": -28,
+        "rel": "above feet"
+      },
+      {
+        "key": "size12",
+        "models": 2,
+        "y0": 88,
+        "bottom": 176,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 31,
+        "beyond_hips": 0.0,
+        "bulge": 1.0,
+        "below_crotch": 74,
+        "below_knees": 30,
+        "below_feet": -15,
+        "rel": "above feet"
+      },
+      {
+        "key": "size13",
+        "models": 2,
+        "y0": 88,
+        "bottom": 190,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 31,
+        "beyond_hips": 0.0,
+        "bulge": 1.0,
+        "below_crotch": 88,
+        "below_knees": 44,
+        "below_feet": -1,
+        "rel": "at feet"
+      },
+      {
+        "key": "size14",
+        "models": 1,
+        "y0": 88,
+        "bottom": 202,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 29,
+        "beyond_hips": 0.0,
+        "bulge": 0.0,
+        "below_crotch": 100,
+        "below_knees": 56,
+        "below_feet": 11,
+        "rel": "past feet"
+      },
+      {
+        "key": "size15",
+        "models": 1,
+        "y0": 88,
+        "bottom": 213,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 29,
+        "beyond_hips": 0.0,
+        "bulge": 0.0,
+        "below_crotch": 111,
+        "below_knees": 67,
+        "below_feet": 22,
+        "rel": "past feet"
+      },
+      {
+        "key": "leak15",
+        "models": 1,
+        "y0": 88,
+        "bottom": 216,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 29,
+        "beyond_hips": 0.0,
+        "bulge": 0.0,
+        "below_crotch": 114,
+        "below_knees": 70,
+        "below_feet": 25,
+        "rel": "past feet"
+      }
+    ],
+    "aumasc": [
+      {
+        "key": "size1",
+        "models": 1,
+        "y0": 88,
+        "bottom": 103,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 21,
+        "crotch_w": 9,
+        "beyond_hips": -4.0,
+        "bulge": -10.0,
+        "below_crotch": 1,
+        "below_knees": -43,
+        "below_feet": -88,
+        "rel": "at crotch"
+      },
+      {
+        "key": "size2",
+        "models": 5,
+        "y0": 88,
+        "bottom": 108,
+        "x0": 89,
+        "x1": 120,
+        "width": 31,
+        "hip_w": 31,
+        "crotch_w": 25,
+        "beyond_hips": 1.0,
+        "bulge": -2.0,
+        "below_crotch": 6,
+        "below_knees": -38,
+        "below_feet": -83,
+        "rel": "above knees"
+      },
+      {
+        "key": "size3",
+        "models": 10,
+        "y0": 88,
+        "bottom": 113,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 33,
+        "crotch_w": 29,
+        "beyond_hips": 2.0,
+        "bulge": 0.0,
+        "below_crotch": 11,
+        "below_knees": -33,
+        "below_feet": -78,
+        "rel": "above knees"
+      },
+      {
+        "key": "size4",
+        "models": 13,
+        "y0": 88,
+        "bottom": 118,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 33,
+        "crotch_w": 31,
+        "beyond_hips": 2.0,
+        "bulge": 1.0,
+        "below_crotch": 16,
+        "below_knees": -28,
+        "below_feet": -73,
+        "rel": "above knees"
+      },
+      {
+        "key": "size5",
+        "models": 12,
+        "y0": 88,
+        "bottom": 122,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 33,
+        "crotch_w": 33,
+        "beyond_hips": 2.0,
+        "bulge": 2.0,
+        "below_crotch": 20,
+        "below_knees": -24,
+        "below_feet": -69,
+        "rel": "above knees"
+      },
+      {
+        "key": "size6",
+        "models": 9,
+        "y0": 88,
+        "bottom": 127,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 33,
+        "crotch_w": 33,
+        "beyond_hips": 2.0,
+        "bulge": 2.0,
+        "below_crotch": 25,
+        "below_knees": -19,
+        "below_feet": -64,
+        "rel": "above knees"
+      },
+      {
+        "key": "size7",
+        "models": 8,
+        "y0": 88,
+        "bottom": 132,
+        "x0": 88,
+        "x1": 121,
+        "width": 33,
+        "hip_w": 31,
+        "crotch_w": 33,
+        "beyond_hips": 1.0,
+        "bulge": 2.0,
+        "below_crotch": 30,
+        "below_knees": -14,
+        "below_feet": -59,
+        "rel": "above knees"
+      },
+      {
+        "key": "size8",
+        "models": 5,
+        "y0": 88,
+        "bottom": 137,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 31,
+        "crotch_w": 33,
+        "beyond_hips": 1.0,
+        "bulge": 2.0,
+        "below_crotch": 35,
+        "below_knees": -9,
+        "below_feet": -54,
+        "rel": "above knees"
+      },
+      {
+        "key": "size9",
+        "models": 5,
+        "y0": 88,
+        "bottom": 142,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 31,
+        "crotch_w": 33,
+        "beyond_hips": 1.0,
+        "bulge": 2.0,
+        "below_crotch": 40,
+        "below_knees": -4,
+        "below_feet": -49,
+        "rel": "above knees"
+      },
+      {
+        "key": "size10",
+        "models": 3,
+        "y0": 88,
+        "bottom": 152,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 31,
+        "crotch_w": 31,
+        "beyond_hips": 1.0,
+        "bulge": 1.0,
+        "below_crotch": 50,
+        "below_knees": 6,
+        "below_feet": -39,
+        "rel": "above feet"
+      },
+      {
+        "key": "size11",
+        "models": 3,
+        "y0": 88,
+        "bottom": 163,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 31,
+        "beyond_hips": 0.0,
+        "bulge": 1.0,
+        "below_crotch": 61,
+        "below_knees": 17,
+        "below_feet": -28,
+        "rel": "above feet"
+      },
+      {
+        "key": "size12",
+        "models": 2,
+        "y0": 88,
+        "bottom": 176,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 31,
+        "beyond_hips": 0.0,
+        "bulge": 1.0,
+        "below_crotch": 74,
+        "below_knees": 30,
+        "below_feet": -15,
+        "rel": "above feet"
+      },
+      {
+        "key": "size13",
+        "models": 2,
+        "y0": 88,
+        "bottom": 190,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 31,
+        "beyond_hips": 0.0,
+        "bulge": 1.0,
+        "below_crotch": 88,
+        "below_knees": 44,
+        "below_feet": -1,
+        "rel": "at feet"
+      },
+      {
+        "key": "size14",
+        "models": 1,
+        "y0": 88,
+        "bottom": 202,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 29,
+        "beyond_hips": 0.0,
+        "bulge": 0.0,
+        "below_crotch": 100,
+        "below_knees": 56,
+        "below_feet": 11,
+        "rel": "past feet"
+      },
+      {
+        "key": "size15",
+        "models": 1,
+        "y0": 88,
+        "bottom": 213,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 29,
+        "beyond_hips": 0.0,
+        "bulge": 0.0,
+        "below_crotch": 111,
+        "below_knees": 67,
+        "below_feet": 22,
+        "rel": "past feet"
+      },
+      {
+        "key": "leak15",
+        "models": 1,
+        "y0": 88,
+        "bottom": 216,
+        "x0": 87,
+        "x1": 122,
+        "width": 35,
+        "hip_w": 29,
+        "crotch_w": 29,
+        "beyond_hips": 0.0,
+        "bulge": 0.0,
+        "below_crotch": 114,
+        "below_knees": 70,
+        "below_feet": 25,
+        "rel": "past feet"
+      }
+    ]
+  },
+  "base_sag": {
+    "plusdphyper": [
+      {
+        "tier": "dry",
+        "path": "img/clothes/under-lower/plusdphyper/full.png",
+        "y0": 114,
+        "bottom": 147,
+        "width": 44,
+        "x0": 96,
+        "x1": 140
+      },
+      {
+        "tier": "sag1",
+        "path": "img/clothes/under-lower/plusdphyper/sag1/full.png",
+        "y0": 114,
+        "bottom": 151,
+        "width": 50,
+        "x0": 92,
+        "x1": 142
+      },
+      {
+        "tier": "sag2",
+        "path": "img/clothes/under-lower/plusdphyper/sag2/full.png",
+        "y0": 114,
+        "bottom": 159,
+        "width": 56,
+        "x0": 90,
+        "x1": 146
+      },
+      {
+        "tier": "sag3",
+        "path": "img/clothes/under-lower/plusdphyper/sag3/full.png",
+        "y0": 114,
+        "bottom": 175,
+        "width": 66,
+        "x0": 84,
+        "x1": 150
+      },
+      {
+        "tier": "sag4",
+        "path": "img/clothes/under-lower/plusdphyper/sag4/full.png",
+        "y0": 114,
+        "bottom": 183,
+        "width": 72,
+        "x0": 80,
+        "x1": 152
+      },
+      {
+        "tier": "sag5",
+        "path": "img/clothes/under-lower/plusdphyper/sag5/full.png",
+        "y0": 114,
+        "bottom": 183,
+        "width": 66,
+        "x0": 84,
+        "x1": 150
+      }
+    ],
+    "plusdpm": [
+      {
+        "tier": "dry",
+        "bottom": 143,
+        "width": 36,
+        "y0": 116
+      },
+      {
+        "tier": "sag1",
+        "bottom": 145,
+        "width": 40,
+        "y0": 116
+      },
+      {
+        "tier": "sag2",
+        "bottom": 149,
+        "width": 42,
+        "y0": 116
+      },
+      {
+        "tier": "sag3",
+        "bottom": 155,
+        "width": 46,
+        "y0": 116
+      },
+      {
+        "tier": "sag4",
+        "bottom": 159,
+        "width": 46,
+        "y0": 116
+      },
+      {
+        "tier": "sag5",
+        "bottom": 163,
+        "width": 46,
+        "y0": 116
+      }
+    ]
+  },
+  "items": {
+    "sundress skirt": 5,
+    "pyjama bottoms": 12,
+    "towel skirt": 3,
+    "waist apron": 1,
+    "shorts": 3,
+    "school shorts": 3,
+    "school skirt": 5,
+    "plant skirt": 0,
+    "evening gown skirt": 12,
+    "ballgown skirt": 11,
+    "kimono skirt": 9,
+    "mini kimono skirt": 3,
+    "maid skirt": 12,
+    "nun's habit skirt": 12,
+    "large towel bottom": 8,
+    "tuxedo trousers": 6,
+    "board shorts": 4,
+    "breeches": 9,
+    "long cut skirt": 12,
+    "short cut skirt": 4,
+    "cycle shorts": 3,
+    "jeans": 6,
+    "trousers": 6,
+    "long skirt": 9,
+    "miniskirt": 3,
+    "long school skirt": 11,
+    "short school skirt": 3,
+    "school trousers": 6,
+    "oversized sweater bottom": 0,
+    "witch skirt": 3,
+    "denim shorts": 2,
+    "girl's oversized sweater bottom": 0,
+    "christmas trousers": 4,
+    "christmas skirt": 6,
+    "monk's habit skirt": 0,
+    "cowboy chaps": 10,
+    "belly dancer's bottoms": 5,
+    "straightjacket bottom": 5,
+    "khakis": 6,
+    "patterned skirt": 5,
+    "overall bottoms": 12,
+    "cheongsam skirt": 3,
+    "short cheongsam skirt": 3,
+    "micro pleated skirt": 4,
+    "chinos": 6,
+    "gothic skirt": 13,
+    "gothic trousers": 7,
+    "waiter's trousers": 6,
+    "lederhosen bottoms": 5,
+    "karate trousers": 6,
+    "sailor trousers": 7,
+    "sailor shorts": 4,
+    "foreign football shorts": 3,
+    "gym bloomers": 0,
+    "chapette breeches": 6,
+    "cheerleading skirt": 4,
+    "mummy skirt": 0,
+    "diving suit bottom": 6,
+    "classic sundress skirt": 5,
+    "classic school shorts": 4,
+    "classic school skirt": 2,
+    "classic gothic skirt": 13,
+    "scout shorts": 4,
+    "football shorts": 4,
+    "star pyjama shorts": 4,
+    "moon pyjama bottoms": 4,
+    "sweatpants": 11,
+    "catsuit bottoms": 6,
+    "kilt": 5,
+    "bathrobe bottom": 12,
+    "rag skirt": 0,
+    "retro trousers": 6,
+    "retro shorts": 4,
+    "monster skirt": 4,
+    "keyhole skirt": 3,
+    "booty jorts": 1,
+    "prison trousers": 7,
+    "prison jumpsuit trousers": 7,
+    "patient gown skirt": 0,
+    "cow onesie bottoms": 5,
+    "cow print chaps": 10,
+    "baseball shorts": 3,
+    "scarecrow skirt": 4,
+    "waitress skirt": 4,
+    "split dress skirt": 3,
+    "skimpy lolita skirt": 1,
+    "short ballgown skirt": 11,
+    "slacks": 6,
+    "nurse skirt": 4,
+    "plastic nurse skirt": 4,
+    "transparent nurse skirt": 4,
+    "hanfu skirt": 13,
+    "open shoulder sweater bottom": 0,
+    "cocoon bottom": 5,
+    "skeleton bottoms": 5,
+    "futuristic bodysuit pants": 7,
+    "pencil miniskirt": 5,
+    "lace nightgown skirt": 4,
+    "ao dai trousers": 6,
+    "traditional maid skirt": 11,
+    "Victorian maid skirt": 11,
+    "shrine maiden skirt": 12,
+    "plaid school skirt": 5,
+    "plaid school trousers": 6,
+    "plaid school shorts": 4,
+    "school pinafore": 5,
+    "plaid school pinafore": 5,
+    "wide leg trousers": 12,
+    "straight leg trousers": 12,
+    "yoga pants": 6,
+    "virgin killer skirt": 4,
+    "halter sundress skirt": 5,
+    "leather skirt": 1,
+    "jean miniskirt": 3,
+    "dolphin shorts": 2,
+    "simple school skirt": 4,
+    "lolita skirt": 7,
+    "gym shorts": 2,
+    "shortalls": 5,
+    "jingle-bell skirt": 6,
+    "sleeveless jingle-bell skirt": 6,
+    "leather miniskirt": 2,
+    "leather pants": 6,
+    "leather shorts": 3,
+    "sexy nun's habit skirt": 3,
+    "sexy priest's shorts": 4,
+    "oversized button-down bottom": 0,
+    "suit trousers": 6,
+    "puffy shorts": 3,
+    "bloomers": 2,
+    "harem pants": 11,
+    "sexy butler shorts": 1,
+    "cargo pants": 8,
+    "high-waisted skirt": 4,
+    "classic lolita skirt": 0,
+    "jumpsuit trousers": 7,
+    "ragged dress skirt": 12,
+    "bedsheet skirt": 9,
+    "pimp suit trousers": 6,
+    "loose pyjama bottoms": 12,
+    "pleated joggers": 8,
+    "baggy pleated joggers": 6,
+    "short keyhole cheongsam skirt": 3,
+    "cut skirt": 6,
+    "pencil skirt": 7,
+    "seaweed skirt": 0,
+    "open-side skort": 3,
+    "slim-fit cargo pants": 7,
+    "camo cargo shorts": 4,
+    "low rise jeans": 6,
+    "tracksuit bottoms": 11,
+    "belted shorts": 2,
+    "baggy shorts": 3,
+    "twill joggers": 11,
+    "vintage skirt": 4,
+    "vintage pants": 6,
+    "chain tunic skirt": 0,
+    "initiate's robe skirt": 10,
+    "long nun's habit skirt": 12,
+    "novice nun's habit skirt": 9,
+    "lolita nun's habit skirt": 8,
+    "avowed nun's habit skirt": 9,
+    "evangelist's bloomers": 3,
+    "confessor's robe skirt": 12,
+    "confessor's habit skirt": 12,
+    "exorcist's cassock trousers": 9,
+    "exorcist's habit skirt": 1,
+    "monk's sparring loincloth": 1,
+    "nun's sparring skirt": 1,
+    "gothic witch skirt": 0,
+    "pumpkin skirt": 4,
+    "gift wrap bottom": 0,
+    "unbound straightjacket bottom": 5,
+    "serafuku dress skirt": 5,
+    "janet dress skirt": 9,
+    "swan lake skirt": 3,
+    "fancy swan lake skirt": 3,
+    "butterfly dress skirt": 7,
+    "succubus lower back wings": 0,
+    "rose wedding dress skirt": 0,
+    "mini rose wedding dress skirt": 4,
+    "rose wedding suit trousers": 6,
+    "frilly rose wedding suit trousers": 0,
+    "ruffled long skirt": 11,
+    "preppy skirt uniform": 4,
+    "preppy shorts uniform": 3,
+    "lolita maid": 5,
+    "ribbon nightgown": 10,
+    "mermaid dress": 5,
+    "nightgown": 10,
+    "princess dress": 5,
+    "puff sleeve a-line dress": 5,
+    "rococo midi dress": 5,
+    "cardigan sailor uniform": 5,
+    "sheer lace pyjama": 8,
+    "tie front dress": 5,
+    "big bow skirt": 4,
+    "checkered lace skirt": 4,
+    "checkered skirt": 4,
+    "dirndl skirt": 4,
+    "dirndl skirt with apron": 4,
+    "layered skirt": 4,
+    "lolita lace nightgown": 10,
+    "suspender long lace skirt": 11,
+    "suspender skirt": 4,
+    "striped sweater": 8,
+    "milkmaid dress": 5,
+    "off-shoulder sweater dress": 5,
+    "lolita dress": 5,
+    "ruffled nightgown": 10,
+    "chain-belt skirt": 4,
+    "collar dress": 5,
+    "floral sundress": 5,
+    "frilled sundress": 5,
+    "denim pinafore": 5,
+    "denim skirt": 4,
+    "unbuttoned shorts": 3,
+    "froggy skirt": 0,
+    "kaiju bottoms": 13
+  },
+  "measured": [
+    {
+      "name": "sundress skirt",
+      "variable": "sundress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 124,
+      "hem_aumasc": 124,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 124,
+          "n": 1594,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 124,
+          "n": 1594,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "pyjama bottoms",
+      "variable": "pjs",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 176,
+      "hem_aumasc": 176,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2609,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2609,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "towel skirt",
+      "variable": "towel",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 115,
+      "hem_aumasc": 115,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 115,
+          "n": 845,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 115,
+          "n": 845,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "waist apron",
+      "variable": "waistapron",
+      "slot": "lower",
+      "hide": 1,
+      "source": "pack",
+      "hem_au": 126,
+      "hem_aumasc": 126,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 126,
+          "n": 965,
+          "hide": 1,
+          "first_visible": 2
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 126,
+          "n": 965,
+          "hide": 1,
+          "first_visible": 2
+        }
+      }
+    },
+    {
+      "name": "shorts",
+      "variable": "shorts",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 113,
+      "hem_aumasc": 113,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 113,
+          "n": 818,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 113,
+          "n": 818,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "school shorts",
+      "variable": "schoolshorts",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 115,
+      "hem_aumasc": 115,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 115,
+          "n": 817,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 115,
+          "n": 817,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "school skirt",
+      "variable": "schoolskirt",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 123,
+      "hem_aumasc": 123,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 123,
+          "n": 1216,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 123,
+          "n": 1216,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "plant skirt",
+      "variable": "plant",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 127,
+      "hem_aumasc": 127,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 127,
+          "n": 531,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 127,
+          "n": 531,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "evening gown skirt",
+      "variable": "eveninggown",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 186,
+      "hem_aumasc": 186,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 186,
+          "n": 3474,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 186,
+          "n": 3474,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "ballgown skirt",
+      "variable": "ballgown",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 179,
+      "hem_aumasc": 179,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 179,
+          "n": 4511,
+          "hide": 11,
+          "first_visible": 12
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 179,
+          "n": 4511,
+          "hide": 11,
+          "first_visible": 12
+        }
+      }
+    },
+    {
+      "name": "kimono skirt",
+      "variable": "kimono",
+      "slot": "lower",
+      "hide": 9,
+      "source": "pack",
+      "hem_au": 184,
+      "hem_aumasc": 184,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 184,
+          "n": 3420,
+          "hide": 9,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 184,
+          "n": 3420,
+          "hide": 9,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "mini kimono skirt",
+      "variable": "kimonomini",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 113,
+      "hem_aumasc": 113,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 113,
+          "n": 855,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 113,
+          "n": 855,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "maid skirt",
+      "variable": "maid",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 3392,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 3392,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "nun's habit skirt",
+      "variable": "nun",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 187,
+      "hem_aumasc": 187,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 187,
+          "n": 3670,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 187,
+          "n": 3670,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "large towel bottom",
+      "variable": "towellarge",
+      "slot": "lower",
+      "hide": 8,
+      "source": "pack",
+      "hem_au": 140,
+      "hem_aumasc": 140,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 140,
+          "n": 1547,
+          "hide": 8,
+          "first_visible": 9
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 140,
+          "n": 1547,
+          "hide": 8,
+          "first_visible": 9
+        }
+      }
+    },
+    {
+      "name": "tuxedo trousers",
+      "variable": "tuxedo",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2076,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2076,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "board shorts",
+      "variable": "boardshorts",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 120,
+      "hem_aumasc": 120,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 120,
+          "n": 961,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 120,
+          "n": 961,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "breeches",
+      "variable": "breeches",
+      "slot": "lower",
+      "hide": 9,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2074,
+          "hide": 9,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2074,
+          "hide": 9,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "long cut skirt",
+      "variable": "cutskirtlong",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 179,
+      "hem_aumasc": 179,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 179,
+          "n": 2939,
+          "hide": 12,
+          "first_visible": 11
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 179,
+          "n": 2939,
+          "hide": 12,
+          "first_visible": 11
+        }
+      }
+    },
+    {
+      "name": "short cut skirt",
+      "variable": "cutskirtshort",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 118,
+      "hem_aumasc": 118,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 118,
+          "n": 1033,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 118,
+          "n": 1033,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "cycle shorts",
+      "variable": "cycleshorts",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 112,
+      "hem_aumasc": 112,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 112,
+          "n": 677,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 112,
+          "n": 677,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "jeans",
+      "variable": "jeans",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 181,
+      "hem_aumasc": 181,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 181,
+          "n": 2272,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 181,
+          "n": 2272,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "trousers",
+      "variable": "trousers",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 176,
+      "hem_aumasc": 176,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2187,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2187,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "long skirt",
+      "variable": "longskirt",
+      "slot": "lower",
+      "hide": 9,
+      "source": "pack",
+      "hem_au": 150,
+      "hem_aumasc": 150,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 150,
+          "n": 2235,
+          "hide": 9,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 150,
+          "n": 2235,
+          "hide": 9,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "miniskirt",
+      "variable": "miniskirt",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 114,
+      "hem_aumasc": 114,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 114,
+          "n": 1092,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 114,
+          "n": 1092,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "long school skirt",
+      "variable": "schoolskirtlong",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 170,
+      "hem_aumasc": 170,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 170,
+          "n": 2728,
+          "hide": 11,
+          "first_visible": 12
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 170,
+          "n": 2728,
+          "hide": 11,
+          "first_visible": 12
+        }
+      }
+    },
+    {
+      "name": "short school skirt",
+      "variable": "schoolskirtshort",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 115,
+      "hem_aumasc": 115,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 115,
+          "n": 1012,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 115,
+          "n": 1012,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "school trousers",
+      "variable": "schooltrousers",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2041,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2041,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "oversized sweater bottom",
+      "variable": "sweaterlarge",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack-empty",
+      "hem_au": null,
+      "hem_aumasc": null,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "witch skirt",
+      "variable": "witch",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 116,
+      "hem_aumasc": 116,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 116,
+          "n": 1275,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 116,
+          "n": 1275,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "denim shorts",
+      "variable": "jorts",
+      "slot": "lower",
+      "hide": 2,
+      "source": "pack",
+      "hem_au": 121,
+      "hem_aumasc": 121,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 121,
+          "n": 756,
+          "hide": 2,
+          "first_visible": 3
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 121,
+          "n": 756,
+          "hide": 2,
+          "first_visible": 3
+        }
+      }
+    },
+    {
+      "name": "girl's oversized sweater bottom",
+      "variable": "pinksweaterlarge",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack-empty",
+      "hem_au": null,
+      "hem_aumasc": null,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "christmas trousers",
+      "variable": "christmas",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 121,
+      "hem_aumasc": 121,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 121,
+          "n": 972,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 121,
+          "n": 972,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "christmas skirt",
+      "variable": "christmasdress",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 127,
+      "hem_aumasc": 127,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 127,
+          "n": 1688,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 127,
+          "n": 1688,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "monk's habit skirt",
+      "variable": "monk",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 188,
+      "hem_aumasc": 188,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 188,
+          "n": 2211,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 188,
+          "n": 2211,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "cowboy chaps",
+      "variable": "cowboy",
+      "slot": "lower",
+      "hide": 10,
+      "source": "pack",
+      "hem_au": 160,
+      "hem_aumasc": 160,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 160,
+          "n": 2309,
+          "hide": 10,
+          "first_visible": 11
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 160,
+          "n": 2309,
+          "hide": 10,
+          "first_visible": 11
+        }
+      }
+    },
+    {
+      "name": "belly dancer's bottoms",
+      "variable": "belly",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 125,
+      "hem_aumasc": 125,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 125,
+          "n": 901,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 125,
+          "n": 901,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "straightjacket bottom",
+      "variable": "straightjacket",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 123,
+      "hem_aumasc": 123,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 123,
+          "n": 1175,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 123,
+          "n": 1175,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "khakis",
+      "variable": "khakis",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1859,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1859,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "patterned skirt",
+      "variable": "gingham",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 123,
+      "hem_aumasc": 123,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 123,
+          "n": 1330,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 123,
+          "n": 1330,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "overall bottoms",
+      "variable": "overalls",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2676,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2676,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "cheongsam skirt",
+      "variable": "cheongsam",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 182,
+      "hem_aumasc": 182,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 182,
+          "n": 2297,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 182,
+          "n": 2297,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "short cheongsam skirt",
+      "variable": "cheongsamshort",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 122,
+      "hem_aumasc": 122,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 122,
+          "n": 892,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 122,
+          "n": 892,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "micro pleated skirt",
+      "variable": "micropleatedskirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 119,
+      "hem_aumasc": 119,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 119,
+          "n": 639,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 119,
+          "n": 639,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "chinos",
+      "variable": "chinos",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1859,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1859,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "gothic skirt",
+      "variable": "gothic",
+      "slot": "lower",
+      "hide": 13,
+      "source": "pack",
+      "hem_au": 191,
+      "hem_aumasc": 170,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 191,
+          "n": 6138,
+          "hide": 13,
+          "first_visible": 14
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 170,
+          "n": 409,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "gothic trousers",
+      "variable": "gothictrousers",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 176,
+      "hem_aumasc": 176,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2379,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2379,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "waiter's trousers",
+      "variable": "waiter",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2151,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2151,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "lederhosen bottoms",
+      "variable": "leder",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "default",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "karate trousers",
+      "variable": "karate",
+      "slot": "lower",
+      "hide": 6,
+      "source": "base/fallback",
+      "fallback": "trousers",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "sailor trousers",
+      "variable": "sailortrousers",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2041,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2041,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "sailor shorts",
+      "variable": "sailorshorts",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 125,
+      "hem_aumasc": 125,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 125,
+          "n": 974,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 125,
+          "n": 974,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "foreign football shorts",
+      "variable": "football",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 112,
+      "hem_aumasc": 112,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 112,
+          "n": 739,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 112,
+          "n": 739,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "gym bloomers",
+      "variable": "gymbloomers",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 101,
+      "hem_aumasc": 101,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 101,
+          "n": 355,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 101,
+          "n": 355,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "chapette breeches",
+      "variable": "chapette",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1290,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1290,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "cheerleading skirt",
+      "variable": "cheerleader",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 117,
+      "hem_aumasc": 117,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 117,
+          "n": 1127,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 117,
+          "n": 1127,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "mummy skirt",
+      "variable": "mummy",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 112,
+      "hem_aumasc": 112,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 112,
+          "n": 524,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 112,
+          "n": 524,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "diving suit bottom",
+      "variable": "diving",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1990,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1990,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "classic sundress skirt",
+      "variable": "classicsundress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 124,
+      "hem_aumasc": 124,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 124,
+          "n": 1594,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 124,
+          "n": 1594,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "classic school shorts",
+      "variable": "classicschoolshorts",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 120,
+      "hem_aumasc": 120,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 120,
+          "n": 992,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 120,
+          "n": 992,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "classic school skirt",
+      "variable": "classicschoolskirt",
+      "slot": "lower",
+      "hide": 2,
+      "source": "pack",
+      "hem_au": 110,
+      "hem_aumasc": 110,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 110,
+          "n": 846,
+          "hide": 2,
+          "first_visible": 3
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 110,
+          "n": 846,
+          "hide": 2,
+          "first_visible": 3
+        }
+      }
+    },
+    {
+      "name": "classic gothic skirt",
+      "variable": "gothicold",
+      "slot": "lower",
+      "hide": 13,
+      "source": "pack",
+      "hem_au": 190,
+      "hem_aumasc": 190,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 190,
+          "n": 5481,
+          "hide": 13,
+          "first_visible": 14
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 190,
+          "n": 5481,
+          "hide": 13,
+          "first_visible": 14
+        }
+      }
+    },
+    {
+      "name": "scout shorts",
+      "variable": "scout",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 119,
+      "hem_aumasc": 119,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 119,
+          "n": 951,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 119,
+          "n": 951,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "football shorts",
+      "variable": "soccer",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 120,
+      "hem_aumasc": 120,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 120,
+          "n": 1090,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 120,
+          "n": 1090,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "star pyjama shorts",
+      "variable": "pjsstar",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 118,
+      "hem_aumasc": 118,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 118,
+          "n": 988,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 118,
+          "n": 988,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "moon pyjama bottoms",
+      "variable": "pjsmoon",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 118,
+      "hem_aumasc": 118,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 118,
+          "n": 988,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 118,
+          "n": 988,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "sweatpants",
+      "variable": "sweatpants",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2309,
+          "hide": 11,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2309,
+          "hide": 11,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "catsuit bottoms",
+      "variable": "catsuit",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1990,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1990,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "kilt",
+      "variable": "kilt",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 125,
+      "hem_aumasc": 125,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 125,
+          "n": 1398,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 125,
+          "n": 1398,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "bathrobe bottom",
+      "variable": "bathrobe",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 189,
+      "hem_aumasc": 189,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 189,
+          "n": 3546,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 189,
+          "n": 3546,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "rag skirt",
+      "variable": "rag",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 113,
+      "hem_aumasc": 113,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 113,
+          "n": 611,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 113,
+          "n": 611,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "retro trousers",
+      "variable": "retro",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1837,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1837,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "retro shorts",
+      "variable": "retroshorts",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 119,
+      "hem_aumasc": 119,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 119,
+          "n": 721,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 119,
+          "n": 721,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "monster skirt",
+      "variable": "monster",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "keyhole skirt",
+      "variable": "keyhole",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 116,
+      "hem_aumasc": 116,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 116,
+          "n": 972,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 116,
+          "n": 972,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "booty jorts",
+      "variable": "bootyjorts",
+      "slot": "lower",
+      "hide": 2,
+      "source": "pack",
+      "hem_au": 108,
+      "hem_aumasc": 108,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 108,
+          "n": 427,
+          "hide": 2,
+          "first_visible": 3
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 108,
+          "n": 427,
+          "hide": 2,
+          "first_visible": 3
+        }
+      }
+    },
+    {
+      "name": "prison trousers",
+      "variable": "prison",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2187,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2187,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "prison jumpsuit trousers",
+      "variable": "jumpsuit",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2187,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2187,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "patient gown skirt",
+      "variable": "patient",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 165,
+      "hem_aumasc": 165,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 165,
+          "n": 816,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 165,
+          "n": 816,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "cow onesie bottoms",
+      "variable": "cowonesie",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "default",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "cow print chaps",
+      "variable": "cowchaps",
+      "slot": "lower",
+      "hide": 10,
+      "source": "pack",
+      "hem_au": 159,
+      "hem_aumasc": 159,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 159,
+          "n": 2394,
+          "hide": 10,
+          "first_visible": 11
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 159,
+          "n": 2394,
+          "hide": 10,
+          "first_visible": 11
+        }
+      }
+    },
+    {
+      "name": "baseball shorts",
+      "variable": "baseball",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 112,
+      "hem_aumasc": 112,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 112,
+          "n": 788,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 112,
+          "n": 788,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "scarecrow skirt",
+      "variable": "scarecrow",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "waitress skirt",
+      "variable": "waitress",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 121,
+      "hem_aumasc": 121,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1412,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1412,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "split dress skirt",
+      "variable": "split",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 114,
+      "hem_aumasc": 114,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 114,
+          "n": 659,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 114,
+          "n": 659,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "skimpy lolita skirt",
+      "variable": "skimpylolita",
+      "slot": "lower",
+      "hide": 1,
+      "source": "pack",
+      "hem_au": 124,
+      "hem_aumasc": 124,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 124,
+          "n": 818,
+          "hide": 1,
+          "first_visible": 2
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 124,
+          "n": 818,
+          "hide": 1,
+          "first_visible": 2
+        }
+      }
+    },
+    {
+      "name": "short ballgown skirt",
+      "variable": "shortballgown",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 162,
+      "hem_aumasc": 162,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 162,
+          "n": 3125,
+          "hide": 11,
+          "first_visible": 12
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 162,
+          "n": 3125,
+          "hide": 11,
+          "first_visible": 12
+        }
+      }
+    },
+    {
+      "name": "slacks",
+      "variable": "slacks",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 185,
+      "hem_aumasc": 185,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 185,
+          "n": 2518,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 185,
+          "n": 2518,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "nurse skirt",
+      "variable": "pinknurse",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 121,
+      "hem_aumasc": 121,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1104,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1104,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "plastic nurse skirt",
+      "variable": "plasticnurse",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "transparent nurse skirt",
+      "variable": "transparentnurse",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 121,
+      "hem_aumasc": 121,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1104,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1104,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "hanfu skirt",
+      "variable": "hanfu",
+      "slot": "lower",
+      "hide": 13,
+      "source": "pack",
+      "hem_au": 190,
+      "hem_aumasc": 190,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 190,
+          "n": 4201,
+          "hide": 13,
+          "first_visible": 14
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 190,
+          "n": 4201,
+          "hide": 13,
+          "first_visible": 14
+        }
+      }
+    },
+    {
+      "name": "open shoulder sweater bottom",
+      "variable": "openshouldersweater",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack-empty",
+      "hem_au": null,
+      "hem_aumasc": null,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "cocoon bottom",
+      "variable": "cocoon",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "default",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "skeleton bottoms",
+      "variable": "skele",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "default",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "futuristic bodysuit pants",
+      "variable": "futuresuit",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 177,
+      "hem_aumasc": 177,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 177,
+          "n": 2000,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 177,
+          "n": 2000,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "pencil miniskirt",
+      "variable": "pencil",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 122,
+      "hem_aumasc": 122,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 122,
+          "n": 1152,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 122,
+          "n": 1152,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "lace nightgown skirt",
+      "variable": "lacegown",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 119,
+      "hem_aumasc": 119,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 119,
+          "n": 1158,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 119,
+          "n": 1158,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "ao dai trousers",
+      "variable": "ao dai",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2147,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2147,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "traditional maid skirt",
+      "variable": "traditionalmaid",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 169,
+      "hem_aumasc": 169,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 169,
+          "n": 3641,
+          "hide": 11,
+          "first_visible": 12
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 169,
+          "n": 3641,
+          "hide": 11,
+          "first_visible": 12
+        }
+      }
+    },
+    {
+      "name": "Victorian maid skirt",
+      "variable": "victorianmaid",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 169,
+      "hem_aumasc": 169,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 169,
+          "n": 3641,
+          "hide": 11,
+          "first_visible": 12
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 169,
+          "n": 3641,
+          "hide": 11,
+          "first_visible": 12
+        }
+      }
+    },
+    {
+      "name": "shrine maiden skirt",
+      "variable": "shrinemaiden",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 188,
+      "hem_aumasc": 188,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 188,
+          "n": 3722,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 188,
+          "n": 3722,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "plaid school skirt",
+      "variable": "schoolskirtplaid",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 123,
+      "hem_aumasc": 123,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 123,
+          "n": 1216,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 123,
+          "n": 1216,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "plaid school trousers",
+      "variable": "schooltrousersplaid",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2041,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2041,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "plaid school shorts",
+      "variable": "schoolshortsplaid",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 120,
+      "hem_aumasc": 120,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 120,
+          "n": 942,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 120,
+          "n": 942,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "school pinafore",
+      "variable": "pinafore",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 122,
+      "hem_aumasc": 122,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 122,
+          "n": 5457,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 122,
+          "n": 5457,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "plaid school pinafore",
+      "variable": "plaid pinafore",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 122,
+      "hem_aumasc": 122,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 122,
+          "n": 1254,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 122,
+          "n": 1254,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "wide leg trousers",
+      "variable": "wide leg trousers",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2771,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2771,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "straight leg trousers",
+      "variable": "straight trousers",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2442,
+          "hide": 12,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2442,
+          "hide": 12,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "yoga pants",
+      "variable": "yoga pants",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1837,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 1837,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "virgin killer skirt",
+      "variable": "virginkillerdress",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 120,
+      "hem_aumasc": null,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 120,
+          "n": 1091,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "halter sundress skirt",
+      "variable": "haltersundress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 124,
+      "hem_aumasc": 124,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 124,
+          "n": 1594,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 124,
+          "n": 1594,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "leather skirt",
+      "variable": "leatherdress",
+      "slot": "lower",
+      "hide": 1,
+      "source": "pack",
+      "hem_au": 106,
+      "hem_aumasc": 106,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 106,
+          "n": 594,
+          "hide": 1,
+          "first_visible": 2
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 106,
+          "n": 594,
+          "hide": 1,
+          "first_visible": 2
+        }
+      }
+    },
+    {
+      "name": "jean miniskirt",
+      "variable": "jean miniskirt",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 112,
+      "hem_aumasc": 112,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 112,
+          "n": 913,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 112,
+          "n": 913,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "dolphin shorts",
+      "variable": "dolphinshorts",
+      "slot": "lower",
+      "hide": 2,
+      "source": "pack",
+      "hem_au": 111,
+      "hem_aumasc": 111,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 111,
+          "n": 655,
+          "hide": 2,
+          "first_visible": 3
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 111,
+          "n": 655,
+          "hide": 2,
+          "first_visible": 3
+        }
+      }
+    },
+    {
+      "name": "simple school skirt",
+      "variable": "schoolskirt2",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 121,
+      "hem_aumasc": 121,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1156,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1156,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "long school skirt",
+      "variable": "schoolskirtlong2",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 170,
+      "hem_aumasc": 170,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 170,
+          "n": 2728,
+          "hide": 11,
+          "first_visible": 12
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 170,
+          "n": 2728,
+          "hide": 11,
+          "first_visible": 12
+        }
+      }
+    },
+    {
+      "name": "short school skirt",
+      "variable": "schoolskirtshort2",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 113,
+      "hem_aumasc": 113,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 113,
+          "n": 952,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 113,
+          "n": 952,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "booty jorts",
+      "variable": "bootyjorts2",
+      "slot": "lower",
+      "hide": 1,
+      "source": "pack",
+      "hem_au": 104,
+      "hem_aumasc": 104,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 104,
+          "n": 509,
+          "hide": 1,
+          "first_visible": 2
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 104,
+          "n": 509,
+          "hide": 1,
+          "first_visible": 2
+        }
+      }
+    },
+    {
+      "name": "lolita skirt",
+      "variable": "openshoulderlolita",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 133,
+      "hem_aumasc": 133,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 133,
+          "n": 2405,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 133,
+          "n": 2405,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "gym shorts",
+      "variable": "gymshorts",
+      "slot": "lower",
+      "hide": 2,
+      "source": "pack",
+      "hem_au": 109,
+      "hem_aumasc": 109,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 109,
+          "n": 744,
+          "hide": 2,
+          "first_visible": 3
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 109,
+          "n": 744,
+          "hide": 2,
+          "first_visible": 3
+        }
+      }
+    },
+    {
+      "name": "shortalls",
+      "variable": "shortalls",
+      "slot": "lower",
+      "hide": 5,
+      "source": "pack",
+      "hem_au": 124,
+      "hem_aumasc": 124,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 124,
+          "n": 3768,
+          "hide": 5,
+          "first_visible": 6
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 124,
+          "n": 3768,
+          "hide": 5,
+          "first_visible": 6
+        }
+      }
+    },
+    {
+      "name": "jingle-bell skirt",
+      "variable": "jingledress",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 169,
+      "hem_aumasc": 169,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 169,
+          "n": 3068,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 169,
+          "n": 3068,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "sleeveless jingle-bell skirt",
+      "variable": "jingledresssleeveless",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 169,
+      "hem_aumasc": 169,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 169,
+          "n": 3068,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 169,
+          "n": 3068,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "leather miniskirt",
+      "variable": "leatherminiskirt",
+      "slot": "lower",
+      "hide": 2,
+      "source": "pack",
+      "hem_au": 108,
+      "hem_aumasc": 108,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 108,
+          "n": 592,
+          "hide": 2,
+          "first_visible": 3
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 108,
+          "n": 592,
+          "hide": 2,
+          "first_visible": 3
+        }
+      }
+    },
+    {
+      "name": "leather pants",
+      "variable": "leatherpants",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 170,
+      "hem_aumasc": 170,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 170,
+          "n": 1761,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 170,
+          "n": 1761,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "leather shorts",
+      "variable": "leathershorts",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 113,
+      "hem_aumasc": 113,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 113,
+          "n": 659,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 113,
+          "n": 659,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "sexy nun's habit skirt",
+      "variable": "nunlewd",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 151,
+      "hem_aumasc": 151,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 151,
+          "n": 817,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 151,
+          "n": 817,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "sexy priest's shorts",
+      "variable": "monklewd",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 140,
+      "hem_aumasc": 140,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 140,
+          "n": 743,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 140,
+          "n": 743,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "oversized button-down bottom",
+      "variable": "oversizedbuttondown",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack-empty",
+      "hem_au": null,
+      "hem_aumasc": null,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "suit trousers",
+      "variable": "3piecesuit",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 176,
+      "hem_aumasc": 176,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2187,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2187,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "puffy shorts",
+      "variable": "puffy",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 115,
+      "hem_aumasc": 115,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 115,
+          "n": 839,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 115,
+          "n": 839,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "bloomers",
+      "variable": "puffybloomers",
+      "slot": "lower",
+      "hide": 2,
+      "source": "pack",
+      "hem_au": 111,
+      "hem_aumasc": 111,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 111,
+          "n": 830,
+          "hide": 2,
+          "first_visible": 3
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 111,
+          "n": 830,
+          "hide": 2,
+          "first_visible": 3
+        }
+      }
+    },
+    {
+      "name": "harem pants",
+      "variable": "harempants",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2398,
+          "hide": 11,
+          "first_visible": 12
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2398,
+          "hide": 11,
+          "first_visible": 12
+        }
+      }
+    },
+    {
+      "name": "sexy butler shorts",
+      "variable": "slutler",
+      "slot": "lower",
+      "hide": 1,
+      "source": "pack",
+      "hem_au": 104,
+      "hem_aumasc": 104,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 104,
+          "n": 550,
+          "hide": 1,
+          "first_visible": 2
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 104,
+          "n": 550,
+          "hide": 1,
+          "first_visible": 2
+        }
+      }
+    },
+    {
+      "name": "cargo pants",
+      "variable": "cargo",
+      "slot": "lower",
+      "hide": 8,
+      "source": "pack",
+      "hem_au": 176,
+      "hem_aumasc": 176,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2220,
+          "hide": 8,
+          "first_visible": 9
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2220,
+          "hide": 8,
+          "first_visible": 9
+        }
+      }
+    },
+    {
+      "name": "high-waisted skirt",
+      "variable": "highwaistedskirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 118,
+      "hem_aumasc": 118,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 118,
+          "n": 1209,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 118,
+          "n": 1209,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "classic lolita skirt",
+      "variable": "openshoulderlolitaclassic",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 155,
+      "hem_aumasc": 155,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 155,
+          "n": 2487,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 155,
+          "n": 2487,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "jumpsuit trousers",
+      "variable": "jumpsuitstylish",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2187,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 2187,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "ragged dress skirt",
+      "variable": "drowneddress",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 188,
+      "hem_aumasc": 188,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 188,
+          "n": 4257,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 188,
+          "n": 4257,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "bedsheet skirt",
+      "variable": "bedsheet",
+      "slot": "lower",
+      "hide": 9,
+      "source": "pack",
+      "hem_au": 184,
+      "hem_aumasc": 184,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 184,
+          "n": 3434,
+          "hide": 9,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 184,
+          "n": 3434,
+          "hide": 9,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "pimp suit trousers",
+      "variable": "pimp",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 173,
+      "hem_aumasc": 173,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 173,
+          "n": 1975,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 173,
+          "n": 1975,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "loose pyjama bottoms",
+      "variable": "pjs loose",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 176,
+      "hem_aumasc": 176,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2609,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 176,
+          "n": 2609,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "pleated joggers",
+      "variable": "pleatedjoggers",
+      "slot": "lower",
+      "hide": 8,
+      "source": "base/fallback",
+      "fallback": "sweat",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "baggy pleated joggers",
+      "variable": "pleatedjoggersbaggy",
+      "slot": "lower",
+      "hide": 6,
+      "source": "base/fallback",
+      "fallback": "baggy",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "short keyhole cheongsam skirt",
+      "variable": "cheongsamshortkeyhole",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 122,
+      "hem_aumasc": 122,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 122,
+          "n": 892,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 122,
+          "n": 892,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "cut skirt",
+      "variable": "cutskirt",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 129,
+      "hem_aumasc": 129,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 129,
+          "n": 1303,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 129,
+          "n": 1303,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "pencil skirt",
+      "variable": "pencillong",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 136,
+      "hem_aumasc": 136,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 136,
+          "n": 1503,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 136,
+          "n": 1503,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "seaweed skirt",
+      "variable": "seaweed",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 132,
+      "hem_aumasc": 132,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 132,
+          "n": 746,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 132,
+          "n": 746,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "open-side skort",
+      "variable": "open skort",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 114,
+      "hem_aumasc": 114,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 114,
+          "n": 676,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 114,
+          "n": 676,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "slim-fit cargo pants",
+      "variable": "cargoslim",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 171,
+      "hem_aumasc": 171,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 171,
+          "n": 1861,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 171,
+          "n": 1861,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "camo cargo shorts",
+      "variable": "cargo shorts",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 118,
+      "hem_aumasc": 118,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 118,
+          "n": 830,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 118,
+          "n": 830,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "low rise jeans",
+      "variable": "low rise jeans",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 181,
+      "hem_aumasc": 181,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 181,
+          "n": 2272,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 181,
+          "n": 2272,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "tracksuit bottoms",
+      "variable": "tracksuit",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2309,
+          "hide": 11,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2309,
+          "hide": 11,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "belted shorts",
+      "variable": "belted",
+      "slot": "lower",
+      "hide": 2,
+      "source": "pack",
+      "hem_au": 109,
+      "hem_aumasc": 109,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 109,
+          "n": 690,
+          "hide": 2,
+          "first_visible": 3
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 109,
+          "n": 690,
+          "hide": 2,
+          "first_visible": 3
+        }
+      }
+    },
+    {
+      "name": "baggy shorts",
+      "variable": "baggy",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 113,
+      "hem_aumasc": 113,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 113,
+          "n": 818,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 113,
+          "n": 818,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "twill joggers",
+      "variable": "twilljoggers",
+      "slot": "lower",
+      "hide": 11,
+      "source": "pack",
+      "hem_au": 174,
+      "hem_aumasc": 174,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2398,
+          "hide": 11,
+          "first_visible": 12
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 174,
+          "n": 2398,
+          "hide": 11,
+          "first_visible": 12
+        }
+      }
+    },
+    {
+      "name": "vintage skirt",
+      "variable": "vintageskirtsuit",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "vintage pants",
+      "variable": "vintagepantsuit",
+      "slot": "lower",
+      "hide": 6,
+      "source": "base/fallback",
+      "fallback": "trousers",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "chain tunic skirt",
+      "variable": "chain tunic",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 159,
+      "hem_aumasc": 159,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 159,
+          "n": 1217,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 159,
+          "n": 1217,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "initiate's robe skirt",
+      "variable": "initiate",
+      "slot": "lower",
+      "hide": 10,
+      "source": "pack",
+      "hem_au": 152,
+      "hem_aumasc": 152,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 152,
+          "n": 1994,
+          "hide": 10,
+          "first_visible": 11
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 152,
+          "n": 1994,
+          "hide": 10,
+          "first_visible": 11
+        }
+      }
+    },
+    {
+      "name": "long nun's habit skirt",
+      "variable": "nunlong",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 3113,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 3113,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "novice nun's habit skirt",
+      "variable": "nunnovice",
+      "slot": "lower",
+      "hide": 9,
+      "source": "pack",
+      "hem_au": 150,
+      "hem_aumasc": 150,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 150,
+          "n": 2120,
+          "hide": 9,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 150,
+          "n": 2120,
+          "hide": 9,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "lolita nun's habit skirt",
+      "variable": "nunlolita",
+      "slot": "lower",
+      "hide": 8,
+      "source": "pack",
+      "hem_au": 140,
+      "hem_aumasc": 140,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 140,
+          "n": 3118,
+          "hide": 8,
+          "first_visible": 9
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 140,
+          "n": 3118,
+          "hide": 8,
+          "first_visible": 9
+        }
+      }
+    },
+    {
+      "name": "avowed nun's habit skirt",
+      "variable": "nunavowed",
+      "slot": "lower",
+      "hide": 9,
+      "source": "pack",
+      "hem_au": 150,
+      "hem_aumasc": 150,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 150,
+          "n": 2126,
+          "hide": 9,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 150,
+          "n": 2126,
+          "hide": 9,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "evangelist's bloomers",
+      "variable": "evangelist",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 116,
+      "hem_aumasc": 116,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 116,
+          "n": 912,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 116,
+          "n": 912,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "confessor's robe skirt",
+      "variable": "confessorrobe",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 178,
+      "hem_aumasc": 178,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 178,
+          "n": 3176,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 178,
+          "n": 3176,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "confessor's habit skirt",
+      "variable": "confessorhabit",
+      "slot": "lower",
+      "hide": 12,
+      "source": "pack",
+      "hem_au": 183,
+      "hem_aumasc": 183,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 183,
+          "n": 3944,
+          "hide": 12,
+          "first_visible": 13
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 183,
+          "n": 3944,
+          "hide": 12,
+          "first_visible": 13
+        }
+      }
+    },
+    {
+      "name": "exorcist's cassock trousers",
+      "variable": "exorcistcassock",
+      "slot": "lower",
+      "hide": 9,
+      "source": "pack",
+      "hem_au": 147,
+      "hem_aumasc": 147,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 147,
+          "n": 1944,
+          "hide": 9,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 147,
+          "n": 1944,
+          "hide": 9,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "exorcist's habit skirt",
+      "variable": "exorcisthabit",
+      "slot": "lower",
+      "hide": 1,
+      "source": "pack",
+      "hem_au": 160,
+      "hem_aumasc": 160,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 160,
+          "n": 963,
+          "hide": 1,
+          "first_visible": 2
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 160,
+          "n": 963,
+          "hide": 1,
+          "first_visible": 2
+        }
+      }
+    },
+    {
+      "name": "monk's sparring loincloth",
+      "variable": "monkspar",
+      "slot": "lower",
+      "hide": 1,
+      "source": "pack",
+      "hem_au": 112,
+      "hem_aumasc": 112,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 112,
+          "n": 507,
+          "hide": 1,
+          "first_visible": 2
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 112,
+          "n": 507,
+          "hide": 1,
+          "first_visible": 2
+        }
+      }
+    },
+    {
+      "name": "nun's sparring skirt",
+      "variable": "nunspar",
+      "slot": "lower",
+      "hide": 1,
+      "source": "pack",
+      "hem_au": 118,
+      "hem_aumasc": 118,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 118,
+          "n": 548,
+          "hide": 1,
+          "first_visible": 2
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 118,
+          "n": 548,
+          "hide": 1,
+          "first_visible": 2
+        }
+      }
+    },
+    {
+      "name": "gothic witch skirt",
+      "variable": "witchgothic",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 117,
+      "hem_aumasc": 117,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 117,
+          "n": 919,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 117,
+          "n": 919,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "pumpkin skirt",
+      "variable": "pumpkin_dress",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "gift wrap bottom",
+      "variable": "giftwrap",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 182,
+      "hem_aumasc": 182,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 182,
+          "n": 565,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 182,
+          "n": 565,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "unbound straightjacket bottom",
+      "variable": "straightjacket_unbound",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "default",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "serafuku dress skirt",
+      "variable": "serafuku_dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "janet dress skirt",
+      "variable": "janetdress",
+      "slot": "lower",
+      "hide": 9,
+      "source": "pack",
+      "hem_au": 147,
+      "hem_aumasc": 147,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 147,
+          "n": 1923,
+          "hide": 9,
+          "first_visible": 10
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 147,
+          "n": 1923,
+          "hide": 9,
+          "first_visible": 10
+        }
+      }
+    },
+    {
+      "name": "swan lake skirt",
+      "variable": "swandress",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 113,
+      "hem_aumasc": 113,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 113,
+          "n": 1780,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 113,
+          "n": 1780,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "fancy swan lake skirt",
+      "variable": "swandressfancy",
+      "slot": "lower",
+      "hide": 3,
+      "source": "pack",
+      "hem_au": 115,
+      "hem_aumasc": 115,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 115,
+          "n": 1538,
+          "hide": 3,
+          "first_visible": 4
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 115,
+          "n": 1538,
+          "hide": 3,
+          "first_visible": 4
+        }
+      }
+    },
+    {
+      "name": "butterfly dress skirt",
+      "variable": "butterflydress",
+      "slot": "lower",
+      "hide": 7,
+      "source": "pack",
+      "hem_au": 135,
+      "hem_aumasc": 135,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 135,
+          "n": 2155,
+          "hide": 7,
+          "first_visible": 8
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 135,
+          "n": 2155,
+          "hide": 7,
+          "first_visible": 8
+        }
+      }
+    },
+    {
+      "name": "succubus lower back wings",
+      "variable": "succubus",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack-empty",
+      "hem_au": null,
+      "hem_aumasc": null,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 111,
+          "n": 187,
+          "hide": 2,
+          "first_visible": 3,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": true
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 6,
+              "covered": true
+            },
+            {
+              "size": 3,
+              "below": 18,
+              "side": 14,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 125,
+              "side": 32,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 263,
+              "side": 56,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 428,
+              "side": 60,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 599,
+              "side": 58,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 770,
+              "side": 54,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 981,
+              "side": 50,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 1291,
+              "side": 34,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 1682,
+              "side": 28,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 2133,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 2619,
+              "side": 20,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 3007,
+              "side": 16,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 3394,
+              "side": 12,
+              "covered": false
+            }
+          ]
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 111,
+          "n": 187,
+          "hide": 2,
+          "first_visible": 3,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": true
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 6,
+              "covered": true
+            },
+            {
+              "size": 3,
+              "below": 18,
+              "side": 14,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 125,
+              "side": 32,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 263,
+              "side": 56,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 428,
+              "side": 60,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 599,
+              "side": 58,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 770,
+              "side": 54,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 981,
+              "side": 50,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 1291,
+              "side": 34,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 1682,
+              "side": 28,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 2133,
+              "side": 24,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 2619,
+              "side": 20,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 3007,
+              "side": 16,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 3394,
+              "side": 12,
+              "covered": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "rose wedding dress skirt",
+      "variable": "rosedress",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 187,
+      "hem_aumasc": 187,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 187,
+          "n": 3373,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 187,
+          "n": 3373,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "mini rose wedding dress skirt",
+      "variable": "rosedressmini",
+      "slot": "lower",
+      "hide": 4,
+      "source": "pack",
+      "hem_au": 121,
+      "hem_aumasc": 121,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1309,
+          "hide": 4,
+          "first_visible": 5
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 121,
+          "n": 1309,
+          "hide": 4,
+          "first_visible": 5
+        }
+      }
+    },
+    {
+      "name": "rose wedding suit trousers",
+      "variable": "rosesuit",
+      "slot": "lower",
+      "hide": 6,
+      "source": "pack",
+      "hem_au": 177,
+      "hem_aumasc": 177,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 177,
+          "n": 2270,
+          "hide": 6,
+          "first_visible": 7
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 177,
+          "n": 2270,
+          "hide": 6,
+          "first_visible": 7
+        }
+      }
+    },
+    {
+      "name": "frilly rose wedding suit trousers",
+      "variable": "rosesuitfrilly",
+      "slot": "lower",
+      "hide": 0,
+      "source": "pack",
+      "hem_au": 171,
+      "hem_aumasc": 171,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": 171,
+          "n": 2474,
+          "hide": 0,
+          "first_visible": 1
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": 171,
+          "n": 2474,
+          "hide": 0,
+          "first_visible": 1
+        }
+      }
+    },
+    {
+      "name": "ruffled long skirt",
+      "variable": "ruffled long dress",
+      "slot": "lower",
+      "hide": 11,
+      "source": "base/fallback",
+      "fallback": "long",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "preppy skirt uniform",
+      "variable": "preppy skirt uniform",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "preppy shorts uniform",
+      "variable": "preppy shorts uniform",
+      "slot": "lower",
+      "hide": 3,
+      "source": "base/fallback",
+      "fallback": "shorts",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "lolita maid",
+      "variable": "lolita maid",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "ribbon nightgown",
+      "variable": "ribbon nightgown",
+      "slot": "lower",
+      "hide": 10,
+      "source": "base/fallback",
+      "fallback": "long_over",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "mermaid dress",
+      "variable": "mermaid dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "nightgown",
+      "variable": "nightgown",
+      "slot": "lower",
+      "hide": 10,
+      "source": "base/fallback",
+      "fallback": "long_over",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "princess dress",
+      "variable": "princess dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "puff sleeve a-line dress",
+      "variable": "puff sleeve aline dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "rococo midi dress",
+      "variable": "rococo midi dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "cardigan sailor uniform",
+      "variable": "cardigan sailor uniform",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "default",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "sheer lace pyjama",
+      "variable": "sheer lace pyjama",
+      "slot": "lower",
+      "hide": 8,
+      "source": "base/fallback",
+      "fallback": "sweat",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "tie front dress",
+      "variable": "tie front dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "big bow skirt",
+      "variable": "big bow skirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "checkered lace skirt",
+      "variable": "checkered lace skirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "checkered skirt",
+      "variable": "checkered skirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "dirndl skirt",
+      "variable": "dirndl skirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "dirndl skirt with apron",
+      "variable": "dirndl skirt with apron",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "layered skirt",
+      "variable": "layered skirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "lolita lace nightgown",
+      "variable": "lolita lace nightgown",
+      "slot": "lower",
+      "hide": 10,
+      "source": "base/fallback",
+      "fallback": "long_over",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "suspender long lace skirt",
+      "variable": "suspender long lace skirt",
+      "slot": "lower",
+      "hide": 11,
+      "source": "base/fallback",
+      "fallback": "long",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "suspender skirt",
+      "variable": "suspender skirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "striped sweater",
+      "variable": "striped sweater",
+      "slot": "lower",
+      "hide": 8,
+      "source": "base/fallback",
+      "fallback": "sweat",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "milkmaid dress",
+      "variable": "milkmaid dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "off-shoulder sweater dress",
+      "variable": "offshoulder sweater dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "lolita dress",
+      "variable": "lolita dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "ruffled nightgown",
+      "variable": "ruffled nightgown",
+      "slot": "lower",
+      "hide": 10,
+      "source": "base/fallback",
+      "fallback": "long_over",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "chain-belt skirt",
+      "variable": "chainbelt skirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "collar dress",
+      "variable": "collar dress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "floral sundress",
+      "variable": "floral sundress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "frilled sundress",
+      "variable": "frilled sundress",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "denim pinafore",
+      "variable": "denim pinafore",
+      "slot": "lower",
+      "hide": 5,
+      "source": "base/fallback",
+      "fallback": "dress",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "denim skirt",
+      "variable": "denim skirt",
+      "slot": "lower",
+      "hide": 4,
+      "source": "base/fallback",
+      "fallback": "skirt",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "unbuttoned shorts",
+      "variable": "unbuttoned shorts",
+      "slot": "lower",
+      "hide": 3,
+      "source": "base/fallback",
+      "fallback": "shorts",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    },
+    {
+      "name": "froggy skirt",
+      "variable": "froggy",
+      "slot": "over_lower",
+      "hide": 0,
+      "source": "pack-empty",
+      "hem_au": null,
+      "hem_aumasc": null,
+      "packs": {
+        "au": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        },
+        "aumasc": {
+          "src": "pack",
+          "hem": null,
+          "n": 0,
+          "hide": 0,
+          "first_visible": 1,
+          "detail": [
+            {
+              "size": 1,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 2,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 3,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 4,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 5,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 6,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 7,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 8,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 9,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 10,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 11,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 12,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 13,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 14,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            },
+            {
+              "size": 15,
+              "below": 0,
+              "side": 0,
+              "covered": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "kaiju bottoms",
+      "variable": "kaiju",
+      "slot": "over_lower",
+      "hide": 13,
+      "source": "base/fallback",
+      "fallback": "default",
+      "packs": {
+        "au": null,
+        "aumasc": null
+      }
+    }
+  ],
+  "rules": [
+    {
+      "pattern": "swim|bikini|leotard|tights|legging|thong|bloomer|bike short|cycle short|hot ?pants|booty|latex|spandex|micro|body ?suit|wetsuit|catsuit|unitard|yoga",
+      "hide": 3,
+      "tag": "tight",
+      "n": 10,
+      "min": 0,
+      "max": 7
+    },
+    {
+      "pattern": "robe|cloak|gown|cassock|habit",
+      "hide": 10,
+      "tag": "long_over",
+      "n": 18,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "pattern": "overall|dungaree|jumpsuit",
+      "hide": 7,
+      "tag": "overall",
+      "n": 3,
+      "min": 7,
+      "max": 12
+    },
+    {
+      "pattern": "baggy|cargo|hakama|harem|kilt",
+      "hide": 6,
+      "tag": "baggy",
+      "n": 6,
+      "min": 3,
+      "max": 11
+    },
+    {
+      "pattern": "mini|short (cut|school) skirt|micro",
+      "hide": 3,
+      "tag": "mini",
+      "n": 9,
+      "min": 2,
+      "max": 5
+    },
+    {
+      "pattern": "long|maxi|ankle|floor|gown|kimono|robe|habit|cassock|ballgown|hanfu",
+      "hide": 11,
+      "tag": "long",
+      "n": 6,
+      "min": 9,
+      "max": 13
+    },
+    {
+      "pattern": "dress|sundress|pinafore|gothic|lolita|cheongsam|qipao",
+      "hide": 5,
+      "tag": "dress",
+      "n": 20,
+      "min": 0,
+      "max": 13
+    },
+    {
+      "pattern": "skirt|skort",
+      "hide": 4,
+      "tag": "skirt",
+      "n": 35,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "pattern": "sweat|jogger|track|pyjama|pajama|lounge",
+      "hide": 8,
+      "tag": "sweat",
+      "n": 10,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "pattern": "shorts",
+      "hide": 3,
+      "tag": "shorts",
+      "n": 19,
+      "min": 1,
+      "max": 4
+    },
+    {
+      "pattern": "jeans|trouser|pants|slacks|chino",
+      "hide": 6,
+      "tag": "trousers",
+      "n": 21,
+      "min": 0,
+      "max": 12
+    }
+  ],
+  "defaults": {
+    "lower": 5,
+    "over_lower": 13
+  },
+  "missing": [],
+  "fallback_items": {
+    "lederhosen bottoms": {
+      "hide": 5,
+      "fallback": "default",
+      "source": "base/fallback"
+    },
+    "karate trousers": {
+      "hide": 6,
+      "fallback": "trousers",
+      "source": "base/fallback"
+    },
+    "monster skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "cow onesie bottoms": {
+      "hide": 5,
+      "fallback": "default",
+      "source": "base/fallback"
+    },
+    "scarecrow skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "plastic nurse skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "cocoon bottom": {
+      "hide": 5,
+      "fallback": "default",
+      "source": "base/fallback"
+    },
+    "skeleton bottoms": {
+      "hide": 5,
+      "fallback": "default",
+      "source": "base/fallback"
+    },
+    "pleated joggers": {
+      "hide": 8,
+      "fallback": "sweat",
+      "source": "base/fallback"
+    },
+    "baggy pleated joggers": {
+      "hide": 6,
+      "fallback": "baggy",
+      "source": "base/fallback"
+    },
+    "vintage skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "vintage pants": {
+      "hide": 6,
+      "fallback": "trousers",
+      "source": "base/fallback"
+    },
+    "pumpkin skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "unbound straightjacket bottom": {
+      "hide": 5,
+      "fallback": "default",
+      "source": "base/fallback"
+    },
+    "serafuku dress skirt": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "ruffled long skirt": {
+      "hide": 11,
+      "fallback": "long",
+      "source": "base/fallback"
+    },
+    "preppy skirt uniform": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "preppy shorts uniform": {
+      "hide": 3,
+      "fallback": "shorts",
+      "source": "base/fallback"
+    },
+    "lolita maid": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "ribbon nightgown": {
+      "hide": 10,
+      "fallback": "long_over",
+      "source": "base/fallback"
+    },
+    "mermaid dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "nightgown": {
+      "hide": 10,
+      "fallback": "long_over",
+      "source": "base/fallback"
+    },
+    "princess dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "puff sleeve a-line dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "rococo midi dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "cardigan sailor uniform": {
+      "hide": 5,
+      "fallback": "default",
+      "source": "base/fallback"
+    },
+    "sheer lace pyjama": {
+      "hide": 8,
+      "fallback": "sweat",
+      "source": "base/fallback"
+    },
+    "tie front dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "big bow skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "checkered lace skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "checkered skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "dirndl skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "dirndl skirt with apron": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "layered skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "lolita lace nightgown": {
+      "hide": 10,
+      "fallback": "long_over",
+      "source": "base/fallback"
+    },
+    "suspender long lace skirt": {
+      "hide": 11,
+      "fallback": "long",
+      "source": "base/fallback"
+    },
+    "suspender skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "striped sweater": {
+      "hide": 8,
+      "fallback": "sweat",
+      "source": "base/fallback"
+    },
+    "milkmaid dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "off-shoulder sweater dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "lolita dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "ruffled nightgown": {
+      "hide": 10,
+      "fallback": "long_over",
+      "source": "base/fallback"
+    },
+    "chain-belt skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "collar dress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "floral sundress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "frilled sundress": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "denim pinafore": {
+      "hide": 5,
+      "fallback": "dress",
+      "source": "base/fallback"
+    },
+    "denim skirt": {
+      "hide": 4,
+      "fallback": "skirt",
+      "source": "base/fallback"
+    },
+    "unbuttoned shorts": {
+      "hide": 3,
+      "fallback": "shorts",
+      "source": "base/fallback"
+    },
+    "kaiju bottoms": {
+      "hide": 13,
+      "fallback": "default",
+      "source": "base/fallback"
+    }
+  }
+}
