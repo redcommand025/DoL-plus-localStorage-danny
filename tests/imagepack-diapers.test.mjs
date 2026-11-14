@@ -201,15 +201,13 @@ describe("image-pack diaper sprites", () => {
 		});
 		it(`${pack}: diapers sit on the pack body (waistband and centre match the pack briefs)`, () => {
 			const briefs = bbox(join(root, "imagepacks", pack, "clothes/under-lower/briefs/full.png"));
-			const baseBriefs = bbox(join(root, "img/clothes/under-lower/briefs/full.png"));
 			for (const d of DIAPERS) {
 				const rel = `clothes/under-lower/${d}/full.png`;
 				const base = bbox(join(root, "img", rel));
 				const out = bbox(join(root, "imagepacks", pack, rel));
-				// the diaper's rise above the briefs' waistband is kept (scaled to the pack), within a few px
-				const wantTop = briefs.y0 + (base.y0 - baseBriefs.y0) * 1.3;
-				assert.ok(Math.abs(out.y0 - wantTop) <= 5, `${pack} ${d}: top ${out.y0} vs ${wantTop.toFixed(1)}`);
-				assert.ok(Math.abs(out.cx - briefs.cx - (base.cx - baseBriefs.cx) * 1.7) <= 5, `${pack} ${d}: centre ${out.cx} vs briefs ${briefs.cx}`);
+				// waistband sits on the pack waist, at most 2px above the briefs, never below them
+				assert.ok(out.y0 >= briefs.y0 - 2 && out.y0 <= briefs.y0, `${pack} ${d}: waistband ${out.y0} vs briefs ${briefs.y0}`);
+				assert.ok(Math.abs(out.cx - briefs.cx) <= 2, `${pack} ${d}: centre ${out.cx} vs briefs ${briefs.cx}`);
 				// unscaled base art drawn over this pack would sit far lower: the generated sprite must not
 				assert.ok(out.y0 < base.y0 - 15, `${pack} ${d}: not moved up`);
 			}

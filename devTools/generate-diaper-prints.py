@@ -349,7 +349,7 @@ CAT = {"plastic-backed diaper": "dp", "cloth diaper": "cd", "pull-up": "pu"}
 REGULAR = {"dp": "plusdpm", "cd": "pluscdm", "pu": "pluspum"}
 
 
-def main(only):
+def main(only, packs_only=False):
     prints = [p for p in PRINTS if not only or p[0] in only]
     table = size_table()
     n = 0
@@ -373,6 +373,9 @@ def main(only):
                         save(overlay(spr, ref, prt, 1.0, PACK_PRINTABLE), os.path.join(pdir, "pluspatterns", cat, key, f"{integ}-{prt[0].replace(' ', '-')}.png"))
                         n += 1
         print(f"{pack}: {n} overlays so far")
+    if packs_only:
+        print(f"total {n} overlays (packs only)")
+        return
     # base sprites: per diaper folder, unsagged + sag1-5
     for v in table:
         dry = load(os.path.join(BASE, v, "full.png"))
@@ -391,4 +394,4 @@ if __name__ == "__main__":
     only = None
     if "--only" in sys.argv:
         only = sys.argv[sys.argv.index("--only") + 1].split(",")
-    main(only)
+    main(only, packs_only="--packs-only" in sys.argv)

@@ -303,7 +303,7 @@ def overlay(sprite, level, typ, printable, N=None, seed=1):
     return np.concatenate([o, o], axis=1)
 
 
-def main():
+def main(packs_only=False):
     root = G.ROOT
     table = G.size_table()
     n = 0
@@ -328,6 +328,9 @@ def main():
                             n += 1
                             pack_n += 1
         print(f"{pack}: {pack_n} (total {n})")
+    if packs_only:
+        print(f"total {n} (packs only)")
+        return
     for v in table:
         for sub in ["", "sag1", "sag2", "sag3", "sag4", "sag5"]:
             for integ in G.INTEGRITY:
@@ -343,4 +346,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(packs_only="--packs-only" in __import__("sys").argv)

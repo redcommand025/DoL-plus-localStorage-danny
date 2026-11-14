@@ -13,8 +13,11 @@ too low and ~14px to the right of the pack body.
 - Silhouettes are smooth curves (8x8 supersampled, snapped to hard edges like the pack's
   garments) with a 1px dark outline, a few flat grey tones with soft rounded shading, a light
   waistband band and gathered leg cuffs. Greyscale, so the game's clothing tint still applies.
-- The waist hugs the pack body's hips; placement comes from the regular base diaper mapped to the
-  pack body (x linear, waist/crotch through a fit from briefs, boxers, boyshorts and long johns).
+- The waistband sits on the pack waist (the pack briefs, with a small diaper rise) and the width hugs
+  the pack body's hips plus a little padding. Through the hands the sides are clamped to the hip line
+  so they never cover the idle hands (the game draws under_lower above the arms). Length still comes
+  from the regular base diaper mapped through a fit from briefs, boxers, boyshorts and long johns:
+  bigger sizes hang lower rather than growing wider.
 - Plastic diapers: side tapes, landing strip, faint hourglass core. Cloth: rounder cut, side pins,
   fold lines. Pull-ups: ribbed waistband, dashed side tear seams, slimmer cut.
 - frayed/torn/tattered add edge nicks and rips; `leak<N>` (overflowing) adds small drips; `penis.png` is the same
@@ -75,6 +78,8 @@ Run `python3 devTools/generate-pack-diapers.py` (needs Pillow + numpy) after cha
 diaper sprite, then rebuild (`compile.sh` regenerates `imagepacks-manifest.js`).
 `tests/imagepack-diapers.test.mjs` checks that every base sprite has a 2× pack counterpart in the
 manifest and that each diaper's waistband and centre line up with the pack's briefs.
+`tests/diaper-pack-fit.test.mjs` also checks the waistband row and width against the pack body, and
+that no diaper pixels cover the idle hands, at every size and leak picture.
 
 Not covered: Mysterious only replaces `sex/` art, and diapers have no combat sprites (combat uses
 the `plainpanties` reference), so neither needed pack diapers.

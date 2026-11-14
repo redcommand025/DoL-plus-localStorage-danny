@@ -10,10 +10,11 @@ and too wide and look blocky when scaled 2x.
 This script draws every diaper sprite natively at the pack resolution:
   * Silhouettes are smooth curves (shield shape for dry diapers, a rounder hanging bulge for bigger
     sizes) evaluated with 8x8 supersampling and snapped to binary alpha like the pack's garments.
-  * Placement follows the base sprites: the regular diaper's waistband and bottom are mapped to the
-    pack body through a fit measured from garments both sets have (briefs, boxers, boyshorts,
-    long johns).
-  * The waist hugs the pack body's hips (read from the pack's body sprite) plus padding thickness.
+  * The waistband sits on the pack waist (the pack briefs, with a small diaper rise). Width hugs the
+    pack body's hips plus a little padding and is clamped through the hands so the sides stay inside
+    the hip line and never cover the idle hands (which the game draws under under_lower).
+  * Length still follows the base sprites, mapped through a fit from briefs, boxers, boyshorts and
+    long johns: bigger sizes hang lower, reaching the feet at 13 and past them at 15.
   * Per type: plastic diapers (plusdp*, plusdiaper*) get side tapes, a front landing strip, a
     padded centre panel and ruffled leg cuffs; cloth diapers (pluscd*, plusclothdiaper) a rounder
     shape, side pins and soft fold lines; pull-ups (pluspu*) a ribbed waistband, side tear seams
@@ -87,20 +88,49 @@ def measure(pack):
     return (lambda x: sx * x + ox), (lambda y: float(np.polyval(coef, max(y, 55.0)) - max(0.0, 55.0 - y) * np.polyval(np.polyder(coef), 55.0))), sx
 
 
+def torso_span(row, x0=70, x1=140):
+    """Outer left..right of the torso/legs in the central band, ignoring stray far pixels."""
+    xs = np.nonzero(row[x0:x1])[0]
+    if not len(xs):
+        return None
+    xs = xs + x0
+    return int(xs[0]), int(xs[-1]) + 1
+
+
 def body_profile(pack):
-    """Centre and half-width of the pack body per row (outer extents, frame 1)."""
+    """Centre and half-width of the pack torso/legs per row (frame 1, classic body)."""
     a = load_alpha(os.path.join(ROOT, "imagepacks", pack, "body/base-classic.png"))
     fw = a.shape[1] // 2
-    a = a[:, :fw] > 127
-    half = np.zeros(a.shape[0])
-    centre = np.full(a.shape[0], np.nan)
-    for y in range(a.shape[0]):
-        xs = np.nonzero(a[y, 60:150])[0]
-        if len(xs):
-            half[y] = (xs[-1] + 1 - xs[0]) / 2
-            centre[y] = 60 + (xs[0] + xs[-1] + 1) / 2
-    cx = float(np.nanmedian(centre[80:130]))
+    mask = a[:, :fw] > 127
+    half = np.zeros(mask.shape[0])
+    centre = np.full(mask.shape[0], np.nan)
+    for y in range(mask.shape[0]):
+        run = torso_span(mask[y])
+        if run:
+            half[y] = (run[1] - run[0]) / 2
+            centre[y] = (run[0] + run[1]) / 2
+    # centre from the waist/hips, where the torso is a single run
+    cx = float(np.nanmedian(centre[80:110]))
     return cx, half
+
+
+def hand_bottom(pack):
+    """Lowest row of the idle hands/arms (classic), used to keep the garment inside the hip line."""
+    la = load_alpha(os.path.join(ROOT, "imagepacks", pack, "body/left-arm-idle-classic.png"))
+    ra = load_alpha(os.path.join(ROOT, "imagepacks", pack, "body/right-arm-idle-classic.png"))
+    fw = la.shape[1] // 2
+    ys = np.nonzero((la[:, :fw] > 127) | (ra[:, :fw] > 127))[0]
+    return int(ys.max()) if len(ys) else 114
+
+
+def safe_half(half, hands_y, pad=2.0):
+    """Max half-width through the waist and hands: pack body plus a small padding, never over the hands.
+    Below the hands the seat may be a little fuller, so there is no cap there."""
+    safe = np.full(half.shape[0], np.inf)
+    for y in range(0, min(hands_y + 3, half.shape[0])):
+        if half[y] > 0:
+            safe[y] = half[y] + pad
+    return safe
 
 
 def smoothstep(e0, e1, x):
@@ -157,12 +187,14 @@ def size_spec(cat, size, state, leak, ctx):
     s.thick = float(np.clip((size - 1) / 6.0, 0, 1))
     big = float(np.clip((size - 8) / 7.0, 0, 1))
     hips = float(half[int(s.T) : int(s.T) + 14].max())
-    pad = 1.2 + 0.9 * min(size, 6) + 0.35 * max(0, size - 6)
+    # modest thickness: bigger sizes hang lower, they do not grow outward over the hands
+    pad = 1.3 + 0.15 * min(size, 8) + 0.08 * max(0, size - 8)
     s.Wmax = hips + pad
-    s.grow = max(0.0, s.Wmax - (hips + 2.1))
+    s.grow = max(0.0, s.Wmax - (hips + 1.3))
     s.drop = max(0.0, s.B - d0)
-    waist = float(half[int(round(s.T)) + 1]) + 1.2 + 1.6 * s.thick
-    s.Wtop = min(s.Wmax, waist + 0.6 + 0.15 * (1 - 0.6 * big) * s.grow)
+    waist = float(half[int(round(s.T)) + 1]) + 1.15
+    s.Wtop = min(s.Wmax, waist + 0.35)
+    s.safe = ctx["safe"]
     s.sag = min(1.0, s.drop / 40.0)
     s.tm = {"dp": 0.30, "cd": 0.34, "pu": 0.26}[cat] + (0.36 + 0.18 * big) * s.sag
     s.q = {"dp": 1.05, "cd": 1.35, "pu": 0.95}[cat] + (1.0 + 0.4 * big) * s.sag
@@ -181,7 +213,13 @@ def halfwidth(s, y):
     e = min(0.3, (3.0 + 4.0 * s.sag) / H)
     k = np.clip((t - (1 - e)) / e, 0, 1)
     h = h * np.sqrt(np.clip(1 - k**2, 0, 1))
-    return np.where((t >= 0) & (t <= 1), h, -1)
+    h = np.where((t >= 0) & (t <= 1), h, -1)
+    # keep the sides inside the pack hip line through the hands
+    if getattr(s, "safe", None) is not None:
+        yi = np.clip(np.rint(y).astype(int), 0, len(s.safe) - 1)
+        cap = s.safe[yi]
+        h = np.where(np.isfinite(cap) & (h >= 0), np.minimum(h, cap), h)
+    return h
 
 
 def topcurve(s, u):
@@ -283,7 +321,8 @@ def draw(s, H=256, W=256):
             y0 = int(round(s.T)) + 2
             for y in range(y0, y0 + th):
                 for k in range(0, 6):
-                    x = xe + side * (1 - k)
+                    # stay on or inside the edge so tapes cannot cover the hands
+                    x = xe - side * k
                     if 0 <= x < W:
                         m[y, x] = True
                         g[y, x] = TAPE
@@ -358,16 +397,21 @@ def main(packs):
     for pack in packs:
         xmap, ymap, sx = measure(pack)
         cx, half = body_profile(pack)
-        size = Image.open(os.path.join(ROOT, "imagepacks", pack, "clothes/under-lower/briefs/full.png")).size
+        briefs_path = os.path.join(ROOT, "imagepacks", pack, "clothes/under-lower/briefs/full.png")
+        size = Image.open(briefs_path).size
         H = size[1]
-        print(f"{pack}: body centre x={cx}, base rows 57/71/92 -> {[round(ymap(v), 1) for v in (57, 71, 92)]}")
+        briefs = bbox(load_alpha(briefs_path))
+        hands_y = hand_bottom(pack)
+        safe = safe_half(half, hands_y, pad=2.0)
+        print(f"{pack}: body centre x={cx:.1f}, briefs waist y={briefs[1]}, hands y={hands_y}, feet y={int(np.nonzero(half > 0)[0].max())}")
         count = 0
         tables = size_tables()
         feet = float(np.nonzero(half > 0)[0].max())
-        ctx = {"cx": cx, "half": half, "feet": feet, "T": {}, "d0": {}}
+        ctx = {"cx": cx, "half": half, "feet": feet, "T": {}, "d0": {}, "safe": safe}
+        # waistband sits on the pack waist (the briefs), with a small diaper rise
         for cat, reg in REGULAR.items():
-            rb = bbox(load_alpha(os.path.join(BASE, reg, "full.png")))
-            ctx["T"][cat] = ymap(rb[1]) + 0.3
+            rise = {"dp": 1.5, "cd": 1.5, "pu": 1.0}[cat]
+            ctx["T"][cat] = briefs[1] - rise
         # one length scale for every category: a size-N pull-up is as long as a size-N diaper
         d0 = ymap(bbox(load_alpha(os.path.join(BASE, REGULAR["dp"], "full.png")))[3]) - 0.5  # regular (size 3) bottom
         ctx["d0"] = {cat: d0 for cat in REGULAR}
