@@ -273,9 +273,9 @@ describe("soiled overlays: art", () => {
 		const P = "imagepacks/au/clothes/under-lower/plussoil/dp";
 		const pad = padCount(join(root, "imagepacks/au/clothes/under-lower/plusdphyper/size15/full.png"));
 		const frac = (l, t) => stats(join(root, P, "size15", `full-${l}-${t}.png`)).n / pad;
-		assert.ok(frac("light", "pee") >= 0.2 && frac("light", "poo") >= 0.15, "light still a clear patch");
-		assert.ok(frac("medium", "pee") >= 0.45 && frac("medium", "poo") >= 0.3, "medium covers a large area");
-		assert.ok(frac("heavy", "pee") >= 0.6, `heavy pee most of the crotch: ${frac("heavy", "pee")}`);
+		assert.ok(frac("light", "pee") >= 0.15 && frac("light", "poo") >= 0.15, "light still a clear patch");
+		assert.ok(frac("medium", "pee") >= 0.4 && frac("medium", "poo") >= 0.3, "medium covers a large area");
+		assert.ok(frac("heavy", "pee") >= 0.7, `heavy pee fills seat and walls: ${frac("heavy", "pee")}`);
 		assert.ok(frac("heavy", "poo") >= 0.45, `heavy poo most of the seat: ${frac("heavy", "poo")}`);
 		assert.ok(frac("heavy", "both") >= 0.7, `heavy both most of the diaper: ${frac("heavy", "both")}`);
 		// base sag too
@@ -283,11 +283,34 @@ describe("soiled overlays: art", () => {
 		const bboth = stats(join(root, "img/clothes/under-lower/plusdphyper/sag4/soil-full-heavy-both.png")).n / bpad;
 		assert.ok(bboth >= 0.7, `base heavy both ${bboth}`);
 	});
+	it("light pee stays on the crotch; medium reaches into the seat and walls; heavy fills both", () => {
+		const P = "imagepacks/au/clothes/under-lower/plussoil/dp";
+		const light = stats(join(root, P, "size15/full-light-pee.png"));
+		const medium = stats(join(root, P, "size15/full-medium-pee.png"));
+		const heavy = stats(join(root, P, "size15/full-heavy-pee.png"));
+		const seat = stats(join(root, P, "size15/full-heavy-poo.png"));
+		assert.ok(light.bot < seat.bot - 15, `light pee (${light.bot}) should stay above the seat (${seat.bot})`);
+		assert.ok(medium.bot > light.bot + 10, `medium pee should reach lower than light (${medium.bot} vs ${light.bot})`);
+		assert.ok(medium.bot >= seat.bot - 10, `medium pee should reach into the seat (${medium.bot} vs ${seat.bot})`);
+		assert.ok(heavy.bot >= seat.bot - 3, `heavy pee should fill the seat (${heavy.bot} vs ${seat.bot})`);
+		const width = st => {
+			let lo = 1e9,
+				hi = -1;
+			for (const [x] of st.pts) {
+				lo = Math.min(lo, x);
+				hi = Math.max(hi, x);
+			}
+			return hi - lo;
+		};
+		const [wL, wM, wH] = [light, medium, heavy].map(width);
+		assert.ok(wM > wL + 5, `medium should spread toward the walls (${wM} vs light ${wL})`);
+		assert.ok(wH > wM + 3, `heavy should fill the walls (${wH} vs medium ${wM})`);
+	});
 	it("stains are dingy and darker toward the centre, with uneven blotchy edges", () => {
 		const P = "imagepacks/au/clothes/under-lower/plussoil/dp/size15";
 		const pee = stats(join(root, P, "full-heavy-pee.png"));
 		const poo = stats(join(root, P, "full-heavy-poo.png"));
-		assert.ok(pee.lum < 160, `pee should be dingy, not a pale clean yellow (${pee.lum})`);
+		assert.ok(pee.lum < 175, `pee should be a muted straw, not a bright neon yellow (${pee.lum})`);
 		let pr = 0,
 			pg = 0,
 			pb = 0;
@@ -299,7 +322,8 @@ describe("soiled overlays: art", () => {
 		pr /= pee.pts.length;
 		pg /= pee.pts.length;
 		pb /= pee.pts.length;
-		assert.ok(pg / pr >= 0.8 && pb < pg * 0.4, `pee should be yellow, not orange (rgb ${pr.toFixed(0)},${pg.toFixed(0)},${pb.toFixed(0)})`);
+		assert.ok(pg / pr >= 0.8, `pee should not be orange (rgb ${pr.toFixed(0)},${pg.toFixed(0)},${pb.toFixed(0)})`);
+		assert.ok(pb / pg >= 0.35 && pb / pg <= 0.75, `pee should be a muted straw, not neon yellow (rgb ${pr.toFixed(0)},${pg.toFixed(0)},${pb.toFixed(0)})`);
 		assert.ok(poo.lum < 90, `poo should be a dark muddy brown (${poo.lum})`);
 		const coreVsEdge = st => {
 			let core = 0,
@@ -325,18 +349,27 @@ describe("soiled overlays: art", () => {
 		};
 		const pe = coreVsEdge(pee);
 		const po = coreVsEdge(poo);
-		// Tide-mark rings also darken, so compare the centre to the solid outer body (high alpha, far from the centroid), not to every far pixel.
-		let outer = 0,
-			nO = 0;
-		for (const [x, y, a, i] of pee.pts) {
-			const d = Math.hypot(x - pee.cx, y - pee.cy);
-			if (a > 160 && d > 30) {
-				outer += (pee.o.px[i * 4] + pee.o.px[i * 4 + 1] + pee.o.px[i * 4 + 2]) / 3;
-				nO++;
+		// Heavy pee now fills the seat too, so the geometric stain centroid is not the wettest spot.
+		// The soaked interiors (lower half, high alpha) should be deeper than the paler upper fade.
+		let upper = 0,
+			nU = 0,
+			deep = 0,
+			nD = 0;
+		const midY = (pee.top + pee.bot) / 2;
+		const upperBand = pee.top + (pee.bot - pee.top) * 0.25;
+		for (const [, y, a, i] of pee.pts) {
+			const L = (pee.o.px[i * 4] + pee.o.px[i * 4 + 1] + pee.o.px[i * 4 + 2]) / 3;
+			if (y < upperBand) {
+				upper += L;
+				nU++;
+			} else if (y > midY && a > 140) {
+				deep += L;
+				nD++;
 			}
 		}
-		outer /= Math.max(1, nO);
-		assert.ok(pe.nC > 20 && nO > 20 && pe.core < outer - 8, `pee core ${pe.core} should be darker than the outer yellow ${outer}`);
+		upper /= Math.max(1, nU);
+		deep /= Math.max(1, nD);
+		assert.ok(nU > 20 && nD > 20 && deep < upper - 8, `soaked pee interiors ${deep} should be deeper than the paler upper fade ${upper}`);
 		assert.ok(po.nC > 20 && po.nE > 20 && po.core < po.edge - 5, `poo core ${po.core} should be darker than edge ${po.edge}`);
 		assert.ok(pe.ringStd > 6 && po.ringStd > 6, `edges should be blotchy, not a smooth oval (std ${pe.ringStd} ${po.ringStd})`);
 	});

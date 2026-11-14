@@ -4,8 +4,11 @@
 Garment-level discolouration, clearly soiled and dirty, but still stains on the fabric only
 (no shapes, lumps or graphic detail):
 
-  * pee  - a dingy yellow tint on the CROTCH, darker yellow toward the centre,
-           covering most of the crotch at heavy;
+  * pee  - a muted, pale straw-yellow tint, slightly deeper in the wettest area:
+           light is a patch on the CROTCH only; medium spreads from the crotch down
+           into the SEAT and out toward the side walls, fading at the edges; heavy
+           fills the seat and the side walls fully (crotch still included), covering
+           most of the padding;
   * poo  - a muddy brown discolouration on the SEAT (front view: the low, sagging bottom
            of the padding), darker toward the centre and the bottom bulge, covering most
            of the seat at heavy;
@@ -39,24 +42,26 @@ _spec.loader.exec_module(G)
 LEVELS = ["light", "medium", "heavy"]
 TYPES = ["pee", "poo", "both"]
 
-# Dirtier, less transparent colours. Edge is the outer stain; core is the darker centre.
-PEE_EDGE = np.array([222, 198, 42], float)
-PEE_CORE = np.array([176, 148, 18], float)
+# Pee is a muted, pale straw (more see-through than a solid yellow). Edge is the
+# outer stain; core is slightly deeper in the wettest area. Poo stays muddy brown.
+PEE_EDGE = np.array([214, 196, 112], float)
+PEE_CORE = np.array([178, 158, 74], float)
 POO_EDGE = np.array([102, 72, 34], float)
 POO_CORE = np.array([52, 34, 16], float)
 GRIME = np.array([90, 82, 68], float)
 MUD = np.array([82, 58, 22], float)
 
-# per level: pee (centre v, half width u, half height v, max alpha)
-#            poo (top v of seat, half width u, max alpha)
-# Shapes are large: heavy pee covers most of the crotch, heavy poo most of the seat,
-# heavy both most of the diaper. Soft falloff is short, so the visible stain is close
-# to this size (blotch warp then irregularises the edge).
-PEE_SHAPE = {
-    "light": (0.62, 0.62, 0.26, 0.70),
-    "medium": (0.60, 0.84, 0.36, 0.86),
-    "heavy": (0.58, 0.98, 0.38, 0.95),
+# pee crotch ellipse (centre v, half width u, half height v) and max alpha.
+# Medium/heavy also union a seat lobe (top v, half width u) and a side-wall band
+# (v0, v1, half width u). Light has no seat or wall component.
+PEE_CROTCH = {
+    "light": (0.58, 0.54, 0.21),
+    "medium": (0.57, 0.66, 0.24),
+    "heavy": (0.55, 0.78, 0.28),
 }
+PEE_SEAT = {"light": None, "medium": (0.70, 0.68), "heavy": (0.36, 1.04)}
+PEE_WALLS = {"light": None, "medium": (0.40, 0.82, 0.74), "heavy": (0.22, 1.02, 1.04)}
+PEE_AMAX = {"light": 0.44, "medium": 0.56, "heavy": 0.68}
 POO_SHAPE = {
     "light": (0.68, 0.74, 0.72),
     "medium": (0.50, 0.90, 0.88),
@@ -175,19 +180,38 @@ def stain_colour(edge, core, r, n_dark, n_mottle, tide):
     return col
 
 
-def pee_radius(u, v, level, N):
-    cv, hu, hv, amax = PEE_SHAPE[level]
+def pee_crotch_r(u, v, level, N):
+    cv, hu, hv = PEE_CROTCH[level]
     uc = u - 0.07 * (N["pee_j1"] * 2 - 1)
     vc = v - 0.03 * (N["pee_j2"] * 2 - 1)
-    # Superellipse (p>2) keeps a full, rounded crotch stain instead of a pointed oval.
     p = 2.6
-    r = (np.abs(uc / hu) ** p + np.abs((vc - cv) / hv) ** p) ** (1.0 / p)
+    return (np.abs(uc / hu) ** p + np.abs((vc - cv) / hv) ** p) ** (1.0 / p)
+
+
+def pee_radius(u, v, level, N):
+    """Light = crotch only; medium begins to mix into the seat and side walls;
+    heavy fills the seat and walls (crotch still included)."""
+    p = 2.6
+    r = pee_crotch_r(u, v, level, N)
+    if PEE_SEAT[level] is not None:
+        top, shu = PEE_SEAT[level]
+        top_w = top + 0.06 * (N["pee_j1"] * 2 - 1)
+        side = (np.abs(u) / shu) * (1.0 + 0.16 * (N["pee_warp"] * 2 - 1))
+        rv = np.clip((1.0 - v) / np.maximum(1.0 - top_w, 0.08), 0, 4)
+        r = np.minimum(r, np.sqrt(side ** 2 + rv ** 2))
+    if PEE_WALLS[level] is not None:
+        v0, v1, whu = PEE_WALLS[level]
+        r_u = np.abs(u) / whu
+        r_v = np.maximum(np.maximum((v0 - v) / 0.12, (v - v1) / 0.10), 0.0)
+        r = np.minimum(r, (np.abs(r_u) ** p + r_v ** p) ** (1.0 / p))
+    if level == "light":
+        # keep the light patch off the sagging seat
+        r = r + 0.9 * smooth((v - 0.74) / 0.10)
     r = r * (1.0 + 0.16 * (N["pee_warp"] * 2 - 1))
-    # Stronger sideways blotch, weaker upward bites toward the waistband.
     bite = 0.16 * (N["pee_blotch"] - 0.42)
     bite = bite * (0.55 + 0.45 * smooth((v - 0.28) / 0.18))
     r = r - bite
-    return r, amax
+    return r, PEE_AMAX[level]
 
 
 def poo_radius(u, v, level, N):
@@ -251,18 +275,23 @@ def overlay(sprite, level, typ, printable, N=None, seed=1):
         tide = tide_marks(r, N["pee_ring"], level)
         qa = region_alpha(r, amax, tide)
         qa = qa * smooth((v - 0.16) / 0.10)  # keep a clean band under the waistband
+        if level == "medium":
+            # the spread into the seat and walls is fainter than the crotch patch
+            qa = qa * (0.50 + 0.50 * smooth((1.05 - pee_crotch_r(u, v, level, N)) / 0.35))
         pee_col = stain_colour(PEE_EDGE, PEE_CORE, r, N["pee_dark"], N["pee_mottle"], tide)
-        if typ == "both" and level == "heavy" and poo_col is not None:
-            # muddy blend where the crotch and seat stains meet
+        if typ == "both" and poo_col is not None and level in ("medium", "heavy"):
+            # blend naturally where pee and poo overlap (they share the seat from medium up)
             meet = np.minimum(qa, pa)
-            ov = smooth(meet / 0.18) * smooth(np.minimum(qa, pa) / np.maximum(np.maximum(qa, pa), 1e-6) / 0.30)
-            # also a mid-lower band so the join itself looks like mixed damp grime
-            band = smooth((v - 0.42) / 0.10) * smooth((0.78 - v) / 0.10) * smooth((0.95 - np.abs(u)) / 0.20)
-            ov = np.clip(ov + 0.45 * band * smooth(np.maximum(qa, pa) / 0.25), 0, 1)
+            ov = smooth(meet / 0.18) * smooth(meet / np.maximum(np.maximum(qa, pa), 1e-6) / 0.30)
+            if level == "heavy":
+                seat_ov = smooth((v - 0.48) / 0.10) * smooth(meet / 0.10)
+                ov = np.clip(ov + 0.6 * seat_ov, 0, 1)
+                strength, poo_d = 0.70, 0.35
+            else:
+                strength, poo_d = 0.40, 0.18
             mud = np.broadcast_to(MUD, pee_col.shape)
-            pee_col = pee_col * (1 - ov[..., None] * 0.70) + mud * (ov[..., None] * 0.70)
-            # darken the already-drawn poo in the same zone
-            rgb = rgb * (1 - ov[..., None] * 0.35) + mud * (ov[..., None] * 0.35)
+            pee_col = pee_col * (1 - ov[..., None] * strength) + mud * (ov[..., None] * strength)
+            rgb = rgb * (1 - ov[..., None] * poo_d) + mud * (ov[..., None] * poo_d)
         rgb, alpha = composite(rgb, alpha, pee_col, qa)
 
     rgb = rgb * shade[..., None]
