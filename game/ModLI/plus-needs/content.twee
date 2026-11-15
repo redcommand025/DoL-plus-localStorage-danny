@@ -1,0 +1,414 @@
+:: Widgets Plus Content Batch [widget plusneeds]
+/* Location toilets, job breaks, infirmary, flat home, and custody. No new continence-reputation world hooks. */
+
+<<widget "plusWorkBreakLink">>
+	<<if _args[0]>>
+		<<bathroomicon "toilet">><<link [[Ask to use the restroom (0:01)|Plus Needs Work Break]]>><<set $plusWorkBreakJob to _args[0]>><<set $plusWorkBreakReturn to $passage>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusInfirmaryNurseLink">>
+	<<schoolicon "infirmary">><<link [[Speak to the nurse|Plus Infirmary Nurse]]>><<set $plusInfirmaryReturn to $passage>><</link>>
+	<br>
+<</widget>>
+
+<<widget "plusCustodyWashLink">>
+	<<icon "plusneeds/scrub-clothes.png">><<link [[Wash your clothes (0:30)|Plus Custody Wash]]>><<set $plusCustodyReturn to $passage>><</link>>
+	<br>
+<</widget>>
+
+<<widget "plusCustodySpareLink">>
+	<<if plusCustodyCanSpare()>>
+		<<icon "plusneeds/diaper-change.png">><<link [[Ask for a spare|Plus Custody Spare]]>><<set $plusCustodyReturn to $passage>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusOutdoorToiletLinkEx">>
+	/* Extended wrapper; the base widget is updated in widgets.twee. Kept so tests can mention it. */
+	<<plusOutdoorToiletLink _args[0]>>
+<</widget>>
+
+
+:: Plus Needs Work Break [plusneeds]
+<<effects>>
+<<run plusWorkBreakResolve($plusWorkBreakJob)>>
+<<set _wb to $plusWorkBreakLast>>
+<<if _wb.accepted>>
+	<<pass 8>>
+	<<if _wb.urgent>>
+		You explain, as evenly as you can, that you cannot wait until the end of the shift.
+		<<if $plusWorkBreakJob is "farm">>
+			Alex glances at the animals, then at you, and nods toward the shed. "Go on. Be quick. I'll keep an eye on things."
+		<<elseif $plusWorkBreakJob is "cafe">>
+			Sam looks you over and sighs. "Fine. Use the staff toilet. Don't leave me with a full section."
+		<<elseif $plusWorkBreakJob is "dance">>
+			Charlie waves you off toward the changing room. "Go. I don't want anyone dancing in discomfort. Be back before the next number."
+		<<elseif $plusWorkBreakJob is "docks">>
+			The foreman clicks <<his>> tongue, then jerks a thumb at the dock office. "Five minutes. If you're longer, I'll come looking."
+		<<else>>
+			Your supervisor studies your face, then points down the hall. "Be quick. I want you back at your desk before anyone notices."
+		<</if>>
+	<<elseif _wb.commented or _wb.visible or _wb.smell>>
+		<<if _wb.visible>>They notice the outline under your clothes, hesitate, then decide not to make a scene. <</if>>
+		<<if _wb.smell>>They wrinkle their nose, then clearly decide it is not worth a lecture in front of everyone. <</if>>
+		"All right. Don't be long."
+		<<if _wb.visible>><<run plusDiaperExposure()>><<if plusDiaperStressApplies("seen")>><<stress 4>><<gstress>><</if>><</if>>
+	<<else>>
+		<<print either(
+			"They barely look up. \"Go on. Don't take all day.\"",
+			"They nod. \"Restroom's where it always is. Come straight back.\"",
+			"They check the time, then shrug. \"Fine. Be quick about it.\""
+		)>>
+	<</if>>
+	<br><br>
+	You thank them and hurry off. The restroom is ordinary and, for a few minutes, private. You use the toilet, wash your hands, and feel much more comfortable.
+	<<run plusNeedsToilet("both")>><<plusDiaperToiletNote>>
+	<br><br>
+	<<plusDiaperChangeLink>>
+	<<getouticon>><<link [[Return to work|$plusWorkBreakReturn]]>><<set $eventskip to 1>><</link>>
+<<else>>
+	<<pass 1>>
+	<<if _wb.visible and _wb.smell>>
+		Their eyes drop, and they wrinkle their nose. "Not now. Wait until your break, like everyone else."
+	<<elseif _wb.visible>>
+		They glance at the outline under your clothes and shake their head. "You'll have to wait. We're short-handed."
+	<<elseif _wb.urgent>>
+		<<print either(
+			"They look unconvinced. \"You'll manage. Break is later.\"",
+			"They shake their head. \"I need you here. Hold on until you're scheduled to stop.\"",
+			"\"Not now,\" they say, already turning back to the work. \"You'll have to wait.\""
+		)>>
+	<<else>>
+		<<print either(
+			"They shake their head without looking up. \"Later.\"",
+			"\"We're busy. Wait for your break.\"",
+			"They wave you back to your place. \"Not now.\""
+		)>>
+	<</if>>
+	<<if _wb.visible and plusDiaperStressApplies("seen")>><<run plusDiaperExposure()>><<stress 4>><<gstress>><</if>>
+	<br><br>
+	You can go back and wait, or try to slip away without permission.
+	<br><br>
+	<<getouticon>><<link [[Go back to work|$plusWorkBreakReturn]]>><<set $eventskip to 1>><</link>>
+	<br>
+	<<icon "plusneeds/find-place.png">><<link [[Slip away anyway (0:04)|Plus Needs Work Break Sneak]]>><</link>>
+	<br>
+<</if>>
+
+
+:: Plus Needs Work Break Sneak [plusneeds]
+<<effects>><<pass 4>>
+<<set _sneak to (random(1, 100) lte 40)>>
+<<if _sneak>>
+	You duck out of sight and find a quiet corner. You barely have time to finish before you hear someone coming. You straighten your clothes and walk back as if nothing happened.
+	<br><br>
+	<span class="red">Your cheeks burn.</span> You hope they did not see enough to be sure.
+	<<stress 6>><<gstress>>
+	<<run plusNeedsSpotted()>>
+	<<if typeof plusContRepOnOutdoor is "function">><<run plusContRepOnOutdoor($plusWorkBreakReturn)>><</if>>
+<<else>>
+	You slip away, find a quiet corner, and relieve yourself without being seen. You return to work as casually as you can.
+	You feel much more comfortable, if a little guilty.
+<</if>>
+<<run plusNeedsToilet("both")>><<plusDiaperToiletNote>>
+<br><br>
+<<plusDiaperChangeLink>>
+<<getouticon>><<link [[Return to work|$plusWorkBreakReturn]]>><<set $eventskip to 1>><</link>>
+
+
+:: Plus Infirmary Nurse [plusneeds]
+<<effects>>
+<<set _reason to plusInfirmaryReason()>>
+<<loadNPC 0 school_nurse>><<person1>>
+The nurse sets down <<his>> pen and looks at you properly, the way <<he>> looks at a student who has come in mid-lesson.
+<br><br>
+<<if _reason is "accident">>
+	<<print either(
+		"\"You look shaken,\" <<he>> says, not unkindly. \"Did something happen? You can tell me. This room is private.\"",
+		"\"Come and sit down,\" <<he>> says. \"You're flushed, and I don't think it's a fever. If you've had an accident, I can help you sort it out quietly.\"",
+		"<<He>> takes one look at you and pulls the curtain a little further along its rail. \"It's all right. You're not the first student this has happened to, and you won't be the last.\""
+	)>>
+<<elseif _reason is "soiled" or _reason is "soaked">>
+	<<print either(
+		"<<He>> notices the way you are standing and keeps <<his>> voice low. \"If you need a private place to change, you have one. I can also see whether I have a spare.\"",
+		"\"You look uncomfortable,\" <<he>> says, matter-of-fact. \"There's a curtain, and I can step outside. No one in the hallway needs to know.\"",
+		"<<He>> glances once at your clothes, then at your face, and simply says, \"Would you like to use the back of the room? I can give you a few minutes.\""
+	)>>
+<<elseif _reason is "visible">>
+	<<print either(
+		"<<He>> has noticed the outline under your uniform. <<He>> does not comment on it at first. \"Is there something I can help you with? If you need to change, you may use the curtain.\"",
+		"\"You don't have to explain,\" <<he>> says quietly. \"If your clothes aren't hiding things as well as you'd like, I can offer you a private stall and, if I have one, a spare.\"",
+		"<<He>> keeps <<his>> voice even. \"Plenty of students need extra protection for one reason or another. You're allowed to ask for help.\""
+	)>>
+<<elseif _reason is "urgent">>
+	<<print either(
+		"\"You look like you need the toilet,\" <<he>> says, practical rather than embarrassed. \"Use the one through there. I'll make sure no one comes in.\"",
+		"<<He>> nods toward the side door. \"Go on. I'll write you as having come in for a headache if anyone asks.\""
+	)>>
+<<else>>
+	<<print either(
+		"\"What can I do for you?\" <<he>> asks. \"Pain, rest, or something else?\"",
+		"\"You have a few minutes,\" <<he>> says. \"Tell me what you need.\"",
+		"\"Sit if you like,\" <<he>> says. \"I'm listening.\""
+	)>>
+<</if>>
+<br><br>
+<<if $plusBladder lt 1000 or $plusBowels lt 1000>>
+	<<bathroomicon "toilet">><<link [[Use the infirmary toilet (0:03)|Plus Needs Toilet]]>><<set $plusToiletReturn to $passage>><</link>>
+	<br>
+<</if>>
+<<if plusDiaperWorn()>>
+	<<icon "plusneeds/diaper-change.png">><<link [[Ask for a private place to change|Plus Infirmary Change]]>><</link>>
+	<br>
+<</if>>
+<<if plusInfirmaryCanSpare()>>
+	<<icon "plusneeds/diaper-change.png">><<link [[Ask if <<he>> has a spare|Plus Infirmary Spare]]>><</link>>
+	<br>
+<</if>>
+<<socialiseicon "ask">><<link [[Ask for advice|Plus Infirmary Advice]]>><</link>>
+<br>
+<<getouticon>><<link [[That's all, thank you|School Infirmary]]>><<endevent>><<set $phase to 1>><</link>>
+<br>
+
+
+:: Plus Infirmary Change [plusneeds]
+<<effects>><<pass 8>>
+The nurse draws the curtain around the far bed and steps to the other side of the room, facing the cabinets. "I'll stay here. Take the time you need."
+<br><br>
+It is quiet except for the scratch of <<his>> pen. You change without anyone walking in.
+<<plusDiaperChangeLink>>
+<br><br>
+When you are finished, <<he>> only says, "All right. You can go back to class when you're ready. If it happens again, come here first, not the toilets in the hall."
+<br><br>
+<<link [[Thank <<him>>|Plus Infirmary Nurse]]>><</link>>
+<br>
+
+
+:: Plus Infirmary Spare [plusneeds]
+<<effects>>
+<<if plusInfirmaryGiveSpare()>>
+	<<pass 2>>
+	The nurse opens a low cupboard, checks a plain paper packet, and sets it on the desk. "It's a spare pull-up. Medium. I can only spare one a day, so use it if you need it, and come back tomorrow if you don't have another."
+	<br><br>
+	<<He>> does not make a joke of it, and <<he>> does not lecture. "There's a curtain if you'd rather change here."
+	<br><br>
+	The packet goes into your things.
+	<br><br>
+	<<if plusDiaperWorn()>>
+		<<icon "plusneeds/diaper-change.png">><<link [[Change here|Plus Infirmary Change]]>><</link>>
+		<br>
+	<</if>>
+	<<link [[Thank <<him>>|Plus Infirmary Nurse]]>><</link>>
+<<else>>
+	"I don't have another to give you today," <<he>> says. "If you have one of your own, you may change here. Otherwise, come back tomorrow morning."
+	<br><br>
+	<<link [[Back|Plus Infirmary Nurse]]>><</link>>
+<</if>>
+<br>
+
+
+:: Plus Infirmary Advice [plusneeds]
+<<effects>><<pass 4>>
+The nurse leans back in <<his>> chair and chooses <<his>> words with care.
+<br><br>
+<<if plusInfirmaryReason() is "accident" or plusInfirmaryReason() is "urgent">>
+	"Accidents happen," <<he>> says. "Especially if you've been holding on through lessons. Use the toilets between classes if you can. If it's becoming frequent, the hospital will run bladder exercises with a nurse there. They charge a little, but it is proper advice, not a telling-off."
+<<elseif plusInfirmaryReason() is "visible" or plusInfirmaryReason() is "soiled" or plusInfirmaryReason() is "soaked">>
+	"If you're wearing protection, that's your business," <<he>> says. "School uniform doesn't always hide it, and that's hard. Change when you need to, and come here if the other toilets feel too public. The hospital can also help with exercises, if you want to work on control."
+<<else>>
+	"If you ever have an accident at school, or if you need a private place to change, come here," <<he>> says. "I would rather you missed five minutes of a lesson than sat through one in distress. The hospital also offers bladder exercises, if that's useful to you."
+<</if>>
+<br><br>
+<<He>> writes a line in <<his>> book, then looks up. "You can go when you're ready. The door is open during school hours."
+<<stress -3>><<lstress>>
+<br><br>
+<<link [[Thank <<him>>|Plus Infirmary Nurse]]>><</link>>
+<br>
+
+
+:: Plus Flat Kitchen [plusneeds]
+<<set $outside to 0>><<set $location to "flat">><<location "flats">><<effects>>
+Your kitchen is a short run of counter, a sink, a small hob, and a fridge that hums when the building is quiet. It is not much, but it is yours.
+<br><br>
+<<if Time.dayState is "night">>
+	<<print either(
+		"The street outside is still. You could make something simple without waking the whole floor.",
+		"The fridge light is the brightest thing in the room. A late snack would be easy enough."
+	)>>
+<<elseif Time.dayState is "dawn">>
+	<<print either(
+		"Morning light comes in over the canal. The kettle would not take long.",
+		"You can hear a neighbour already moving about next door. A quick breakfast would set you up for the day."
+	)>>
+<<elseif Weather.precipitation is "rain">>
+	A drip ticks in the sink, matching the rain on the window. Food and a warm drink would help.
+<<else>>
+	<<print either(
+		"There is bread, a bit of cheese, and a jar of something sweet in the cupboard.",
+		"You have enough in the cupboard for a snack and a glass of water, if nothing else."
+	)>>
+<</if>>
+<br><br>
+<<plusKitchenSnack>>
+<<getouticon>><<link [[Back to the bedroom|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Laundry [plusneeds]
+<<set $outside to 0>><<set $location to "flat">><<location "flats">><<effects>>
+The bathroom sink and the tub are enough for a proper wash, if you are willing to spend the time. A folding airer leans behind the door.
+<br><br>
+<<plusClothesLines>>
+<<icon "plusneeds/laundromat.png">><<link [[Wash your clothes in the tub (0:40)|Plus Flat Laundry Wash]]>><</link>>
+<br>
+<<getouticon>><<link [[Leave it for now|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Laundry Wash [plusneeds]
+<<effects>><<pass 40>>
+<<run plusHomeWash()>>
+You fill the tub, scrub your clothes with the bar of soap by the sink, rinse them twice, and hang them on the airer by the radiator. By the time you are done they are clean, a little damp, and already warming.
+<br><br>
+It is slower than the High Street laundromat, but it costs nothing, and no one else is waiting for the machine.
+<br><br>
+<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Desk [plusneeds]
+<<set $outside to 0>><<set $location to "flat">><<location "flats">><<effects>>
+A narrow desk sits under the window, with a chair that does not quite match. From here you can see the canal and a slice of Barb Street.
+<br><br>
+<<if Time.dayState is "night">>
+	The glass throws back your own lamp. It is a good place to finish something quietly.
+<<elseif Time.dayState is "dusk">>
+	The light is going. You would still have time to sit and work, or simply rest your eyes on the water.
+<<else>>
+	Daylight falls across the blotter. It is easier to think here than at the kitchen table in the orphanage.
+<</if>>
+<br><br>
+<<if Time.schoolDay and Time.hour gte 16 and Time.hour lte 21>>
+	<<schoolicon "library">><<link [[Do your homework (0:50)|Plus Flat Homework]]>><</link>>
+	<br>
+<</if>>
+<<furnitureicon "chair">><<link [[Sit and rest (0:15)|Plus Flat Desk Rest]]>><</link>>
+<br>
+<<furnitureicon "chair">><<link [[Write for a while (0:20)|Plus Flat Desk Write]]>><</link>>
+<br>
+<<getouticon>><<link [[Step away|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Homework [plusneeds]
+<<effects>><<pass 50>><<schoolskill>>
+You spread your books on the desk and work through the day's assignments. The canal is a better view than the orphanage common room, and no one comes in to tell you the light is needed elsewhere.
+<<gschool>>
+<br><br>
+When you finish, your head feels clearer.
+<<stress -4>><<lstress>>
+<br><br>
+<<link [[Next|Plus Flat Desk]]>><</link>>
+<br>
+
+
+:: Plus Flat Desk Rest [plusneeds]
+<<effects>><<pass 15>>
+You sit at the desk and do nothing in particular. A barge moves on the canal, or a bicycle goes by on the towpath, or the window just holds the weather.
+<<stress -4>><<lstress>>
+<br><br>
+<<link [[Next|Plus Flat Desk]]>><</link>>
+<br>
+
+
+:: Plus Flat Desk Write [plusneeds]
+<<effects>><<pass 20>>
+<<print either(
+	"You write a little about the day, then stop when you run out of anything you want to keep. The page is enough.",
+	"You start a letter you may never send, and leave it in the drawer. It helped to put the words somewhere.",
+	"You doodle in the margin of an old worksheet until the worry in your shoulders eases."
+)>>
+<<stress -5>><<lstress>>
+<br><br>
+<<link [[Next|Plus Flat Desk]]>><</link>>
+<br>
+
+
+:: Plus Flat Hallway [plusneeds]
+<<set $outside to 0>><<set $location to "flat">><<location "flats">><<effects>><<pass 2>>
+<<set _beat to plusFlatHallwayBeat()>>
+You step out onto the landing. The stairwell smells of dust and someone else's dinner. A bicycle is chained to the railing, and a faded notice about bins is taped above the post table.
+<br><br>
+<<if _beat is "landlord">>
+	The landlord is on the stairs with a folder under one arm. <<if $plusFlat.msg is "grace" or $plusFlat.msg is "unpaid">>
+		"You've had my note," <<he>> says, not unkindly, but not softly either. "I need the rent. I can wait a little, not forever."
+	<<elseif $plusFlat.msg is "remind">>
+		"<<if Time.dayState is "night">>I was just leaving a reminder.<<else>>Don't forget the rent date.<</if>> Better to hear it from me than find another note on the door."
+	<<else>>
+		"<<if Time.dayState is "dusk">>Evening.<<else>>Hello.<</if>> Everything all right with the taps? If the heating knocks, give the office a shout." <<He>> goes on down the stairs.
+	<</if>>
+<<elseif _beat is "package">>
+	A small parcel is sitting on the post table with someone else's name on it. Your neighbour from across the landing comes out, says sorry for blocking the way, and takes it with a nod. "Night's drawing in early," they add, if they say anything else at all.
+<<elseif _beat is "neighbour">>
+	<<if Time.dayState is "night">>
+		<<print either(
+			"Your neighbour is locking up, keys quiet in their hand. They give you a small nod, the sort that means they have seen you often enough to recognise you, and go inside.",
+			"Someone comes up the stairs with a shopping bag. They murmur an apology as they pass, and their door closes softly."
+		)>>
+	<<else>>
+		<<print either(
+			"The neighbour across the landing is bringing in a basket of washing. \"The airer's better by the radiator this time of year,\" they say, and leave you to it.",
+			"A child from the floor below clatters past, followed by a parent who mouths a sorry. It is noisier than the orphanage at lessons, and quieter than the orphanage at night.",
+			"Your neighbour pauses with a hand on their door. \"If the pipes bang again, it's the heating, not a leak. Took me a week to learn that.\" They smile and go in."
+		)>>
+	<</if>>
+<<else>>
+	<<print either(
+		"The landing is empty. A window at the turn of the stairs is open a crack, and you can hear the canal.",
+		"No one is about. You stand for a moment in the quiet, then go back to your door.",
+		"Footsteps fade on the floor above, and then there is only the tick of the stairwell light."
+	)>>
+<</if>>
+<br><br>
+<<homeicon>><<link [[Go back in|Plus Flat Bedroom]]>><</link>>
+<br>
+<<getouticon>><<link [[Go downstairs|Flats]]>><<pass 1>><</link>>
+<br>
+
+
+:: Plus Custody Wash [plusneeds]
+<<effects>><<pass 30>>
+<<run plusCustodyWash()>>
+<<if $location is "prison">>
+	The laundry smells of hot water and cheap soap. You are given a tub and a stretch of bench. You wash what you are wearing, wring it out, and wait while it dries enough to put back on. No one comments if you keep to yourself.
+<<else>>
+	An orderly points you to a deep sink and a stack of thin towels. You wash your clothes as well as you can and wait for them to dry. It is not private, but it is allowed, and that is enough.
+<</if>>
+<br><br>
+Your clothes are clean again.
+<br><br>
+<<getouticon>><<link [[Finish|$plusCustodyReturn]]>><<set $eventskip to 1>><</link>>
+
+
+:: Plus Custody Spare [plusneeds]
+<<effects>>
+<<if plusCustodyGiveSpare()>>
+	<<pass 3>>
+	<<if $location is "prison">>
+		The medical orderly opens a cupboard, checks a list, and hands you a plain packet. "One spare. Don't come asking again for a couple of days. Change in the stalls if you have to, not on the walkway."
+	<<else>>
+		Harper, or whoever is on duty, gives you a brief look and a packet from a locked drawer. "This is not a reward. It is a practical measure. You will not be issued another immediately."
+	<</if>>
+	<br><br>
+	You take it. There is no ceremony.
+<<else>>
+	<<if $location is "prison">>
+		"You've had your issue," the orderly says. "Wait your turn like everyone else."
+	<<else>>
+		"Not today," they say. "You will have to manage with what you have."
+	<</if>>
+<</if>>
+<br><br>
+<<getouticon>><<link [[Leave|$plusCustodyReturn]]>><<set $eventskip to 1>><</link>>

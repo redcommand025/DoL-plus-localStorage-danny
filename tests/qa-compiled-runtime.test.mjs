@@ -126,6 +126,10 @@ describe("QA compiled isolated runtime", () => {
 				"plusDiaperShop",
 				"plusNeedsAccident",
 				"plusFlatNotices",
+				"plusWorkBreakLink",
+				"plusInfirmaryNurseLink",
+				"plusCustodyWashLink",
+				"plusKitchenSnack",
 			];
 			const out = {};
 			for (const n of list) out[n] = !!(Macro && Macro.has && Macro.has(n));

@@ -118,6 +118,7 @@
 
 <<widget "plusNeedsAccident">>
 	<<set _pnWhich to _args[0]>>
+	<<run plusAccidentRemember(_pnWhich)>>
 	<<set _pnFloor to plusAccidentFloor()>>
 	<<set _pnGround to ($outside ? "ground" : "floor")>>
 	<<set _pnOrig to _pnWhich>>
@@ -195,7 +196,31 @@
 :: Plus Needs Toilet [plusneeds]
 <<effects>><<pass 3>>
 <<if $plusBladder lt 1900 or $plusBowels lt 1900>>
-	You find a free stall and use the toilet, then wash your hands at the sink. You feel much more comfortable.
+	<<if $location is "prison">>
+		<<print either("You use the metal toilet in the corner, keeping your back to the bars as much as you can, then rinse your hands at the small basin.", "The cell toilet has no lid to speak of. You use it quickly and wash your hands. It is better than waiting.")>>
+	<<elseif $location is "asylum">>
+		<<print either("You use the toilet in the side room and wash your hands. An orderly passes in the corridor and does not come in.", "The fittings are plain and bolted down. You use the toilet, wash, and feel much more comfortable.")>>
+	<<elseif $location is "office" or $plusToiletReturn is "Office Lobby" or $plusToiletReturn is "Office Agency">>
+		<<print either("You find the lobby restroom, take a stall, and wash your hands at a clean sink. The mirror lights are too bright, but you feel much more comfortable.", "The office toilets are quiet at this hour. You use a stall, rinse your hands, and go back.")>>
+	<<elseif $location is "pub" or $plusToiletReturn is "Pub">>
+		<<print either("You push through to the pub toilets, wait for a stall, and use it. The floor is sticky, but you feel much more comfortable after you wash your hands.", "The restroom is loud with the bar next door. You use the toilet anyway and rinse your hands in cold water.")>>
+	<<elseif $location is "farm" or $plusToiletReturn is "Farm Shed" or $plusToiletReturn is "Farm Cottage" or $plusToiletReturn is "Farm Kitchen" or $plusToiletReturn is "Farm Bedroom" or $plusToiletReturn is "Farm Work">>
+		<<print either("You use the toilet by the shed shower, wash your hands at the tap, and step back into the yard air.", "The cottage toilet is narrow and plain. You use it, wash, and feel much more comfortable.")>>
+	<<elseif $location is "cabin" or $plusToiletReturn is "Eden Cabin" or $plusToiletReturn is "Cabin House Actions">>
+		<<print either("You use the cabin's small toilet, wash your hands in the basin, and feel much more comfortable.", "The outhouse-facing toilet at the back of the cabin is cold. You use it quickly and wash up inside.")>>
+	<<elseif $location is "flat" or $plusToiletReturn is "Plus Flat Bathroom" or $plusToiletReturn is "Plus Flat Bedroom">>
+		<<print either("You use your own toilet, wash your hands, and take a moment in the quiet.", "The bathroom is yours. You use the toilet and wash at the sink, unhurried.")>>
+	<<elseif $location is "spa" or $plusToiletReturn is "Spa">>
+		<<print either("The spa toilets are tiled and scented. You use a stall, wash your hands, and feel much more comfortable.", "You step out of the treatment rooms into a clean restroom, use the toilet, and rinse your hands in warm water.")>>
+	<<elseif $location is "museum" or $plusToiletReturn is "Museum">>
+		<<print either("You find the museum restrooms off the main hall, use a stall, and wash your hands under a noisy dryer.", "The toilets are quiet, a little echoey. You use one and feel much more comfortable.")>>
+	<<elseif $location is "temple" or $plusToiletReturn is "Temple" or $plusToiletReturn is "Temple Quarters">>
+		<<print either("You use the side washroom off the temple corridor, then wash your hands at a stone basin.", "The toilets by the quarters are plain and well kept. You use one and return quietly.")>>
+	<<elseif $location is "school" or $plusToiletReturn is "School Infirmary" or $plusToiletReturn is "Plus Infirmary Nurse">>
+		<<print either("You use the infirmary toilet with the door closed, wash your hands, and feel much more comfortable.", "You find a free stall and use the toilet, then wash your hands at the sink. You feel much more comfortable.")>>
+	<<else>>
+		<<print either("You find a free stall and use the toilet, then wash your hands at the sink. You feel much more comfortable.", "You wait for a stall, use the toilet, and rinse your hands. You feel much more comfortable.", "The restroom is ordinary and briefly yours. You use the toilet, wash your hands, and feel much more comfortable.")>>
+	<</if>>
 <<else>>
 	You use the toilet, then wash your hands at the sink. You didn't really need to go.
 <</if>>
@@ -214,7 +239,19 @@ You cup your hands under the tap and drink some cold water.
 
 :: Plus Needs Kitchen Snack [plusneeds]
 <<effects>>
-You grab a quick snack and a glass of water.
+<<if $location is "flat" or $plusToiletReturn is "Plus Flat Kitchen" or $plusToiletReturn is "Plus Flat Bedroom">>
+	<<if Time.dayState is "night">>
+		<<print either("You cut a slice of bread, pour a glass of water, and eat standing at the counter, the window black above the canal.", "You make a simple late snack and drink a glass of water. The fridge door clicks shut in the quiet.")>>
+	<<elseif Time.dayState is "dawn">>
+		<<print either("You eat a little bread and drink a glass of water while the kettle is still warming the room.", "Breakfast is simple: a snack from the cupboard and a glass of water, eaten at your own counter.")>>
+	<<else>>
+		<<print either("You put together a snack from the cupboard and run a glass of water from the tap. It is not a restaurant meal, but it is yours.", "You eat at the counter and drink a glass of water, looking out over the canal between bites.")>>
+	<</if>>
+<<elseif $location is "farm" or $plusToiletReturn is "Farm Kitchen">>
+	<<print either("You take a snack from the cottage kitchen and a glass of water from the tap, standing by the window to the yard.", "The farm kitchen is warm. You eat a quick snack and drink a glass of water before going back out.")>>
+<<else>>
+	You grab a quick snack and a glass of water.
+<</if>>
 <<run plusNeedsConsume(900, 400, "snack", 250)>>
 <br><br>
 <<getouticon>><<link [[Finish|$plusToiletReturn]]>><<set $eventskip to 1>><</link>>
@@ -311,10 +348,10 @@ You grab a quick snack and a glass of water.
 	<br>
 <</widget>>
 
-/* Outdoor toilet. _args[0]: "forest" | "park" | "beach" | "lake" | "wolfcave" */
+/* Outdoor toilet. _args[0]: forest | park | beach | lake | wolfcave | farm | moor | estate | coast */
 <<widget "plusOutdoorToiletLink">>
-	<<if _args[0] is "beach">><<set _pnLabel to "Relieve yourself behind the dunes (0:03)">><<elseif _args[0] is "park">><<set _pnLabel to "Relieve yourself behind some bushes (0:03)">><<elseif _args[0] is "wolfcave">><<set _pnLabel to "Relieve yourself at the edge of the clearing (0:03)">><<else>><<set _pnLabel to "Relieve yourself behind a tree (0:03)">><</if>>
-	<<set _pnOut to _args[0]>><<capture _pnOut>><<if _pnOut is "park" or _pnOut is "beach">><<icon "bush.png">><<else>><<foresticon>><</if>><<link _pnLabel "Plus Needs Outdoor Toilet">><<set $plusOutdoorSpot to _pnOut>><<set $plusToiletReturn to $passage>><</link>><</capture>>
+	<<if _args[0] is "beach">><<set _pnLabel to "Relieve yourself behind the dunes (0:03)">><<elseif _args[0] is "park">><<set _pnLabel to "Relieve yourself behind some bushes (0:03)">><<elseif _args[0] is "wolfcave">><<set _pnLabel to "Relieve yourself at the edge of the clearing (0:03)">><<elseif _args[0] is "farm">><<set _pnLabel to "Relieve yourself behind a hedge or barn (0:03)">><<elseif _args[0] is "moor">><<set _pnLabel to "Relieve yourself off the path in the heather (0:03)">><<elseif _args[0] is "estate">><<set _pnLabel to "Relieve yourself behind a hedge (0:03)">><<elseif _args[0] is "coast">><<set _pnLabel to "Relieve yourself behind the rocks (0:03)">><<else>><<set _pnLabel to "Relieve yourself behind a tree (0:03)">><</if>>
+	<<set _pnOut to _args[0]>><<capture _pnOut>><<if _pnOut is "park" or _pnOut is "beach" or _pnOut is "farm" or _pnOut is "estate">><<icon "bush.png">><<elseif _pnOut is "coast">><<icon "lake.png">><<elseif _pnOut is "moor">><<mooricon>><<else>><<foresticon>><</if>><<link _pnLabel "Plus Needs Outdoor Toilet">><<set $plusOutdoorSpot to _pnOut>><<set $plusToiletReturn to $passage>><</link>><</capture>>
 	<br>
 <</widget>>
 
@@ -348,7 +385,7 @@ You feel refreshed.
 <<effects>><<pass 3>>
 <<set _pnChance to plusNeedsSpotChance($plusOutdoorSpot)>>
 <<set _pnSpotted to random(1, 1000) lte _pnChance * 1000>>
-<<if $plusOutdoorSpot is "beach">><<set _pnWhere to "behind a dune">><<elseif $plusOutdoorSpot is "park">><<set _pnWhere to "behind a clump of bushes">><<elseif $plusOutdoorSpot is "wolfcave">><<set _pnWhere to "at the edge of the clearing">><<else>><<set _pnWhere to "behind a thick tree">><</if>>
+<<if typeof plusOutdoorWhere is "function">><<set _pnWhere to plusOutdoorWhere($plusOutdoorSpot)>><<elseif $plusOutdoorSpot is "beach">><<set _pnWhere to "behind a dune">><<elseif $plusOutdoorSpot is "park">><<set _pnWhere to "behind a clump of bushes">><<elseif $plusOutdoorSpot is "wolfcave">><<set _pnWhere to "at the edge of the clearing">><<elseif $plusOutdoorSpot is "farm">><<set _pnWhere to "behind a hedgerow at the edge of the field">><<elseif $plusOutdoorSpot is "moor">><<set _pnWhere to "behind a rise in the heather">><<elseif $plusOutdoorSpot is "estate">><<set _pnWhere to "behind a dense hedge">><<elseif $plusOutdoorSpot is "coast">><<set _pnWhere to "behind a rock below the path">><<else>><<set _pnWhere to "behind a thick tree">><</if>>
 <<if _pnSpotted>>
 	You find a spot _pnWhere and relieve yourself. Just as you finish, you hear footsteps. Someone walking by stops and stares at you, then quickly looks away.
 	<br><br>
@@ -1014,13 +1051,26 @@ You are in your rented flat, a modest one-bedroom on an upper floor of the Barb 
 <<plusFlatNotices>>
 <<print plusFlatStatusLine()>>
 <br><br>
+<<set _plusFlatBeat to plusFlatEveningBeat()>>
+<<if _plusFlatBeat>>
+	_plusFlatBeat
+	<br><br>
+<</if>>
 <<bedicon>><<link [[Get in bed|Plus Flat Bed]]>><</link>>
 <br>
 <<link [[Wardrobe|Plus Flat Wardrobe]]>><<set $wardrobe_location to "wardrobe">><</link>>
 <br>
 <<bathroomicon>><<link [[Bathroom (0:01)|Plus Flat Bathroom]]>><<pass 1>><</link>>
 <br>
+<<kitchenicon "stove-farm">><<link [[Kitchen (0:01)|Plus Flat Kitchen]]>><<pass 1>><</link>>
+<br>
+<<icon "plusneeds/laundromat.png">><<link [[Wash clothes (0:01)|Plus Flat Laundry]]>><<pass 1>><</link>>
+<br>
+<<furnitureicon "chair">><<link [[Desk (0:01)|Plus Flat Desk]]>><<pass 1>><</link>>
+<br>
 <<mirroricon>><<link [[Mirror|Plus Flat Mirror]]>><<preMirror>><</link>>
+<br>
+<<homeicon>><<link [[Step into the hallway (0:01)|Plus Flat Hallway]]>><<pass 1>><</link>>
 <br>
 <<if plusFlatCanPay()>>
 	<<link [[Pay this month's rent (£1,500)|Plus Flat Pay]]>><</link>>

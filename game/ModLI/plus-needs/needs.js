@@ -162,7 +162,7 @@ window.plusNowTs = function () {
 	window.plusNeedsML = ML;
 
 	/* Chance (0-1) of being spotted when relieving yourself outdoors. Higher near town and in busy places. */
-	const SPOT_BASE = { park: 0.4, beach: 0.35, wolfcave: 0.05 };
+	const SPOT_BASE = { park: 0.4, beach: 0.35, wolfcave: 0.05, farm: 0.18, moor: 0.08, estate: 0.22, coast: 0.12, lake: 0.12 };
 	window.plusNeedsSpotChance = function (spot) {
 		const V = State.variables;
 		let p;
@@ -207,6 +207,9 @@ window.plusNowTs = function () {
 			V.plusNeedsDrift[k] = d;
 			loss[k] = RATE[k] * minutes * (longPass ? SLEEP_RATE[k] : 1) * d * jitter(TICK_NOISE);
 		}
+		try {
+			if (typeof window.plusNeedsWeatherApply === "function") window.plusNeedsWeatherApply(loss, minutes, longPass);
+		} catch (e) {}
 		// Diuretics (coffee, energy drinks, alcohol) make the bladder fill faster for a while; water is unchanged.
 		if ((V.plusDiureticMin || 0) > 0) {
 			loss.plusBladder *= V.plusDiureticMul || 1;
@@ -677,6 +680,8 @@ window.plusNowTs = function () {
 			const key = prop.toLowerCase().replace(/_/g, " ").trim();
 			const v = PROPS[key];
 			if (!v) return;
+			const skip = window.plusNeedsPropSkipPassages || [];
+			if (skip.includes(State.passage)) return;
 			const T = State.temporary;
 			T.plusNeedsPropsSeen = T.plusNeedsPropsSeen || {};
 			if (T.plusNeedsPropsSeen[key]) return;
