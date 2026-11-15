@@ -3236,6 +3236,23 @@ window.plusNowTs = function () {
 	window.plusFlatHasDeposit = function () {
 		return spendOk(DEPOSIT);
 	};
+	window.plusLocationIsFlat = function () {
+		const st = V();
+		const loc = st && st.location;
+		if (loc === "flat" || loc === "flats") return true;
+		try {
+			const title = (State && State.passage) || "";
+			if (/^Plus Flat\b/.test(title) || title === "Plus Robin Room Door") return true;
+		} catch (e) {}
+		return false;
+	};
+	try {
+		if (typeof setup !== "undefined" && setup.Locations && typeof setup.Locations.flat !== "function") {
+			setup.Locations.flat = function () {
+				return "flats";
+			};
+		}
+	} catch (e) {}
 	window.plusFlatRented = function () {
 		return !!flat().rented;
 	};
@@ -3381,10 +3398,18 @@ window.plusNowTs = function () {
 		} catch (e) {
 			return;
 		}
-		if (f.processDay !== day) {
+		if (!Number.isFinite(f.processDay)) {
 			f.processDay = day;
 			window.plusFlatDaily();
+			return;
 		}
+		if (f.processDay === day) return;
+		const days = Math.min(40, Math.max(1, day - f.processDay));
+		for (let i = 0; i < days; i++) {
+			if (!flat().rented) break;
+			window.plusFlatDaily();
+		}
+		f.processDay = day;
 	};
 	window.plusFlatClearMsg = function () {
 		const f = flat();

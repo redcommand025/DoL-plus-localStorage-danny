@@ -262,7 +262,10 @@
 			if (/Robin|Plus Flat/.test(title) && window.plusRobinLivesAtFlat && window.plusRobinLivesAtFlat())
 				return loc === "flat" || loc === "sleep" || loc === "orphanage";
 			if (/Robin/.test(title)) return true;
-			return (loc === "orphanage" || loc === "flat") && (V().location === "home" || V().location === "flat");
+			return (
+				(loc === "orphanage" || loc === "flat") &&
+				(V().location === "home" || (typeof window.plusLocationIsFlat === "function" ? window.plusLocationIsFlat() : V().location === "flat"))
+			);
 		},
 		Bailey() {
 			return !!(
@@ -278,7 +281,8 @@
 			return V().location === "farm" || /Alex|Farm /.test(passageTitle());
 		},
 		Charlie() {
-			return /Dance|Charlie/.test(passageTitle()) || V().location === "dance";
+			const loc = V().location;
+			return /Dance|Charlie/.test(passageTitle()) || loc === "dance_studio" || loc === "dance";
 		},
 		Sirris() {
 			return /Science Lesson|Sirris/.test(passageTitle());
@@ -314,10 +318,10 @@
 			return npcInit("Niki") && (/Niki|Photograph|Studio/.test(passageTitle()) || V().location === "studio");
 		},
 		Landlord() {
-			return V().location === "flat" || /Plus Flat Hallway|Plus Flat Bedroom/.test(passageTitle());
+			return (typeof window.plusLocationIsFlat === "function" && window.plusLocationIsFlat()) || /Plus Flat Hallway|Plus Flat Bedroom/.test(passageTitle());
 		},
 		Neighbour() {
-			return V().location === "flat" || /Plus Flat Hallway/.test(passageTitle());
+			return (typeof window.plusLocationIsFlat === "function" && window.plusLocationIsFlat()) || /Plus Flat Hallway/.test(passageTitle());
 		},
 	};
 	window.plusNpcPresent = function (name) {

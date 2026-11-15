@@ -367,7 +367,21 @@ Weather.Renderer.Effects.add({
 			// Make it asyncronous to wait for the image to load before animating without slowing down the main flow
 			return new Promise(resolve => {
 				const basePath = this.fullPath;
-				const imagePath = typeof obj === "object" && obj.image ? obj.image : this.obj;
+				/* Keep the filename string. After a successful load this code used to
+				 * overwrite obj.image with the Image element, so a later init on a shared
+				 * object would build img/.../[object Object] and 404. */
+				if (obj && typeof obj === "object" && typeof obj.image === "string" && !obj.imageSrc) obj.imageSrc = obj.image;
+				let imagePath = null;
+				if (obj && typeof obj === "object") {
+					if (typeof obj.image === "string") imagePath = obj.image;
+					else if (typeof obj.imageSrc === "string") imagePath = obj.imageSrc;
+				} else if (typeof obj === "string") {
+					imagePath = obj;
+				}
+				if (typeof imagePath !== "string" || !imagePath) {
+					resolve();
+					return;
+				}
 				const resolvedSrc = basePath + imagePath;
 
 				const handleLoadedImage = image => {

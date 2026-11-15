@@ -2069,8 +2069,13 @@
 			imagesToCheck.forEach(item => {
 				if (item.condition && !item.condition()) return;
 
-				const imagePath = typeof item === "string" ? item : item.image;
-				T.images.push(imagePath instanceof Image ? imagePath.src : `${path}${loc.folder}/${imagePath}`);
+				let imagePath = typeof item === "string" ? item : item && (typeof item.image === "string" ? item.image : item.imageSrc);
+				if (imagePath instanceof Image || (imagePath && typeof imagePath === "object" && imagePath.src)) {
+					T.images.push(imagePath.src);
+					return;
+				}
+				if (typeof imagePath !== "string" || !imagePath) return;
+				T.images.push(`${path}${loc.folder}/${imagePath}`);
 			});
 		<</script>>
 

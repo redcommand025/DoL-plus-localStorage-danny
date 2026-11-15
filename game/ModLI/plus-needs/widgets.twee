@@ -214,7 +214,7 @@
 		<<print either("You use the toilet by the shed shower, wash your hands at the tap, and step back into the yard air.", "The cottage toilet is narrow and plain. You use it, wash, and feel much more comfortable.")>>
 	<<elseif $location is "cabin" or $plusToiletReturn is "Eden Cabin" or $plusToiletReturn is "Cabin House Actions">>
 		<<print either("You use the cabin's small toilet, wash your hands in the basin, and feel much more comfortable.", "The outhouse-facing toilet at the back of the cabin is cold. You use it quickly and wash up inside.")>>
-	<<elseif $location is "flat" or $plusToiletReturn is "Plus Flat Bathroom" or $plusToiletReturn is "Plus Flat Bedroom">>
+	<<elseif $location is "flat" or $location is "flats" or $plusToiletReturn is "Plus Flat Bathroom" or $plusToiletReturn is "Plus Flat Bedroom">>
 		<<print either("You use your own toilet, wash your hands, and take a moment in the quiet.", "The bathroom is yours. You use the toilet and wash at the sink, unhurried.")>>
 	<<elseif $location is "spa" or $plusToiletReturn is "Spa">>
 		<<print either("The spa toilets are tiled and scented. You use a stall, wash your hands, and feel much more comfortable.", "You step out of the treatment rooms into a clean restroom, use the toilet, and rinse your hands in warm water.")>>
@@ -245,7 +245,7 @@ You cup your hands under the tap and drink some cold water.
 
 :: Plus Needs Kitchen Snack [plusneeds]
 <<effects>>
-<<if $location is "flat" or $plusToiletReturn is "Plus Flat Kitchen" or $plusToiletReturn is "Plus Flat Bedroom">>
+<<if $location is "flat" or $location is "flats" or $plusToiletReturn is "Plus Flat Kitchen" or $plusToiletReturn is "Plus Flat Bedroom">>
 	<<if Time.dayState is "night">>
 		<<print either("You cut a slice of bread, pour a glass of water, and eat standing at the counter, the window black above the canal.", "You make a simple late snack and drink a glass of water. The fridge door clicks shut in the quiet.")>>
 	<<elseif Time.dayState is "dawn">>
@@ -949,6 +949,15 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 <</widget>>
 
 :: Widgets Plus Flat [widget plusneeds]
+/* Arrive at the player's rented flat. <<location "flats">> sets the building art, then we put
+ * $location back to "flat" so Plus checks (toilets, neighbour, Robin) keep working, and so
+ * $bus stays plus_flat instead of being overwritten with barb. */
+<<widget "plusFlatArrive">>
+	<<set $outside to 0>>
+	<<location "flats">>
+	<<set $location to "flat">>
+	<<set $bus to "plus_flat">>
+<</widget>>
 <<widget "plusFlatSocial">>
 	<<if $plusFlat and $plusFlat.rented>>
 		<div class="relation-box">
@@ -1051,7 +1060,7 @@ You step into a small letting office beside the stairwell. A clerk looks up from
 		<<goto "Plus Flat Letting">>
 	<</if>>
 <<else>>
-<<set $outside to 0>><<set $location to "flat">><<set $bus to "plus_flat">><<location "flats">><<effects>>
+<<plusFlatArrive>><<effects>>
 You are in your rented flat, a modest one-bedroom on an upper floor of the Barb Street block. The walls are plain and recently painted. A narrow window looks out over the canal. The bed is made, and a wardrobe stands against the far wall. A bathroom opens off to one side.<<if plusFlatDecorText()>> <<print plusFlatDecorText()>><</if>><<if plusRobinLivesAtFlat()>> Robin's things occupy one corner of the room — a second bed made up as neatly as the space allows, and a little desk if <<he>> has claimed it.<</if>>
 <br><br>
 <<plusFlatNotices>>
@@ -1122,7 +1131,7 @@ You settle under the covers in your own bed. The building is quieter than the or
 
 
 :: Plus Flat Bathroom [plusneeds]
-<<set $outside to 0>><<set $location to "flat">><<set $bus to "plus_flat">><<effects>>
+<<plusFlatArrive>><<effects>>
 You are in your bathroom. The fittings are plain but clean: a toilet, a shower over the bath, and a small mirror above the sink.
 <br><br>
 <<bathroomicon "bath">><<link [[Have a bath or shower (0:30)|Plus Flat Wash]]>><<pass 30>><<stress -6>><<set $hygiene to 0>><</link>><<lstress>>

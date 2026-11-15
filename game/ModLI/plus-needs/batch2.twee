@@ -308,7 +308,7 @@ A metal cabinet against the wall holds the same packs you can buy at the pharmac
 
 
 :: Plus Flat Decor [plusneeds]
-<<set $outside to 0>><<set $location to "flat">><<effects>>
+<<plusFlatArrive>><<effects>>
 The room is still the same modest one-bedroom, but it is yours to make less bare. A catalogue from the letting office lists a few simple things that will fit through the door.
 <br><br>
 <<set _owned to plusFlatDecorOwned()>>
@@ -350,7 +350,7 @@ The room is still the same modest one-bedroom, but it is yours to make less bare
 
 
 :: Plus Flat Cook [plusneeds]
-<<set $outside to 0>><<set $location to "flat">><<effects>>
+<<plusFlatArrive>><<effects>>
 <<if $plusCookDay is plusDayKey() and $plusCookKind is "cupboard">>
 	You already cooked from the cupboard today. There is still enough for a snack, if you want one, or you can buy ingredients and start again.
 	<br><br>
@@ -511,7 +511,7 @@ You put things away, shake out the rug, and wipe the kitchen counters. It is not
 
 
 :: Plus Robin Room Door [plusneeds]
-<<set $outside to 0>><<set $location to "flat">><<set $plusRobinRoomFromFlat to 1>><<set $fromRobinRoom to 1>><<effects>>
+<<plusFlatArrive>><<set $plusRobinRoomFromFlat to 1>><<set $fromRobinRoom to 1>><<effects>>
 <<npc Robin>><<person1>>
 <<set _robin to statusCheck("Robin")>>
 <<set _robin_location to getRobinLocation()>>

@@ -236,7 +236,7 @@ The nurse leans back in <<his>> chair and chooses <<his>> words with care.
 
 
 :: Plus Flat Kitchen [plusneeds]
-<<set $outside to 0>><<set $location to "flat">><<location "flats">><<effects>>
+<<plusFlatArrive>><<effects>>
 Your kitchen is a short run of counter, a sink, a small hob, and a fridge that hums when the building is quiet. It is not much, but it is yours.
 <br><br>
 <<if Time.dayState is "night">>
@@ -266,7 +266,7 @@ Your kitchen is a short run of counter, a sink, a small hob, and a fridge that h
 
 
 :: Plus Flat Laundry [plusneeds]
-<<set $outside to 0>><<set $location to "flat">><<location "flats">><<effects>>
+<<plusFlatArrive>><<effects>>
 The bathroom sink and the tub are enough for a proper wash, if you are willing to spend the time. A folding airer leans behind the door.
 <br><br>
 <<plusClothesLines>>
@@ -288,7 +288,7 @@ It is slower than the High Street laundromat, but it costs nothing, and no one e
 
 
 :: Plus Flat Desk [plusneeds]
-<<set $outside to 0>><<set $location to "flat">><<location "flats">><<effects>>
+<<plusFlatArrive>><<effects>>
 A narrow desk sits under the window, with a chair that does not quite match. From here you can see the canal and a slice of Barb Street.
 <br><br>
 <<if Time.dayState is "night">>
@@ -346,7 +346,7 @@ You sit at the desk and do nothing in particular. A barge moves on the canal, or
 
 
 :: Plus Flat Hallway [plusneeds]
-<<set $outside to 0>><<set $location to "flat">><<location "flats">><<effects>><<pass 2>>
+<<plusFlatArrive>><<effects>><<pass 2>>
 <<set _beat to plusFlatHallwayBeat()>>
 You step out onto the landing. The stairwell smells of dust and someone else's dinner. A bicycle is chained to the railing, and a faded notice about bins is taped above the post table.
 <br><br>
