@@ -1333,4 +1333,119 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.status, 200);
 		assert.equal(info.lfs, false);
 	});
+
+	it("QA-C027 [integration] Hallways at school time does not error, and every <<plus...>> macro exists", async () => {
+		const plusNames = await (async () => {
+			const { plusInvocations } = await import(new URL("./plus-macros-defined.test.mjs", import.meta.url));
+			return plusInvocations();
+		})();
+		const info = await page.evaluate(async plusNames => {
+			document.getElementById("dol-password-gate")?.remove();
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " "), html: d.innerHTML || "" };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e), html: "" };
+				}
+			};
+			const errorsOf = root =>
+				Array.from((root || document).querySelectorAll(".error, .error-view, #errorbox, .macro-error"))
+					.map(el => (el.innerText || el.textContent || "").replace(/\s+/g, " ").trim())
+					.filter(Boolean);
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			const V = SugarCube.State.variables;
+			V.intro = 0;
+			V.combat = 0;
+			V.eventskip = 1;
+			V.exposed = 0;
+			V.schoolrep = V.schoolrep || {};
+			const addDay = () => {
+				const next = new DateTime(Time.date.year, Time.date.month, Time.date.day, Time.hour, Time.minute);
+				next.addDays(1);
+				Time.setDate(next);
+			};
+			const y = Time.year || Time.date.year;
+			let school = false;
+			for (const [month, day] of [
+				[9, 15],
+				[10, 12],
+				[11, 12],
+				[2, 12],
+				[3, 12],
+				[5, 12],
+				[6, 12],
+			]) {
+				Time.setDate(new DateTime(y, month, day, 10, 15));
+				let g = 0;
+				while (!Time.schoolDay && Time.schoolTerm && g++ < 6) addDay();
+				if (Time.schoolDay) {
+					school = true;
+					break;
+				}
+			}
+			Time.setTime(10, 15);
+			V.location = "school";
+			const Macro = window.SugarCube && window.SugarCube.Macro;
+			const missing = plusNames.filter(n => !(Macro && Macro.has && Macro.has(n)));
+			const playHallways = level => {
+				V.schoolrep.continence = level;
+				delete V.plusSchoolContRepRemarkNext;
+				const before = SugarCube.State.passage;
+				try {
+					SugarCube.Engine.play("Hallways");
+				} catch (e) {
+					return {
+						level,
+						ok: false,
+						text: String(e && e.message ? e.message : e),
+						errors: [String(e)],
+						schoolstate: V.schoolstate,
+						passage: SugarCube.State.passage,
+					};
+				}
+				const root = document.getElementById("passages") || document.body;
+				const text = (root.innerText || "").replace(/\s+/g, " ");
+				const errors = errorsOf(root)
+					.concat(errorsOf(document))
+					.filter(t => /does not exist|Error \(::/.test(t) || /macro/.test(t.toLowerCase()));
+				const allErrors = errorsOf(root);
+				return {
+					level,
+					ok: !/does not exist/.test(text) && errors.length === 0,
+					missingMacro: /does not exist/.test(text),
+					text: text.slice(0, 400),
+					errors: allErrors.slice(0, 8),
+					schoolstate: V.schoolstate,
+					passage: SugarCube.State.passage,
+					before,
+				};
+			};
+			const zero = playHallways(0);
+			const three = playHallways(3);
+			return {
+				schoolDay: !!(Time.schoolDay && school),
+				hour: Time.hour,
+				minute: Time.minute,
+				hasRemark: !!(Macro && Macro.has && Macro.has("plusSchoolContRepRemark")),
+				hasBox: !!(Macro && Macro.has && Macro.has("plusSchoolContRepBox")),
+				hasBailey: !!(Macro && Macro.has && Macro.has("plusBaileyContRepComment")),
+				missing,
+				zero,
+				three,
+			};
+		}, plusNames);
+		assert.equal(info.hasRemark, true, "plusSchoolContRepRemark is not registered");
+		assert.equal(info.hasBox, true);
+		assert.equal(info.hasBailey, true);
+		assert.deepEqual(info.missing, [], "undefined plus macros: " + info.missing.join(", "));
+		assert.equal(info.schoolDay, true, JSON.stringify({ hour: info.hour, minute: info.minute }));
+		assert.equal(info.zero.ok, true, JSON.stringify(info.zero));
+		assert.equal(info.three.ok, true, JSON.stringify(info.three));
+		assert.equal(info.zero.missingMacro, false, info.zero.text);
+		assert.equal(info.three.missingMacro, false, info.three.text);
+		assert.equal(info.zero.passage, "Hallways");
+		assert.equal(info.three.passage, "Hallways");
+	});
 });

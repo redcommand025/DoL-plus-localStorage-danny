@@ -111,4 +111,15 @@ describe("continence reputation: school rumours and labels", () => {
 		assert.equal(window.plusContRepRestroomMod(), -0.22);
 		assert.ok(window.plusContRepWorkMul() < 1);
 	});
+
+	it("registers the hallway remark and Bailey comment as widgets, not as evicted-flat prose", () => {
+		const widgets = read("game/ModLI/plus-needs/widgets.twee");
+		const reput = widgets.split(":: Widgets Plus Needs Continence Reputation")[1].split(":: ")[0];
+		assert.match(reput, /<<widget "plusSchoolContRepRemark">>/);
+		assert.match(reput, /<<widget "plusSchoolContRepBox">>/);
+		assert.match(reput, /<<widget "plusBaileyContRepComment">>/);
+		const evicted = widgets.split(":: Plus Flat Evicted")[1].split(":: ")[0];
+		assert.doesNotMatch(evicted, /<<widget /);
+		assert.match(read("game/overworld-town/loc-school/hallways.twee"), /<<plusSchoolContRepRemark>>/);
+	});
 });
