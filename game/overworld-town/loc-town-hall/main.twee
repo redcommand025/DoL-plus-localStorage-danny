@@ -13,7 +13,7 @@ You enter a long waiting room, lined with wooden doors. A <<person1>><<person>> 
 
 <<loitericon>><<link [[Wait in line (0:20)|Town Hall Wait]]>><<pass 20>><</link>>
 <br>
-<<getouticon>><<link [[Leave|Cliff Street]]>><<endevent>><</link>>
+<<plusToiletLink>><<getouticon>><<link [[Leave|Cliff Street]]>><<endevent>><</link>>
 <br>
 
 :: Town Hall Wait
@@ -149,7 +149,7 @@ It's your turn. The <<person1>><<person>> waits.
 <</if>>
 
 <br>
-<<getouticon>><<link [[Leave|Cliff Street]]>><<endevent>><</link>>
+<<plusToiletLink>><<getouticon>><<link [[Leave|Cliff Street]]>><<endevent>><</link>>
 <br>
 
 :: Town Hall Sneak

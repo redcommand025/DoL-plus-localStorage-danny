@@ -42,6 +42,7 @@ There's a large barn ahead, and a manor looming from a hill beyond.
 	<br>
 <</if>>
 
+<<plusOutdoorToiletLink "estate">>
 <<if $estate.entrance is "gate">>
 	<<getouticon>><<link [[Leave|Estate Leave Gate]]>><</link>>
 	<br>
@@ -674,7 +675,7 @@ There's a gate nearby. It's guarded.
 <</if>>
 
 <br>
-<<getouticon>><<link [[Leave|Moor]]>><<set $eventskip to 1>><</link>>
+<<plusOutdoorToiletLink "estate">><<getouticon>><<link [[Leave|Moor]]>><<set $eventskip to 1>><</link>>
 <br>
 
 
@@ -711,7 +712,7 @@ You approach the gate.
 	<<link [[Bluff your way in|Estate Bluff]]>><<set $daily.estateBluffed to true>><</link>><<skulduggerydifficulty>>
 	<br>
 <</if>>
-<<link [[Turn away|Estate Approach]]>><<endevent>><</link>>
+<<plusOutdoorToiletLink "estate">><<link [[Turn away|Estate Approach]]>><<endevent>><</link>>
 <br>
 
 :: Estate Bluff

@@ -253,7 +253,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 <<elseif (Time.betweenHours(22, 5) or (Time.hour is 21 and $farm_end is 1)) and $farm_stage lt 7>>
 	<<sneakicon>><<link [[Sneak into the barn (0:05)|Farm Barn]]>><<pass 5>><</link>>
 	<br><br>
-	<<farmicon>><<link [[Leave|Farmland]]>><</link>>
+	<<plusOutdoorToiletLink "farm">>	<<farmicon>><<link [[Leave|Farmland]]>><</link>>
 	<br>
 <<elseif $exposed gte 2 and $farm_naked isnot 1 and $farm_stage lt 7>>
 	You hide behind a fence, concealing your <<lewdness>>.
@@ -288,7 +288,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 		<</if>>
 	<</if>>
 	<br>
-	<<getouticon>><<link [[Leave|Farmland]]>><</link>>
+	<<plusOutdoorToiletLink "farm">>	<<getouticon>><<link [[Leave|Farmland]]>><</link>>
 	<br>
 
 <<elseif !npcIsPregnant("Alex") and Time.hour is 6 and !$weekly.alexHungOver and $rng gte 76 and !$daily.farmAlexShowerSpy and $farm_work.alex isnot "shower" and $alex_bed isnot "none" and $alex_breakfast isnot undefined and $alex_tea isnot undefined>>
@@ -1190,6 +1190,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 				<br>
 			<</if>>
 		<</if>>
+		<<plusToiletLink>><<plusOutdoorToiletLink "farm">><<plusWorkBreakLink "farm">>
 		<<farmicon>><<link [[Leave|Farmland]]>><</link>>
 		<br>
 		<<if numberOfEarSlime() and $daily.slimeFarmNaked is undefined>>

@@ -92,7 +92,7 @@ There is a thermometer on the wall next to the window. It reads the outside temp
 		<<getinicon>><<link [[Secret passage to cloister (0:01)|Temple Cloister]]>><<pass 1>><</link>>
 		<br>
 	<</if>>
-	<<getouticon>><<link [[Downstairs (0:01)|Temple]]>><<pass 1>><</link>>
+	<<plusToiletLink>>	<<getouticon>><<link [[Downstairs (0:01)|Temple]]>><<pass 1>><</link>>
 	<br>
 <</if>>
 

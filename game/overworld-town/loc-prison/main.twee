@@ -77,6 +77,7 @@ You are in your cell. There's a bed in one corner, and a cupboard in another. A 
 	<</if>>
 	<<prisonicon "wardrobe">><<link [[Cupboard|Prison Wardrobe]]>><</link>>
 	<br>
+	<<plusToiletLink>>
 	<<if $prison.mirror gte 1>>
 		<<prisonicon "mirror">><<link [[Mirror|Prison Mirror]]>><<preMirror>><</link>>
 		<br>
@@ -901,7 +902,7 @@ You stand outside your cell and wait as <<methodical_guard 0>> reads out each nu
 <<effects>><<effects_prison>><<set $bus to "shower">>
 
 You are in the prison showers.
-<<if isPregnancyEnding() and $prison.schedule isnot "lockdown">>
+<<plusToiletLink>><<if isPregnancyEnding() and $prison.schedule isnot "lockdown">>
 	<<pregnancyPassout "prisonShowers">>
 <<elseif $prison.schedule is "wake">>
 	Prisoners undress, leaving their clothes on wood benches, before entering the shower. You hear running water.
@@ -1020,6 +1021,7 @@ You are on the metal walkway outside your cell, at the top of the cell block. Th
 			<</if>>
 			The stairs snake around the central tower.
 			<br>
+			<<plusToiletLink>>
 			<<stairsicon "down" "prison">><<link [[Downstairs|Prison Block]]>><</link>>
 			<br><br>
 			<<prison_map walkway>>
@@ -1091,6 +1093,7 @@ You are at the bottom of the cell block. There are stairs leading to a walkway a
 
 			A corridor leads away, towards daylight.
 			<br>
+			<<plusToiletLink>>
 			<<getouticon>><<link [[Outside|Prison Yard]]>><</link>>
 			<br><br>
 			The stairs circle a central tower. You entered here.
@@ -1144,7 +1147,7 @@ You are in the laundry room. The walls give way to raw rock part way in. Thick p
 				<br>
 			<</if>>
 		<</if>>
-		<<getouticon>><<link [[Leave|Prison Block]]>><</link>>
+		<<plusToiletLink>><<plusCustodyWashLink>><<plusCustodySpareLink>>		<<getouticon>><<link [[Leave|Prison Block]]>><</link>>
 		<br>
 
 		<<prison_map laundry>>
@@ -1192,7 +1195,7 @@ You are in the medical room. Rows of beds stretch down its length, many occupied
 			<<prisonicon "medical_door">><<link [[Approach|Prison Medical Door]]>><</link>>
 			<br><br>
 		<</if>>
-		<<getouticon>><<link [[Leave|Prison Walkway]]>><</link>>
+		<<plusToiletLink>><<plusCustodySpareLink>>		<<getouticon>><<link [[Leave|Prison Walkway]]>><</link>>
 		<br>
 		<<prison_map medical>>
 	<</if>>
@@ -1474,6 +1477,7 @@ You are in the prison yard. It's spacious, but the surrounding walls are unreaso
 					<br>
 				<</if>>
 				<br>
+				<<plusToiletLink>>
 				<<getinicon>><<link [[Prison block|Prison Block]]>><<endevent>><</link>>
 				<br>
 				<<prison_map yard>>

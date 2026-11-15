@@ -346,7 +346,7 @@ You are in the main hall of the temple. Stone walls and pillars tower into darkn
 
 	<</if>>
 	<br>
-	<<wolficon>><<link [[Leave (0:01)|Wolf Street]]>><<pass 1>><</link>>
+	<<plusToiletLink>>	<<wolficon>><<link [[Leave (0:01)|Wolf Street]]>><<pass 1>><</link>>
 	<br>
 <</if>>
 <</if>>

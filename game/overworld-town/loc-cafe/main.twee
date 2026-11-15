@@ -188,7 +188,7 @@ You are in the Ocean Breeze Cafe.
 			<<if pcAreArmsBound("both")>>
 				<span class="red">Both of your arms are bound</span>, so you are unable to work as a chef.
 			<<else>>
-				<<skinicon "chef">><<link [[Work as a chef (1:00)|Chef Work]]>><</link>>
+				<<plusWorkBreakLink "cafe">><<skinicon "chef">><<link [[Work as a chef (1:00)|Chef Work]]>><</link>>
 			<</if>>
 			<br>
 		<</if>>
@@ -199,7 +199,7 @@ You are in the Ocean Breeze Cafe.
 		<<if pcAreArmsBound("both")>>
 			<span class="red">Both of your arms are bound</span>, so you are unable to work as a <<pwaitress>>.
 		<<else>>
-			<<skinicon "waiter">><<link [[`Work as a <<pwaitress>> (1:00)`|Ocean Breeze Work]]>><<set $tablesservedstat += random(10,30)>><</link>>
+			<<plusWorkBreakLink "cafe">><<skinicon "waiter">><<link [[`Work as a <<pwaitress>> (1:00)`|Ocean Breeze Work]]>><<set $tablesservedstat += random(10,30)>><</link>>
 		<</if>>
 		<br>
 	<</if>>
@@ -2397,7 +2397,7 @@ You feel a little more refreshed with the caffeine in your system.
 
 :: Cafe Pancakes
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
-<<wearProp "pancake fork">>
+<<wearProp "pancake fork">><<if $phase is "pancakes">><<wearProp "coffee">><</if>>
 
 <<if $daily.earSlimeOceanBreezeCafeEat>>
 	You decide that the ear slime is right and

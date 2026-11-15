@@ -78,7 +78,7 @@ A sign reads: "Tanning beds available. <<printmoney _price>> per session. Price 
 		<br>
 	<</if>>
 	<br>
-	<<danubeicon>><<link [[Leave|Danube Street]]>><<endevent>><</link>>
+	<<plusToiletLink>>	<<danubeicon>><<link [[Leave|Danube Street]]>><<endevent>><</link>>
 	<br>
 <</if>>
 

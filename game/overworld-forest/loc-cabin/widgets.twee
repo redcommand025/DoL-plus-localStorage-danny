@@ -1,5 +1,6 @@
 :: Widgets Cabin [widget]
 <<widget "cabinothers">>
+	<<plusToiletLink>>
 	<<if $nextPassageCheck is "Eden Clearing">>
 		<<getouticon>><span class="nextLink"><<link [[Go outside|Eden Clearing]]>><</link>></span>
 	<<elseif ($exposed gte 1 and !$daily.eden.exposed and Time.hour is 7) or ($exposed gte 1 and !$daily.eden.exposed and Time.hour is 8)>>
@@ -34,6 +35,7 @@
 <</widget>>
 
 <<widget "clearingactions">>
+	<<plusOutdoorToiletLink "forest">>
 	<<edenicon>><<link [[Enter the cabin|Eden Cabin]]>><<endevent>><</link>>
 	<br><br>
 

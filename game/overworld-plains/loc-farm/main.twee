@@ -128,7 +128,7 @@ You are in the farmlands.
 		<br>
 	<</if>>
 	<br>
-	<<mooricon>><<link [[Enter the moor (0:05)|Moor]]>><<set $moor to 0>><<unset $moor_hunt>><<pass 5>><<set $eventskip to 1>><</link>>
+	<<plusOutdoorToiletLink "farm">>	<<mooricon>><<link [[Enter the moor (0:05)|Moor]]>><<set $moor to 0>><<unset $moor_hunt>><<pass 5>><<set $eventskip to 1>><</link>>
 	<br>
 	<<roadicon>><<link [[Walk towards town (0:05)|Farm Road 6]]>><<pass 5>><<set $phase to 0>><</link>>
 	<br>
@@ -1830,7 +1830,7 @@ You are inside the shed with the shower.
 <</if>>
 <br>
 <<personalUpkeep>>
-<<pregnancyTest "Farm Shed">>
+<<plusToiletLink>><<pregnancyTest "Farm Shed">>
 <br><br>
 <<getouticon>><<link [[Leave (0:01)|Farm Work]]>><<endevent>><<pass 1>><</link>>
 <br>

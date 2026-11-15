@@ -31,7 +31,7 @@
 	The door to the Temp Agency's Office is locked. A sign on the door says "Open at <<ampm 6>>."
 <</if>>
 <br><br>
-<<getouticon>><<link [[Return to lobby (0:01)|Office Lobby]]>><<pass 1>><</link>>
+<<plusToiletLink>><<plusWorkBreakLink "office">><<getouticon>><<link [[Return to lobby (0:01)|Office Lobby]]>><<pass 1>><</link>>
 
 :: Office Agency Streak
 <<location "office_building">><<effects>>
@@ -68,12 +68,12 @@
 		<br><br>
 		<<lockericon>><<link [[Changing room|Office Agency Changing Room]]>><</link>>
 		<br><br>
-		<<getouticon>><<link [[Return to lobby (0:01)|Office Lobby]]>><<pass 1>><</link>>
+		<<plusToiletLink>><<plusWorkBreakLink "office">><<getouticon>><<link [[Return to lobby (0:01)|Office Lobby]]>><<pass 1>><</link>>
 
 	<</if>>
 <<else>>
 	You attempt to run into the Temp Agency's Office, hoping to get into the changing room, but the door is locked! A sign on the door says "Open at <<ampm 6>>."
-	<<getouticon>><<link [[Return to lobby (0:01)|Office Lobby]]>><<pass 1>><</link>>
+	<<plusToiletLink>><<plusWorkBreakLink "office">><<getouticon>><<link [[Return to lobby (0:01)|Office Lobby]]>><<pass 1>><</link>>
 <</if>>
 <br><br>
 
@@ -206,7 +206,7 @@ You don't feel quite comfortable telling <<office_manager>> about your problems.
 		A security guard enters the breakroom and directs everyone to the lobby. The building is closing to the general public.
 		<br><br>
 	<</if>>
-	<<getouticon>><<link [[Return to lobby (0:01)|Office Lobby]]>><<pass 1>><</link>>
+	<<plusToiletLink>><<plusWorkBreakLink "office">><<getouticon>><<link [[Return to lobby (0:01)|Office Lobby]]>><<pass 1>><</link>>
 <</if>>
 
 

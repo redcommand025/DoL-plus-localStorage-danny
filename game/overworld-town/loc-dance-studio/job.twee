@@ -166,7 +166,7 @@ The receptionist lets you through to the dance studio proper, where you find Cha
 	<</if>>
 
 <</if>>
-<<refuseicon>><<link [[Refuse|Dance Job Refuse]]>><</link>>
+<<plusWorkBreakLink "dance">><<refuseicon>><<link [[Refuse|Dance Job Refuse]]>><</link>>
 <br>
 
 :: Dance Job Refuse

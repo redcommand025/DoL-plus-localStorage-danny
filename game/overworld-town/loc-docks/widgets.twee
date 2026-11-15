@@ -142,6 +142,7 @@
 	<</if>>
 	<br><br>
 
+	<<plusToiletLink>><<plusWorkBreakLink "docks">>
 	<<if Time.hour lte 15>>
 		<<docksicon>><<link [[Leave early|Docks Leave]]>><<storeon "docks">><</link>>
 	<<else>>
@@ -204,6 +205,7 @@
 			<br>
 		<</if>>
 	<</if>>
+	<<plusToiletLink>>
 	<<walkicon>><<link [["Take a stroll (0:" + _time_to_pass + ")"|Docks Lunch Stroll]]>><<pass _time_to_pass>><</link>>
 	<br>
 	<<if Time.minute < 50>>

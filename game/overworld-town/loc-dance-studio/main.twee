@@ -40,7 +40,7 @@ You are in the dance studio. Here you can pay for lessons to improve your dancin
 				<span class="blue">Charlie will have another job for you next week.</span>
 				<br>
 			<<else>>
-				<<socialiseicon "ask">><<link [[Ask for work|Dance Job Ask]]>><</link>>
+				<<plusWorkBreakLink "dance">><<socialiseicon "ask">><<link [[Ask for work|Dance Job Ask]]>><</link>>
 				<br>
 			<</if>>
 		<</if>>
@@ -78,6 +78,7 @@ You are in the dance studio. Here you can pay for lessons to improve your dancin
 		<</if>>
 	<</if>>
 	<<if Time.hour isnot $closinghour>>
+		<<plusToiletLink>>
 		<span class="clothes-grey"><<icon "clothes/leotard.png">></span><<link [[Changing room|Dance Studio Changing Room]]>><</link>>
 		<br>
 	<</if>>

@@ -4169,6 +4169,7 @@
 		<<pillicon>><<link [[Look inside a cabinet|School Infirmary Cabinet]]>><</link>>
 		<br>
 	<</if>>
+	<<plusInfirmaryNurseLink>>
 	<br>
 	<<getouticon>><<link [[Leave|Hallways]]>><<endevent>><</link>>
 	<br>

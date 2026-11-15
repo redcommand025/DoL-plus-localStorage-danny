@@ -260,6 +260,7 @@
 	<</if>>
 <</if>>
 
+<<plusOutdoorToiletLink "moor">>
 <<set $eventskip to 0>>
 <<unset $moormove>>
 

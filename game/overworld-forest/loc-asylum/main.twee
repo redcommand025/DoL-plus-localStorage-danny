@@ -109,7 +109,7 @@
 	<</if>>
 	<<if $asylumstate isnot "sleep">>
 		<br>
-		<<getouticon>><<link [[Leave|Asylum]]>><</link>>
+		<<plusToiletLink>><<getouticon>><<link [[Leave|Asylum]]>><</link>>
 		<br>
 	<</if>>
 	<br>
@@ -156,7 +156,7 @@
 	<</if>>
 	<<if $asylumstate isnot "sleep">>
 		<br>
-		<<getouticon>><<link [[Leave|Asylum]]>><</link>>
+		<<plusToiletLink>><<getouticon>><<link [[Leave|Asylum]]>><</link>>
 		<br>
 	<</if>>
 	<br>
@@ -215,7 +215,7 @@
 	<</if>>
 	<<if $asylumstate isnot "sleep">>
 		<br>
-		<<getouticon>><<link [[Leave|Asylum]]>><</link>>
+		<<plusToiletLink>><<getouticon>><<link [[Leave|Asylum]]>><</link>>
 		<br>
 	<</if>>
 	<br>
@@ -596,6 +596,7 @@ You are in the asylum, deep in the forest. The building is over a century old, a
 		<br>
 	<</if>>
 	<br>
+	<<plusToiletLink>><<plusCustodyWashLink>><<plusCustodySpareLink>>
 	<<asylumicon "cell">><<link [[Cell (0:02)|Asylum Cell]]>><<pass 2>><</link>>
 	<br>
 <</if>>

@@ -434,7 +434,7 @@
 		<</if>>
 
 		<br>
-		<<harvesticon>><<link [[Leave|Harvest Street]]>><<endevent>><</link>>
+		<<plusToiletLink>>		<<harvesticon>><<link [[Leave|Harvest Street]]>><<endevent>><</link>>
 		<br>
 	<</if>>
 <</if>>
