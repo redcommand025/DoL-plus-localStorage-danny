@@ -1,0 +1,568 @@
+:: Widgets Plus Needs Batch2 [widget plusneeds]
+/* Bus ride: pass the journey, then divert to the accident event if one happened without a diaper. */
+
+<<widget "plusBusRideTick">>
+	<<run plusBusRideBefore()>>
+	<<pass 15>>
+	<<run plusBusRideAfter()>>
+<</widget>>
+
+<<widget "plusWeatherAccidentFlavour">>
+	<<set _plusWxAcc to plusWeatherFlavour({ accident: true, force: true })>>
+	<<if _plusWxAcc>>
+		<br><span class="teal">_plusWxAcc</span>
+	<</if>>
+<</widget>>
+
+<<widget "plusNpcAccidentHook">>
+	<<set _plusNpcAcc to plusNpcPickPresent("accident")>>
+	<<if _plusNpcAcc>>
+		<<run plusNpcMark(_plusNpcAcc, "accident")>>
+		<br><br>
+		<span class="purple"><<print plusNpcSceneText(_plusNpcAcc, "accident")>></span>
+		<<stress 4>><<gstress>>
+	<</if>>
+<</widget>>
+
+<<widget "plusBusJacketCaption">>
+	<<if plusBusJacketOn()>>
+		<span class="teal">A borrowed jacket is tied around your waist, covering the worst of the stain.</span>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusContinenceClinicLink">>
+	<<icon "plusneeds/class-ask.png">><<link [[Continence clinic (0:01)|Plus Continence Clinic]]>><<pass 1>><</link>>
+	<br>
+<</widget>>
+
+<<widget "plusRobinRoomFlatLink">>
+	<<if plusRobinLivesAtFlat() and C.npc.Robin.init is 1 and $exposed lte 0>>
+		<<bedroomicon>><<link [[Robin's room (0:01)|Plus Robin Room Door]]>><<pass 1>><<set $plusRobinRoomFromFlat to 1>><<set $fromRobinRoom to 1>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusFlatDecorLink">>
+	<<if $plusFlat and $plusFlat.rented>>
+		<<furnitureicon "chair">><<link [[Decorate the flat|Plus Flat Decor]]>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusFlatActivityLinks">>
+	<<if $plusFlat and $plusFlat.rented>>
+		<<set _plusActs to plusFlatWeekendActivity()>>
+		<<if _plusActs.includes("cook") or true>>
+		<</if>>
+		<<if Time.hour gte 18 or Time.dayState is "dusk" or Time.dayState is "night" or (Time.isWeekEnd and Time.isWeekEnd())>>
+			<<link [[Read by the window (0:20)|Plus Flat Activity Read]]>><<pass 20>><</link>>
+			<br>
+			<<link [[Sit and watch the canal (0:15)|Plus Flat Activity Window]]>><<pass 15>><</link>>
+			<br>
+		<</if>>
+		<<if Time.isWeekEnd and Time.isWeekEnd()>>
+			<<link [[Tidy the flat (0:25)|Plus Flat Activity Tidy]]>><<pass 25>><</link>>
+			<br>
+		<</if>>
+		<<if plusRobinCanInvite().ok or plusRobinLivesAtFlat() or (C.npc.Robin.init is 1 and C.npc.Robin.love gte 30 and $plusFlat.rented)>>
+			<<link [[Invite Robin over (0:05)|Plus Flat Host Robin]]>><<pass 5>><</link>>
+			<br>
+		<</if>>
+		<<if plusRobinCanInvite().ok>>
+			<<link [[Ask Robin to move in|Plus Flat Invite Robin]]>><</link>>
+			<br>
+		<</if>>
+	<</if>>
+<</widget>>
+
+
+:: Plus Bus Accident [plusneeds]
+<<effects>>
+<<set _ev to $plusBusEvent>>
+<<if !_ev or !_ev.kind>>
+	Your bus arrives at your destination.
+	<<destination5>>
+<<else>>
+	<<if _ev.kind is "open">>
+		<<plusNeedsAccident `_ev.which` "silent">>
+	<</if>>
+	<<run plusBusApply(_ev)>>
+	<<set _ev to $plusBusEvent>>
+	<br>
+	<<if _ev.kind is "mild">>
+		<<print either(
+			"The bus is quiet enough that you can hear your own breathing. Then someone in the next seat shifts, and you realise the smell has carried.",
+			"You thought the padding had held. A passenger across the aisle wrinkles their nose and looks at you, then quickly away."
+		)>>
+		The people nearest you slide toward the window or the aisle, leaving a little more space than before.
+		<<if _ev.jacket>>
+			<br><br>
+			<<print either(
+				"A passenger a few seats down catches your eye, not unkindly, and holds out a spare jacket. \"Tie this around you,\" they murmur. \"It will help until you can change.\"",
+				"Someone stands as if stretching, then offers you a jacket, already shrugging it off. \"For your waist,\" they say quietly. \"No one has to see.\""
+			)>>
+			You take it and knot the sleeves around you. The covering is imperfect, but it helps.
+		<</if>>
+		<br><br>
+		<<if _ev.driver is "fee">>
+			The driver glances back in the mirror, then pulls in and comes down the aisle. They look at the seat, then at you.
+			<br><br>
+			"<<print either("I can smell that from up here.", "That seat is not going to clean itself.")>> There will be a cleaning fee. Eight pounds."
+			<<if _ev.canPay>>
+				You pay. The driver notes it, still tight-lipped, and returns to their seat. The rest of the journey is very quiet.
+				<br><br>
+				Your bus arrives at your destination.
+				<<destination5>>
+			<<else>>
+				You haven't got the money. The driver's mouth flattens.
+				<br><br>
+				"Then you're off at the next stop. I am not taking that through the rest of the route."
+				The next stop is yours. You get off with everyone looking at the floor.
+				<<destination5>>
+			<</if>>
+		<<else>>
+			The driver looks back, then signals and pulls in earlier than you expected.
+			<br><br>
+			"<<print either("Out at the next stop.", "I'm not running the rest of the route with that smell. Off you get.")>>"
+			The next stop is the one already on your ticket. You step down. A few passengers watch until the doors close.
+			<<destination5>>
+		<</if>>
+	<<else>>
+		It happens while the bus is moving. There is no mistaking it, and no way to hide it in a packed aisle. Conversations stumble and die. Everyone in earshot knows.
+		<br><br>
+		<<print either(
+			"The passengers nearest you shift away at once, some standing to find another seat, others pressing themselves against the window. A space opens around you that no one is willing to fill.",
+			"People move. Someone behind you mutters and stands. A parent pulls a child a little closer. In a minute you have a seat, and a hole, all to yourself.",
+			"The smell settles quickly in the closed air. Seat by seat, people edge off, bags clutched in their laps, eyes on anything but you."
+		)>>
+		<<if _ev.jacket>>
+			<br><br>
+			Then a passenger from further down the bus comes back, already taking off their jacket, and holds it out without quite meeting your eye.
+			<br><br>
+			"<<print either("Here. Tie it around your waist. It will cover you until you can change.", "Take this. I know it isn't much, but it will help.")>>"
+			You knot the sleeves around your waist. The jacket hangs over the stain. It does not undo what everyone has seen, but it is something.
+		<</if>>
+		<br><br>
+		<<if _ev.driver is "fee">>
+			The bus jerks to a stop. The driver comes down the aisle, looks at the seat, and does not lower their voice.
+			<br><br>
+			"<<print either("Look at the state of that seat.", "I can smell it from the cab.")>> There is a cleaning fee. Eight pounds. Now."
+			<<if _ev.canPay>>
+				You count out the money, face burning. The driver takes it, still angry, and goes back to the front. No one sits near you for the rest of the short ride.
+				<br><br>
+				Your bus arrives at your destination.
+				<<destination5>>
+			<<else>>
+				You haven't got enough. The driver exhales through their teeth.
+				<br><br>
+				"Then you can get off at the next stop. I am not hauling that any further."
+				The next stop is yours. You leave, <<if _ev.jacket>>the jacket still tied around your waist, <<else>>face burning, <</if>>and the whole bus watching the doors close.
+				<<destination5>>
+			<</if>>
+		<<else>>
+			The driver has seen enough in the mirror. They pull in at the next stop and open the doors, then turn in their seat.
+			<br><br>
+			"<<print either("Out. I'm not taking that through town.", "Next stop is yours, whether it was or not. Off the bus.")>>"
+			It is the stop you were already going to. You get up and walk the aisle with every face turned carefully away, and step down into the street.
+			<<destination5>>
+		<</if>>
+	<</if>>
+	<<unset $plusBusEvent>>
+<</if>>
+
+
+:: Plus Continence Clinic [plusneeds]
+<<set $outside to 0>><<set $location to "hospital">><<effects>>
+The continence clinic is a side corridor off the foyer, marked with a plain sign and a row of plastic chairs. A nurse at a small desk looks up when you come in. The lighting is even, the posters are practical, and no one in the waiting area stares.
+<br><br>
+<<if $plusClinicLastDay is plusDayKey() and $plusClinicVisits gte 1>>
+	The nurse recognises you from earlier and nods toward the same chairs. "Take your time. We can see you again if you need."
+	<br><br>
+<</if>>
+<<link [[Ask for a consultation (0:15)|Plus Continence Clinic Consult]]>><<pass 15>><</link>>
+<br>
+<<link [[Have a continence assessment (0:20)|Plus Continence Clinic Assess]]>><<pass 20>><</link>>
+<br>
+<<link [[Ask for advice (0:10)|Plus Continence Clinic Advice]]>><<pass 10>><</link>>
+<br>
+<<link [[Follow-up appointment (0:15)|Plus Continence Clinic Followup]]>><<pass 15>><</link>>
+<br>
+<<link [[Supplies|Plus Continence Clinic Supplies]]>><</link>>
+<br>
+<<plusBladderExerciseLink>>
+<<plusToiletLink>>
+<<getouticon>><<link [[Return to the foyer (0:01)|Hospital Foyer]]>><<pass 1>><</link>>
+<br>
+
+
+:: Plus Continence Clinic Consult [plusneeds]
+<<effects>>
+<<set _a to plusClinicAssess()>>
+A nurse takes you into a small room with a desk, a paper roll on the examination couch, and a jug of water. They close the door and sit opposite you, a notepad ready, and ask how you have been getting on — urgency, leaks, nights, and what you already do to manage it.
+<br><br>
+<<switch _a.level>>
+	<<case 0 1>>
+		They listen without rushing you. "Your control is quite limited at the moment," they say. "That is more common than people think, and it is not something you have to manage alone. I would like you to do the bladder exercises here, keep a simple diary, and come back so we can see whether things settle."
+	<<case 2>>
+		"You have some control, but it sounds as if it lets you down when you are busy or far from a toilet," they say. "Exercises will help, and we can talk about supplies for the days you need a backup."
+	<<case 3 4>>
+		"You are doing better than you may feel," they say. "The goal is to make the good days more typical. Keep up the exercises, and do not wait until you are desperate before you look for a toilet."
+	<<default>>
+		They smile, a little surprised. "Your control is already quite strong. We can still go over habits and supplies if you want a plan for long days, but I would not want you to worry more than you need to."
+<</switch>>
+<<if _a.urgent>>
+	<br><br>
+	They notice you shifting in the chair. "There is a toilet just outside. Use it whenever you need, including during this visit."
+<</if>>
+<<if _a.exercised>>
+	<br><br>
+	"I see you have already done your exercises today. Once is enough; we will not push it."
+<</if>>
+<br><br>
+The nurse writes a short note for your file and walks you back to the waiting area.
+<br><br>
+<<link [[Next|Plus Continence Clinic]]>><</link>>
+<br>
+
+
+:: Plus Continence Clinic Assess [plusneeds]
+<<effects>>
+<<set _a to plusClinicAssess()>>
+The assessment is unhurried and clinical. The nurse asks you to describe a typical day, then has you fill in a short form: how long you can usually wait, how often you are caught short, and whether you use any protection.
+<br><br>
+They look over the answers and your notes from any previous visits.
+<br><br>
+"On our scale, I would describe your continence as <span class="gold">_a.name</span>."
+<<if _a.level lte 1>>
+	"That means we should be thinking about a regular plan — exercises, easy access to toilets, and supplies you can rely on — rather than hoping each day will be fine."
+<<elseif _a.level lte 3>>
+	"There is room to improve, and also no shame in using a backup while you work on it."
+<<else>>
+	"You already have a good baseline. We will keep an eye on it, especially if anything changes."
+<</if>>
+<br><br>
+They add the result to your record and give you a printed summary to keep.
+<br><br>
+<<link [[Next|Plus Continence Clinic]]>><</link>>
+<br>
+
+
+:: Plus Continence Clinic Advice [plusneeds]
+<<effects>>
+<<set _a to plusClinicAssess()>>
+The nurse talks you through the same advice they give anyone who comes in, without making it sound like a lecture.
+<br><br>
+<<print either(
+	"\"Do not cut down on what you drink just to avoid the toilet,\" they say. \"It usually makes the urgency worse. Spread drinks through the day, and ease off caffeine if you can.\"",
+	"\"When you feel the urge, wait a little if you are safe to, then go. Rushing every time can train your bladder to panic. The exercises we do here are for that.\"",
+	"\"If you use protection, change it when you need to, not only at the end of the day. A spare in your bag is worth more than a plan that only works at home.\""
+)>>
+<br><br>
+They mention the hospital's bladder exercises, and that the clinic sells the same supplies as the pharmacy, at the same prices.
+<<if _a.rep gte 400>>
+	<br><br>
+	They hesitate, then add, gently, "If people have been unkind, you can still come here. This room is not a rumour mill."
+<</if>>
+<br><br>
+<<link [[Next|Plus Continence Clinic]]>><</link>>
+<br>
+
+
+:: Plus Continence Clinic Followup [plusneeds]
+<<effects>>
+<<set _f to plusClinicFollowup()>>
+<<if _f.ready is false and _f.reason is "no-baseline">>
+	The nurse shakes their head, kindly. "We should do an assessment first, so we have something to compare. Then a follow-up in a couple of days is useful."
+<<elseif _f.ready is false>>
+	"It is a little soon," they say, glancing at the file. "Give it another day or two, then come back. We want a fair look at whether anything has changed."
+<<else>>
+	<<set _a to _f>>
+	You sit down again with the same nurse, or another who has read the notes. They ask how the last few days have been, and whether the exercises have been possible.
+	<br><br>
+	<<if _a.delta gt 0>>
+		<span class="green">"There is some improvement," they say, pleased. "Your control is better than when we first measured it. Keep going, even on the days it feels pointless."</span>
+	<<elseif _a.delta lt 0>>
+		<span class="purple">"It looks as if things have slipped a little," they say, without judgement. "That happens. We can tighten the plan — more regular exercises, and supplies on the days you are out for a long time."</span>
+	<<else>>
+		"You are about where you were," they say. "That is not a failure. Holding steady is often the first step. We will keep the same plan for now."
+	<</if>>
+	<<if _a.exercised>>
+		<br><br>
+		They tick a box for today's exercises. "Good. That consistency matters more than doing it perfectly."
+	<</if>>
+<</if>>
+<br><br>
+<<link [[Next|Plus Continence Clinic]]>><</link>>
+<br>
+
+
+:: Plus Continence Clinic Supplies [plusneeds]
+<<effects>>
+A metal cabinet against the wall holds the same packs you can buy at the pharmacy, at the same prices. The nurse unlocks it when you ask and lets you choose without comment.
+<br><br>
+<<plusDiaperShop "pharmacy">>
+<br>
+<<getouticon>><<link [[Back to the clinic|Plus Continence Clinic]]>><</link>>
+<br>
+
+
+:: Plus Flat Decor [plusneeds]
+<<set $outside to 0>><<set $location to "flat">><<effects>>
+The room is still the same modest one-bedroom, but it is yours to make less bare. A catalogue from the letting office lists a few simple things that will fit through the door.
+<br><br>
+<<set _owned to plusFlatDecorOwned()>>
+<<if _owned.length gt 0>>
+	Already in the room: <<print plusFlatDecorText()>>
+	<br><br>
+<</if>>
+<<for _id, _spec range plusFlatDecorItems>>
+	<<if $plusFlat.decor and $plusFlat.decor[_id]>>
+		<span class="green">You already have _spec.name.</span>
+	<<elseif $money gte _spec.price>>
+		<<link `"Buy " + _spec.name + " (£" + (_spec.price / 100) + ")"` "Plus Flat Decor Buy">><<set $plusDecorBuy to _id>><</link>>
+	<<else>>
+		<span class="blue"><<print "Buy " + _spec.name + " (£" + (_spec.price / 100) + ")">></span> — you can't afford this.
+	<</if>>
+	<br>
+<</for>>
+<br>
+<<getouticon>><<link [[Leave it for now|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Decor Buy [plusneeds]
+<<effects>>
+<<set _r to plusFlatDecorBuy($plusDecorBuy)>>
+<<unset $plusDecorBuy>>
+<<if _r.ok>>
+	You pay and carry it up the stairs. Once it is in place, the room feels a little more like somewhere you live, and a little less like a box you sleep in. <<lstress>>
+<<elseif _r.reason is "owned">>
+	You already have that.
+<<elseif _r.reason is "money">>
+	You cannot afford it right now.
+<<else>>
+	You cannot buy that at the moment.
+<</if>>
+<br><br>
+<<link [[Next|Plus Flat Decor]]>><</link>>
+<br>
+
+
+:: Plus Flat Cook [plusneeds]
+<<set $outside to 0>><<set $location to "flat">><<effects>>
+<<if $plusCookDay is plusDayKey() and $plusCookKind is "cupboard">>
+	You already cooked from the cupboard today. There is still enough for a snack, if you want one, or you can buy ingredients and start again.
+	<br><br>
+	<<if $money gte 400>>
+		<<link [[Buy ingredients and cook a proper meal (0:30, £4)|Plus Flat Cook Paid]]>><<pass 30>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	The hob is small, but it is enough. You can make do with what is in the cupboard, or spend a little and cook something proper.
+	<br><br>
+	<<link [[Cook from the cupboard (0:25)|Plus Flat Cook Free]]>><<pass 25>><</link>>
+	<br>
+	<<if $money gte 400>>
+		<<link [[Buy ingredients and cook a proper meal (0:30, £4)|Plus Flat Cook Paid]]>><<pass 30>><</link>>
+		<br>
+	<</if>>
+<</if>>
+<<plusKitchenSnack>>
+<<getouticon>><<link [[Leave the kitchen|Plus Flat Kitchen]]>><</link>>
+<br>
+
+
+:: Plus Flat Cook Free [plusneeds]
+<<effects>>
+<<run plusNeedsConsume(1100, 700, "meal")>>
+<<set $plusCookDay to plusDayKey()>><<set $plusCookKind to "cupboard">>
+<<print either(
+	"You make a simple pan of pasta with whatever is in the cupboard, and eat it at the counter while the canal goes by outside. It is not restaurant food, but it is hot, and it fills you.",
+	"Toast, eggs, and a mug of tea. The kitchen smells like a proper meal for a little while, and you sit with it until the plate is clean.",
+	"You warm a tin of something and cut a bit of bread to go with it. By the time you have finished, you feel steadily, unremarkably better."
+)>>
+<<if plusRobinLivesAtFlat() and plusRobinHomeNow()>>
+	<br><br>
+	Robin leans in the doorway, drawn by the smell, and you share what there is. "<<print either("This is nice,", "I could get used to this,")>>" <<he>> says, not making a big thing of it.
+<</if>>
+<br><br>
+<<link [[Next|Plus Flat Kitchen]]>><</link>>
+<br>
+
+
+:: Plus Flat Cook Paid [plusneeds]
+<<effects>>
+<<if $money gte 400>>
+	<<run (function(){ var st = State.variables; if (typeof statChange !== "undefined" && statChange.money) statChange.money(-400, "plusFlatCook"); else st.money -= 400; })()>>
+	<<run plusNeedsConsume(1600, 1000, "meal")>>
+	<<set $plusCookDay to plusDayKey()>><<set $plusCookKind to "paid">>
+	<<print either(
+		"You go down for onions, a bit of meat, and a bag of rice, then spend half an hour at the hob. The flat fills with the smell of a real meal. You eat at the little table until you are properly full.",
+		"Vegetables, pasta, and a cheap sauce from the shop downstairs. It takes a while, and the washing-up after, but the plate you sit down to is nothing like a hurried snack.",
+		"You buy enough for a proper dinner and cook it slowly. By the time you eat, the window has gone dark, and the food is hot and plentiful."
+	)>>
+	<<if plusRobinLivesAtFlat() and plusRobinHomeNow()>>
+		<br><br>
+		Robin sets out a second plate without being asked. You eat together, and the room feels less like a rented box than it did this morning.
+	<</if>>
+<<else>>
+	You have not got enough for ingredients.
+<</if>>
+<br><br>
+<<link [[Next|Plus Flat Kitchen]]>><</link>>
+<br>
+
+
+:: Plus Flat Activity Read [plusneeds]
+<<effects>>
+<<stress -4>><<lstress>>
+<<print either(
+	"You sit by the lamp and read until the light outside changes. For a little while there is nothing you have to do and no one you have to be.",
+	"A book, a blanket, and the dull sound of the canal. You lose a page or two to tiredness and do not mind.",
+	"You read in the chair until your shoulders drop. The flat is small, but it is quiet enough for this."
+)>>
+<br><br>
+<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Activity Window [plusneeds]
+<<effects>>
+<<stress -3>><<lstress>>
+<<print either(
+	"You sit at the narrow window and watch the canal. A boat goes by. Someone on the towpath stops to tie a shoe. The town feels further away than it is.",
+	"Rain or shine, the window is a good place to sit and do nothing. You let a quarter of an hour pass without checking the time.",
+	"The glass is cool. You watch the light on the water until you feel a little less tightly wound."
+)>>
+<br><br>
+<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Activity Tidy [plusneeds]
+<<effects>>
+<<stress -5>><<lstress>>
+You put things away, shake out the rug, and wipe the kitchen counters. It is not a transformation, but the room is easier to be in when you are done.
+<br><br>
+<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Flat Host Robin [plusneeds]
+<<effects>>
+<<if C.npc.Robin.init isnot 1>>
+	You think about having someone over, but Robin is not a part of your life in that way yet.
+	<br><br>
+	<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<<elseif plusRobinLivesAtFlat()>>
+	<<if plusRobinHomeNow()>>
+		<<npc Robin>><<person1>>
+		Robin is already here, of course. You put the kettle on. <<He>> sits at the little table with <<his>> cup and talks about school, or nothing much, until the tea is gone.
+		<<stress -6>><<lstress>><<npcincr Robin love 1>><<glove>>
+	<<else>>
+		Robin is out. You leave a mug on the side and a note, and the flat feels as if it is waiting for <<him>> as well as for you.
+	<</if>>
+	<br><br>
+	<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<<else>>
+	<<npc Robin>><<person1>>
+	You send a message, and Robin comes over after a little while, a bit shy at the doorway of a place that is yours and not the orphanage.
+	<br><br>
+	"<<print either("It's really yours,", "I like it,", "This is nicer than I expected,")>>" <<he>> says, looking at the window and the canal. You make tea. You talk. For an hour the flat feels less empty.
+	<<stress -6>><<lstress>><<npcincr Robin love 1>><<glove>>
+	<<if plusRobinCanInvite().ok>>
+		<br><br>
+		Before <<he>> leaves, you could ask whether <<he>> wants this to be more than a visit.
+		<br>
+		<<link [[Ask Robin to move in|Plus Flat Invite Robin]]>><</link>>
+		<br>
+	<</if>>
+	<br>
+	<<link [[See Robin out|Plus Flat Bedroom]]>><<endevent>><</link>>
+<</if>>
+<br>
+
+
+:: Plus Flat Invite Robin [plusneeds]
+<<effects>>
+<<set _ok to plusRobinCanInvite()>>
+<<if !_ok.ok and _ok.reason is "already">>
+	Robin already lives here.
+	<br><br>
+	<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<<elseif !_ok.ok>>
+	It is not the right time. You would need a rented flat, and to be close enough to Robin that the question would not come out of nowhere.
+	<br><br>
+	<<link [[Next|Plus Flat Bedroom]]>><</link>>
+<<else>>
+	<<npc Robin>><<person1>>
+	You ask. You keep it simple: there is a room, and you would like <<him>> to have it, if <<he>> wants to leave the orphanage and stay here with you.
+	<br><br>
+	Robin goes very quiet, then smiles in a way you do not often see at the orphanage. "You mean it?" <<He>> looks around the flat again, as if measuring it for a second life. "Yes. Yes, I would like that. I'll pack. It won't take long."
+	<br><br>
+	<<run plusRobinMoveIn()>>
+	By the evening <<his>> things are in the other corner of the bedroom — a bag, a few books, the old console if <<he>> has one — and the room has a second presence. Robin's door, such as it is, is here now. The orphanage room is no longer where you would go to find <<him>> at home.
+	<<npcincr Robin love 2>><<glove>><<stress -4>><<lstress>>
+	<br><br>
+	<<link [[Next|Plus Flat Bedroom]]>><<endevent>><</link>>
+<</if>>
+<br>
+
+
+:: Plus Robin Room Door [plusneeds]
+<<set $outside to 0>><<set $location to "flat">><<set $plusRobinRoomFromFlat to 1>><<set $fromRobinRoom to 1>><<effects>>
+<<npc Robin>><<person1>>
+<<set _robin to statusCheck("Robin")>>
+<<set _robin_location to getRobinLocation()>>
+<<if not plusRobinLivesAtFlat()>>
+	Robin's things are not here. The corner of the room is just a corner again.
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif $robinmissing isnot 0>>
+	You go to the side of the room that has become Robin's. There is no note, and no one answers. Robin is not here, and you do not know where <<he>> has been taken.
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif _robin_location is "school">>
+	There is a note stuck to the edge of the shelf. "Gone to school! Back later. — R"
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif _robin_location is "sleep">>
+	There is a note. "Sleeping!" You can hear even breathing from the bed. You leave <<him>> be.
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif _robin_location is "bath">>
+	You can hear the shower running in the bathroom. A note on the shelf says "Bathing!"
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif _robin_location is "beach">>
+	A note: "Out selling lemonade!"
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif _robin_location is "park">>
+	A note: "Out selling hot chocolate!"
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif _robin_location is "halloween">>
+	A note: "Out trick-or-treating!"
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif _robin_location is "englishPlay">>
+	A note: "Attending the school plays!"
+	<br><br>
+	<<link [[Back to the bedroom|Plus Flat Bedroom]]>><<set $plusRobinRoomFromFlat to 0>><<set $fromRobinRoom to 0>><</link>>
+<<elseif Time.hour is 17 and _robin.trauma lte 60 and $daily.robin.studycompany isnot 1 and Time.schoolTerm>>
+	<<set $location to "home">>
+	You go over to Robin's side of the room. The usual homework hour has followed <<him>> here.
+	<br><br>
+	<<goto "Robin's Room Entrance">>
+<<else>>
+	You go over to the corner that is Robin's now. It is still the same flat, but the space has been arranged the way <<his>> room used to be — bed, a little desk, a note if <<he>> has gone out.
+	<br><br>
+	<<robinroom>>
+<</if>>
+<br>
+
+
+:: Plus Flat Neighbour [plusneeds widget]
+/* used if we need a standalone; hallway prints the line directly */

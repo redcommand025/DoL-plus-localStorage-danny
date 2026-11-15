@@ -961,6 +961,60 @@ IMPORTANT:
 			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.postureAffectsVoice" 0 1 autocheck>> Gender posture affects voice</label>
 			<span class="tooltip-anchor linkBlue" tooltip="When on, your gender posture can override the voice that matches your body.">(?)</span>
 		</div>
+		<div class="settingsToggleItemWide">
+			<span class="gold">Voice per body &amp; identity</span>
+			<span class="tooltip-anchor linkBlue" tooltip="Pick which voice each of your body or identity states uses, mute your own voice for that state, and choose which NPC voices you hear while in it. Male and Female always appear. Sissy (feminine-presenting male) and Butch (masculine-presenting female) only differ from Male and Female while Gender posture affects voice is on. The Herm row appears if your body is hermaphrodite.">(?)</span>
+		</div>
+		<<run ensureVoiceConfig()>>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.voiceConfig.male.enabled" false true autocheck>> Male</label>
+			<<listbox "$options.voiceConfig.male.voice" autoselect>>
+				<<option "Female (Hentai)" "v1">><<option "Female (Western)" "v2">><<option "Male" "m">>
+			<</listbox>>
+			NPC: <<listbox "$options.voiceConfig.male.npc" autoselect>>
+				<<option "All" "all">><<option "Male only" "m">><<option "Female only" "f">><<option "None" "off">>
+			<</listbox>>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.voiceConfig.female.enabled" false true autocheck>> Female</label>
+			<<listbox "$options.voiceConfig.female.voice" autoselect>>
+				<<option "Female (Hentai)" "v1">><<option "Female (Western)" "v2">><<option "Male" "m">>
+			<</listbox>>
+			NPC: <<listbox "$options.voiceConfig.female.npc" autoselect>>
+				<<option "All" "all">><<option "Male only" "m">><<option "Female only" "f">><<option "None" "off">>
+			<</listbox>>
+		</div>
+		<<if $options.postureAffectsVoice>>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.voiceConfig.sissy.enabled" false true autocheck>> Sissy</label>
+			<<listbox "$options.voiceConfig.sissy.voice" autoselect>>
+				<<option "Female (Hentai)" "v1">><<option "Female (Western)" "v2">><<option "Male" "m">>
+			<</listbox>>
+			NPC: <<listbox "$options.voiceConfig.sissy.npc" autoselect>>
+				<<option "All" "all">><<option "Male only" "m">><<option "Female only" "f">><<option "None" "off">>
+			<</listbox>>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.voiceConfig.butch.enabled" false true autocheck>> Butch</label>
+			<<listbox "$options.voiceConfig.butch.voice" autoselect>>
+				<<option "Female (Hentai)" "v1">><<option "Female (Western)" "v2">><<option "Male" "m">>
+			<</listbox>>
+			NPC: <<listbox "$options.voiceConfig.butch.npc" autoselect>>
+				<<option "All" "all">><<option "Male only" "m">><<option "Female only" "f">><<option "None" "off">>
+			<</listbox>>
+		</div>
+		<</if>>
+		<<if playerIsHerm()>>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.voiceConfig.herm.enabled" false true autocheck>> Herm</label>
+			<<listbox "$options.voiceConfig.herm.voice" autoselect>>
+				<<option "Female (Hentai)" "v1">><<option "Female (Western)" "v2">><<option "Male" "m">>
+			<</listbox>>
+			NPC: <<listbox "$options.voiceConfig.herm.npc" autoselect>>
+				<<option "All" "all">><<option "Male only" "m">><<option "Female only" "f">><<option "None" "off">>
+			<</listbox>>
+		</div>
+		<</if>>
 		<div class="settingsToggleItem">
 			<label data-target="options.audio" data-disabledif="V.options.audio===0">
 				<span class="gold">Encounter sounds:</span>

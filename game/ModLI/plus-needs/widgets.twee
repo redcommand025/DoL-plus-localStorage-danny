@@ -72,6 +72,7 @@
 	<<if $plusFlat and $plusFlat.rented>>
 		<span class="teal"><<print plusFlatStatusLine()>></span>
 	<</if>>
+	<<plusBusJacketCaption>>
 <</widget>>
 
 <<widget "plusneedscaption">>
@@ -93,6 +94,7 @@
 	<<if $plusFlat and $plusFlat.rented>>
 		<span class="teal"><<print plusFlatStatusLine()>></span>
 	<</if>>
+	<<plusBusJacketCaption>>
 	<<plusDiaperVisibleCaption>>
 <</widget>>
 
@@ -173,7 +175,7 @@
 	<<stress 12>><<gstress>><<set $hygiene to Math.clamp($hygiene + 400, 0, 2000)>>
 	<<set _pnSeen to plusAccidentSpotRoll(_pnFloor)>>
 	<</if>>
-	<<if _pnSeen gt 0>>
+	<<if _args[1] isnot "silent" and _pnSeen gt 0>>
 		<<run plusContRepOnAccident(_pnSeen, { floor: !!_pnFloor, which: _pnWhich, absorbed: !!_pnAbsorbed })>>
 		<br><span class="red">
 		<<if _pnSeen is 2>>
@@ -190,6 +192,10 @@
 			<<if _pnFloor>><<stress 15>><<else>><<stress 10>><</if>><<gstress>>
 		<</if>>
 		<<if _pnSeen is 2>><<status -5>><<lcool>><</if>>
+	<</if>>
+	<<if _args[1] isnot "silent">>
+		<<plusWeatherAccidentFlavour>>
+		<<plusNpcAccidentHook>>
 	<</if>>
 <</widget>>
 
@@ -1046,7 +1052,7 @@ You step into a small letting office beside the stairwell. A clerk looks up from
 	<</if>>
 <<else>>
 <<set $outside to 0>><<set $location to "flat">><<set $bus to "plus_flat">><<location "flats">><<effects>>
-You are in your rented flat, a modest one-bedroom on an upper floor of the Barb Street block. The walls are plain and recently painted. A narrow window looks out over the canal. The bed is made, and a wardrobe stands against the far wall. A bathroom opens off to one side.
+You are in your rented flat, a modest one-bedroom on an upper floor of the Barb Street block. The walls are plain and recently painted. A narrow window looks out over the canal. The bed is made, and a wardrobe stands against the far wall. A bathroom opens off to one side.<<if plusFlatDecorText()>> <<print plusFlatDecorText()>><</if>><<if plusRobinLivesAtFlat()>> Robin's things occupy one corner of the room — a second bed made up as neatly as the space allows, and a little desk if <<he>> has claimed it.<</if>>
 <br><br>
 <<plusFlatNotices>>
 <<print plusFlatStatusLine()>>
@@ -1068,6 +1074,9 @@ You are in your rented flat, a modest one-bedroom on an upper floor of the Barb 
 <br>
 <<furnitureicon "chair">><<link [[Desk (0:01)|Plus Flat Desk]]>><<pass 1>><</link>>
 <br>
+<<plusRobinRoomFlatLink>>
+<<plusFlatDecorLink>>
+<<plusFlatActivityLinks>>
 <<mirroricon>><<link [[Mirror|Plus Flat Mirror]]>><<preMirror>><</link>>
 <br>
 <<homeicon>><<link [[Step into the hallway (0:01)|Plus Flat Hallway]]>><<pass 1>><</link>>
@@ -1170,6 +1179,10 @@ You look in your wardrobe.
 :: Plus Flat Move Out [plusneeds]
 <<effects>>
 You pack what you need and take the keys back to the letting office. The clerk notes that the lease is ended. The flat is no longer yours.
+<<if $plusRobinMoved>>
+	<br><br>
+	Robin packs as well, quieter than usual. "<<print either("I'll go back to my old room,", "It was nice while it lasted,")>>" <<he>> says. The orphanage will have <<him>> again.
+<</if>>
 <br><br>
 <<run plusFlatMoveOut()>>
 You walk back to Domus Street. The orphanage is your home again, and Bailey will expect the usual weekly payment in due course.
@@ -1181,6 +1194,10 @@ You walk back to Domus Street. The orphanage is your home again, and Bailey will
 :: Plus Flat Evicted [plusneeds]
 <<effects>>
 The landlord has had enough of unpaid rent. The locks are changed, and you are told to gather your things.
+<<if $plusRobinMoved>>
+	<br><br>
+	Robin helps you carry bags down the stairs, tight-lipped. There is no question of staying. <<He>> will have to go back to the orphanage as well.
+<</if>>
 <br><br>
 <<run plusFlatEvict()>>
 You carry what you can back to the orphanage. Your old bedroom is waiting, and Bailey's weekly payments will start again.

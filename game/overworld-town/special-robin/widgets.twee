@@ -1033,7 +1033,7 @@
 <</widget>>
 
 <<widget "robinroom_link">>
-	<<if C.npc.Robin.init is 1>>
+	<<if C.npc.Robin.init is 1 and not plusRobinLivesAtFlat()>>
 		<<if Time.dayState isnot "night" and $exposed gte 1 and getRobinLocation() is "orphanage">>
 			<<if hasSexStat("exhibitionism", 5) and $exposed is 2>>
 				<<bedroomicon>><<link [[Robin's room (0:01)|Robin Room Naked]]>><<pass 1>><</link>><<exhibitionist5>>

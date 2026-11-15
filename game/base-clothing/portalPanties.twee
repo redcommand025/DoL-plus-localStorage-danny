@@ -278,6 +278,7 @@
 			<<set $portalPanties.portalPenisOrgasms.vagina++>>
 			<<portalPantiesClear _args[0]>>
 	<</switch>>
+	<<ejaculation-sound>>
 <</widget>>
 
 /* Place within the "orgasm" widget.
@@ -303,6 +304,7 @@
 		<<vaginalejacstat>><<ejacstat>><<set $hygiene += 500>><<bodyliquid "vagina" "semen">>
 		<<set $portalPanties.ownPenisOrgasms.vagina++>>
 	<</if>>
+	<<ejaculation-sound>>
 <</widget>>
 
 /* Place within the "cumswallow" widget.

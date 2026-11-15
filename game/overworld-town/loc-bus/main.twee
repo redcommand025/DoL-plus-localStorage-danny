@@ -72,6 +72,8 @@ You climb aboard the bus. Tickets cost £1.
 :: Bus seat
 
 <<set $outside to 0>><<effects>>
+<<plusBusRideTick>>
+<<if plusBusEventReady()>><<goto "Plus Bus Accident">><</if>>
 <<set $foresthunt to 0>>
 <<if Time.schoolDay and Time.hour gte 7 and Time.hour lte 8>>
 	Your bus is crowded with students on their way to school.

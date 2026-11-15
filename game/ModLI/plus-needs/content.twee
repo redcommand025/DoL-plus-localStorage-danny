@@ -258,6 +258,8 @@ Your kitchen is a short run of counter, a sink, a small hob, and a fridge that h
 	)>>
 <</if>>
 <br><br>
+<<link [[Cook a proper meal|Plus Flat Cook]]>><</link>>
+<br>
 <<plusKitchenSnack>>
 <<getouticon>><<link [[Back to the bedroom|Plus Flat Bedroom]]>><</link>>
 <br>
@@ -377,6 +379,11 @@ You step out onto the landing. The stairwell smells of dust and someone else's d
 		"No one is about. You stand for a moment in the quiet, then go back to your door.",
 		"Footsteps fade on the floor above, and then there is only the tick of the stairwell light."
 	)>>
+<</if>>
+<<set _nb to plusFlatNeighbourLine()>>
+<<if _nb and _beat isnot "landlord">>
+	<br><br>
+	<span class="teal">_nb</span>
 <</if>>
 <br><br>
 <<homeicon>><<link [[Go back in|Plus Flat Bedroom]]>><</link>>
