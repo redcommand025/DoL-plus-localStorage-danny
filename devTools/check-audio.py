@@ -50,6 +50,14 @@ def main(argv):
     problems = []
     for path in sorted(referenced() - set(entries)):
         problems.append(f"game-audio.js uses {path}, which is not in devTools/audio-files.sha256")
+    audio_root = os.path.join(base, "audio")
+    if os.path.isdir(audio_root):
+        listed = set(entries)
+        for dirpath, _, filenames in os.walk(audio_root):
+            for name in filenames:
+                rel = os.path.relpath(os.path.join(dirpath, name), base).replace("\\", "/")
+                if rel not in listed:
+                    problems.append(f"unlisted audio file: {rel}")
     for path, (sha, size) in sorted(entries.items()):
         full = os.path.join(base, path)
         if not os.path.isfile(full):

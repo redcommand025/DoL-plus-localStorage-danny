@@ -6,7 +6,7 @@
  *
  * <<update-audio>> (Audio Widgets) runs from PassageFooter on every passage and picks the music for the current
  * location, encounter or named NPC; weather ambience follows Weather and is muffled indoors.
- * X-Change's sex sounds and voiceovers are intentionally not ported.
+ * Combat/sex sounds and voiceovers live in GameCombatAudio and combat-audio widgets.
  */
 window.GameAudio = (() => {
 	"use strict";
@@ -53,6 +53,10 @@ window.GameAudio = (() => {
 		afterschool: ["school/afterschool/Myra Russell - Peaceful Serenity (Part 1).mp3"],
 		sea: ["sea/KaizanBlu - Deep.mp3"],
 		Poppy: ["nnpc/Poppy/Makaih Beats - Late.mp3"],
+		Luchifen: ["nnpc/Luchifen/Ruskerdax - Pondering the Cosmos.mp3"],
+		arcology: ["arcology/Tarush Singhal - Cyberpunk Beauty.mp3"],
+		"arcology-danger": ["arcology/dangerarea/tricksntraps - Anti Matter Magic.mp3"],
+		"arcology-battle": ["arcology/battle/tricksntraps - Caves.mp3"],
 		sewers: ["sewers/Kirk Osamayo - Unsettling Ambience.mp3"],
 		shopping_centre: ["shopping_centre/Beat Mekanik - Good Ol' Days.mp3"],
 		strip_club: ["strip_club/Zight - Daisy (EDM _ Instrumental).mp3"],
@@ -64,7 +68,7 @@ window.GameAudio = (() => {
 	};
 
 	/* Named NPCs with their own theme, in priority order (fullDescription -> playlist id). */
-	const NPC_THEMES = ["Ivory Wraith", "Eden", "Avery", "Bailey", "Wren", "Gwylan", "Whitney", "Zephyr", "Kylar", "Robin", "Sydney", "Poppy"];
+	const NPC_THEMES = ["Ivory Wraith", "Eden", "Avery", "Bailey", "Wren", "Gwylan", "Whitney", "Zephyr", "Kylar", "Robin", "Sydney", "Poppy", "Luchifen"];
 
 	const DAY_NIGHT = { town: ["town-day", "town-night"], farm: ["farm-day", "farm-night"], park: ["park-day", "park-night"] };
 	const LOCATIONS = {};
@@ -308,10 +312,27 @@ window.GameAudio = (() => {
 	function wanted() {
 		if (!enabled() || !V.location || V.location === "banner" || V.passage === "Start") return [null, false];
 		if (V.possessed) return ["IvoryWraith", true];
+		try {
+			if (window.setup && setup.arcology && typeof setup.arcology.inEncounter === "function" && setup.arcology.inEncounter()) {
+				return ["arcology-battle", true];
+			}
+		} catch (e) {}
 		if (V.combat === 1 && V.consensual !== 1) return ["encounter-noncon", true];
 		const npc = npcTheme();
 		if (npc && BGM[npc]) return [npc, true];
 		if (V.combat === 1 || V.masturbating === 1) return ["encounter-consensual", true];
+		try {
+			if (
+				window.setup &&
+				setup.arcology &&
+				typeof setup.arcology.inCity === "function" &&
+				setup.arcology.inCity() &&
+				typeof setup.arcology.cityTheme === "function"
+			) {
+				const theme = setup.arcology.cityTheme();
+				if (theme && BGM[theme]) return [theme, false];
+			}
+		} catch (e) {}
 		return [locationTheme(V.location), false];
 	}
 

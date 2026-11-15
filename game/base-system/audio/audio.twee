@@ -1,4 +1,6 @@
 :: Audio Widgets [widget]
 <<widget "update-audio">>
 	<<run GameAudio.update()>>
+	<<audioInit>>
+	<<update-combat-audio>>
 <</widget>>

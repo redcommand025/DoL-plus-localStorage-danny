@@ -192,6 +192,11 @@
 
 		<</if>>
 	<</if>>
+	<!-- Orgasm SFX, ported from X-Change; skipped in Danny scenes by GameCombatAudio.blocked -->
+	<<if !_deniedOrgasm>>
+		<<orgasm-voice>>
+	<</if>>
+
 	<<if $player.vaginaExist and !_deniedOrgasm>>
 		<<if !$player.penisExist>>
 			<span class="pink">You are overcome by sensation and climax.</span>

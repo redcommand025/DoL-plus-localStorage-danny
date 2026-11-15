@@ -1221,4 +1221,116 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.none.wiki.ok, true, info.none.wiki.text);
 		assert.doesNotMatch(info.none.wiki.text, /diaper/);
 	});
+
+	it("QA-C025 [integration] school continence rumours catch up at midnight", async () => {
+		const info = await page.evaluate(() => {
+			const V = window.SugarCube.State.variables;
+			window.plusContRepInit();
+			V.plusContRep = 0;
+			V.plusContRepPublic = 0;
+			V.plusContRepSchoolPending = 0;
+			V.plusContRepDayGain = 0;
+			V.schoolrep = V.schoolrep || {};
+			V.schoolrep.continence = 0;
+			delete V.school_continence_message;
+			const today = window.plusDayKey();
+			V.plusContRepDecayDay = today;
+			V.location = "school";
+			const amt = window.plusContRepOnAccident(1, { school: true, which: "plusBladder", clothed: true });
+			const afterSeen = {
+				amt,
+				raw: V.plusContRep,
+				pub: window.plusContRepPublicValue(),
+				school: window.plusSchoolContRep(),
+				pending: V.plusContRepSchoolPending,
+				today,
+			};
+			V.plusContRepDecayDay = today - 1;
+			window.plusContRepDecay();
+			return {
+				afterSeen,
+				afterMidnight: {
+					raw: V.plusContRep,
+					pub: window.plusContRepPublicValue(),
+					school: window.plusSchoolContRep(),
+					pending: V.plusContRepSchoolPending,
+					message: V.school_continence_message,
+					label: window.plusContRepLabel(),
+				},
+			};
+		});
+		assert.ok(info.afterSeen.amt > 0);
+		assert.ok(info.afterSeen.raw >= info.afterSeen.amt);
+		assert.equal(info.afterSeen.pub, 0);
+		assert.equal(info.afterSeen.school, 0);
+		assert.equal(info.afterSeen.pending, 1);
+		assert.equal(info.afterMidnight.school, 1);
+		assert.equal(info.afterMidnight.pending, 0);
+		assert.equal(info.afterMidnight.message, 1);
+		assert.equal(info.afterMidnight.pub, info.afterMidnight.raw);
+		assert.ok(info.afterMidnight.pub > 0);
+	});
+
+	it("QA-C026 [integration] combat audio is present, real, and blocked in Danny scenes", async () => {
+		const info = await page.evaluate(async () => {
+			const blockedDanny = (() => {
+				const V = window.SugarCube.State.variables;
+				const oldP = V.passage;
+				const oldN = V.NPCList;
+				const oldL = V.location;
+				V.passage = "Danny Room";
+				V.location = "orphanage";
+				V.NPCList = [];
+				const blocked = window.GameCombatAudio && window.GameCombatAudio.blocked();
+				V.passage = oldP;
+				V.NPCList = oldN;
+				V.location = oldL;
+				return blocked;
+			})();
+			const street = (() => {
+				const V = window.SugarCube.State.variables;
+				const oldP = V.passage;
+				const oldN = V.NPCList;
+				const oldL = V.location;
+				V.passage = "Streets";
+				V.location = "town";
+				V.NPCList = [{ fullDescription: "a tall man", description: "a tall man" }];
+				const blocked = window.GameCombatAudio && window.GameCombatAudio.blocked();
+				V.passage = oldP;
+				V.NPCList = oldN;
+				V.location = oldL;
+				return blocked;
+			})();
+			const Macro = window.SugarCube && window.SugarCube.Macro;
+			const hasUpdate = !!(Macro && Macro.has && Macro.has("update-combat-audio") && Macro.has("init-playlist") && Macro.has("sex-sound"));
+			const url = new URL("audio/bgs/sex/slow_normal1.mp3", location.href).href;
+			let lfs = null;
+			let status = 0;
+			try {
+				const res = await fetch(url);
+				status = res.status;
+				const buf = await res.arrayBuffer();
+				const head = new TextDecoder().decode(buf.slice(0, 80));
+				lfs = head.startsWith("version https://git-lfs.github.com");
+			} catch (e) {
+				lfs = String(e);
+			}
+			return {
+				hasGameCombatAudio: typeof window.GameCombatAudio,
+				hasEnsure: !!(window.GameCombatAudio && window.GameCombatAudio.ensureDefaults),
+				blockedDanny,
+				street,
+				hasUpdate,
+				status,
+				lfs,
+			};
+		});
+		assert.equal(info.hasGameCombatAudio, "object");
+		assert.equal(info.hasEnsure, true);
+		assert.equal(info.blockedDanny, true);
+		assert.equal(info.street, false);
+		assert.equal(info.hasUpdate, true);
+		assert.equal(info.status, 200);
+		assert.equal(info.lfs, false);
+	});
 });

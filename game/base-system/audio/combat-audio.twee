@@ -1,0 +1,447 @@
+:: Audio Combat Widgets [widget]
+/* Combat and voice-over widgets, ported from X-Change. BGM remains in GameAudio.
+ * Sounds never play in Danny-related scenes (GameCombatAudio.blocked). */
+
+<<widget "update-combat-audio">>
+	<<run GameCombatAudio.ensureDefaults()>>
+	<<if GameCombatAudio.blocked()>>
+		<<bgs "stop">>
+		<<bgv "stop">>
+		<<exit>>
+	<</if>>
+	<<master-combat-audio-update>>
+	<<if $options.audio is 1 and ($combat is 1 or $masturbating is 1)>>
+		<<set _penisPenetration to ["penetrated", "othervagina", "otheranus"]>>
+		<<set _penisRubbing to ["otherhand", "othermouth", "tentacle"]>>
+		<<set _penetration to ["penetrated", "doublepenetrated", "tentacle", "tentacledeep"]>>
+		<<set _rubbing to ["otherhand", "othermouth", "othervagina"]>>
+		<<set _NPCrubbing to ["leftarm", "rightarm"]>>
+		<<set _vibeDildo to ["dildoSelfPussy", "dildoSelfAnus", "dildoOtherPussyFuck", "dildoOtherAnusFuck"]>>
+		<<set _machineVibe to ["entrance","imminent","penetrated"]>>
+		<<set _beingPenetrated to
+			_penetration.includes($vaginastate) or _penetration.includes($anusstate) or
+			($portalPanties and $portalPanties.state and $portalPanties.state.vagina and !$portalPanties.state.vagina.new and !$portalPanties.state.vagina.tempRemoval) or
+			($portalPanties and $portalPanties.state and $portalPanties.state.anus and !$portalPanties.state.anus.new and !$portalPanties.state.anus.tempRemoval)
+		>>
+		<<set _beingVibePenetrated to _vibeDildo.includes($rightaction) or _vibeDildo.includes($leftaction)>>
+		<<set _penetrating to _penisPenetration.includes($penisstate)>>
+		<<set _beingRubbed to
+			_rubbing.includes($vaginastate) or _rubbing.includes($anusstate) or
+			_penisRubbing.includes($penisstate) or $fingersInVagina gte 1
+		>>
+		<<set _anyNPCRubbed to 0>>
+		<<if def $NPCList>>
+			<<for _n = 0; _n lt $NPCList.length; _n++>>
+				<<if $NPCList[_n] and $NPCList[_n].vagina isnot undefined and $NPCList[_n].anus isnot undefined>>
+					<<if _NPCrubbing.includes($NPCList[_n].vagina) or _NPCrubbing.includes($NPCList[_n].anus)>>
+						<<set _anyNPCRubbed to "t">>
+					<<elseif _anyNPCRubbed isnot "t" and $NPCList[_n].penis isnot undefined and _NPCrubbing.includes($NPCList[_n].penis)>>
+						<<set _anyNPCRubbed to "penis">>
+					<</if>>
+				<</if>>
+			<</for>>
+		<</if>>
+		<<if _beingPenetrated or _penetrating or $vaginause is "mdildopenetrate" or $anususe is "mdildopenetrate">>
+			<<sex-sound>>
+		<<elseif _beingRubbed>>
+			<<rub-sound>>
+		<<elseif _anyNPCRubbed>>
+			<<rub-sound _anyNPCRubbed>>
+		<<else>>
+			<<bgs "stop">>
+		<</if>>
+		<<if $options.voiceoverAudio and playerVoiceIsFemale()>>
+			<<if _penetration.includes($mouthstate) or $mouthstate is "kiss" or ($portalPanties and $portalPanties.state and $portalPanties.state.mouth isnot undefined)>>
+				<<chupa-voice>>
+			<<elseif _beingPenetrated>>
+				<<sex-voice>>
+			<<elseif $pleasure gte $pleasuremax * 0.1>>
+				<<arousal-voice>>
+			<<else>>
+				<<bgv "stop">>
+			<</if>>
+		<<elseif $options.voiceoverAudio and playerVoiceIsMale()>>
+			<<if $pleasure gte $pleasuremax * 0.1>>
+				<<arousal-voice>>
+			<<else>>
+				<<bgv "stop">>
+			<</if>>
+		<<else>>
+			<<bgv "stop">>
+		<</if>>
+	<<else>>
+		<<bgs "stop">>
+		<<bgv "stop">>
+	<</if>>
+<</widget>>
+
+<<widget "master-combat-audio-update">>
+	<<if $options.npcVoiceoverAudio is undefined>><<set $options.npcVoiceoverAudio to 1>><</if>>
+	<<if $voiceoverActive is undefined>>
+		<<set $voiceoverActive to "f">>
+		<<set $voiceoverActiveSince to 0>>
+	<</if>>
+	<<if $voiceoverActive is "t" and $voiceoverActiveSince gt 0 and (Date.now() - $voiceoverActiveSince) > 8000>>
+		<<set $voiceoverActive to "f">>
+		<<set $voiceoverActiveSince to 0>>
+	<</if>>
+	<<if setup.bgsCurrentPlaylist isnot "none" and setup.bgsCurrentPlaylist isnot undefined and SimpleAudio.lists.has(setup.bgsCurrentPlaylist)>>
+		<<playlist setup.bgsCurrentPlaylist volume `$options.bgs_volume ?? 1`>>
+	<</if>>
+	<<if setup.bgvCurrentPlaylist isnot "none" and setup.bgvCurrentPlaylist isnot undefined>>
+		<<init-playlist setup.bgvCurrentPlaylist>>
+		<<if SimpleAudio.lists.has(setup.bgvCurrentPlaylist)>>
+			<<playlist setup.bgvCurrentPlaylist volume `$options.voice_volume ?? 1`>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "audio-release-playlist">>
+	<<if _args[0] isnot undefined and _args[0] isnot "none" and SimpleAudio.lists.has(_args[0])>>
+		<<playlist _args[0] stop>>
+		<<playlist _args[0] unload>>
+		<<removeplaylist _args[0]>>
+		<<run setup.initializedPlaylists = (setup.initializedPlaylists || []).filter(id => id !== _args[0])>>
+	<</if>>
+<</widget>>
+
+<<widget "bgs">>
+	<<if setup.bgsCurrentPlaylist is undefined>>
+		<<set setup.bgsCurrentPlaylist to "none">>
+	<</if>>
+	<<if $voiceoverActive is undefined>>
+		<<set $voiceoverActive to "f">>
+	<</if>>
+
+	<<if _args[0] is "stop" and setup.bgsCurrentPlaylist isnot "none">>
+		/* Stop the current BGS playlist */
+		<<audio-release-playlist setup.bgsCurrentPlaylist>>
+		<<set setup.bgsCurrentPlaylist to "none">>
+	
+	<<elseif _args[0] isnot "stop" and _args[0] isnot setup.bgsCurrentPlaylist and $voiceoverActive is "f">>
+		/* Release the previous BGS playlist. */
+		<<audio-release-playlist setup.bgsCurrentPlaylist>>
+
+		/* Start playing the current BGS playlist */
+		<<set setup.bgsCurrentPlaylist to _args[0]>>
+		<<init-playlist setup.bgsCurrentPlaylist>>
+		<<playlist setup.bgsCurrentPlaylist volume $options.bgs_volume>>
+		<<playlist setup.bgsCurrentPlaylist play loop shuffle>>
+	<</if>>	
+<</widget>>
+
+<<widget "bgv-halt-current">>
+	<<if setup.bgvCurrentPlaylist isnot undefined and setup.bgvCurrentPlaylist isnot "none">>
+		<<init-playlist setup.bgvCurrentPlaylist>>
+		<<if SimpleAudio.lists.has(setup.bgvCurrentPlaylist)>>
+			<<audio-release-playlist setup.bgvCurrentPlaylist>>
+		<</if>>
+	<</if>>
+	<<set setup.bgvCurrentPlaylist to "none">>
+<</widget>>
+
+<<widget "bgv">>
+	<<if setup.bgvCurrentPlaylist is undefined>>
+		<<set setup.bgvCurrentPlaylist to "none">>
+	<</if>>
+	<<if $voiceoverActive is undefined>>
+		<<set $voiceoverActive to "f">>
+	<</if>>
+	/* Resolve the player's current voice (sex + posture + herm + per-category config) */
+	<<set _vs to playerVoiceSettings()>>
+	<<set _bgvVolume to $options.voice_volume * (_args[2] ?? 1)>>
+
+	/* Build the full (prefixed) playlist name up front so the change-detection below compares like with like.
+	The old code compared the unprefixed _args[0] (e.g. "moan") against the prefixed tracker (e.g. "v1_moan"), which never matched, so the BGV restarted on every passage.
+	Male voice playlists already arrive prefixed ("m_breath"), so only the female set ("v1"/"v2") gets a prefix here. */
+	<<set _bgvTarget to "stop">>
+	<<if _args[0] isnot "stop">>
+		<<set _prefix to "">>
+		<<if _vs.enabled and (_vs.voice is "v1" or _vs.voice is "v2")>>
+			<<set _prefix += _vs.voice + "_">>
+			<<if _vs.voice is "v2">>
+				<<if $mouthuse is "gagged">>
+					<<set _prefix += "gagged_">>
+				<<elseif $consensual isnot 1>>
+					<<set _prefix += "noncon_">>
+				<</if>>
+			<</if>>
+		<</if>>
+		<<set _bgvTarget to _prefix + _args[0]>>
+	<</if>>
+
+	<<if _args[0] is "stop" and setup.bgvCurrentPlaylist isnot "none">>
+		/* Stop the current BGV playlist */
+		<<bgv-halt-current>>
+	<<elseif _args[0] isnot "stop" and _bgvTarget isnot setup.bgvCurrentPlaylist and ($voiceoverActive is "f" or _args[1] is "override")>>
+		/* Stop the previous BGV playlist */
+		<<bgv-halt-current>>
+
+		/* Start playing the current BGV playlist */
+		<<set setup.bgvCurrentPlaylist to _bgvTarget>>
+		<<init-playlist setup.bgvCurrentPlaylist>>
+		<<playlist setup.bgvCurrentPlaylist volume _bgvVolume>>
+		<<playlist setup.bgvCurrentPlaylist play loop shuffle>>
+	<<elseif _args[0] isnot "stop" and _bgvTarget is setup.bgvCurrentPlaylist and _args[2] isnot undefined and SimpleAudio.lists.has(setup.bgvCurrentPlaylist)>>
+		/* Refresh a live arousal loop when its separate non-combat volume slider changes. */
+		<<playlist setup.bgvCurrentPlaylist volume _bgvVolume>>
+	<</if>>	
+<</widget>>
+
+<<widget "voiceover">>
+	<<if ($options.audio is 1 and $options.voiceoverAudio is 1) and _args[1] is undefined>>
+		/* Stop and release the BGV before the one-shot voiceover. */
+		<<if setup.bgvCurrentPlaylist isnot "none" and setup.bgvCurrentPlaylist isnot undefined>>
+			<<bgv-halt-current>>
+		<</if>>
+		<<set $voiceoverActiveSince to Date.now()>>
+		<<set $voiceoverActive to "t">>
+		/* Capture encounter state before the delay so an outside-combat moan cannot inherit combat volume if an encounter starts while it waits to play. */
+		<<set _voiceVolumeMultiplier to $combat is 1 ? 1 : ($options.nonCombatMoanVolume ?? 1)>>
+
+		<<timed 3000ms>>
+			/* Play the voiceover (dedupe) */
+			<<set _nowVO to Date.now()>>
+			<<if $lastPlayerVoiceoverPlayAt is undefined>><<set $lastPlayerVoiceoverPlayAt to 0>><</if>>
+			<<if $lastPlayerVoiceoverOrgasmcurrent is undefined>><<set $lastPlayerVoiceoverOrgasmcurrent to -1>><</if>>
+
+			<<set _dupeVO to ((_nowVO - $lastPlayerVoiceoverPlayAt lt 1500) or (($orgasmcurrent is $lastPlayerVoiceoverOrgasmcurrent) and (_nowVO - $lastPlayerVoiceoverPlayAt lt 8000)))>>
+
+			<<if _dupeVO is false>>
+				<<set $lastPlayerVoiceoverPlayAt to _nowVO>>
+				<<set $lastPlayerVoiceoverOrgasmcurrent to $orgasmcurrent>>
+				<<set _VOList to _args[0]>>
+				<<set _clip to _VOList[random(0,_VOList.length-1)]>>
+				<<audio _clip play volume `$options.voice_volume * _voiceVolumeMultiplier`>>
+			<</if>>
+			
+			<<if $fingersInVagina gte 1 and setup.bgsCurrentPlaylist isnot "none">>
+				<<audio-release-playlist setup.bgsCurrentPlaylist>>
+				<<set setup.bgsCurrentPlaylist to "none">>
+			<</if>>
+
+			<<set $voiceoverActive to "f">>
+			
+			/* Wait 6 seconds and then resume the BGV */
+			<<next 6s>>
+				<<set _penetration to ["penetrated", "doublepenetrated", "tentacle", "tentacledeep"]>>
+				/* <<playlist setup.bgvCurrentPlaylist volume 0 >> */
+				/* <<arousal-voice "override">> */
+				<<if playerVoiceIsFemale()>>
+					<<if _penetration.includes($mouthstate)>>
+						<<chupa-voice "override">>
+					<<elseif _penetration.includes($vaginastate) or _penetration.includes($anusstate)>>
+						<<sex-voice "override">>
+					<<else>>
+						<<arousal-voice "override">>
+					<</if>>
+				<<elseif playerVoiceIsMale()>>
+					<<arousal-voice "override">>
+				<</if>>
+		<</timed>>
+
+		<<elseif ($options.audio is 1) and (_args[1] is "npc_f" or _args[1] is "npc_m") and npcVoiceAllowed(_args[1] is "npc_f" ? "f" : "m")>>
+		<<set _VOList to _args[0]>>
+		<<set _npc_volume to _args[1] is "npc_f"? 1 : 0.8>>
+		<<audio _VOList[random(0,_args[0].length-1)] play volume `_npc_volume * $options.voice_volume`>>
+	<</if>>
+<</widget>>
+
+<<widget "ejaculation-sound">>
+	<<if $options.audio is 1 and ((_args[0] is "npc" and npcVoiceAllowed("m")) or (_args[0] isnot "npc" and $options.voiceoverAudio is 1))>>
+		<<init-playlist "squirt">>
+		<<audio `"squirt"+random(1,4)` play volume `0.8 * $options.bgs_volume`>>
+		<<timed 1000ms>>
+		<<audio `"squirt"+random(1,4)` play volume `0.8 * $options.bgs_volume`>>
+		<</timed>>
+		<<timed 2000ms>>
+		<<audio `"squirt"+random(1,4)` play volume `0.8 * $options.bgs_volume`>>
+		<</timed>>
+	<</if>>
+<</widget>>
+
+<<widget "sex-sound">>
+	<<if $portalPanties.state.vagina or $portalPanties.state.anus>>
+		<<set _portalArousalLevel to Math.min($portalPanties.state.vagina?.timer || 100, $portalPanties.state.anus?.timer || 100) / 6>>
+		<<if _portalArousalLevel gte 4>>
+			<<set _animspeed to "mid">>
+		<<elseif _portalArousalLevel gte 3>>
+			<<set _animspeed to "fast">>
+		<<else>>
+			<<set _animspeed to "vfast">>
+		<</if>>
+	<</if>>
+	<<if _animspeed is "vfast" or $enemypleasure gte $enemypleasuremax * 0.7>>
+		<<bgs "sex_fast">>
+	<<elseif _animspeed is "fast" or $enemypleasure gte $enemypleasuremax * 0.5>>
+		<<bgs "sex_middle">>
+	<<else>>
+		<<bgs "sex_slow">>
+	<</if>>
+<</widget>>
+
+<<widget "rub-sound">>
+	<<if _args[0] is undefined>>
+		<<if $vaginaArousalWetness gte 10 or $anusWetness gte 10 or $penisWetness gte 10>>
+			<<bgs "rub_wet">>
+		<<elseif $vaginaArousalWetness gte 5 or $anusWetness gte 5 or $penisWetness gte 5>>
+			<<bgs "rub_damp">>
+		<<else>>
+			<<bgs "rub">>
+		<</if>>
+	<<elseif _args[0] is "penis">>
+		<<bgs "rub">>
+	<<else>>
+		<<if $enemyarousal gte ($enemyarousalmax * (2/3))>>
+			<<bgs "rub_wet">>
+		<<elseif $enemyarousal gte ($enemyarousalmax * (1/3))>>
+			<<bgs "rub_damp">>
+		<<else>>
+			<<bgs "rub">>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "chupa-voice">>
+	<<if $pleasure gte $pleasuremax * 0.8>>
+		<<bgv "chupa_fast">>
+	<<elseif $pleasure gte $pleasuremax * 0.4 or $orgasmcurrent gte 1>>
+		<<bgv "chupa">>
+	<<elseif $pleasure gte $pleasuremax * 0.2>>
+		<<bgv "chupa_slow">>
+	<<else>>
+		<<bgv "chupa_vslow">>
+	<</if>>	
+<</widget>>
+
+<<widget "sex-voice">>
+	<<if $pleasure gte $pleasuremax * 0.8>>
+		<<bgv "moan_fast" _args[0]>>
+	<<elseif $pleasure gte $pleasuremax * 0.4 or $orgasmcurrent gte 1>>
+		<<bgv "moan" _args[0]>>
+	<<elseif $pleasure gte $pleasuremax * 0.2>>
+		<<bgv "moan_slow" _args[0]>>
+	<<else>>
+		<<bgv "chupa_vslow">>
+	<</if>>	
+<</widget>>
+
+<<widget "arousal-voice">>
+	/* Local rub detection so this widget is safe to call from anywhere */
+	<<set _penisRubbingLocal to ["otherhand", "othermouth", "tentacle"]>>
+	<<set _rubbingLocal to ["otherhand", "othermouth", "othervagina"]>>
+	<<set _beingRubbedLocal to _rubbingLocal.includes($vaginastate) or _rubbingLocal.includes($anusstate) or _penisRubbingLocal.includes($penisstate) or $fingersInVagina gte 1>>
+	<<set _arousalVoiceVolume to $combat is 1 ? 1 : ($options.nonCombatMoanVolume ?? 1)>>
+
+	<<if playerVoiceIsFemale()>>
+		<<if $pleasure gte $pleasuremax * 0.8 and _beingRubbedLocal>>
+			<<bgv "breath_fast" _args[0] _arousalVoiceVolume>>
+		<<elseif $pleasure gte $pleasuremax * 0.6 or $orgasmcurrent gte 1>>
+			<<bgv "breath" _args[0] _arousalVoiceVolume>>
+		<<elseif $pleasure gte $pleasuremax * 0.4>>
+			<<bgv "breath_slow" _args[0] _arousalVoiceVolume>>
+		<<elseif $pleasure gte $pleasuremax * 0.2>>
+			<<bgv "breath_vslow" _args[0] _arousalVoiceVolume>>
+		<<else>>
+			<<bgv "stop">>
+		<</if>>
+	<<elseif playerVoiceIsMale()>>
+		<<if $pleasure gte $pleasuremax * 0.8>>
+			<<bgv "m_breath_fast" _args[0] _arousalVoiceVolume>>
+		<<elseif $pleasure gte $pleasuremax * 0.6 or $orgasmcurrent gte 1>>
+			<<bgv "m_breath" _args[0] _arousalVoiceVolume>>
+		<<elseif $pleasure gte $pleasuremax * 0.4>>
+			<<bgv "m_breath_slow" _args[0] _arousalVoiceVolume>>
+		<<elseif $pleasure gte $pleasuremax * 0.2>>
+			<<bgv "m_breath_vslow" _args[0] _arousalVoiceVolume>>
+		<<else>>
+			<<bgv "stop">>
+		<</if>>	
+	<</if>>
+<</widget>>
+
+<<widget "orgasm-voice">>
+
+	<<set _penetration to ["penetrated", "doublepenetrated", "tentacle", "tentacledeep"]>>
+	<<if _args[0] is undefined>>
+		/* Play player orgasm voice once per orgasm (blocks double-trigger) */
+		<<set _now to Date.now()>>
+		<<if $lastPlayerOrgasmVoiceAt is undefined>><<set $lastPlayerOrgasmVoiceAt to 0>><</if>>
+		<<if $lastPlayerOrgasmVoiceOrgasmcurrent is undefined>><<set $lastPlayerOrgasmVoiceOrgasmcurrent to -1>><</if>>
+		<<set _isDupe to ($orgasmcurrent is $lastPlayerOrgasmVoiceOrgasmcurrent) and (_now - $lastPlayerOrgasmVoiceAt lt 8000)>>
+		<<if _isDupe is false>>
+			<<set $lastPlayerOrgasmVoiceAt to _now>>
+			<<set $lastPlayerOrgasmVoiceOrgasmcurrent to $orgasmcurrent>>
+
+		<<if playerVoiceIsFemale()>>
+			<<set _vs to playerVoiceSettings()>>
+			<<set _prefix to _vs.voice + "_">>
+			<<if _vs.voice is "v2">>
+				<<if $mouthuse is "gagged">>
+					<<set _prefix += "gagged_">>
+				<<elseif $consensual isnot 1>>
+					<<set _prefix += "noncon_">>
+				<</if>>
+			<</if>>
+			<<if _penetration.includes($mouthstate)>>
+				<<set _playlist to _prefix + "chupa_orgasm">>
+			<<elseif _penetration.includes($vaginastate) or _penetration.includes($anusstate)>>
+				<<set _playlist to _prefix + "orgasm">>
+			<<else>>
+				<<set _playlist to _prefix + "breath_orgasm">>
+			<</if>>
+			<<init-playlist _playlist>>
+			<<voiceover setup.playlists[_playlist]>>
+		<<elseif playerVoiceIsMale()>>
+			<<init-playlist "m_orgasm">>
+			<<voiceover setup.playlists.m_orgasm>>
+			<<ejaculation-sound>>
+		<</if>>
+		<</if>>
+
+	<<else>>
+		<<if _args[0] is "npc_f">>
+			<<init-playlist "npc_f">>
+			<<voiceover setup.playlists.npc_f _args[0]>>
+		<<elseif _args[0] is "npc_m">>
+			<<init-playlist "npc_m">>
+			<<voiceover setup.playlists.npc_m _args[0]>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "npc-orgasm-voice">>
+	<!-- Only use actual encounter participants, not every NPC record in the passage pool. -->
+	<<set _activeNPCs to []>>
+
+	<<for _n = 0; _n lt $NPCList.length; _n++>>
+		<<if $NPCList[_n] and $NPCList[_n].active is "active" and $NPCList[_n].stance isnot "defeated">>
+			<<run _activeNPCs.push($NPCList[_n])>>
+		<</if>>
+	<</for>>
+
+	/* Fallback for single-target scenes where active flags may not be populated yet. */
+	<<if _activeNPCs.length is 0 and $NPCList[$active_enemy] and $NPCList[$active_enemy].stance isnot "defeated">>
+		<<run _activeNPCs.push($NPCList[$active_enemy])>>
+	<<elseif _activeNPCs.length is 0 and $NPCList[$index] and $NPCList[$index].stance isnot "defeated">>
+		<<run _activeNPCs.push($NPCList[$index])>>
+	<<elseif _activeNPCs.length is 0 and $NPCList[0] and $NPCList[0].stance isnot "defeated">>
+		<<run _activeNPCs.push($NPCList[0])>>
+	<</if>>
+
+	<<for _n = 0; _n lt _activeNPCs.length; _n++>>
+		<<set _npc to _activeNPCs[_n]>>
+		<<set _delay to random(0,3000) + "ms">>
+		<<if _npc.pronoun is "f" and npcVoiceAllowed("f")>>
+			<<timed _delay>>
+				<<orgasm-voice "npc_f">>
+			<</timed>>
+		<<elseif _npc.pronoun is "m" and npcVoiceAllowed("m")>>
+			<<timed _delay>>
+				<<orgasm-voice "npc_m">>
+				<<next 5s>>
+					<<ejaculation-sound "npc">>
+			<</timed>>
+		<</if>>
+	<</for>>
+<</widget>>

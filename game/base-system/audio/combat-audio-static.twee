@@ -1,0 +1,770 @@
+:: Audio Combat Static [widget]
+/* Combat/sex sound playlists, ported from X-Change init-playlist. BGM stays in GameAudio. */
+
+<<widget "audioInit">>
+	<<run Config.audio.preloadMetadata = false>>
+	<<set setup.initializedPlaylists to setup.initializedPlaylists || []>>
+	<<set setup.playlists to setup.playlists || {}>>
+<</widget>>
+
+<<widget "init-playlist">>
+	<<if setup.playlists is undefined>>
+		<<set setup.playlists to {}>>
+	<</if>>
+	<<if setup.initializedPlaylists is undefined>>
+		<<set setup.initializedPlaylists to []>>
+	<</if>>
+	<<if setup.initializedPlaylists.includes(_args[0])>>
+		<<exit>>
+	<</if>>
+	<<switch _args[0]>>
+            <<case "v1_breath_vvslow">>
+                <<cacheaudio "v1_breath_vslow1" "audio/bgv/f_voice1/normal/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "v1_breath_vslow2" "audio/bgv/f_voice1/normal/breath/breath-veryslow-02.mp3">>
+                    <<createplaylist "v1_breath_vvslow">>
+                        <<track "v1_breath_vslow1" volume 0.8>>
+                        <<track "v1_breath_vslow2" volume 0.8>>
+                    <</createplaylist>>
+            <<case "v2_breath_vvslow">>
+                <<cacheaudio "v2_breath_vslow1" "audio/bgv/f_voice2/normal/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "v2_breath_vslow2" "audio/bgv/f_voice2/normal/breath/breath-veryslow-02.mp3">>
+                    <<createplaylist "v2_breath_vvslow">>
+                        <<track "v2_breath_vslow1" volume 0.8>>
+                        <<track "v2_breath_vslow2" volume 0.8>>
+                    <</createplaylist>>
+            <<case "v2_gagged_breath_vvslow">>
+                <<cacheaudio "v2_gagged_breath_vslow1" "audio/bgv/f_voice2/gagged/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "v2_gagged_breath_vslow2" "audio/bgv/f_voice2/gagged/breath/breath-veryslow-02.mp3">>
+                    <<createplaylist "v2_gagged_breath_vvslow">>
+                        <<track "v2_gagged_breath_vslow1" volume 0.8>>
+                        <<track "v2_gagged_breath_vslow2" volume 0.8>>
+                    <</createplaylist>>
+            <<case "v2_noncon_breath_vvslow">>
+                <<cacheaudio "v2_noncon_breath_vslow1" "audio/bgv/f_voice2/noncon/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "v2_noncon_breath_vslow2" "audio/bgv/f_voice2/noncon/breath/breath-veryslow-02.mp3">>
+                    <<createplaylist "v2_noncon_breath_vvslow">>
+                        <<track "v2_noncon_breath_vslow1" volume 0.8>>
+                        <<track "v2_noncon_breath_vslow2" volume 0.8>>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_breath_vslow">>
+                <<cacheaudio "v1_breath_vslow1" "audio/bgv/f_voice1/normal/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "v1_breath_vslow2" "audio/bgv/f_voice1/normal/breath/breath-veryslow-02.mp3">>
+                    <<createplaylist "v1_breath_vslow">>
+                        <<track "v1_breath_vslow1" copy>>
+                        <<track "v1_breath_vslow2" copy>>
+                    <</createplaylist>>
+            <<case "v2_breath_vslow">>
+                <<cacheaudio "v2_breath_vslow1" "audio/bgv/f_voice2/normal/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "v2_breath_vslow2" "audio/bgv/f_voice2/normal/breath/breath-veryslow-02.mp3">>
+                    <<createplaylist "v2_breath_vslow">>
+                        <<track "v2_breath_vslow1" copy>>
+                        <<track "v2_breath_vslow2" copy>>
+                    <</createplaylist>>
+            <<case "v2_gagged_breath_vslow">>
+                <<cacheaudio "v2_gagged_breath_vslow1" "audio/bgv/f_voice2/gagged/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "v2_gagged_breath_vslow2" "audio/bgv/f_voice2/gagged/breath/breath-veryslow-02.mp3">>
+                    <<createplaylist "v2_gagged_breath_vslow">>
+                        <<track "v2_gagged_breath_vslow1" copy>>
+                        <<track "v2_gagged_breath_vslow2" copy>>
+                    <</createplaylist>>
+            <<case "v2_noncon_breath_vslow">>
+                <<cacheaudio "v2_noncon_breath_vslow1" "audio/bgv/f_voice2/noncon/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "v2_noncon_breath_vslow2" "audio/bgv/f_voice2/noncon/breath/breath-veryslow-02.mp3">>
+                    <<createplaylist "v2_noncon_breath_vslow">>
+                        <<track "v2_noncon_breath_vslow1" copy>>
+                        <<track "v2_noncon_breath_vslow2" copy>>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_breath_slow">>
+                <<cacheaudio "v1_breath_slow1" "audio/bgv/f_voice1/normal/breath/breath-slow-01.mp3">>
+                <<cacheaudio "v1_breath_slow2" "audio/bgv/f_voice1/normal/breath/breath-slow-02.mp3">>
+                <<cacheaudio "v1_breath_slow3" "audio/bgv/f_voice1/normal/breath/breath-slow-03.mp3">>
+                    <<createplaylist "v1_breath_slow">>
+                        <<track "v1_breath_slow1">>
+                        <<track "v1_breath_slow2">>
+                        <<track "v1_breath_slow3">>
+                    <</createplaylist>>
+            <<case "v2_breath_slow">>
+                <<cacheaudio "v2_breath_slow1" "audio/bgv/f_voice2/normal/breath/breath-slow-01.mp3">>
+                <<cacheaudio "v2_breath_slow2" "audio/bgv/f_voice2/normal/breath/breath-slow-02.mp3">>
+                <<cacheaudio "v2_breath_slow3" "audio/bgv/f_voice2/normal/breath/breath-slow-03.mp3">>
+                    <<createplaylist "v2_breath_slow">>
+                        <<track "v2_breath_slow1">>
+                        <<track "v2_breath_slow2">>
+                        <<track "v2_breath_slow3">>
+                    <</createplaylist>>
+            <<case "v2_gagged_breath_slow">>
+                <<cacheaudio "v2_gagged_breath_slow1" "audio/bgv/f_voice2/gagged/breath/breath-slow-01.mp3">>
+                <<cacheaudio "v2_gagged_breath_slow2" "audio/bgv/f_voice2/gagged/breath/breath-slow-02.mp3">>
+                <<cacheaudio "v2_gagged_breath_slow3" "audio/bgv/f_voice2/gagged/breath/breath-slow-03.mp3">>
+                    <<createplaylist "v2_gagged_breath_slow">>
+                        <<track "v2_gagged_breath_slow1">>
+                        <<track "v2_gagged_breath_slow2">>
+                        <<track "v2_gagged_breath_slow3">>
+                    <</createplaylist>>
+            <<case "v2_noncon_breath_slow">>
+                <<cacheaudio "v2_noncon_breath_slow1" "audio/bgv/f_voice2/noncon/breath/breath-slow-01.mp3">>
+                <<cacheaudio "v2_noncon_breath_slow2" "audio/bgv/f_voice2/noncon/breath/breath-slow-02.mp3">>
+                <<cacheaudio "v2_noncon_breath_slow3" "audio/bgv/f_voice2/noncon/breath/breath-slow-03.mp3">>
+                    <<createplaylist "v2_noncon_breath_slow">>
+                        <<track "v2_noncon_breath_slow1">>
+                        <<track "v2_noncon_breath_slow2">>
+                        <<track "v2_noncon_breath_slow3">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_breath">>
+                <<cacheaudio "v1_breath1" "audio/bgv/f_voice1/normal/breath/breath-01.mp3">>
+                <<cacheaudio "v1_breath2" "audio/bgv/f_voice1/normal/breath/breath-02.mp3">>
+                <<cacheaudio "v1_breath3" "audio/bgv/f_voice1/normal/breath/breath-03.mp3">>
+                <<cacheaudio "v1_breath4" "audio/bgv/f_voice1/normal/breath/breath-04.mp3">>
+                <<cacheaudio "v1_breath5" "audio/bgv/f_voice1/normal/breath/breath-05.mp3">>
+                    <<createplaylist "v1_breath">>
+                        <<track "v1_breath1">>
+                        <<track "v1_breath2">>
+                        <<track "v1_breath3">>
+                        <<track "v1_breath4">>
+                        <<track "v1_breath5">>
+                    <</createplaylist>>
+            <<case "v2_breath">>
+                <<cacheaudio "v2_breath1" "audio/bgv/f_voice2/normal/breath/breath-01.mp3">>
+                <<cacheaudio "v2_breath2" "audio/bgv/f_voice2/normal/breath/breath-02.mp3">>
+                <<cacheaudio "v2_breath3" "audio/bgv/f_voice2/normal/breath/breath-03.mp3">>
+                <<cacheaudio "v2_breath4" "audio/bgv/f_voice2/normal/breath/breath-04.mp3">>
+                <<cacheaudio "v2_breath5" "audio/bgv/f_voice2/normal/breath/breath-05.mp3">>
+                    <<createplaylist "v2_breath">>
+                        <<track "v2_breath1">>
+                        <<track "v2_breath2">>
+                        <<track "v2_breath3">>
+                        <<track "v2_breath4">>
+                        <<track "v2_breath5">>
+                    <</createplaylist>>
+            <<case "v2_gagged_breath">>
+                <<cacheaudio "v2_gagged_breath1" "audio/bgv/f_voice2/gagged/breath/breath-01.mp3">>
+                <<cacheaudio "v2_gagged_breath2" "audio/bgv/f_voice2/gagged/breath/breath-02.mp3">>
+                <<cacheaudio "v2_gagged_breath3" "audio/bgv/f_voice2/gagged/breath/breath-03.mp3">>
+                <<cacheaudio "v2_gagged_breath4" "audio/bgv/f_voice2/gagged/breath/breath-04.mp3">>
+                <<cacheaudio "v2_gagged_breath5" "audio/bgv/f_voice2/gagged/breath/breath-05.mp3">>
+                    <<createplaylist "v2_gagged_breath">>
+                        <<track "v2_gagged_breath1">>
+                        <<track "v2_gagged_breath2">>
+                        <<track "v2_gagged_breath3">>
+                        <<track "v2_gagged_breath4">>
+                        <<track "v2_gagged_breath5">>
+                    <</createplaylist>>
+            <<case "v2_noncon_breath">>
+                <<cacheaudio "v2_noncon_breath1" "audio/bgv/f_voice2/noncon/breath/breath-01.mp3">>
+                <<cacheaudio "v2_noncon_breath2" "audio/bgv/f_voice2/noncon/breath/breath-02.mp3">>
+                <<cacheaudio "v2_noncon_breath3" "audio/bgv/f_voice2/noncon/breath/breath-03.mp3">>
+                <<cacheaudio "v2_noncon_breath4" "audio/bgv/f_voice2/noncon/breath/breath-04.mp3">>
+                <<cacheaudio "v2_noncon_breath5" "audio/bgv/f_voice2/noncon/breath/breath-05.mp3">>
+                    <<createplaylist "v2_noncon_breath">>
+                        <<track "v2_noncon_breath1">>
+                        <<track "v2_noncon_breath2">>
+                        <<track "v2_noncon_breath3">>
+                        <<track "v2_noncon_breath4">>
+                        <<track "v2_noncon_breath5">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_breath_fast">>
+                <<cacheaudio "v1_breath_fast1" "audio/bgv/f_voice1/normal/breath/breath-fast-01.mp3">>
+                <<cacheaudio "v1_breath_fast2" "audio/bgv/f_voice1/normal/breath/breath-fast-02.mp3">>
+                <<cacheaudio "v1_breath_fast3" "audio/bgv/f_voice1/normal/breath/breath-fast-03.mp3">>
+                    <<createplaylist "v1_breath_fast">>
+                        <<track "v1_breath_fast1">>
+                        <<track "v1_breath_fast2">>
+                        <<track "v1_breath_fast3">>
+                    <</createplaylist>>
+            <<case "v2_breath_fast">>
+                <<cacheaudio "v2_breath_fast1" "audio/bgv/f_voice2/normal/breath/breath-fast-01.mp3">>
+                <<cacheaudio "v2_breath_fast2" "audio/bgv/f_voice2/normal/breath/breath-fast-02.mp3">>
+                <<cacheaudio "v2_breath_fast3" "audio/bgv/f_voice2/normal/breath/breath-fast-03.mp3">>
+                    <<createplaylist "v2_breath_fast">>
+                        <<track "v2_breath_fast1">>
+                        <<track "v2_breath_fast2">>
+                        <<track "v2_breath_fast3">>
+                    <</createplaylist>>
+            <<case "v2_gagged_breath_fast">>
+                <<cacheaudio "v2_gagged_breath_fast1" "audio/bgv/f_voice2/gagged/breath/breath-fast-01.mp3">>
+                <<cacheaudio "v2_gagged_breath_fast2" "audio/bgv/f_voice2/gagged/breath/breath-fast-02.mp3">>
+                <<cacheaudio "v2_gagged_breath_fast3" "audio/bgv/f_voice2/gagged/breath/breath-fast-03.mp3">>
+                    <<createplaylist "v2_gagged_breath_fast">>
+                        <<track "v2_gagged_breath_fast1">>
+                        <<track "v2_gagged_breath_fast2">>
+                        <<track "v2_gagged_breath_fast3">>
+                    <</createplaylist>>
+            <<case "v2_noncon_breath_fast">>
+                <<cacheaudio "v2_noncon_breath_fast1" "audio/bgv/f_voice2/noncon/breath/breath-fast-01.mp3">>
+                <<cacheaudio "v2_noncon_breath_fast2" "audio/bgv/f_voice2/noncon/breath/breath-fast-02.mp3">>
+                <<cacheaudio "v2_noncon_breath_fast3" "audio/bgv/f_voice2/noncon/breath/breath-fast-03.mp3">>
+                    <<createplaylist "v2_noncon_breath_fast">>
+                        <<track "v2_noncon_breath_fast1">>
+                        <<track "v2_noncon_breath_fast2">>
+                        <<track "v2_noncon_breath_fast3">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_moan_slow">>
+                <<cacheaudio "v1_moan_slow1" "audio/bgv/f_voice1/normal/moan/moan-slow-01.mp3">>
+                <<cacheaudio "v1_moan_slow2" "audio/bgv/f_voice1/normal/moan/moan-slow-02.mp3">>
+                <<cacheaudio "v1_moan_slow3" "audio/bgv/f_voice1/normal/moan/moan-slow-03.mp3">>
+                <<cacheaudio "v1_moan_slow4" "audio/bgv/f_voice1/normal/moan/moan-slow-04.mp3">>
+                    <<createplaylist "v1_moan_slow">>
+                        <<track "v1_moan_slow1">>
+                        <<track "v1_moan_slow2">>
+                        <<track "v1_moan_slow3">>
+                        <<track "v1_moan_slow4">>
+                    <</createplaylist>>
+            <<case "v2_moan_slow">>
+                <<cacheaudio "v2_moan_slow1" "audio/bgv/f_voice2/normal/moan/moan-slow-01.mp3">>
+                <<cacheaudio "v2_moan_slow2" "audio/bgv/f_voice2/normal/moan/moan-slow-02.mp3">>
+                <<cacheaudio "v2_moan_slow3" "audio/bgv/f_voice2/normal/moan/moan-slow-03.mp3">>
+                <<cacheaudio "v2_moan_slow4" "audio/bgv/f_voice2/normal/moan/moan-slow-04.mp3">>
+                    <<createplaylist "v2_moan_slow">>
+                        <<track "v2_moan_slow1">>
+                        <<track "v2_moan_slow2">>
+                        <<track "v2_moan_slow3">>
+                        <<track "v2_moan_slow4">>
+                    <</createplaylist>>
+            <<case "v2_gagged_moan_slow">>
+                <<cacheaudio "v2_gagged_moan_slow1" "audio/bgv/f_voice2/gagged/moan/moan-slow-01.mp3">>
+                <<cacheaudio "v2_gagged_moan_slow2" "audio/bgv/f_voice2/gagged/moan/moan-slow-02.mp3">>
+                <<cacheaudio "v2_gagged_moan_slow3" "audio/bgv/f_voice2/gagged/moan/moan-slow-03.mp3">>
+                <<cacheaudio "v2_gagged_moan_slow4" "audio/bgv/f_voice2/gagged/moan/moan-slow-04.mp3">>
+                    <<createplaylist "v2_gagged_moan_slow">>
+                        <<track "v2_gagged_moan_slow1">>
+                        <<track "v2_gagged_moan_slow2">>
+                        <<track "v2_gagged_moan_slow3">>
+                        <<track "v2_gagged_moan_slow4">>
+                    <</createplaylist>>
+            <<case "v2_noncon_moan_slow">>
+                <<cacheaudio "v2_noncon_moan_slow1" "audio/bgv/f_voice2/noncon/moan/moan-slow-01.mp3">>
+                <<cacheaudio "v2_noncon_moan_slow2" "audio/bgv/f_voice2/noncon/moan/moan-slow-02.mp3">>
+                <<cacheaudio "v2_noncon_moan_slow3" "audio/bgv/f_voice2/noncon/moan/moan-slow-03.mp3">>
+                <<cacheaudio "v2_noncon_moan_slow4" "audio/bgv/f_voice2/noncon/moan/moan-slow-04.mp3">>
+                    <<createplaylist "v2_noncon_moan_slow">>
+                        <<track "v2_noncon_moan_slow1">>
+                        <<track "v2_noncon_moan_slow2">>
+                        <<track "v2_noncon_moan_slow3">>
+                        <<track "v2_noncon_moan_slow4">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_moan">>
+                <<cacheaudio "v1_moan1" "audio/bgv/f_voice1/normal/moan/moan-01.mp3">>
+                <<cacheaudio "v1_moan2" "audio/bgv/f_voice1/normal/moan/moan-02.mp3">>
+                <<cacheaudio "v1_moan3" "audio/bgv/f_voice1/normal/moan/moan-03.mp3">>
+                    <<createplaylist "v1_moan">>
+                        <<track "v1_moan1">>
+                        <<track "v1_moan2">>
+                        <<track "v1_moan3">>
+                    <</createplaylist>>
+            <<case "v2_moan">>
+                <<cacheaudio "v2_moan1" "audio/bgv/f_voice2/normal/moan/moan-01.mp3">>
+                <<cacheaudio "v2_moan2" "audio/bgv/f_voice2/normal/moan/moan-02.mp3">>
+                <<cacheaudio "v2_moan3" "audio/bgv/f_voice2/normal/moan/moan-03.mp3">>
+                    <<createplaylist "v2_moan">>
+                        <<track "v2_moan1">>
+                        <<track "v2_moan2">>
+                        <<track "v2_moan3">>
+                    <</createplaylist>>
+            <<case "v2_gagged_moan">>
+                <<cacheaudio "v2_gagged_moan1" "audio/bgv/f_voice2/gagged/moan/moan-01.mp3">>
+                <<cacheaudio "v2_gagged_moan2" "audio/bgv/f_voice2/gagged/moan/moan-02.mp3">>
+                <<cacheaudio "v2_gagged_moan3" "audio/bgv/f_voice2/gagged/moan/moan-03.mp3">>
+                    <<createplaylist "v2_gagged_moan">>
+                        <<track "v2_gagged_moan1">>
+                        <<track "v2_gagged_moan2">>
+                        <<track "v2_gagged_moan3">>
+                    <</createplaylist>>
+            <<case "v2_noncon_moan">>
+                <<cacheaudio "v2_noncon_moan1" "audio/bgv/f_voice2/noncon/moan/moan-01.mp3">>
+                <<cacheaudio "v2_noncon_moan2" "audio/bgv/f_voice2/noncon/moan/moan-02.mp3">>
+                <<cacheaudio "v2_noncon_moan3" "audio/bgv/f_voice2/noncon/moan/moan-03.mp3">>
+                    <<createplaylist "v2_noncon_moan">>
+                        <<track "v2_noncon_moan1">>
+                        <<track "v2_noncon_moan2">>
+                        <<track "v2_noncon_moan3">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_moan_fast">>
+                <<cacheaudio "v1_moan_fast1" "audio/bgv/f_voice1/normal/moan/moan-fast-01.mp3">>
+                <<cacheaudio "v1_moan_fast2" "audio/bgv/f_voice1/normal/moan/moan-fast-02.mp3">>
+                <<cacheaudio "v1_moan_fast3" "audio/bgv/f_voice1/normal/moan/moan-fast-03.mp3">>
+                <<cacheaudio "v1_moan_fast4" "audio/bgv/f_voice1/normal/moan/moan-fast-04.mp3">>
+                    <<createplaylist "v1_moan_fast">>
+                        <<track "v1_moan_fast1">>
+                        <<track "v1_moan_fast2">>
+                        <<track "v1_moan_fast3">>
+                        <<track "v1_moan_fast4">>
+                    <</createplaylist>>
+            <<case "v2_moan_fast">>
+                <<cacheaudio "v2_moan_fast1" "audio/bgv/f_voice2/normal/moan/moan-fast-01.mp3">>
+                <<cacheaudio "v2_moan_fast2" "audio/bgv/f_voice2/normal/moan/moan-fast-02.mp3">>
+                <<cacheaudio "v2_moan_fast3" "audio/bgv/f_voice2/normal/moan/moan-fast-03.mp3">>
+                <<cacheaudio "v2_moan_fast4" "audio/bgv/f_voice2/normal/moan/moan-fast-04.mp3">>
+                    <<createplaylist "v2_moan_fast">>
+                        <<track "v2_moan_fast1">>
+                        <<track "v2_moan_fast2">>
+                        <<track "v2_moan_fast3">>
+                        <<track "v2_moan_fast4">>
+                    <</createplaylist>>
+            <<case "v2_gagged_moan_fast">>
+                <<cacheaudio "v2_gagged_moan_fast1" "audio/bgv/f_voice2/gagged/moan/moan-fast-01.mp3">>
+                <<cacheaudio "v2_gagged_moan_fast2" "audio/bgv/f_voice2/gagged/moan/moan-fast-02.mp3">>
+                <<cacheaudio "v2_gagged_moan_fast3" "audio/bgv/f_voice2/gagged/moan/moan-fast-03.mp3">>
+                <<cacheaudio "v2_gagged_moan_fast4" "audio/bgv/f_voice2/gagged/moan/moan-fast-04.mp3">>
+                    <<createplaylist "v2_gagged_moan_fast">>
+                        <<track "v2_gagged_moan_fast1">>
+                        <<track "v2_gagged_moan_fast2">>
+                        <<track "v2_gagged_moan_fast3">>
+                        <<track "v2_gagged_moan_fast4">>
+                    <</createplaylist>>
+            <<case "v2_noncon_moan_fast">>
+                <<cacheaudio "v2_noncon_moan_fast1" "audio/bgv/f_voice2/noncon/moan/moan-fast-01.mp3">>
+                <<cacheaudio "v2_noncon_moan_fast2" "audio/bgv/f_voice2/noncon/moan/moan-fast-02.mp3">>
+                <<cacheaudio "v2_noncon_moan_fast3" "audio/bgv/f_voice2/noncon/moan/moan-fast-03.mp3">>
+                <<cacheaudio "v2_noncon_moan_fast4" "audio/bgv/f_voice2/noncon/moan/moan-fast-04.mp3">>
+                    <<createplaylist "v2_noncon_moan_fast">>
+                        <<track "v2_noncon_moan_fast1">>
+                        <<track "v2_noncon_moan_fast2">>
+                        <<track "v2_noncon_moan_fast3">>
+                        <<track "v2_noncon_moan_fast4">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_chupa_vslow">>
+                <<cacheaudio "v1_chupa_vslow1" "audio/bgv/f_voice1/normal/chupa/chupa-veryslow-01.mp3">>
+                    <<createplaylist "v1_chupa_vslow">>
+                        <<track "v1_chupa_vslow1">>
+                    <</createplaylist>>
+            <<case "v2_chupa_vslow">>
+                <<cacheaudio "v2_chupa_vslow1" "audio/bgv/f_voice2/normal/chupa/chupa-veryslow-01.mp3">>
+                    <<createplaylist "v2_chupa_vslow">>
+                        <<track "v2_chupa_vslow1">>
+                    <</createplaylist>>
+            <<case "v2_gagged_chupa_vslow">>
+                <<cacheaudio "v2_gagged_chupa_vslow1" "audio/bgv/f_voice2/gagged/chupa/chupa-veryslow-01.mp3">>
+                    <<createplaylist "v2_gagged_chupa_vslow">>
+                        <<track "v2_gagged_chupa_vslow1">>
+                    <</createplaylist>>
+            <<case "v2_noncon_chupa_vslow">>
+                <<cacheaudio "v2_noncon_chupa_vslow1" "audio/bgv/f_voice2/noncon/chupa/chupa-veryslow-01.mp3">>
+                    <<createplaylist "v2_noncon_chupa_vslow">>
+                        <<track "v2_noncon_chupa_vslow1">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_chupa_slow">>
+                <<cacheaudio "v1_chupa_slow1" "audio/bgv/f_voice1/normal/chupa/chupa-slow-01.mp3">>
+                    <<createplaylist "v1_chupa_slow">>
+                        <<track "v1_chupa_slow1">>
+                    <</createplaylist>>
+            <<case "v2_chupa_slow">>
+                <<cacheaudio "v2_chupa_slow1" "audio/bgv/f_voice2/normal/chupa/chupa-slow-01.mp3">>
+                    <<createplaylist "v2_chupa_slow">>
+                        <<track "v2_chupa_slow1">>
+                    <</createplaylist>>
+            <<case "v2_gagged_chupa_slow">>
+                <<cacheaudio "v2_gagged_chupa_slow1" "audio/bgv/f_voice2/gagged/chupa/chupa-slow-01.mp3">>
+                    <<createplaylist "v2_gagged_chupa_slow">>
+                        <<track "v2_gagged_chupa_slow1">>
+                    <</createplaylist>>
+            <<case "v2_noncon_chupa_slow">>
+                <<cacheaudio "v2_noncon_chupa_slow1" "audio/bgv/f_voice2/noncon/chupa/chupa-slow-01.mp3">>
+                    <<createplaylist "v2_noncon_chupa_slow">>
+                        <<track "v2_noncon_chupa_slow1">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_chupa">>
+                <<cacheaudio "v1_chupa1" "audio/bgv/f_voice1/normal/chupa/chupa-01.mp3">>
+                <<cacheaudio "v1_chupa2" "audio/bgv/f_voice1/normal/chupa/chupa-02.mp3">>
+                <<cacheaudio "v1_chupa3" "audio/bgv/f_voice1/normal/chupa/chupa-03.mp3">>
+                <<cacheaudio "v1_chupa4" "audio/bgv/f_voice1/normal/chupa/chupa-04.mp3">>
+                    <<createplaylist "v1_chupa">>
+                        <<track "v1_chupa1">>
+                        <<track "v1_chupa2">>
+                        <<track "v1_chupa3">>
+                        <<track "v1_chupa4">>
+                    <</createplaylist>>
+            <<case "v2_chupa">>
+                <<cacheaudio "v2_chupa1" "audio/bgv/f_voice2/normal/chupa/chupa-01.mp3">>
+                <<cacheaudio "v2_chupa2" "audio/bgv/f_voice2/normal/chupa/chupa-02.mp3">>
+                <<cacheaudio "v2_chupa3" "audio/bgv/f_voice2/normal/chupa/chupa-03.mp3">>
+                <<cacheaudio "v2_chupa4" "audio/bgv/f_voice2/normal/chupa/chupa-04.mp3">>
+                    <<createplaylist "v2_chupa">>
+                        <<track "v2_chupa1">>
+                        <<track "v2_chupa2">>
+                        <<track "v2_chupa3">>
+                        <<track "v2_chupa4">>
+                    <</createplaylist>>
+            <<case "v2_gagged_chupa">>
+                <<cacheaudio "v2_gagged_chupa1" "audio/bgv/f_voice2/gagged/chupa/chupa-01.mp3">>
+                <<cacheaudio "v2_gagged_chupa2" "audio/bgv/f_voice2/gagged/chupa/chupa-02.mp3">>
+                <<cacheaudio "v2_gagged_chupa3" "audio/bgv/f_voice2/gagged/chupa/chupa-03.mp3">>
+                <<cacheaudio "v2_gagged_chupa4" "audio/bgv/f_voice2/gagged/chupa/chupa-04.mp3">>
+                    <<createplaylist "v2_gagged_chupa">>
+                        <<track "v2_gagged_chupa1">>
+                        <<track "v2_gagged_chupa2">>
+                        <<track "v2_gagged_chupa3">>
+                        <<track "v2_gagged_chupa4">>
+                    <</createplaylist>>
+            <<case "v2_noncon_chupa">>
+                <<cacheaudio "v2_noncon_chupa1" "audio/bgv/f_voice2/noncon/chupa/chupa-01.mp3">>
+                <<cacheaudio "v2_noncon_chupa2" "audio/bgv/f_voice2/noncon/chupa/chupa-02.mp3">>
+                <<cacheaudio "v2_noncon_chupa3" "audio/bgv/f_voice2/noncon/chupa/chupa-03.mp3">>
+                <<cacheaudio "v2_noncon_chupa4" "audio/bgv/f_voice2/noncon/chupa/chupa-04.mp3">>
+                    <<createplaylist "v2_noncon_chupa">>
+                        <<track "v2_noncon_chupa1">>
+                        <<track "v2_noncon_chupa2">>
+                        <<track "v2_noncon_chupa3">>
+                        <<track "v2_noncon_chupa4">>
+                    <</createplaylist>>
+            <!------------------------------------------------------------>
+            <<case "v1_chupa_fast">>
+                <<cacheaudio "v1_chupa_fast1" "audio/bgv/f_voice1/normal/chupa/chupa-fast-01.mp3">>
+                    <<createplaylist "v1_chupa_fast">>
+                        <<track "v1_chupa_fast1">>
+                    <</createplaylist>>	
+            <<case "v2_chupa_fast">>
+                <<cacheaudio "v2_chupa_fast1" "audio/bgv/f_voice2/normal/chupa/chupa-fast-01.mp3">>
+                    <<createplaylist "v2_chupa_fast">>
+                        <<track "v2_chupa_fast1">>
+                    <</createplaylist>>	
+            <<case "v2_gagged_chupa_fast">>
+                <<cacheaudio "v2_gagged_chupa_fast1" "audio/bgv/f_voice2/gagged/chupa/chupa-fast-01.mp3">>
+                    <<createplaylist "v2_gagged_chupa_fast">>
+                        <<track "v2_gagged_chupa_fast1">>
+                    <</createplaylist>>	
+            <<case "v2_noncon_chupa_fast">>
+                <<cacheaudio "v2_noncon_chupa_fast1" "audio/bgv/f_voice2/noncon/chupa/chupa-fast-01.mp3">>
+                    <<createplaylist "v2_noncon_chupa_fast">>
+                        <<track "v2_noncon_chupa_fast1">>
+                    <</createplaylist>>	
+        
+            /* BGS - sound effects meant to be played on loop */
+            <<case "sex_slow">>
+                <<cacheaudio "sex_slow1" "audio/bgs/sex/slow_heavy1.mp3">>
+                <<cacheaudio "sex_slow2" "audio/bgs/sex/slow_heavy2.mp3">>
+                <<cacheaudio "sex_slow3" "audio/bgs/sex/slow_normal1.mp3">>
+                <<cacheaudio "sex_slow4" "audio/bgs/sex/slow_normal2.mp3">>
+                    <<createplaylist "sex_slow">>
+                        <<track "sex_slow1">>
+                        <<track "sex_slow2">>
+                        <<track "sex_slow3">>
+                        <<track "sex_slow4">>
+                    <</createplaylist>>
+            <<case "sex_middle">>
+                <<cacheaudio "sex_middle1" "audio/bgs/sex/middle_normal.mp3">>
+                    <<createplaylist "sex_middle">>
+                        <<track "sex_middle1">>
+                    <</createplaylist>>
+            <<case "sex_fast">>
+                <<cacheaudio "sex_fast1" "audio/bgs/sex/fast_normal.mp3">>
+                <<cacheaudio "sex_fast2" "audio/bgs/sex/fast_normal2.mp3">>
+                <<cacheaudio "sex_fast3" "audio/bgs/sex/fast_normal3.mp3">>
+                <<cacheaudio "sex_fast4" "audio/bgs/sex/fast_right2.mp3">>
+                    <<createplaylist "sex_fast">>
+                        <<track "sex_fast1">>
+                        <<track "sex_fast2">>
+                        <<track "sex_fast3">>
+                        <<track "sex_fast4">>
+                    <</createplaylist>>
+
+            <<case "rub">>
+                <<cacheaudio "rub1" "audio/bgs/rub/rub-01.mp3">>
+                <<cacheaudio "rub2" "audio/bgs/rub/rub-02.mp3">>
+                <<cacheaudio "rub3" "audio/bgs/rub/rub-03.mp3">>
+                    <<createplaylist "rub">>
+                        <<track "rub1">>
+                        <<track "rub2">>
+                        <<track "rub3">>
+                    <</createplaylist>>
+            <<case "rub_damp">>
+                <<cacheaudio "rub_damp1" "audio/bgs/rub/rub-damp-01.mp3">>
+                    <<createplaylist "rub_damp">>
+                        <<track "rub_damp1">>
+                    <</createplaylist>>
+            <<case "rub_wet">>
+                <<cacheaudio "rub_wet1" "audio/bgs/rub/rub-wet-01.mp3">>
+                <<cacheaudio "rub_wet2" "audio/bgs/rub/rub-wet-02.mp3">>
+                <<cacheaudio "rub_wet3" "audio/bgs/rub/rub-wet-03.mp3">>
+                <<cacheaudio "rub_wet4" "audio/bgs/rub/rub-wet-04.mp3">>
+                <<cacheaudio "rub_wet5" "audio/bgs/rub/rub-wet-05.mp3">>
+                <<cacheaudio "rub_wet6" "audio/bgs/rub/rub-wet-06.mp3">>
+                    <<createplaylist "rub_wet">>
+                        <<track "rub_wet1">>
+                        <<track "rub_wet2">>
+                        <<track "rub_wet3">>
+                        <<track "rub_wet4">>
+                        <<track "rub_wet5">>
+                        <<track "rub_wet6">>
+                    <</createplaylist>>
+
+            <<case "m_breath_vvslow">>
+                <<cacheaudio "m_breath_vslow1" "audio/bgv/m_voice1/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "m_breath_vslow2" "audio/bgv/m_voice1/breath/breath-veryslow-02.mp3">>
+                <<cacheaudio "m_breath_vslow3" "audio/bgv/m_voice1/breath/breath-veryslow-03.mp3">>
+                <<cacheaudio "m_breath_vslow4" "audio/bgv/m_voice1/breath/breath-veryslow-04.mp3">>
+                    <<createplaylist "m_breath_vvslow">>
+                        <<track "m_breath_vslow1" volume 0.8>>
+                        <<track "m_breath_vslow2" volume 0.8>>
+                        <<track "m_breath_vslow3" volume 0.8>>
+                        <<track "m_breath_vslow4" volume 0.8>>
+                    <</createplaylist>>
+            <<case "m_breath_vslow">>
+                <<cacheaudio "m_breath_vslow1" "audio/bgv/m_voice1/breath/breath-veryslow-01.mp3">>
+                <<cacheaudio "m_breath_vslow2" "audio/bgv/m_voice1/breath/breath-veryslow-02.mp3">>
+                <<cacheaudio "m_breath_vslow3" "audio/bgv/m_voice1/breath/breath-veryslow-03.mp3">>
+                <<cacheaudio "m_breath_vslow4" "audio/bgv/m_voice1/breath/breath-veryslow-04.mp3">>
+                    <<createplaylist "m_breath_vslow">>
+                        <<track "m_breath_vslow1" copy>>
+                        <<track "m_breath_vslow2" copy>>
+                        <<track "m_breath_vslow3" copy>>
+                        <<track "m_breath_vslow4" copy>>
+                    <</createplaylist>>
+            <<case "m_breath_slow">>
+                <<cacheaudio "m_breath_slow1" "audio/bgv/m_voice1/breath/breath-slow-01.mp3">>
+                <<cacheaudio "m_breath_slow2" "audio/bgv/m_voice1/breath/breath-slow-02.mp3">>
+                <<cacheaudio "m_breath_slow3" "audio/bgv/m_voice1/breath/breath-slow-03.mp3">>
+                    <<createplaylist "m_breath_slow">>
+                        <<track "m_breath_slow1">>
+                        <<track "m_breath_slow2">>
+                        <<track "m_breath_slow3">>
+                    <</createplaylist>>
+            <<case "m_breath">>
+                <<cacheaudio "m_breath1" "audio/bgv/m_voice1/breath/breath-01.mp3">>
+                <<cacheaudio "m_breath2" "audio/bgv/m_voice1/breath/breath-02.mp3">>
+                <<cacheaudio "m_breath3" "audio/bgv/m_voice1/breath/breath-03.mp3">>
+                <<cacheaudio "m_breath4" "audio/bgv/m_voice1/breath/breath-04.mp3">>
+                <<cacheaudio "m_breath5" "audio/bgv/m_voice1/breath/breath-05.mp3">>
+                <<cacheaudio "m_breath6" "audio/bgv/m_voice1/breath/breath-06.mp3">>
+                    <<createplaylist "m_breath">>
+                        <<track "m_breath1">>
+                        <<track "m_breath2">>
+                        <<track "m_breath3">>
+                        <<track "m_breath4">>
+                        <<track "m_breath5">>
+                        <<track "m_breath6">>
+                    <</createplaylist>>
+            <<case "m_breath_fast">>
+                <<cacheaudio "m_breath_fast1" "audio/bgv/m_voice1/breath/breath-fast-01.mp3">>
+                <<cacheaudio "m_breath_fast2" "audio/bgv/m_voice1/breath/breath-fast-02.mp3">>
+                <<cacheaudio "m_breath_fast3" "audio/bgv/m_voice1/breath/breath-fast-03.mp3">>
+                <<cacheaudio "m_breath_fast4" "audio/bgv/m_voice1/breath/breath-fast-04.mp3">>
+                <<cacheaudio "m_breath_fast5" "audio/bgv/m_voice1/breath/breath-fast-05.mp3">>
+                    <<createplaylist "m_breath_fast">>
+                        <<track "m_breath_fast1">>
+                        <<track "m_breath_fast2">>
+                        <<track "m_breath_fast3">>
+                        <<track "m_breath_fast4">>
+                        <<track "m_breath_fast5">>
+                    <</createplaylist>>
+
+            <<case "squirt">>
+                <<cacheaudio "squirt1" "audio/sfx/ejaculation/squirt1.wav">>
+                <<cacheaudio "squirt2" "audio/sfx/ejaculation/squirt2.wav">>
+                <<cacheaudio "squirt3" "audio/sfx/ejaculation/squirt3.wav">>
+                <<cacheaudio "squirt4" "audio/sfx/ejaculation/squirt4.wav">>
+                    <<createplaylist "squirt">>
+                        <<track "squirt1">>
+                        <<track "squirt2">>
+                        <<track "squirt3">>
+                        <<track "squirt4">>
+                    <</createplaylist>>
+
+            /* VO - voiceovers meant to be played as oneshots */
+            <<case "v1_chupa_orgasm">>
+                <<cacheaudio "v1_chupa_orgasm1" "audio/ve/f_voice1/normal/orgasm/chupa-orgasm-01.mp3">>
+                <<cacheaudio "v1_chupa_orgasm2" "audio/ve/f_voice1/normal/orgasm/chupa-orgasm-02.mp3">>
+                <<cacheaudio "v1_chupa_orgasm3" "audio/ve/f_voice1/normal/orgasm/chupa-orgasm-03.mp3">>
+                    <<set setup.playlists.v1_chupa_orgasm to [
+                        "v1_chupa_orgasm1",
+                        "v1_chupa_orgasm2",
+                        "v1_chupa_orgasm3"
+                    ]>>
+            <<case "v2_chupa_orgasm">>
+                <<cacheaudio "v2_chupa_orgasm1" "audio/ve/f_voice2/normal/orgasm/chupa-orgasm-01.mp3">>
+                <<cacheaudio "v2_chupa_orgasm2" "audio/ve/f_voice2/normal/orgasm/chupa-orgasm-02.mp3">>
+                <<cacheaudio "v2_chupa_orgasm3" "audio/ve/f_voice2/normal/orgasm/chupa-orgasm-03.mp3">>
+                    <<set setup.playlists.v2_chupa_orgasm to [
+                        "v2_chupa_orgasm1",
+                        "v2_chupa_orgasm2",
+                        "v2_chupa_orgasm3"
+                    ]>>
+            <<case "v2_gagged_chupa_orgasm">>
+                <<cacheaudio "v2_gagged_chupa_orgasm1" "audio/ve/f_voice2/gagged/orgasm/chupa-orgasm-01.mp3">>
+                <<cacheaudio "v2_gagged_chupa_orgasm2" "audio/ve/f_voice2/gagged/orgasm/chupa-orgasm-02.mp3">>
+                <<cacheaudio "v2_gagged_chupa_orgasm3" "audio/ve/f_voice2/gagged/orgasm/chupa-orgasm-03.mp3">>
+                    <<set setup.playlists.v2_gagged_chupa_orgasm to [
+                        "v2_gagged_chupa_orgasm1",
+                        "v2_gagged_chupa_orgasm2",
+                        "v2_gagged_chupa_orgasm3"
+                    ]>>
+            <<case "v2_noncon_chupa_orgasm">>
+                <<cacheaudio "v2_noncon_chupa_orgasm1" "audio/ve/f_voice2/noncon/orgasm/chupa-orgasm-01.mp3">>
+                <<cacheaudio "v2_noncon_chupa_orgasm2" "audio/ve/f_voice2/noncon/orgasm/chupa-orgasm-02.mp3">>
+                <<cacheaudio "v2_noncon_chupa_orgasm3" "audio/ve/f_voice2/noncon/orgasm/chupa-orgasm-03.mp3">>
+                    <<set setup.playlists.v2_noncon_chupa_orgasm to [
+                        "v2_noncon_chupa_orgasm1",
+                        "v2_noncon_chupa_orgasm2",
+                        "v2_noncon_chupa_orgasm3"
+                    ]>>
+            <!------------------------------------------------------------>
+            <<case "v1_breath_orgasm">>
+                <<cacheaudio "v1_breath_orgasm1" "audio/ve/f_voice1/normal/orgasm/breath-orgasm-01.mp3">>
+                <<cacheaudio "v1_breath_orgasm2" "audio/ve/f_voice1/normal/orgasm/breath-orgasm-02.mp3">>
+                <<cacheaudio "v1_breath_orgasm3" "audio/ve/f_voice1/normal/orgasm/breath-orgasm-03.mp3">>
+                <<cacheaudio "v1_breath_orgasm4" "audio/ve/f_voice1/normal/orgasm/breath-orgasm-04.mp3">>
+                    <<set setup.playlists.v1_breath_orgasm to [
+                        "v1_breath_orgasm1",
+                        "v1_breath_orgasm2",
+                        "v1_breath_orgasm3",
+                        "v1_breath_orgasm4"
+                    ]>>
+            <<case "v2_breath_orgasm">>
+                <<cacheaudio "v2_breath_orgasm1" "audio/ve/f_voice2/normal/orgasm/breath-orgasm-01.mp3">>
+                <<cacheaudio "v2_breath_orgasm2" "audio/ve/f_voice2/normal/orgasm/breath-orgasm-02.mp3">>
+                <<cacheaudio "v2_breath_orgasm3" "audio/ve/f_voice2/normal/orgasm/breath-orgasm-03.mp3">>
+                <<cacheaudio "v2_breath_orgasm4" "audio/ve/f_voice2/normal/orgasm/breath-orgasm-04.mp3">>
+                    <<set setup.playlists.v2_breath_orgasm to [
+                        "v2_breath_orgasm1",
+                        "v2_breath_orgasm2",
+                        "v2_breath_orgasm3",
+                        "v2_breath_orgasm4"
+                    ]>>
+            <<case "v2_gagged_breath_orgasm">>
+                <<cacheaudio "v2_gagged_breath_orgasm1" "audio/ve/f_voice2/gagged/orgasm/breath-orgasm-01.mp3">>
+                <<cacheaudio "v2_gagged_breath_orgasm2" "audio/ve/f_voice2/gagged/orgasm/breath-orgasm-02.mp3">>
+                <<cacheaudio "v2_gagged_breath_orgasm3" "audio/ve/f_voice2/gagged/orgasm/breath-orgasm-03.mp3">>
+                <<cacheaudio "v2_gagged_breath_orgasm4" "audio/ve/f_voice2/gagged/orgasm/breath-orgasm-04.mp3">>
+                    <<set setup.playlists.v2_gagged_breath_orgasm to [
+                        "v2_gagged_breath_orgasm1",
+                        "v2_gagged_breath_orgasm2",
+                        "v2_gagged_breath_orgasm3",
+                        "v2_gagged_breath_orgasm4"
+                    ]>>
+            <<case "v2_noncon_breath_orgasm">>
+                <<cacheaudio "v2_noncon_breath_orgasm1" "audio/ve/f_voice2/noncon/orgasm/breath-orgasm-01.mp3">>
+                <<cacheaudio "v2_noncon_breath_orgasm2" "audio/ve/f_voice2/noncon/orgasm/breath-orgasm-02.mp3">>
+                <<cacheaudio "v2_noncon_breath_orgasm3" "audio/ve/f_voice2/noncon/orgasm/breath-orgasm-03.mp3">>
+                <<cacheaudio "v2_noncon_breath_orgasm4" "audio/ve/f_voice2/noncon/orgasm/breath-orgasm-04.mp3">>
+                    <<set setup.playlists.v2_noncon_breath_orgasm to [
+                        "v2_noncon_breath_orgasm1",
+                        "v2_noncon_breath_orgasm2",
+                        "v2_noncon_breath_orgasm3",
+                        "v2_noncon_breath_orgasm4"
+                    ]>>
+            <!------------------------------------------------------------>
+            <<case "v1_orgasm">>
+                <<cacheaudio "v1_orgasm1" "audio/ve/f_voice1/normal/orgasm/orgasm-01.mp3">>
+                <<cacheaudio "v1_orgasm2" "audio/ve/f_voice1/normal/orgasm/orgasm-02.mp3">>
+                <<cacheaudio "v1_orgasm3" "audio/ve/f_voice1/normal/orgasm/orgasm-03.mp3">>
+                <<cacheaudio "v1_orgasm4" "audio/ve/f_voice1/normal/orgasm/orgasm-04.mp3">>
+                <<cacheaudio "v1_orgasm5" "audio/ve/f_voice1/normal/orgasm/orgasm-05.mp3">>
+                <<cacheaudio "v1_orgasm6" "audio/ve/f_voice1/normal/orgasm/orgasm-06.mp3">>
+                    <<set setup.playlists.v1_orgasm to [
+                        "v1_orgasm1",
+                        "v1_orgasm2",
+                        "v1_orgasm3",
+                        "v1_orgasm4",
+                        "v1_orgasm5",
+                        "v1_orgasm6"
+                    ]>>
+            <<case "v2_orgasm">>
+                <<cacheaudio "v2_orgasm1" "audio/ve/f_voice2/normal/orgasm/orgasm-01.mp3">>
+                <<cacheaudio "v2_orgasm2" "audio/ve/f_voice2/normal/orgasm/orgasm-02.mp3">>
+                <<cacheaudio "v2_orgasm3" "audio/ve/f_voice2/normal/orgasm/orgasm-03.mp3">>
+                <<cacheaudio "v2_orgasm4" "audio/ve/f_voice2/normal/orgasm/orgasm-04.mp3">>
+                <<cacheaudio "v2_orgasm5" "audio/ve/f_voice2/normal/orgasm/orgasm-05.mp3">>
+                <<cacheaudio "v2_orgasm6" "audio/ve/f_voice2/normal/orgasm/orgasm-06.mp3">>
+                    <<set setup.playlists.v2_orgasm to [
+                        "v2_orgasm1",
+                        "v2_orgasm2",
+                        "v2_orgasm3",
+                        "v2_orgasm4",
+                        "v2_orgasm5",
+                        "v2_orgasm6"
+                    ]>>
+            <<case "v2_gagged_orgasm">>
+                <<cacheaudio "v2_gagged_orgasm1" "audio/ve/f_voice2/gagged/orgasm/orgasm-01.mp3">>
+                <<cacheaudio "v2_gagged_orgasm2" "audio/ve/f_voice2/gagged/orgasm/orgasm-02.mp3">>
+                <<cacheaudio "v2_gagged_orgasm3" "audio/ve/f_voice2/gagged/orgasm/orgasm-03.mp3">>
+                <<cacheaudio "v2_gagged_orgasm4" "audio/ve/f_voice2/gagged/orgasm/orgasm-04.mp3">>
+                <<cacheaudio "v2_gagged_orgasm5" "audio/ve/f_voice2/gagged/orgasm/orgasm-05.mp3">>
+                <<cacheaudio "v2_gagged_orgasm6" "audio/ve/f_voice2/gagged/orgasm/orgasm-06.mp3">>
+                    <<set setup.playlists.v2_gagged_orgasm to [
+                        "v2_gagged_orgasm1",
+                        "v2_gagged_orgasm2",
+                        "v2_gagged_orgasm3",
+                        "v2_gagged_orgasm4",
+                        "v2_gagged_orgasm5",
+                        "v2_gagged_orgasm6"
+                    ]>>
+            <<case "v2_noncon_orgasm">>
+                <<cacheaudio "v2_noncon_orgasm1" "audio/ve/f_voice2/noncon/orgasm/orgasm-01.mp3">>
+                <<cacheaudio "v2_noncon_orgasm2" "audio/ve/f_voice2/noncon/orgasm/orgasm-02.mp3">>
+                <<cacheaudio "v2_noncon_orgasm3" "audio/ve/f_voice2/noncon/orgasm/orgasm-03.mp3">>
+                <<cacheaudio "v2_noncon_orgasm4" "audio/ve/f_voice2/noncon/orgasm/orgasm-04.mp3">>
+                <<cacheaudio "v2_noncon_orgasm5" "audio/ve/f_voice2/noncon/orgasm/orgasm-05.mp3">>
+                <<cacheaudio "v2_noncon_orgasm6" "audio/ve/f_voice2/noncon/orgasm/orgasm-06.mp3">>
+                    <<set setup.playlists.v2_noncon_orgasm to [
+                        "v2_noncon_orgasm1",
+                        "v2_noncon_orgasm2",
+                        "v2_noncon_orgasm3",
+                        "v2_noncon_orgasm4",
+                        "v2_noncon_orgasm5",
+                        "v2_noncon_orgasm6"
+                    ]>>
+            <!------------------------------------------------------------>
+            <<case "m_orgasm">>
+                <<cacheaudio "m_orgasm1" "audio/ve/m_voice1/orgasm/orgasm-01.mp3">>
+                <<cacheaudio "m_orgasm2" "audio/ve/m_voice1/orgasm/orgasm-02.mp3">>
+                <<cacheaudio "m_orgasm3" "audio/ve/m_voice1/orgasm/orgasm-03.mp3">>
+                    <<set setup.playlists.m_orgasm to [
+                        "m_orgasm1",
+                        "m_orgasm2",
+                        "m_orgasm3"
+                    ]>>
+            <!------------------------------------------------------------>
+            <<case "npc_f">>
+                <<cacheaudio "npc_f1" "audio/ve/npc_f/orgasm/orgasm-01.mp3">>
+                <<cacheaudio "npc_f2" "audio/ve/npc_f/orgasm/orgasm-02.mp3">>
+                <<cacheaudio "npc_f3" "audio/ve/npc_f/orgasm/orgasm-03.mp3">>
+                <<cacheaudio "npc_f4" "audio/ve/npc_f/orgasm/orgasm-04.mp3">>
+                <<cacheaudio "npc_f5" "audio/ve/npc_f/orgasm/orgasm-05.mp3">>
+                <<cacheaudio "npc_f6" "audio/ve/npc_f/orgasm/orgasm-06.mp3">>
+                <<cacheaudio "npc_f7" "audio/ve/npc_f/orgasm/orgasm-07.mp3">>
+                <<cacheaudio "npc_f8" "audio/ve/npc_f/orgasm/orgasm-08.mp3">>
+                <<cacheaudio "npc_f9" "audio/ve/npc_f/orgasm/orgasm-09.mp3">>
+                <<cacheaudio "npc_f10" "audio/ve/npc_f/orgasm/orgasm-10.mp3">>
+                <<cacheaudio "npc_f11" "audio/ve/npc_f/orgasm/orgasm-11.mp3">>
+                    <<set setup.playlists.npc_f to [
+                        "npc_f1",
+                        "npc_f2",
+                        "npc_f3",
+                        "npc_f4",
+                        "npc_f5",
+                        "npc_f6",
+                        "npc_f7",
+                        "npc_f8",
+                        "npc_f9",
+                        "npc_f10",
+                        "npc_f11"
+                    ]>>
+            <!------------------------------------------------------------>
+            <<case "npc_m">>
+                <<cacheaudio "npc_m1" "audio/ve/npc_m/orgasm/orgasm-01.mp3">>
+                <<cacheaudio "npc_m2" "audio/ve/npc_m/orgasm/orgasm-02.mp3">>
+                <<cacheaudio "npc_m3" "audio/ve/npc_m/orgasm/orgasm-03.mp3">>
+                <<cacheaudio "npc_m4" "audio/ve/npc_m/orgasm/orgasm-04.mp3">>
+                    <<set setup.playlists.npc_m to [
+                        "npc_m1",
+                        "npc_m2",
+                        "npc_m3",
+                        "npc_m4"
+                    ]>>
+        <</switch>>
+
+        /* One-time AudioList prototype patch: stale autoplay-unlock handlers must not play destroyed lists */
+        <<run guardAudioListPrototype(_args[0])>>
+
+        <<run setup.initializedPlaylists.pushUnique(_args[0])>>
+
+    <</widget>>

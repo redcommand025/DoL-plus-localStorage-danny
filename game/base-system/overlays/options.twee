@@ -908,7 +908,7 @@ IMPORTANT:
 
 <<widget "optionsperformance">>
 	<<setupOptions>>
-	<<run GameAudio.ensureDefaults()>>
+	<<run GameAudio.ensureDefaults()>><<run GameCombatAudio.ensureDefaults()>>
 	<div class="settingsGrid">
 		<div class="settingsHeader options">Audio</div>
 		<div class="settingsToggleItem" onchange="GameAudio.update()">
@@ -944,6 +944,38 @@ IMPORTANT:
 				<span class="gold">Ambience:</span>
 				<span class="tooltip-anchor linkBlue" tooltip="Rain, snow, thunder and small sound effects. Quieter indoors. 0% turns them off.">(?)</span>
 				<<numberslider "$options.ambience_volume" $options.ambience_volume 0 1 0.01 {
+					onInputChange: value => GameAudio.update(),
+					value: value => Math.round(value * 100) + "%"
+				}>>
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.npcVoiceoverAudio" 0 1 autocheck>> Enable NPC voiceovers</label>
+			<span class="tooltip-anchor linkBlue" tooltip="Moans and orgasm sounds for NPCs during encounters.">(?)</span>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.voiceoverAudio" 0 1 autocheck>> Enable player voiceovers</label>
+			<span class="tooltip-anchor linkBlue" tooltip="Moans, panting and orgasm sounds for you during encounters.">(?)</span>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0"><<checkbox "$options.postureAffectsVoice" 0 1 autocheck>> Gender posture affects voice</label>
+			<span class="tooltip-anchor linkBlue" tooltip="When on, your gender posture can override the voice that matches your body.">(?)</span>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0">
+				<span class="gold">Encounter sounds:</span>
+				<span class="tooltip-anchor linkBlue" tooltip="Volume of looping encounter sounds. 0% turns them off.">(?)</span>
+				<<numberslider "$options.bgs_volume" $options.bgs_volume 0 1 0.01 {
+					onInputChange: value => GameAudio.update(),
+					value: value => Math.round(value * 100) + "%"
+				}>>
+			</label>
+		</div>
+		<div class="settingsToggleItem">
+			<label data-target="options.audio" data-disabledif="V.options.audio===0">
+				<span class="gold">Voice:</span>
+				<span class="tooltip-anchor linkBlue" tooltip="Volume of character voices during encounters. 0% turns them off.">(?)</span>
+				<<numberslider "$options.voice_volume" $options.voice_volume 0 1 0.01 {
 					onInputChange: value => GameAudio.update(),
 					value: value => Math.round(value * 100) + "%"
 				}>>
