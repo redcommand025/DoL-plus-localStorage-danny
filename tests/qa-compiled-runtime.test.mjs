@@ -112,6 +112,7 @@ describe("QA compiled isolated runtime", () => {
 			const Macro = window.SugarCube && window.SugarCube.Macro;
 			const list = [
 				"plusCaptionExtras",
+				"plusDiaperVisibleCaption",
 				"plusneedscaption",
 				"plusdiaperbars",
 				"plusNeedsStatistics",
@@ -1115,5 +1116,105 @@ describe("QA compiled isolated runtime", () => {
 		assert.match(info.mainSrc, /plusdpm/);
 		assert.equal(info.accShow, true, JSON.stringify(info));
 		assert.match(info.accSrc, /dino-stomp/);
+	});
+	it("QA-C024 [integration] sidebar visibility caption shows when a diaper is visible and hides when it is not", async () => {
+		const info = await page.evaluate(() => {
+			function wiki() {
+				const div = document.createElement("div");
+				try {
+					new Wikifier(div, "<<plusDiaperVisibleCaption>>");
+					return { ok: true, text: (div.textContent || "").replace(/\s+/g, " ").trim(), html: div.innerHTML };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e), html: "" };
+				}
+			}
+			function cloneItem(name) {
+				const src = window.plusDiaperItems().find(i => i.name === name);
+				const it = JSON.parse(JSON.stringify(src));
+				window.plusDiaperInit(it);
+				return it;
+			}
+			const naked = { name: "naked", type: ["naked"] };
+			const V = window.SugarCube.State.variables;
+			V.worn = V.worn || {};
+			const out = {};
+
+			const bare = cloneItem("plastic-backed diaper (Medium)");
+			V.worn.under_lower = bare;
+			V.worn.lower = naked;
+			V.worn.over_lower = naked;
+			out.bare = {
+				notice: window.plusDiaperVisibleNotice(),
+				wiki: wiki(),
+				visible: window.plusDiaperVisibility().visible,
+				conceal: window.plusDiaperVisibility().conceal,
+			};
+
+			const skirt = cloneItem("plastic-backed diaper (Medium)");
+			skirt.plusMl = skirt.plusCapMl;
+			V.worn.under_lower = skirt;
+			V.worn.lower = { name: "school skirt", type: ["normal"] };
+			V.worn.over_lower = naked;
+			out.skirt = {
+				notice: window.plusDiaperVisibleNotice(),
+				wiki: wiki(),
+				visible: window.plusDiaperVisibility().visible,
+				size: window.plusDiaperVisibility().size,
+				conceal: window.plusDiaperVisibility().conceal,
+			};
+
+			const trousers = cloneItem("plastic-backed diaper (Medium)");
+			trousers.plusMl = 0;
+			V.worn.under_lower = trousers;
+			V.worn.lower = { name: "trousers", type: ["normal"] };
+			V.worn.over_lower = naked;
+			out.trousers = {
+				notice: window.plusDiaperVisibleNotice(),
+				wiki: wiki(),
+				visible: window.plusDiaperVisibility().visible,
+				size: window.plusDiaperVisibility().size,
+				conceal: window.plusDiaperVisibility().conceal,
+			};
+
+			V.worn.under_lower = { name: "plain panties", type: ["normal"] };
+			V.worn.lower = { name: "trousers", type: ["normal"] };
+			out.none = {
+				notice: window.plusDiaperVisibleNotice(),
+				wiki: wiki(),
+				worn: window.plusDiaperVisibility().worn,
+				visible: window.plusDiaperVisibility().visible,
+			};
+
+			return out;
+		});
+		assert.equal(info.bare.visible, true);
+		assert.equal(info.bare.conceal, -1);
+		assert.equal(info.bare.notice.text, "Your diaper can be seen by others.");
+		assert.equal(info.bare.notice.cls, "red");
+		assert.equal(info.bare.wiki.ok, true, info.bare.wiki.text);
+		assert.match(info.bare.wiki.text, /Your diaper can be seen by others\./);
+		assert.match(info.bare.wiki.html, /class="red"/);
+
+		assert.equal(info.skirt.visible, true);
+		assert.equal(info.skirt.size, 6);
+		assert.equal(info.skirt.conceal, 5);
+		assert.equal(info.skirt.notice.text, "Your diaper is showing through your clothes.");
+		assert.equal(info.skirt.notice.cls, "purple");
+		assert.equal(info.skirt.wiki.ok, true, info.skirt.wiki.text);
+		assert.match(info.skirt.wiki.text, /Your diaper is showing through your clothes\./);
+		assert.match(info.skirt.wiki.html, /class="purple"/);
+
+		assert.equal(info.trousers.visible, false);
+		assert.equal(info.trousers.size, 3);
+		assert.equal(info.trousers.conceal, 6);
+		assert.equal(info.trousers.notice, null);
+		assert.equal(info.trousers.wiki.ok, true, info.trousers.wiki.text);
+		assert.doesNotMatch(info.trousers.wiki.text, /diaper/);
+
+		assert.equal(info.none.worn, false);
+		assert.equal(info.none.visible, false);
+		assert.equal(info.none.notice, null);
+		assert.equal(info.none.wiki.ok, true, info.none.wiki.text);
+		assert.doesNotMatch(info.none.wiki.text, /diaper/);
 	});
 });

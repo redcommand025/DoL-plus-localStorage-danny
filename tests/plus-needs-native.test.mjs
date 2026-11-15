@@ -134,6 +134,8 @@ describe("plus-needs native source hooks", () => {
 			["game/base-system/overlays/social.twee", "plusContRepFame"],
 			["game/base-system/overlays/statistics.twee", "plusNeedsStatistics"],
 			["game/base-system/caption.twee", "plusCaptionExtras"],
+			["game/base-system/caption.twee", "plusDiaperVisibleCaption"],
+			["game/ModLI/plus-needs/widgets.twee", "plusDiaperVisibleCaption"],
 			["game/01-config/start.twee", "plusNeedsIntroTip"],
 			["game/01-config/start.twee", "plusIncontinentStart"],
 			["game/base-system/settings.twee", "$background.incontinent"],

@@ -189,3 +189,69 @@ describe("diaper concealment table (sprite-derived)", () => {
 		}
 	});
 });
+
+describe("sidebar diaper visibility notice", () => {
+	const BARE = "Your diaper can be seen by others.";
+	const SHOWING = "Your diaper is showing through your clothes.";
+	const naked = { name: "naked", type: ["naked"] };
+
+	function statusLine(ctx) {
+		const rows = ctx.window.plusClothesStatus();
+		return rows.filter(r => r[1] && /diaper/.test(r[1])).map(r => r[1]);
+	}
+
+	it("says the diaper can be seen when nothing covers it", () => {
+		const ctx = loadNeeds();
+		wear(ctx, "plastic-backed diaper (Medium)", 0);
+		ctx.State.variables.worn.lower = naked;
+		ctx.State.variables.worn.over_lower = naked;
+		const note = ctx.window.plusDiaperVisibleNotice();
+		assert.equal(ctx.window.plusDiaperVisibility().visible, true);
+		assert.equal(ctx.window.plusDiaperVisibility().conceal, -1);
+		assert.equal(note.cls, "red");
+		assert.equal(note.text, BARE);
+		assert.match(ctx.window.plusDiaperVisibleNoticeHtml(), /class="red"/);
+		assert.match(ctx.window.plusDiaperVisibleNoticeHtml(), /Your diaper can be seen by others\./);
+		assert.deepEqual([...statusLine(ctx)].map(String), [BARE]);
+	});
+
+	it("says the diaper is showing through clothes when it outgrows a school skirt", () => {
+		const ctx = loadNeeds();
+		const it = wear(ctx, "plastic-backed diaper (Medium)", 1);
+		ctx.State.variables.worn.lower = { name: "school skirt", type: ["normal"] };
+		ctx.State.variables.worn.over_lower = naked;
+		assert.equal(ctx.window.plusDiaperSize(it), 6);
+		assert.equal(ctx.window.plusDiaperVisibility().conceal, 5);
+		assert.equal(ctx.window.plusDiaperVisibility().visible, true);
+		const note = ctx.window.plusDiaperVisibleNotice();
+		assert.equal(note.cls, "purple");
+		assert.equal(note.text, SHOWING);
+		assert.match(ctx.window.plusDiaperVisibleNoticeHtml(), /class="purple"/);
+		assert.deepEqual([...statusLine(ctx)].map(String), [SHOWING]);
+	});
+
+	it("hides the notice when a dry Medium is under trousers", () => {
+		const ctx = loadNeeds();
+		wear(ctx, "plastic-backed diaper (Medium)", 0);
+		ctx.State.variables.worn.lower = { name: "trousers", type: ["normal"] };
+		ctx.State.variables.worn.over_lower = naked;
+		const v = ctx.window.plusDiaperVisibility();
+		assert.equal(v.size, 3);
+		assert.equal(v.conceal, 6);
+		assert.equal(v.visible, false);
+		assert.equal(ctx.window.plusDiaperVisibleNotice(), null);
+		assert.equal(ctx.window.plusDiaperVisibleNoticeHtml(), "");
+		assert.equal(statusLine(ctx).length, 0);
+	});
+
+	it("hides the notice when no diaper is worn", () => {
+		const ctx = loadNeeds();
+		ctx.State.variables.worn.under_lower = { name: "plain panties", type: ["normal"] };
+		ctx.State.variables.worn.lower = { name: "trousers", type: ["normal"] };
+		assert.equal(ctx.window.plusDiaperVisibility().worn, false);
+		assert.equal(ctx.window.plusDiaperVisibility().visible, false);
+		assert.equal(ctx.window.plusDiaperVisibleNotice(), null);
+		assert.equal(ctx.window.plusDiaperVisibleNoticeHtml(), "");
+		assert.equal(statusLine(ctx).length, 0);
+	});
+});

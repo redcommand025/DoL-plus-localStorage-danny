@@ -1082,9 +1082,8 @@ window.plusNowTs = function () {
 		const dp = window.plusDiaperPoops ? window.plusDiaperPoops() : 0;
 		if (dp >= 0.75) out.push(["red", "Your messy diaper smells. People nearby can probably tell."]);
 		else if (dp > 0) out.push(["purple", "There's a faint smell from your used diaper."]);
-		const vis = window.plusDiaperVisibility ? window.plusDiaperVisibility() : null;
-		if (vis && vis.visible)
-			out.push(vis.conceal < 0 ? ["red", "Nothing covers your diaper. Anyone can see it."] : ["purple", "Your diaper is visible under your clothes."]);
+		const note = window.plusDiaperVisibleNotice && window.plusDiaperVisibleNotice();
+		if (note) out.push([note.cls, note.text]);
 		return out;
 	};
 	/* Sidebar clothing caption prefixes, in the same style as the base game's integrityWord():
@@ -2776,6 +2775,18 @@ window.plusNowTs = function () {
 		};
 	};
 	window.plusDiaperVisible = () => window.plusDiaperVisibility().visible;
+	/* Short sidebar line: uncovered vs. showing through clothes. Hidden when fully concealed or no diaper. */
+	window.plusDiaperVisibleNotice = function () {
+		const vis = window.plusDiaperVisibility ? window.plusDiaperVisibility() : null;
+		if (!vis || !vis.visible) return null;
+		return vis.conceal < 0
+			? { cls: "red", text: "Your diaper can be seen by others." }
+			: { cls: "purple", text: "Your diaper is showing through your clothes." };
+	};
+	window.plusDiaperVisibleNoticeHtml = function () {
+		const n = window.plusDiaperVisibleNotice();
+		return n ? `<span class="${n.cls}">${n.text}</span>` : "";
+	};
 	/* Noticing: 3% per size point over conceal, cap 25%, at most once per 30 game minutes, public passages only. */
 	const NOTICE_PER = 0.03;
 	const NOTICE_CAP = 0.25;

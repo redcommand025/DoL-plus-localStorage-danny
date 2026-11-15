@@ -265,6 +265,8 @@
 		<</if>>
 		<<goo>>
 
+		<<plusDiaperVisibleCaption>>
+
 		<div id="statmeters" @class="($options.showCaptionText is true ? '' : 'condensed')">
 			<<if $gamemode isnot "soft">>
 				<<paincaption>>
