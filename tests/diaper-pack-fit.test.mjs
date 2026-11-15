@@ -183,7 +183,7 @@ describe("pack diaper fit on the Aoki Utage body", () => {
 			for (let z = 2; z <= 15; z++) assert.ok(at(z) > at(z - 1), `${pack}: size${z} bottom ${at(z)} not below size${z - 1} ${at(z - 1)}`);
 			assert.ok(Math.abs(at(13) - feet) <= 4, `${pack}: size13 bottom ${at(13)} vs feet ${feet}`);
 			assert.ok(at(15) > feet + 10, `${pack}: size15 ${at(15)} not past the feet ${feet}`);
-			assert.ok(at(8) < feet - 40, `${pack}: dry Hyper (size 8) not short`);
+			assert.ok(at(6) < feet - 40, `${pack}: dry Hyper (size 6) not short`);
 		});
 	}
 });

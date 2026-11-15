@@ -188,14 +188,32 @@ def pee_crotch_r(u, v, level, N):
     return (np.abs(uc / hu) ** p + np.abs((vc - cv) / hv) ** p) ** (1.0 / p)
 
 
-def pee_radius(u, v, level, N):
+def pee_top_wave(u, level, N, size_key=""):
+    """Irregular, blotchy tide-line along the top of medium/heavy pee.
+    Phase shifts with size/sag so each picture has its own wavy edge,
+    while the blotch fields stay garment-stable."""
+    salt = (stable_seed("tide", size_key) % 10000) / 10000.0
+    wave = (
+        0.070 * np.sin(u * np.pi * 3.15 + salt * 6.3 + (N["pee_j1"] * 2 - 1) * 1.8)
+        + 0.045 * np.sin(u * np.pi * 7.6 + salt * 11.0 + (N["pee_j2"] * 2 - 1) * 2.4)
+        + 0.032 * np.sin(u * np.pi * 13.1 + salt * 8.1)
+        + 0.040 * (N["pee_blotch"] * 2 - 1) * (0.45 + 0.55 * (1.0 - np.abs(u)))
+        + 0.022 * (N["pee_warp"] * 2 - 1)
+    )
+    if level == "medium":
+        wave = wave * 0.82
+    return wave
+
+
+def pee_radius(u, v, level, N, size_key=""):
     """Light = crotch only; medium begins to mix into the seat and side walls;
     heavy fills the seat and walls (crotch still included)."""
     p = 2.6
     r = pee_crotch_r(u, v, level, N)
     if PEE_SEAT[level] is not None:
         top, shu = PEE_SEAT[level]
-        top_w = top + 0.06 * (N["pee_j1"] * 2 - 1)
+        top_w = top + 0.04 * (N["pee_j1"] * 2 - 1) + pee_top_wave(u, level, N, size_key)
+        top_w = np.clip(top_w, 0.18, 0.92)
         side = (np.abs(u) / shu) * (1.0 + 0.16 * (N["pee_warp"] * 2 - 1))
         rv = np.clip((1.0 - v) / np.maximum(1.0 - top_w, 0.08), 0, 4)
         r = np.minimum(r, np.sqrt(side ** 2 + rv ** 2))
@@ -250,7 +268,7 @@ def composite(rgb, alpha, col, a):
     return rgb, out_a
 
 
-def overlay(sprite, level, typ, printable, N=None, seed=1):
+def overlay(sprite, level, typ, printable, N=None, seed=1, size_key=""):
     u, v, ok, shade, W = fields(sprite, printable)
     if N is None:
         N = noise_bank(u, v, seed)
@@ -271,7 +289,7 @@ def overlay(sprite, level, typ, printable, N=None, seed=1):
         poo_col = stain_colour(POO_EDGE, POO_CORE, r, N["poo_dark"], N["poo_mottle"], tide)
         rgb, alpha = composite(rgb, alpha, poo_col, pa)
     if typ in ("pee", "both"):
-        r, amax = pee_radius(u, v, level, N)
+        r, amax = pee_radius(u, v, level, N, size_key)
         tide = tide_marks(r, N["pee_ring"], level)
         qa = region_alpha(r, amax, tide)
         qa = qa * smooth((v - 0.16) / 0.10)  # keep a clean band under the waistband
@@ -324,7 +342,7 @@ def main(packs_only=False):
                     N = noise_bank(u, vuv, seed)
                     for lv in LEVELS:
                         for t in TYPES:
-                            G.save(overlay(spr, lv, t, G.PACK_PRINTABLE, N=N, seed=seed), os.path.join(pdir, "plussoil", cat, key, f"{integ}-{lv}-{t}.png"))
+                            G.save(overlay(spr, lv, t, G.PACK_PRINTABLE, N=N, seed=seed, size_key=key), os.path.join(pdir, "plussoil", cat, key, f"{integ}-{lv}-{t}.png"))
                             n += 1
                             pack_n += 1
         print(f"{pack}: {pack_n} (total {n})")
@@ -340,7 +358,7 @@ def main(packs_only=False):
                 N = noise_bank(u, vuv, seed)
                 for lv in LEVELS:
                     for t in TYPES:
-                        G.save(overlay(spr, lv, t, G.BASE_PRINTABLE, N=N, seed=seed), os.path.join(G.BASE, v, sub, f"soil-{integ}-{lv}-{t}.png"))
+                        G.save(overlay(spr, lv, t, G.BASE_PRINTABLE, N=N, seed=seed, size_key=sub or "dry"), os.path.join(G.BASE, v, sub, f"soil-{integ}-{lv}-{t}.png"))
                         n += 1
     print(f"total {n}")
 

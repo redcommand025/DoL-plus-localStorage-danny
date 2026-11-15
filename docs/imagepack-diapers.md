@@ -34,8 +34,8 @@ picture changes exactly when concealment does, and a size-N diaper has the same 
 whichever model it is (within a category the pictures are identical; plastic, cloth and pull-up
 keep their own cut and details: tapes and landing strip, pins and folds, ribbed waistband).
 
-- Sizes 1-8 grow gently (a dry Hyper is size 8, so big diapers start slim). From size 9 they get
-  longer and droopier rather than wider: size 13 (a Hyper at 75%) reaches the doll's feet and 15
+- Sizes 1-8 grow gently (a dry Hyper is size 6, so even a Hyper starts reasonably slim when empty). From size 9 they get
+  longer and droopier rather than wider: size 13 reaches the doll's feet and 15
   (a full Hyper) hangs past them. Frames are 256px tall and the feet sit around y191, so there is
   room below the feet and nothing is clipped.
 - Overflowing (leaking) diapers use `leak<N>/`: the size-N shape with drips. Overflow adds one size
@@ -80,7 +80,7 @@ visible when `size > Can hide` (or when nothing is worn there). Noticing is stil
 point over, capped at 25%: the measurements did not suggest changing that.
 
 The size-by-fill mapping above is unchanged. After the fit fix the pack pictures still grow in
-length, not width: size 1 sits at the crotch (bottom y103, width 31), a dry Hyper (size 8) is
+length, not width: size 1 sits at the crotch (bottom y103, width 31), a dry Hyper (size 6) is
 above the knees (y137, width 35), size 13 reaches the feet (y190 vs feet y191), and size 15 hangs
 past them (y213). Base (no-pack) sag pictures are shorter and wider than the pack set (a dry
 Hyper is bottom 147 / width 44 at 2×); they keep their 5 fill tiers and are not used for Can hide.
@@ -208,7 +208,7 @@ own state:
   picks the sag/size picture): above 0 and under 1/3 = light, 1/3 to under 2/3 = medium, 2/3 or more (or
   overflowing) = heavy. Empty = no overlay.
 
-So a dry Hyper (size 8) has no overlay, and Hyper goes light at sizes 9–10, medium at 11–12 and heavy at
+So a dry Hyper (size 6) has no overlay, and Hyper goes light after it starts to fill, medium as the seat takes the load, and heavy at
 13–15. A full Hyper (size 15) with both shows heavy both.
 
 **Placement** (`devTools/generate-diaper-soil.py`, the same garment u/v mapping as prints, so stains stretch

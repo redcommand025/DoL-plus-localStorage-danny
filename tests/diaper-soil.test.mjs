@@ -131,11 +131,11 @@ describe("soiled overlays: which one shows", () => {
 		assert.equal(lv(0.1, 0.7), "heavy", "the fuller of the two decides");
 		assert.equal(lv(0.1, 0, true), "heavy");
 	});
-	it("Hyper example: size 8 empty = none, size 15 full = heavy both", () => {
+	it("Hyper example: size 6 empty = none, size 15 full = heavy both", () => {
 		const { window, item } = load();
 		const it = item(HYPER);
 		set(it, 0, 0);
-		assert.equal(window.plusDiaperSize(it), 8);
+		assert.equal(window.plusDiaperSize(it), 6);
 		assert.equal(window.plusDiaperSoil(it), null);
 		set(it, 1, 1);
 		assert.equal(window.plusDiaperSize(it), 15);
@@ -146,11 +146,11 @@ describe("soiled overlays: which one shows", () => {
 		const { window, item } = load({ imagePacks: { resolve: s => (packed.has(s) ? "imagepacks/au/" + s.slice(4) : s) } });
 		const it = set(item(HYPER), 0.75, 0);
 		assert.equal(window.plusDiaperSoilSrc(it, "torn"), "img/clothes/under-lower/plusdphyper/sag3/soil-torn-heavy-pee.png");
-		const shared = "img/clothes/under-lower/plussoil/dp/size13/torn-heavy-pee.png";
+		const shared = "img/clothes/under-lower/plussoil/dp/size12/torn-heavy-pee.png";
 		packed.add(shared);
 		assert.equal(window.plusDiaperSoilSrc(it, "torn"), shared);
-		packed.add("img/clothes/under-lower/plussoil/dp/size13/full-heavy-pee.png");
-		assert.equal(window.plusDiaperSoilSrc(it, "penis"), "img/clothes/under-lower/plussoil/dp/size13/full-heavy-pee.png");
+		packed.add("img/clothes/under-lower/plussoil/dp/size12/full-heavy-pee.png");
+		assert.equal(window.plusDiaperSoilSrc(it, "penis"), "img/clothes/under-lower/plussoil/dp/size12/full-heavy-pee.png");
 		assert.equal(window.plusDiaperSoilSrc(set(it, 0, 0), "full"), "");
 	});
 	it("the paper doll has soiled layers above the diaper", () => {

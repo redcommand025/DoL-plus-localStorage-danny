@@ -24,7 +24,7 @@ This script draws every diaper sprite natively at the pack resolution:
   * One picture per concealment size (size1-size15, plus leak<N> for overflowing): the game picks
     <diaper>/size<N> from the diaper's effective size (plusDiaperSize), and a size-N diaper has the
     same length and width in every model. Sizes up to 8 grow gently; bigger ones hang lower,
-    reaching the feet at size 13 (Hyper at 75%) and past them at 15 (full Hyper).
+    reaching the feet at size 13 and past them at 15 (a full Hyper). Dry Hyper is size 6; at 75% full it is size 12.
   * frayed / torn / tattered add progressively more edge nicks and rips; leak<N> (overflowing) adds a
     few small drips. penis.png is the same garment drawn over the penis layer, exactly as in base.
   * Greyscale only (the game tints clothing), both animation frames identical.
@@ -162,7 +162,7 @@ def size_tables():
 
 def size_bottom(size, d0, feet):
     """Bottom edge of a size-N diaper: gentle growth up to size 8, then it hangs lower and lower,
-    reaching the doll's feet at size 13 (a Hyper at 75%) and past them at 15 (a full Hyper)."""
+    reaching the doll's feet at size 13 and past them at 15 (a full Hyper)."""
     if size <= 8:
         return d0 + (size - 3) * 4.8
     b8 = d0 + 5 * 4.8

@@ -255,12 +255,12 @@ describe("diaper prints: shop and native pattern field", () => {
 		assert.equal(mannequin.colour, "pink");
 		assert.equal(mannequin.plusMl, 0);
 		assert.equal(window.plusDiaperPatternOf(mannequin), "polka pop");
-		assert.equal(window.plusSagSizeKey(mannequin), "size8");
+		assert.equal(window.plusSagSizeKey(mannequin), "size6");
 		assert.equal(window.plusDiaperSoil(mannequin), null);
 		const doll = window.plusDiaperCanvasItem({ mannequin: false }, { setup: setupItem, index: wet.index, pattern: "polka pop", colour: "pink" });
 		assert.equal(doll, wet);
 		assert.equal(window.plusDiaperPatternOf(doll), "dino stomp");
-		assert.equal(window.plusSagSizeKey(doll), "size13");
+		assert.equal(window.plusSagSizeKey(doll), "size12");
 		assert.equal(window.plusDiaperSoil(doll).key, "heavy-pee");
 	});
 });
@@ -271,13 +271,13 @@ describe("diaper prints: picture routing", () => {
 		const { window, item } = load({ imagePacks: { resolve: s => (packed.has(s) ? "imagepacks/au/" + s.slice(4) : s) } });
 		const it = item(HYPER);
 		it.plusMl = it.plusCapMl * 0.75;
-		const want = "img/clothes/under-lower/pluspatterns/dp/size13/torn-dino-stomp.png";
+		const want = "img/clothes/under-lower/pluspatterns/dp/size12/torn-dino-stomp.png";
 		packed.add(want);
 		assert.equal(window.plusSagSrc("img/clothes/under-lower/plusdphyper/acc-torn-dino-stomp.png", it), want);
-		packed.add("img/clothes/under-lower/pluspatterns/dp/size13/full-dino-stomp.png");
+		packed.add("img/clothes/under-lower/pluspatterns/dp/size12/full-dino-stomp.png");
 		assert.equal(
 			window.plusSagSrc("img/clothes/under-lower/plusdphyper/acc-penis-dino-stomp.png", it),
-			"img/clothes/under-lower/pluspatterns/dp/size13/full-dino-stomp.png"
+			"img/clothes/under-lower/pluspatterns/dp/size12/full-dino-stomp.png"
 		);
 		it.plusOverflow = 1;
 		packed.add("img/clothes/under-lower/pluspatterns/dp/leak15/full-dino-stomp.png");

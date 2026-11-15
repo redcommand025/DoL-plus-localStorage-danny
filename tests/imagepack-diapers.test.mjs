@@ -142,7 +142,7 @@ describe("image-pack diaper sprites", () => {
 						n++;
 					}
 			}
-			assert.equal(n, 500); // 100 size/leak pictures x 5 states
+			assert.equal(n, 510); // 102 size/leak pictures x 5 states (Hyper now includes size6 and size7)
 		});
 		it(`${pack}: a size looks the same in every model (identical within a category, same length/width across)`, () => {
 			const byKey = {};
@@ -166,7 +166,7 @@ describe("image-pack diaper sprites", () => {
 					}
 			}
 		});
-		it(`${pack}: bigger sizes hang lower; size 13 (Hyper at 75%) reaches the feet, 15 (full Hyper) is past them`, () => {
+		it(`${pack}: bigger sizes hang lower; size 13 reaches the feet, 15 (full Hyper) is past them`, () => {
 			const body = decode(join(root, "imagepacks", pack, "body/base-classic.png"));
 			let feet = 0;
 			for (let y = 0; y < body.h; y++) for (let x = 60; x < 150; x++) if (body.alpha[y * body.w + x] > 127) feet = y;
@@ -178,7 +178,7 @@ describe("image-pack diaper sprites", () => {
 			for (let z = 2; z <= 15; z++) assert.ok(at(z) > at(z - 1), `${pack}: size${z} bottom ${at(z)} not below size${z - 1} ${at(z - 1)}`);
 			assert.ok(Math.abs(at(13) - feet) <= 4, `${pack}: size13 bottom ${at(13)} vs feet ${feet}`);
 			assert.ok(at(15) > feet + 10, `${pack}: size15 ${at(15)} not past the feet ${feet}`);
-			assert.ok(at(8) < feet - 40, `${pack}: dry Hyper (size 8) not short`);
+			assert.ok(at(6) < feet - 40, `${pack}: dry Hyper (size 6) not short`);
 			const hyper = k => bbox(join(root, "imagepacks", pack, `clothes/under-lower/plusdphyper/${k}/full.png`)).y1;
 			assert.ok(hyper("leak15") >= hyper("size15"), `${pack}: leak15 shorter than size15`);
 		});

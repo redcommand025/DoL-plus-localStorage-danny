@@ -54,11 +54,14 @@ const fill = (it, f, over) => {
 const HYPER = "plastic-backed diaper (Hyper)";
 
 describe("diaper pictures by concealment size", () => {
-	it("Hyper: dry size 8, 75% size 13, full size 15, overflowing leak15", () => {
+	it("Hyper: dry size 6, 75% size 12, full size 15, overflowing leak15", () => {
 		const { window, item } = load();
 		const it = item(HYPER);
 		const key = (f, o) => window.plusSagSizeKey(fill(it, f, o));
-		assert.deepEqual([key(0), key(0.15), key(0.75), key(0.9), key(1), key(1, true)], ["size8", "size9", "size13", "size14", "size15", "leak15"]);
+		assert.deepEqual(
+			[key(0), key(0.15), key(0.25), key(0.5), key(0.75), key(0.9), key(1), key(1, true)],
+			["size6", "size7", "size8", "size10", "size12", "size14", "size15", "leak15"]
+		);
 		const m = item("plastic-backed diaper (Medium)");
 		assert.equal(window.plusSagSizeKey(fill(m, 0)), "size3");
 		assert.equal(window.plusSagSizeKey(fill(m, 1, true)), "leak7");
@@ -85,11 +88,11 @@ describe("diaper pictures by concealment size", () => {
 		const { window, item } = load({ resolve: src => (packed.has(src) ? "imagepacks/au/" + src.slice(4) : src) });
 		const it = fill(item(HYPER), 0.75);
 		const base = "img/clothes/under-lower/plusdphyper/full.png";
-		packed.add("img/clothes/under-lower/plusdphyper/size13/full.png");
-		assert.equal(window.plusSagSrc(base, it), "img/clothes/under-lower/plusdphyper/size13/full.png");
+		packed.add("img/clothes/under-lower/plusdphyper/size12/full.png");
+		assert.equal(window.plusSagSrc(base, it), "img/clothes/under-lower/plusdphyper/size12/full.png");
 		fill(it, 0);
-		packed.add("img/clothes/under-lower/plusdphyper/size8/full.png");
-		assert.equal(window.plusSagSrc(base, it), "img/clothes/under-lower/plusdphyper/size8/full.png");
+		packed.add("img/clothes/under-lower/plusdphyper/size6/full.png");
+		assert.equal(window.plusSagSrc(base, it), "img/clothes/under-lower/plusdphyper/size6/full.png");
 		fill(it, 1, true);
 		packed.add("img/clothes/under-lower/plusdphyper/leak15/penis.png");
 		assert.equal(window.plusSagSrc("img/clothes/under-lower/plusdphyper/penis.png", it), "img/clothes/under-lower/plusdphyper/leak15/penis.png");

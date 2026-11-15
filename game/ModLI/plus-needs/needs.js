@@ -2490,12 +2490,13 @@ window.plusNowTs = function () {
 		return true;
 	};
 
-	/* ---- Swell. Size scale 0-8: 1 Extra Small, 2 Small, 3 Medium, 4 Large, 5 Extra Large, 6 Ultra, 7 Max, 8 Hyper
-	 * (all categories map by size name). Fill fraction f = max(ml/capMl, lb/capLb) (spent single-use = 1).
+	/* ---- Swell. Size scale: 1 Extra Small, 2 Small, 3 Medium, 4 Large, 5 Extra Large, 6 Ultra, 7 Max.
+	 * Hyper is dry at size 6 (same empty bulk as Ultra) so it is less bulky when empty; it still reaches
+	 * 15 when full. Fill fraction f = max(ml/capMl, lb/capLb) (spent single-use = 1).
 	 * Stage = floor(f * N) (0..N, N = stage count per model); stage N+1 = "overflowing" (anything has leaked).
 	 * Effective size (0-15 scale) = min(15, base + floor(min(stage, N) * G / N) + (overflowing ? 1 : 0)),
 	 * G (growth at 100%) per model: see GROW. A full Hyper reaches 15. ---- */
-	const SIZE = { "Extra Small": 1, Small: 2, Medium: 3, Large: 4, "Extra Large": 5, Ultra: 6, Max: 7, Hyper: 8 };
+	const SIZE = { "Extra Small": 1, Small: 2, Medium: 3, Large: 4, "Extra Large": 5, Ultra: 6, Max: 7, Hyper: 6 };
 	const SIZE_NAMES = ["nothing", "Extra Small", "Small", "Medium", "Large", "Extra Large", "Ultra", "Max", "Hyper"];
 	const STAGES = {
 		[P]: { Hyper: 20, Max: 15, Ultra: 10, "Extra Large": 8, Large: 5, Medium: 4, Small: 3 },
@@ -2503,7 +2504,7 @@ window.plusNowTs = function () {
 		[U]: { Large: 4, Medium: 3, Small: 3, "Extra Small": 2 },
 	};
 	const GROW = {
-		[P]: { Hyper: 7, Max: 6, Ultra: 5, "Extra Large": 4, Large: 3, Medium: 3, Small: 2 },
+		[P]: { Hyper: 9, Max: 6, Ultra: 5, "Extra Large": 4, Large: 3, Medium: 3, Small: 2 },
 		[C]: { "Extra Large": 4, Large: 3, Medium: 2, Small: 1 },
 		[U]: { Large: 3, Medium: 2, Small: 2, "Extra Small": 1 },
 	};
@@ -2816,7 +2817,17 @@ window.plusNowTs = function () {
 		const def = T.defaults || { lower: 4, over_lower: 13 };
 		return slot === "over_lower" ? def.over_lower : def.lower;
 	};
-	const sizeLabel = v => (v <= 8 ? SIZE_NAMES[Math.max(0, v)] : v >= 15 ? "fully swollen Hyper" : v >= 12 ? "swollen Hyper" : "puffy Hyper");
+	const sizeLabel = (v, it) => {
+		const d = it && def(it);
+		if (d && d.size === "Hyper") {
+			if (v <= 6) return "Hyper";
+			if (v >= 15) return "fully swollen Hyper";
+			if (v >= 12) return "swollen Hyper";
+			return "puffy Hyper";
+		}
+		if (v <= 8) return SIZE_NAMES[Math.max(0, v)];
+		return v >= 15 ? "fully swollen Hyper" : v >= 12 ? "swollen Hyper" : "puffy Hyper";
+	};
 	window.plusSizeLabel = sizeLabel;
 	const concealText = v => (v <= 0 ? "Can hide: no diaper (0/15)" : `Can hide: up to ${sizeLabel(v)} (${v}/15)`);
 	window.plusConcealText = concealText;
@@ -2916,7 +2927,7 @@ window.plusNowTs = function () {
 	/* Image-pack sprites: one picture per concealment size. The sprite is chosen directly from the
 	 * diaper's current effective size (plusDiaperSize, the same 0-15 scale garments' "Can hide" uses):
 	 * <variable>/size<N>/<integrity|penis>.png, so the picture changes exactly when concealment does and a
-	 * size-N diaper looks the same bulk whatever its model (dry Hyper = size 8, a full Hyper = 15).
+	 * size-N diaper looks the same bulk whatever its model (dry Hyper = size 6, a full Hyper = 15).
 	 * Overflowing (leaking) diapers use <variable>/leak<N>/: the same size-N shape with drips. That keeps
 	 * overflow visible even where it adds no size (a full Hyper is already 15). */
 	window.plusSagSizeKey = function (it) {
@@ -3053,7 +3064,7 @@ window.plusNowTs = function () {
 	 *   intensity from how full it is (plusDiaperFillFrac, the same fill that drives the sag/size picture):
 	 *             >0 to <1/3 light, 1/3 to <2/3 medium, 2/3 and over (or overflowing) heavy.
 	 * Empty = no overlay. Pee discolours the crotch (centre of the padding), poo the seat (the low,
-	 * sagging bottom of the padding); both = both areas. E.g. a dry Hyper (size 8) shows nothing and a
+	 * sagging bottom of the padding); both = both areas. E.g. a dry Hyper (size 6) shows nothing and a
 	 * full one (size 15) heavy both. ---- */
 	window.plusDiaperSoilLevels = ["light", "medium", "heavy"];
 	window.plusDiaperSoil = function (it) {
