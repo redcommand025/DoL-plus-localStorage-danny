@@ -44,6 +44,7 @@
 	<<orgasmLocation "schoolHallway">>
 <</if>>
 <<schoolperiodtext>>
+<<plusSchoolContRepRemark>>
 
 <<if modLISelected("Poppy")>><<set _inClass to !["early","late","earlynoschool","latenoschool","daynoschool","morning","lunch","afternoon"].includes($schoolstate)>>
 <<set _inBreak to ["morning","lunch","afternoon"].includes($schoolstate)>>

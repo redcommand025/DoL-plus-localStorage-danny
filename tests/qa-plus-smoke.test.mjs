@@ -426,6 +426,10 @@ describe("QA plus-needs behavioral cases", () => {
 	it("QA-B041 [behavioral] reputation is clamped at 1000 Notorious", () => {
 		const { window, State } = loadNeeds({ variables: { plusContRep: 990 } });
 		assert.equal(window.plusContRepAdd(50), 1000);
+		// World-facing labels and modifiers follow the public rumour, which catches up at midnight.
+		assert.equal(window.plusContRepLabel(), "Unknown");
+		assert.equal(window.plusContRepWorkMul(), 1);
+		State.variables.plusContRepPublic = State.variables.plusContRep;
 		assert.equal(window.plusContRepLabel(), "Notorious");
 		assert.equal(window.plusContRepWorkMul(), 0.74);
 		assert.equal(window.plusContRepRestroomMod(), -0.22);
@@ -437,13 +441,14 @@ describe("QA plus-needs behavioral cases", () => {
 			[0, "Unknown"],
 			[30, "Obscure"],
 			[100, "Low-key"],
-			[200, "Known"],
+			[200, "Talked about"],
 			[400, "Recognised"],
-			[600, "Famous"],
+			[600, "Known"],
 			[1000, "Notorious"],
 		];
 		for (const [v, name] of expected) {
 			State.variables.plusContRep = v;
+			State.variables.plusContRepPublic = v;
 			assert.equal(window.plusContRepLabel(), name, "label at " + v);
 		}
 	});
@@ -522,7 +527,7 @@ describe("QA plus-needs behavioral cases", () => {
 			{ content: "Ask for work on Domus", weight: 10 },
 			{ content: "Something else", weight: 10 },
 		];
-		const { window, State } = loadNeeds({ variables: { plusContRep: 1000 }, passage: "Domus House Knock", eventpool: pool });
+		const { window, State } = loadNeeds({ variables: { plusContRep: 1000, plusContRepPublic: 1000 }, passage: "Domus House Knock", eventpool: pool });
 		const out = window.plusKnockAdjustPool({ pool, title: "Domus House Knock" });
 		assert.equal(out[0].weight, 10 * 0.74);
 		assert.equal(out[1].weight, 10);

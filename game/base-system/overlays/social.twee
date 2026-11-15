@@ -404,6 +404,7 @@
 			<<if $schoolrep.crossdress neq 0>>
 				<<relation-box-simple _crossdressBoxConfig>>
 			<</if>>
+			<<plusSchoolContRepBox>>
 			<<if $schoolrep.herm neq 0>>
 				<<relation-box-simple _hermBoxConfig>>
 			<</if>>

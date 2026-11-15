@@ -48,6 +48,7 @@ window.plusNowTs = function () {
 		if (!Number.isFinite(V.insecurity_diaper)) V.insecurity_diaper = 0;
 		if (!Number.isFinite(V.acceptance_diaper)) V.acceptance_diaper = 0;
 		if (!Number.isFinite(V.plusContRep)) V.plusContRep = 0;
+		if (!Number.isFinite(V.plusContRepPublic)) V.plusContRepPublic = 0;
 		if (!Number.isFinite(V.plusContRepCleanDays)) V.plusContRepCleanDays = 0;
 		if (V.plusContRepDayGain !== 0 && V.plusContRepDayGain !== 1) V.plusContRepDayGain = 0;
 		if (!Number.isFinite(V.plusContRepDecayDay)) V.plusContRepDecayDay = dayKey();
@@ -1538,14 +1539,14 @@ window.plusNowTs = function () {
 
 	/* ---- Continence reputation (0-1000): witnessed accidents and visible diapers. ----
 	 * Uses the same tier names as the Social fame panel, scaled to 0-1000
-	 * (Unknown → Obscure → Low-key → Known → Recognised → Famous → Notorious). */
+	 * (Unknown → Obscure → Low-key → Talked about → Recognised → Known → Notorious). */
 	const CONTREP_STATES = [
 		{ min: 0, name: "Unknown", color: "green", restroom: 0, work: 1 },
 		{ min: 30, name: "Obscure", color: "teal", restroom: -0.02, work: 0.97 },
 		{ min: 100, name: "Low-key", color: "lblue", restroom: -0.05, work: 0.94 },
-		{ min: 200, name: "Known", color: "blue", restroom: -0.08, work: 0.9 },
+		{ min: 200, name: "Talked about", color: "blue", restroom: -0.08, work: 0.9 },
 		{ min: 400, name: "Recognised", color: "purple", restroom: -0.12, work: 0.86 },
-		{ min: 600, name: "Famous", color: "pink", restroom: -0.16, work: 0.8 },
+		{ min: 600, name: "Known", color: "pink", restroom: -0.16, work: 0.8 },
 		{ min: 1000, name: "Notorious", color: "red", restroom: -0.22, work: 0.74 },
 	];
 	const CONTREP_GAIN = {
@@ -1595,9 +1596,14 @@ window.plusNowTs = function () {
 		const V = State.variables;
 		if (!V) return;
 		if (!Number.isFinite(V.plusContRep)) V.plusContRep = 0;
+		if (!Number.isFinite(V.plusContRepPublic)) V.plusContRepPublic = 0;
 		if (!Number.isFinite(V.plusContRepCleanDays)) V.plusContRepCleanDays = 0;
 		if (V.plusContRepDayGain !== 0 && V.plusContRepDayGain !== 1) V.plusContRepDayGain = 0;
 		if (!Number.isFinite(V.plusContRepDecayDay)) V.plusContRepDecayDay = window.plusDayKey();
+		if (!V.schoolrep || typeof V.schoolrep !== "object") V.schoolrep = { crossdress: 0, herm: 0, continence: 0 };
+		if (!Number.isFinite(V.schoolrep.continence)) V.schoolrep.continence = 0;
+		if (!Number.isFinite(V.plusContRepSchoolPending)) V.plusContRepSchoolPending = 0;
+		if (V.settings && V.settings.inflationBaileyRelentless === undefined) V.settings.inflationBaileyRelentless = false;
 	};
 	window.plusContRepInfo = function () {
 		window.plusContRepInit();
@@ -1607,13 +1613,50 @@ window.plusNowTs = function () {
 		return Object.assign({ value: v, index: CONTREP_STATES.indexOf(st) }, st);
 	};
 	window.plusContRepLabel = function () {
-		return window.plusContRepInfo().name;
+		return window.plusContRepPublicInfo().name;
+	};
+	window.plusContRepPublicValue = function () {
+		window.plusContRepInit();
+		const v = State.variables.plusContRepPublic;
+		return Number.isFinite(v) ? v : 0;
+	};
+	window.plusContRepInfoFrom = function (value) {
+		const v = Number(value) || 0;
+		let st = CONTREP_STATES[0];
+		for (const row of CONTREP_STATES) if (v >= row.min) st = row;
+		return Object.assign({ value: v, index: CONTREP_STATES.indexOf(st) }, st);
+	};
+	window.plusContRepPublicInfo = function () {
+		return window.plusContRepInfoFrom(window.plusContRepPublicValue());
 	};
 	window.plusContRepRestroomMod = function () {
-		return window.plusContRepInfo().restroom;
+		return window.plusContRepPublicInfo().restroom;
 	};
 	window.plusContRepWorkMul = function () {
-		return window.plusContRepInfo().work;
+		return window.plusContRepPublicInfo().work;
+	};
+	window.plusSchoolContRep = function () {
+		window.plusContRepInit();
+		return State.variables.schoolrep.continence || 0;
+	};
+	window.plusBaileyRelentless = function () {
+		const s = State.variables.settings || {};
+		return s.inflationBaileyRelentless === true || s.inflationBaileyRelentless === 1;
+	};
+	window.plusFameGood = function () {
+		const f = State.variables.fame || {};
+		return Number(f.good) || 0;
+	};
+	window.plusContRepQueueSchool = function () {
+		window.plusContRepInit();
+		const V = State.variables;
+		const title = State.passage || "";
+		const school = (typeof window.plusIsSchool === "function" && window.plusIsSchool(title)) || V.location === "school";
+		if (!school) return false;
+		if (V.plusContRepSchoolPending) return false;
+		V.plusContRepSchoolPending = 1;
+		V.plusContRepSchoolIncident = 1;
+		return true;
 	};
 	window.plusContRepAdd = function (amt, opts) {
 		window.plusContRepInit();
@@ -1637,6 +1680,7 @@ window.plusNowTs = function () {
 		if (isSchool) amt = Math.round(amt * CONTREP_GAIN.schoolMul);
 		if (isNight) amt = Math.round(amt * CONTREP_GAIN.nightMul);
 		window.plusContRepAdd(amt);
+		window.plusContRepQueueSchool();
 		return amt;
 	};
 	window.plusContRepOnSeen = function (opts = {}) {
@@ -1653,6 +1697,7 @@ window.plusNowTs = function () {
 		if (isBusy) amt = Math.round(amt * CONTREP_GAIN.seenBusyMul);
 		if (isSchool) amt = Math.round(amt * CONTREP_GAIN.seenBusyMul);
 		window.plusContRepAdd(amt);
+		if (isSchool) window.plusContRepQueueSchool();
 		return amt;
 	};
 	window.plusContRepOnOutdoor = function (title) {
@@ -1666,7 +1711,30 @@ window.plusNowTs = function () {
 	window.plusContRepDecayAmt = function (cleanDays, hadGain) {
 		if (hadGain) return CONTREP_DECAY.afterGain;
 		const extra = Math.max(0, (cleanDays || 1) - 1);
-		return Math.min(CONTREP_DECAY.max, CONTREP_DECAY.clean + extra * CONTREP_DECAY.cleanStep);
+		let amt = CONTREP_DECAY.clean + extra * CONTREP_DECAY.cleanStep;
+		if (window.plusFameGood() >= 400) amt += 4;
+		return Math.min(CONTREP_DECAY.max, amt);
+	};
+	window.plusContRepApplySchoolMidnight = function () {
+		window.plusContRepInit();
+		const V = State.variables;
+		if (!V.schoolrep) V.schoolrep = { continence: 0 };
+		if (V.plusContRepSchoolPending) {
+			const before = V.schoolrep.continence || 0;
+			V.schoolrep.continence = Math.min(5, before + V.plusContRepSchoolPending);
+			if (V.schoolrep.continence !== before) {
+				V.school_continence_message = V.schoolrep.continence;
+				V.effectsmessage = 1;
+			}
+			V.plusContRepSchoolPending = 0;
+		} else if ((V.schoolrep.continence || 0) > 0 && !V.plusContRepSchoolIncident) {
+			const chance = (V.schoolrep.continence || 0) * 3 + (window.plusFameGood() >= 400 ? 5 : 0);
+			if (Math.random() * 100 < chance) {
+				V.schoolrep.continence = Math.max(0, (V.schoolrep.continence || 0) - 1);
+			}
+		}
+		V.plusContRepSchoolIncident = 0;
+		return V.schoolrep.continence || 0;
 	};
 	window.plusContRepDecay = function () {
 		window.plusContRepInit();
@@ -1684,6 +1752,8 @@ window.plusNowTs = function () {
 			const next = Math.clamp((V.plusContRep || 0) - amt, 0, 1000);
 			total += (V.plusContRep || 0) - next;
 			V.plusContRep = next;
+			window.plusContRepApplySchoolMidnight();
+			V.plusContRepPublic = V.plusContRep;
 		}
 		V.plusContRepDecayDay = day;
 		return total;
@@ -1693,15 +1763,19 @@ window.plusNowTs = function () {
 		if (typeof window.plusDiaperAccepted === "function" && window.plusDiaperAccepted()) return 0;
 		const acc = Number(V && V.acceptance_diaper) || 0;
 		if (acc >= 500) return Math.round(CONTREP_REMARK_STRESS / 2);
-		return CONTREP_REMARK_STRESS;
+		let n = CONTREP_REMARK_STRESS;
+		if (window.plusFameGood() >= 400) n = Math.round(n * 0.75);
+		return n;
 	};
 	window.plusContRepRemarkChance = function () {
-		return CONTREP_REMARK_CHANCE[window.plusContRepInfo().index] || 0;
+		let c = CONTREP_REMARK_CHANCE[window.plusContRepPublicInfo().index] || 0;
+		if (c && window.plusFameGood() >= 400) c *= 0.7;
+		return c;
 	};
 	window.plusContRepRemarkCheck = function (title, force) {
 		const V = State.variables;
 		if (!V || V.combat === 1 || V.intro) return "";
-		const info = window.plusContRepInfo();
+		const info = window.plusContRepPublicInfo();
 		const lines = CONTREP_REMARKS[info.index];
 		if (!lines || !lines.length) return "";
 		if (!force && !window.plusIsPublic(title || State.passage)) return "";
@@ -1786,6 +1860,9 @@ window.plusNowTs = function () {
 		p += 0.4 * Math.clamp((20 - love) / 40, 0, 1);
 		p -= 0.1 * Math.clamp((love - 30) / 50, 0, 1);
 		p += 0.15 * asks;
+		const school = window.plusSchoolContRep ? window.plusSchoolContRep() : 0;
+		if (school >= 5) p -= 0.12;
+		else if (school >= 3) p -= 0.08;
 		return Math.clamp(p, 0.02, 0.85);
 	};
 	// Rolls a request. Returns true if granted. Tracks repeated asks per lesson (passage + hour + day).

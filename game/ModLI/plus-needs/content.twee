@@ -154,6 +154,13 @@ The nurse sets down <<his>> pen and looks at you properly, the way <<he>> looks 
 		"\"Sit if you like,\" <<he>> says. \"I'm listening.\""
 	)>>
 <</if>>
+<<if plusSchoolContRep() gte 5>>
+	<br><br>
+	<span class="lblue"><<print either("\"We've talked about this more than once,\" <<he>> says. \"We'll keep handling it quietly. If you want, I can write a note so you can leave class without a fuss.\"", "\"The staff have heard the rumours,\" <<he>> says, not unkindly. \"You can still come here. This room stays private.\"" )>></span>
+<<elseif plusSchoolContRep() gte 3>>
+	<br><br>
+	<span class="lblue"><<print either("\"You've been in a few times,\" <<he>> says. \"We can make a plan, if you would like that. A spare, a quiet change, a word to your teacher if you need to leave.\"", "\"You don't have to wait until it's an emergency,\" <<he>> says. \"If this is becoming regular, we can work out something practical.\"")>></span>
+<</if>>
 <br><br>
 <<if $plusBladder lt 1000 or $plusBowels lt 1000>>
 	<<bathroomicon "toilet">><<link [[Use the infirmary toilet (0:03)|Plus Needs Toilet]]>><<set $plusToiletReturn to $passage>><</link>>

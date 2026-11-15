@@ -94,6 +94,7 @@
 	<<set $settings.fertilityCycleEnabled to true>>
 	<<set $settings.pregnancyType to "realistic">>
 	<<set $settings.rentCostModifier to 1>>
+	<<if $settings.inflationBaileyRelentless is undefined>><<set $settings.inflationBaileyRelentless to false>><</if>>
 	<<set $settings.condomLevel to 3>>
 	<<set $settings.condomChance to 60>>
 	<<set $settings.condomUseChanceRape to 33>>
@@ -2179,6 +2180,9 @@
 		<div class="settingsGrid">
 			<div class="settingsHeader">
 				Bailey's Rent
+			</div>
+			<div class="settingsToggleItemWide">
+				<div class="red"><label><<checkbox "$settings.inflationBaileyRelentless" false true autocheck>> Relentless Bailey</label> <mouse class="tooltip linkBlue">(?)<span>Same setting name as in X-Change. When on, Bailey may comment on your continence reputation during their usual visits. They still will not start a new punishment for it. Off by default.</span></mouse></div>
 			</div>
 			<div class="settingsToggleItemWide">
 				<div class="small-description">

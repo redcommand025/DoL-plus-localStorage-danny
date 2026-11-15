@@ -907,6 +907,27 @@ function effects() {
 			delete V.school_herm_message;
 		}
 
+		if (V.school_continence_message) {
+			switch (V.school_continence_message) {
+				case 5:
+					element("span", "Everyone at school knows about your accidents, including the teachers.", "red");
+					break;
+				case 4:
+					element("span", "Rumours of your accidents are spreading throughout the school.", "pink");
+					break;
+				case 3:
+					element("span", "Rumours of your accidents are spreading and have become a popular topic of conversation at school.", "purple");
+					break;
+				case 2:
+					element("span", "Whispers of an accident are spreading through the school.", "blue");
+					break;
+				case 1:
+					element("span", "A few cliques at school have begun whispering about an accident you had.", "lblue");
+					break;
+			}
+			delete V.school_continence_message;
+		}
+
 		// expects the use of $orgasm_trait_message, $molest_trait_message, $rape_trait_message, $bestiality_trait_message, $tentacle_trait_message, $vore_trait_message, $milk_trait_message and $cum_trait_message
 		[
 			["orgasm", "Hedonist", "Orgasm Addict"],

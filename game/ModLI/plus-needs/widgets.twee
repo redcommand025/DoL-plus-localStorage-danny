@@ -925,15 +925,15 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 	<<run plusContRepInit()>>
 	<<silently>>
 		<<set _plusContRepTextConfig = {
-			currentValue: $plusContRep,
+			currentValue: $plusContRepPublic,
 			preText: 'Continence:',
 			states: [
 				{ requiredValue: 0, color: 'green', description: ' Unknown' },
 				{ requiredValue: 30, color: 'teal', description: ' Obscure' },
 				{ requiredValue: 100, color: 'lblue', description: ' Low-key' },
-				{ requiredValue: 200, color: 'blue', description: ' Known' },
+				{ requiredValue: 200, color: 'blue', description: ' Talked about' },
 				{ requiredValue: 400, color: 'purple', description: ' Recognised' },
-				{ requiredValue: 600, color: 'pink', description: ' Famous' },
+				{ requiredValue: 600, color: 'pink', description: ' Known' },
 				{ requiredValue: 1000, color: 'red', description: ' Notorious' }
 			]
 		}>>
@@ -1187,3 +1187,72 @@ You carry what you can back to the orphanage. Your old bedroom is waiting, and B
 <br><br>
 <<link [[Return to your old bedroom|Bedroom]]>><</link>>
 <br>
+
+
+<<widget "plusSchoolContRepBox">>
+	<<if $schoolrep.continence gte 1>>
+		<<silently>>
+			<<set _plusSchoolContRepConfig = { currentValue: $schoolrep.continence, states : [
+				{ requiredValue: 1, color: 'lblue', description: 'A few cliques at school whisper about an accident you had. Few believe it.'},
+				{ requiredValue: 2, color: 'blue', description: 'A rumour has taken root at school. Some say you had an accident.'},
+				{ requiredValue: 3, color: 'purple', description: 'Students gossip about your continence, though most treat it as a joke.'},
+				{ requiredValue: 4, color: 'pink', description: 'Everyone at school has heard the rumours about your accidents.'},
+				{ requiredValue: 5, color: 'red', description: 'Everyone at school knows about your accidents, including the teachers.'}
+			]}>>
+			<<set _plusSchoolContRepBoxConfig = { name : "School rumours", description : '<<relation-text _plusSchoolContRepConfig>>'}>>
+		<</silently>>
+		<<relation-box-simple _plusSchoolContRepBoxConfig>>
+	<</if>>
+<</widget>>
+
+<<widget "plusSchoolContRepRemark">>
+	<<if plusSchoolContRep() lte 0 or $combat is 1 or $intro>><<exit>><</if>>
+	<<if !["early", "late", "earlynoschool", "latenoschool", "daynoschool"].includes($schoolstate)>>
+		<<set _scr to plusSchoolContRep()>>
+		<<set _now to plusNowTs()>>
+		<<if $plusSchoolContRepRemarkNext and _now lt $plusSchoolContRepRemarkNext>><<exit>><</if>>
+		<<set _ch to [0, 0.08, 0.12, 0.2, 0.3, 0.4][_scr]>>
+		<<if $fame.good gte 400>><<set _ch to _ch * 0.7>><</if>>
+		<<if random(0, 99) gte _ch * 100>><<exit>><</if>>
+		<<set $plusSchoolContRepRemarkNext to _now + 3600>>
+		<br>
+		<span class="purple">
+		<<switch _scr>>
+			<<case 1>>
+				<<print either("A couple of students glance at you and put their heads together as you pass.", "You catch a whisper behind you, quickly cut off when you look back.")>>
+			<<case 2>>
+				<<print either("A rumour has started to travel. Someone down the corridor mentions an accident, not quite quietly enough.", "Two classmates look at you, then away, as if they have heard a story and are not sure they believe it.")>>
+			<<case 3>>
+				<<print either("A group of students go quiet, then one of them laughs and changes the subject. You hear the word \"accident.\"", "Someone teases a friend not to sit too close, then looks embarrassed when they realise you heard.")>>
+			<<case 4>>
+				<<print either("Students give you a look you have come to recognise. The story has clearly gone around your year.", "A classmate murmurs, \"That's the one,\" as you walk past, and their friend nods.")>>
+			<<case 5>>
+				<<print either("The corridor seems to know you are coming. A few students make room; others make a point of not doing so.", "You hear someone say, just loud enough, that you should probably find a toilet before class.", "A teacher at the far end of the hall looks at you for a moment, then looks away, as if deciding not to make it a scene.")>>
+		<</switch>>
+		</span>
+		<<if _scr gte 4 and plusDayKey() isnot $plusWhitneyContRepDay and C.npc.Whitney and C.npc.Whitney.init is 1 and random(0, 2) is 0>>
+			<<set $plusWhitneyContRepDay to plusDayKey()>>
+			<span class="purple"> Whitney's voice carries from further down the hall, making a cheap joke about it. A couple of <<his>> hangers-on laugh.</span>
+		<</if>>
+		<<run plusContRepRemarkStress()>>
+		<<if plusContRepRemarkStress() gt 0>><<stress `plusContRepRemarkStress()`>><<gstress>><</if>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "plusBaileyContRepComment">>
+	<<if !plusBaileyRelentless()>><<exit>><</if>>
+	<<set _lvl to plusSchoolContRep()>>
+	<<if _lvl lte 0 and plusContRepPublicValue() lt 200>><<exit>><</if>>
+	<br>
+	<span class="purple">
+	<<if _lvl gte 4 or plusContRepPublicValue() gte 600>>
+		<<print either("Bailey looks you over and snorts. \"I've heard the talk. Sort yourself out. I don't have time to clean up after you.\"", "\"Don't bring that mess into my hall,\" Bailey says, as if the rumour itself were a stain. \"Keep yourself in order.\"")>>
+	<<elseif _lvl gte 2 or plusContRepPublicValue() gte 200>>
+		<<print either("Bailey's eyes flick over you. \"There are stories going around. I don't care about stories, so long as they don't become my problem.\"", "\"If I start hearing about accidents in my building,\" Bailey says, \"I'll make it your problem.\"")>>
+	<<else>>
+		Bailey glances at you a moment longer than usual, then lets it go.
+	<</if>>
+	</span>
+	<br>
+<</widget>>

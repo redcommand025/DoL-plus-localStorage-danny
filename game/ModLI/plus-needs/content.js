@@ -137,7 +137,7 @@
 		if (opts.visible || (typeof window.plusDiaperVisible === "function" && window.plusDiaperVisible())) p -= 0.08;
 		const smell = typeof window.plusSmellChance === "function" ? window.plusSmellChance() : 0;
 		if (opts.smell || smell >= 0.16) p -= 0.08;
-		const rep = Number(st.plusContRep) || 0;
+		const rep = typeof window.plusContRepPublicValue === "function" ? window.plusContRepPublicValue() : Number(st.plusContRepPublic) || 0;
 		if (rep >= 600) p -= 0.15;
 		else if (rep >= 400) p -= 0.1;
 		return clamp(Math.round(p * 1000) / 1000, 0.15, 0.95);
