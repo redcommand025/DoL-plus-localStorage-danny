@@ -160,8 +160,19 @@ You walk with Danny. They take a few pictures, then one of you.
 <</if>>
 
 :: Danny Stay Over
-You stay. Danny turns the light off. Later, in the dark, they shift closer.
-<<npcincr Danny love 4>>
-<<npcincr Danny lust 5>>
+You stay. Danny turns the light off.
+<br><br>
+In the dark they shift closer. "Is this okay?"
 <br>
-<<link [[Continue|Danny Room]]>><</link>>
+<<link [[Yes|Danny Stay Over Sex]]>><</link>>
+<<link [[Not tonight|Danny Room]]>><<npcincr Danny love 1>><</link>>
+
+:: Danny Stay Over Sex
+You pull them closer. It's slow and quiet.
+<br><br>
+Afterwards Danny stays close, breathing steady.
+<<npcincr Danny love 6>>
+<<npcincr Danny lust 8>>
+<<set $dannyAccidentKnown to 1>>
+<br>
+<<link [[Sleep|Danny Room]]>><</link>>
