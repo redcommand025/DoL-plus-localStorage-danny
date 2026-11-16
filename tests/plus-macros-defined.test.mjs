@@ -151,8 +151,8 @@ describe("custom macros are defined before they are invoked", () => {
 		assert.deepEqual(unexpected, [], unexpected.map(w => `${w.name} in ${w.passage} at ${w.loc}`).join("\n"));
 	});
 
-	it("keeps the school rumour and Bailey widgets in a [widget] passage", () => {
-		for (const name of ["plusSchoolContRepRemark", "plusSchoolContRepBox", "plusBaileyContRepComment"]) {
+	it("keeps the school rumour widgets in a [widget] passage", () => {
+		for (const name of ["plusSchoolContRepRemark", "plusSchoolContRepBox"]) {
 			assert.ok(widgets.ok.has(name), `${name} is not defined in a [widget] passage`);
 			assert.match(widgets.ok.get(name).passage, /Continence Reputation/);
 		}

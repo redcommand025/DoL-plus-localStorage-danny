@@ -184,53 +184,37 @@ describe("plus content batch 2: hospital clinic", () => {
 	});
 });
 
-describe("plus content batch 2: named NPC scenes", () => {
-	it("has diaper-use and accident lines for every listed character, and none for Danny", () => {
-		const { window } = load();
-		const names = [
-			"Robin",
-			"Bailey",
-			"Sam",
-			"Alex",
-			"Charlie",
-			"Sirris",
-			"River",
-			"Doren",
-			"Winter",
-			"Mason",
-			"Whitney",
-			"Kylar",
-			"Sydney",
-			"Avery",
-			"Eden",
-			"Niki",
-			"Landlord",
-			"Neighbour",
-		];
+describe("plus content batch 2: generic landing reactions only", () => {
+	it("keeps only landlord and neighbour accident and diaper lines", () => {
+		const { window, State } = load({ passage: "Plus Flat Hallway" });
+		State.variables.location = "flat";
 		const cat = window.plusNpcLineCatalog;
-		for (const n of names) {
-			assert.ok(cat[n], n);
+		assert.deepEqual(Object.keys(cat).sort(), ["Landlord", "Neighbour"]);
+		for (const n of ["Landlord", "Neighbour"]) {
 			assert.ok(cat[n].diaper.length >= 2, n + " diaper");
 			assert.ok(cat[n].accident.length >= 2, n + " accident");
 			assert.ok(window.plusNpcSceneText(n, "accident"));
 		}
-		assert.equal(cat.Danny, undefined);
-		assert.equal(window.plusNpcPresent("Danny"), false);
+		for (const n of ["Robin", "Bailey", "Sam", "Alex", "Charlie", "Whitney", "Kylar", "Sydney", "Avery", "Eden", "Niki"]) {
+			assert.equal(cat[n], undefined, n);
+			assert.equal(window.plusNpcPresent(n), false, n);
+			assert.equal(window.plusNpcSceneAllowed(n, "accident"), false, n);
+		}
 	});
 
-	it("Bailey only reacts when Relentless Bailey is on, and scenes have a daily cooldown", () => {
-		const { window, State } = load({ passage: "Bedroom Bailey rentdue" });
-		assert.equal(window.plusNpcSceneAllowed("Bailey", "accident"), false);
-		State.variables.settings.inflationBaileyRelentless = true;
-		assert.equal(window.plusNpcSceneAllowed("Bailey", "accident"), true);
-		window.plusNpcMark("Bailey", "accident");
-		assert.equal(window.plusNpcSceneAllowed("Bailey", "accident"), false);
+	it("gives generic landing scenes a daily cooldown", () => {
+		const { window, State } = load({ passage: "Plus Flat Hallway" });
+		State.variables.location = "flat";
+		assert.equal(window.plusNpcPresent("Neighbour"), true);
+		assert.equal(window.plusNpcSceneAllowed("Neighbour", "accident"), true);
+		window.plusNpcMark("Neighbour", "accident");
+		assert.equal(window.plusNpcSceneAllowed("Neighbour", "accident"), false);
 	});
 
-	it("hooks accidents and does not mention Danny", () => {
+	it("hooks accidents for generic landing reactions only", () => {
 		const w = read("game/ModLI/plus-needs/widgets.twee");
 		assert.match(w, /plusNpcAccidentHook/);
-		assert.doesNotMatch(read("game/ModLI/plus-needs/batch2.js"), /Danny:/);
+		assert.doesNotMatch(read("game/ModLI/plus-needs/batch2.js"), /Robin: \{|Bailey: \{|Charlie: \{/);
 	});
 });
 

@@ -1,5 +1,7 @@
 /* Plus Needs content-batch 2: bus accidents, hospital clinic, named-NPC scenes,
- * weather flavour, flat life, and Robin moving in. */
+ * weather flavour, flat life, and Robin moving in.
+ * Named-NPC accident and diaper reactions have been removed; only generic
+ * landlord and neighbour lines remain. */
 (function () {
 	"use strict";
 
@@ -256,67 +258,6 @@
 		}
 	}
 	const NPC_WHERE = {
-		Robin() {
-			const loc = typeof window.getRobinLocation === "function" ? window.getRobinLocation() : "";
-			const title = passageTitle();
-			if (/Robin|Plus Flat/.test(title) && window.plusRobinLivesAtFlat && window.plusRobinLivesAtFlat())
-				return loc === "flat" || loc === "sleep" || loc === "orphanage";
-			if (/Robin/.test(title)) return true;
-			return (
-				(loc === "orphanage" || loc === "flat") &&
-				(V().location === "home" || (typeof window.plusLocationIsFlat === "function" ? window.plusLocationIsFlat() : V().location === "flat"))
-			);
-		},
-		Bailey() {
-			return !!(
-				typeof window.plusBaileyRelentless === "function" &&
-				window.plusBaileyRelentless() &&
-				/Bailey|rentdue|Rent Due|Bedroom Bailey/i.test(passageTitle())
-			);
-		},
-		Sam() {
-			return V().location === "cafe" || /Cafe|Sam/.test(passageTitle());
-		},
-		Alex() {
-			return V().location === "farm" || /Alex|Farm /.test(passageTitle());
-		},
-		Charlie() {
-			const loc = V().location;
-			return /Dance|Charlie/.test(passageTitle()) || loc === "dance_studio" || loc === "dance";
-		},
-		Sirris() {
-			return /Science Lesson|Sirris/.test(passageTitle());
-		},
-		River() {
-			return /Maths Lesson|River/.test(passageTitle());
-		},
-		Doren() {
-			return /English Lesson|Doren/.test(passageTitle());
-		},
-		Winter() {
-			return /History Lesson|Winter/.test(passageTitle());
-		},
-		Mason() {
-			return /Swimming Lesson|Mason/.test(passageTitle());
-		},
-		Whitney() {
-			return /Hallway|Whitney/.test(passageTitle()) || V().location === "school";
-		},
-		Kylar() {
-			return npcInit("Kylar") && (/Kylar|Street|Hallway/.test(passageTitle()) || V().location === "town" || V().location === "school");
-		},
-		Sydney() {
-			return npcInit("Sydney") && (/Sydney|Temple|Library/.test(passageTitle()) || V().location === "temple");
-		},
-		Avery() {
-			return npcInit("Avery") && (/Avery|Danube|Street/.test(passageTitle()) || V().location === "town");
-		},
-		Eden() {
-			return npcInit("Eden") && (/Eden|Cabin|Forest/.test(passageTitle()) || V().location === "forest" || V().location === "cabin");
-		},
-		Niki() {
-			return npcInit("Niki") && (/Niki|Photograph|Studio/.test(passageTitle()) || V().location === "studio");
-		},
 		Landlord() {
 			return (typeof window.plusLocationIsFlat === "function" && window.plusLocationIsFlat()) || /Plus Flat Hallway|Plus Flat Bedroom/.test(passageTitle());
 		},
@@ -334,23 +275,6 @@
 		}
 	};
 	window.plusNpcSceneAllowed = function (name, kind) {
-		if (name === "Bailey" && !(typeof window.plusBaileyRelentless === "function" && window.plusBaileyRelentless())) return false;
-		if (
-			["Robin", "Sam", "Alex", "Charlie", "Whitney", "Kylar", "Sydney", "Avery", "Eden", "Niki", "Sirris", "River", "Doren", "Winter", "Mason"].includes(
-				name
-			) &&
-			name !== "Landlord" &&
-			name !== "Neighbour" &&
-			name !== "Bailey"
-		) {
-			if (["Sirris", "River", "Doren", "Winter", "Mason", "Whitney"].includes(name)) {
-				/* teachers and Whitney exist once school is in play */
-			} else if (!npcInit(name) && name === "Robin") {
-				return false;
-			} else if (["Kylar", "Sydney", "Avery", "Eden", "Niki", "Robin"].includes(name) && !npcInit(name)) {
-				return false;
-			}
-		}
 		if (!window.plusNpcPresent(name)) return false;
 		const st = V();
 		if (!st.plusNpcSceneDay || typeof st.plusNpcSceneDay !== "object") st.plusNpcSceneDay = {};
@@ -361,7 +285,6 @@
 			const worn = typeof window.plusDiaperWorn === "function" && window.plusDiaperWorn();
 			if (!worn || !vis) return false;
 		}
-		/* Soft relationship gates: close friends get the kinder lines; low love still can see. */
 		return true;
 	};
 	window.plusNpcMark = function (name, kind) {
@@ -493,168 +416,6 @@
 	};
 
 	const NPC_LINES = {
-		Robin: {
-			diaper: [
-				'Robin notices the shape under your clothes and looks worried, not unkind. "If you ever want to talk about it, or if you need help finding a bathroom, I\'m here."',
-				'Robin glances down, then quickly back to your face. "I don\'t mind. Do you want to go somewhere quieter?"',
-				'Robin gives you a small, private smile. "You look uncomfortable. We can take a break whenever you need. No one else has to know."',
-			],
-			accident: [
-				"Robin sees what happened and steps in close, trying to shield you from anyone else. \"It's all right. Let's get you somewhere you can clean up. I'll walk with you.\"",
-				"Colour rises in Robin's face, but {{he}} does not laugh. \"Come on. We can go back to my room — or yours. You don't have to explain.\"",
-				'Robin puts a hand on your arm, steady and quiet. "These things happen. Let me help you get out of here before more people notice."',
-			],
-		},
-		Bailey: {
-			diaper: [
-				'Bailey\'s gaze flicks to the padding at your waist and stays there a moment too long. "If that is how you mean to get through the day, keep it out of my sight and out of the hallway."',
-				'Bailey folds their arms. "I did not take you in so you could walk around like that. Sort yourself out before someone complains."',
-			],
-			accident: [
-				'Bailey takes in the state of you and does not bother to lower their voice. "Clean that up, and yourself. I have no patience for this today."',
-				'Bailey\'s mouth tightens. "If you cannot hold it, you can explain the mess to whoever has to deal with it. Get out of my way."',
-			],
-		},
-		Sam: {
-			diaper: [
-				'Sam\'s eyes catch on the outline at your waist as they set a cup down. They keep their voice low. "If you need the loo, just say. I can watch the counter."',
-				'Sam pretends to tidy a napkin stack so no one else looks over. "You\'re fine. The back room is free if you want a minute."',
-			],
-			accident: [
-				'Sam notices at once and moves to block the view from the tables. "Come through the back. I\'ll get you a cloth and a bit of space. No one out here needs to stare."',
-				"Sam's professional smile does not slip, but they steer you toward the staff door. \"Accidents happen. Let's get you sorted before the lunch rush.\"",
-			],
-		},
-		Alex: {
-			diaper: [
-				'Alex clocked the padding when you bent to lift a crate, and does not make a fuss. "If you need a break, take one. The work will still be here."',
-				"Alex nods toward the farmhouse. \"There's a toilet inside. Use it when you need. I don't care what you wear to get through a long shift.\"",
-			],
-			accident: [
-				"Alex looks, then looks away toward the fields, giving you a moment. \"There's a hose by the shed and a change of clothes in the porch. Go. I'll cover for you.\"",
-				'Alex\'s voice is practical, not unkind. "It happens, especially on a long day. Get cleaned up. We can finish later."',
-			],
-		},
-		Charlie: {
-			diaper: [
-				'Charlie notices as you adjust your clothes and keeps their tone professional. "If you need to step out, do it. I would rather you were comfortable than pushing through a class."',
-				'Charlie glances once, then back to the studio floor. "The changing room is yours if you want it. No questions."',
-			],
-			accident: [
-				'Charlie stops the music and turns so the others look at them, not at you. "Take five, everyone." Then, quietly, to you: "There\'s a shower in the back. Go. I\'ll hold the class."',
-				"Charlie's face is tight with concern, not anger. \"Leave the floor. I'll tell them you felt unwell. Come back when you're ready, or don't.\"",
-			],
-		},
-		Sirris: {
-			diaper: [
-				'Sirris notices as they pass your bench and lowers their voice. "If you need to be excused, you only have to ask. I would rather you were not sitting in discomfort."',
-				'Sirris\'s eyes flick down and then to the clock. "There is time before the next demonstration. Use it if you need."',
-			],
-			accident: [
-				'Sirris sees immediately and steps between you and the rest of the class. "Everyone, eyes on the board. You — come with me. The staff bathroom is this way."',
-				'Sirris keeps their voice even. "These things are medical, not a joke. Go and get cleaned up. I will mark you present."',
-			],
-		},
-		River: {
-			diaper: [
-				'River clocks it and does not waste words. "If you need to leave, leave. Better that than sitting there distracted."',
-				'River taps the desk once. "Ask if you need the toilet. I will not make a scene of it."',
-			],
-			accident: [
-				'River\'s chair scrapes back. "Out. Now. The corridor bathroom. I will deal with the class." Their tone is sharp, but it is meant to get you moving, not to shame you in front of everyone.',
-				'River cuts off a rising laugh with a look. "Enough. You, go and sort yourself out. The rest of you, back to the problem on the board."',
-			],
-		},
-		Doren: {
-			diaper: [
-				'Doren\'s glance is brief and kind. "If you need to step out, you may. You will not be marked late."',
-				'Doren sets a book down and speaks only to you. "Comfort matters more than the next page. Go if you need to."',
-			],
-			accident: [
-				'Doren is at your side before anyone can comment, a coat already half off. "Come with me. We will find you something to wear and a sink. You are all right."',
-				'Doren\'s voice is quiet and firm. "This is not a story for the corridor. Go to the staff room. I will follow in a moment."',
-			],
-		},
-		Winter: {
-			diaper: [
-				'Winter notices and looks, as usual, faintly unimpressed by the world\'s inconveniences. "If you require an excuse, you have one. Do not sit there in misery for the sake of a lesson."',
-				'Winter\'s comment is dry. "I have seen worse preparations for a long afternoon. Use the facilities if you need them."',
-			],
-			accident: [
-				'Winter does not raise their voice. They simply close the book and say, "The rest of you will read the next two pages. You, with me." The walk to the door is blessedly short.',
-				'Winter\'s look silences the first whisper. "That will do. Go and make yourself presentable. This will not be discussed."',
-			],
-		},
-		Mason: {
-			diaper: [
-				'Mason notices as you sit on the bench and keeps it matter-of-fact. "If you need the changing room, take it. I would rather you were ready than pretending you are fine."',
-				'Mason nods toward the showers. "Use them. No one has to make a speech about it."',
-			],
-			accident: [
-				'Mason steps in front of you and points the others toward the pool. "Laps. Now." Then, to you: "Shower, kit from the lost-and-found, and take your time. I\'ll say you cramped."',
-				'Mason\'s voice is low. "It happens. Get cleaned up. You are not finishing this lesson, and that is all right."',
-			],
-		},
-		Whitney: {
-			diaper: [
-				'Whitney spots the outline and smirks, but keeps it to a mutter. "Nice look. Try not to rustle in assembly, yeah?" A couple of hangers-on snigger and then lose interest.',
-				"Whitney's eyes go to your waist and back up, pleased with themselves. \"Didn't think you'd show up like that. Don't look at me if someone notices.\"",
-			],
-			accident: [
-				'Whitney sees it and, for a moment, just stares. Then the smirk comes back, thinner than usual. "Wow. You really couldn\'t wait. Maybe walk faster next time." They do not follow you.',
-				'Whitney lets out a short laugh, then glances at the others as if deciding how far to take it. "Go on, then. Before I have to smell it." It is cruel, but it is also a way out.',
-			],
-		},
-		Kylar: {
-			diaper: [
-				'Kylar notices and goes very still, then steps closer than is comfortable. "You should have told me. I would have — I can walk you. People shouldn\'t stare."',
-				"Kylar's voice is tight. \"If anyone says anything, tell me. You shouldn't have to deal with this alone.\"",
-			],
-			accident: [
-				"Kylar is in front of you almost at once, blocking the view, shaking. \"Don't look at them. Look at me. I'll get you out of here. I won't let them talk.\"",
-				"Kylar's face is white. \"It's all right. It's all right. Come with me. I'll find you something clean. You don't have to stay here.\"",
-			],
-		},
-		Sydney: {
-			diaper: [
-				'Sydney notices and colours, then offers a careful smile. "If you need a moment, the side room is usually empty. I won\'t mention it."',
-				'Sydney\'s voice is gentle. "You look like you could use a break. I can finish up here if you want to go."',
-			],
-			accident: [
-				"Sydney's eyes go wide, then soft. They move to your side and speak very quietly. \"It's all right. There's a washroom just there. I'll wait outside if you want me to.\"",
-				'Sydney looks as if they might pray, then simply takes a breath. "Come on. No one here should make this worse. I\'ll walk with you."',
-			],
-		},
-		Avery: {
-			diaper: [
-				'Avery notices and looks quickly away, then clears their throat. "If you would rather sit this out, I understand. I can make an excuse."',
-				"Avery's smile is polite and a little strained. \"You needn't explain. The cloakroom is just back there, if that helps.\"",
-			],
-			accident: [
-				'Avery goes still, then steps in with surprising speed, shrugging off a coat. "Here. This way — there is a bathroom off the lobby. I will tell them you were unwell."',
-				'Avery\'s voice stays low and even. "This does not have to be a scene. Let me get you out of the room. We can talk later, or not at all."',
-			],
-		},
-		Eden: {
-			diaper: [
-				"Eden notices and snorts, not unkindly. \"Wear what you have to. The woods don't care, and neither do I. There's a bucket and a stream if you need them.\"",
-				'Eden glances once. "If that keeps you from having to run back to town, fine. Just don\'t expect me to fuss."',
-			],
-			accident: [
-				"Eden looks, then jerks their chin at the trees. \"Go down to the water. There's soap in the cabin. I'll keep watch. It happens.\"",
-				"Eden's comment is blunt. \"Worse things have happened out here. Get cleaned up. I'll put the kettle on.\"",
-			],
-		},
-		Niki: {
-			diaper: [
-				'Niki notices as they adjust a light and keeps it professional. "If you need a break, say so. I can wait. Comfort shows in the pictures anyway."',
-				"Niki's tone is easy. \"Changing room is yours. No need to sit through a session if you're uncomfortable.\"",
-			],
-			accident: [
-				"Niki turns the camera away at once and steps between you and the set. \"We're done for now. There's a sink in the back and a spare robe on the hook. Take your time.\"",
-				"Niki's voice is calm and practical. \"It happens. I'll clear the room. You get cleaned up; we can reschedule, or not. Your call.\"",
-			],
-		},
 		Landlord: {
 			diaper: [
 				"The landlord's eyes catch on the outline as they pass in the hallway, then they look pointedly at the noticeboard instead. \"Keep the place tidy. That's all I ask.\"",
@@ -774,7 +535,20 @@
 		}
 		if (typeof window.plusFlatEvict === "function" || typeof window.plusFlatMoveOut === "function") evictWrapped = true;
 	}
+	function plusDropNamedNpcReactionState() {
+		const st = V();
+		if (!st) return;
+		delete st.plusWhitneyContRepDay;
+		if (st.plusNpcSceneDay && typeof st.plusNpcSceneDay === "object") {
+			for (const k of Object.keys(st.plusNpcSceneDay)) {
+				if (!/^(Landlord|Neighbour):/.test(k)) delete st.plusNpcSceneDay[k];
+			}
+		}
+	}
 	function boot() {
+		try {
+			plusDropNamedNpcReactionState();
+		} catch (e) {}
 		try {
 			wrapRobinLocation();
 		} catch (e) {}

@@ -103,7 +103,7 @@ function load(overrides = {}) {
 	return { window: context.window, State, Time, setup, C };
 }
 
-describe("plus bug-pass: flat location and Charlie", () => {
+describe("plus bug-pass: flat location and dance studio", () => {
 	it("maps $location 'flat' to the flats building art", () => {
 		const { window, setup, State } = load();
 		assert.equal(typeof setup.Locations.flat, "function");
@@ -126,13 +126,11 @@ describe("plus bug-pass: flat location and Charlie", () => {
 		assert.doesNotMatch(twee, /<<set \$bus to "plus_flat">><<location "flats">>/);
 	});
 
-	it("treats Charlie as present at the dance studio's real $location", () => {
+	it("no longer treats Charlie as a Plus accident or diaper reaction NPC", () => {
 		const { window, State } = load({ passage: "Dance Studio" });
 		State.variables.location = "dance_studio";
-		assert.equal(window.plusNpcPresent("Charlie"), true);
-		State.variables.location = "office";
-		State.passage = "Office Lobby";
 		assert.equal(window.plusNpcPresent("Charlie"), false);
+		assert.equal(window.plusNpcSceneAllowed("Charlie", "diaper"), false);
 	});
 });
 

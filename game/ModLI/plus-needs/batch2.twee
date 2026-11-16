@@ -461,6 +461,7 @@ You put things away, shake out the rug, and wipe the kitchen counters. It is not
 		Robin is already here, of course. You put the kettle on. <<He>> sits at the little table with <<his>> cup and talks about school, or nothing much, until the tea is gone.
 		<<stress -6>><<lstress>><<npcincr Robin love 1>><<glove>>
 	<<else>>
+		<<npc Robin>><<person1>>
 		Robin is out. You leave a mug on the side and a note, and the flat feels as if it is waiting for <<him>> as well as for you.
 	<</if>>
 	<br><br>

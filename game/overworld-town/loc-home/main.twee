@@ -3471,7 +3471,6 @@ You return to your tiny bedroom and wonder what to do.
 	<<nnpc_He "Bailey">> looks over you briefly. "Put your clothes on," <<nnpc_he "Bailey">> says. <<nnpc_He "Bailey">> snaps <<nnpc_his "Bailey">> fingers. "Now."
 	You hastily throw on the clothes you had on before. <<bedclotheson "bed">>
 <</if>>
-<<plusBaileyContRepComment "bedroom">>
 <br><br>
 
 <<if $robinfirstrentfight and ["orphanage","bath","sleep"].includes(_robin_location)>> <!-- the first robin fight has already happened -->

@@ -1603,7 +1603,6 @@ window.plusNowTs = function () {
 		if (!V.schoolrep || typeof V.schoolrep !== "object") V.schoolrep = { crossdress: 0, herm: 0, continence: 0 };
 		if (!Number.isFinite(V.schoolrep.continence)) V.schoolrep.continence = 0;
 		if (!Number.isFinite(V.plusContRepSchoolPending)) V.plusContRepSchoolPending = 0;
-		if (V.settings && V.settings.inflationBaileyRelentless === undefined) V.settings.inflationBaileyRelentless = false;
 	};
 	window.plusContRepInfo = function () {
 		window.plusContRepInit();
@@ -1638,10 +1637,6 @@ window.plusNowTs = function () {
 	window.plusSchoolContRep = function () {
 		window.plusContRepInit();
 		return State.variables.schoolrep.continence || 0;
-	};
-	window.plusBaileyRelentless = function () {
-		const s = State.variables.settings || {};
-		return s.inflationBaileyRelentless === true || s.inflationBaileyRelentless === 1;
 	};
 	window.plusFameGood = function () {
 		const f = State.variables.fame || {};

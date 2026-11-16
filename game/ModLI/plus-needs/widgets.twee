@@ -990,31 +990,10 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 				<<print either("The corridor seems to know you are coming. A few students make room; others make a point of not doing so.", "You hear someone say, just loud enough, that you should probably find a toilet before class.", "A teacher at the far end of the hall looks at you for a moment, then looks away, as if deciding not to make it a scene.")>>
 		<</switch>>
 		</span>
-		<<if _scr gte 4 and plusDayKey() isnot $plusWhitneyContRepDay and C.npc.Whitney and C.npc.Whitney.init is 1 and random(0, 2) is 0>>
-			<<set $plusWhitneyContRepDay to plusDayKey()>>
-			<span class="purple"> Whitney's voice carries from further down the hall, making a cheap joke about it. A couple of <<his>> hangers-on laugh.</span>
-		<</if>>
 		<<run plusContRepRemarkStress()>>
 		<<if plusContRepRemarkStress() gt 0>><<stress `plusContRepRemarkStress()`>><<gstress>><</if>>
 		<br>
 	<</if>>
-<</widget>>
-
-<<widget "plusBaileyContRepComment">>
-	<<if !plusBaileyRelentless()>><<exit>><</if>>
-	<<set _lvl to plusSchoolContRep()>>
-	<<if _lvl lte 0 and plusContRepPublicValue() lt 200>><<exit>><</if>>
-	<br>
-	<span class="purple">
-	<<if _lvl gte 4 or plusContRepPublicValue() gte 600>>
-		<<print either("Bailey looks you over and snorts. \"I've heard the talk. Sort yourself out. I don't have time to clean up after you.\"", "\"Don't bring that mess into my hall,\" Bailey says, as if the rumour itself were a stain. \"Keep yourself in order.\"")>>
-	<<elseif _lvl gte 2 or plusContRepPublicValue() gte 200>>
-		<<print either("Bailey's eyes flick over you. \"There are stories going around. I don't care about stories, so long as they don't become my problem.\"", "\"If I start hearing about accidents in my building,\" Bailey says, \"I'll make it your problem.\"")>>
-	<<else>>
-		Bailey glances at you a moment longer than usual, then lets it go.
-	<</if>>
-	</span>
-	<br>
 <</widget>>
 
 :: Widgets Plus Flat [widget plusneeds]

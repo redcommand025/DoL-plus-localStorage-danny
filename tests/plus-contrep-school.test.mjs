@@ -74,13 +74,13 @@ describe("continence reputation: school rumours and labels", () => {
 		assert.ok(window.plusContRepPublicValue() > 0);
 	});
 
-	it("does not let Bailey comment unless inflationBaileyRelentless is on", () => {
-		const { window, State } = load();
-		assert.equal(window.plusBaileyRelentless(), false);
-		State.variables.settings.inflationBaileyRelentless = true;
-		assert.equal(window.plusBaileyRelentless(), true);
-		assert.match(read("game/base-system/settings.twee"), /inflationBaileyRelentless/);
-		assert.match(read("game/overworld-town/loc-home/rent.twee"), /plusBaileyContRepComment/);
+	it("has no Bailey continence remarks or Relentless Bailey setting", () => {
+		const { window } = load();
+		assert.equal(typeof window.plusBaileyRelentless, "undefined");
+		assert.doesNotMatch(read("game/base-system/settings.twee"), /inflationBaileyRelentless/);
+		assert.doesNotMatch(read("game/overworld-town/loc-home/rent.twee"), /plusBaileyContRepComment/);
+		assert.doesNotMatch(read("game/overworld-town/loc-home/main.twee"), /plusBaileyContRepComment/);
+		assert.doesNotMatch(read("game/ModLI/plus-needs/widgets.twee"), /plusBaileyContRepComment|plusWhitneyContRepDay|Whitney's voice/);
 	});
 
 	it("lets kindness slightly speed clean decay and soften remark chance", () => {
@@ -112,12 +112,12 @@ describe("continence reputation: school rumours and labels", () => {
 		assert.ok(window.plusContRepWorkMul() < 1);
 	});
 
-	it("registers the hallway remark and Bailey comment as widgets, not as evicted-flat prose", () => {
+	it("registers the hallway remark as a widget, not as evicted-flat prose", () => {
 		const widgets = read("game/ModLI/plus-needs/widgets.twee");
 		const reput = widgets.split(":: Widgets Plus Needs Continence Reputation")[1].split(":: ")[0];
 		assert.match(reput, /<<widget "plusSchoolContRepRemark">>/);
 		assert.match(reput, /<<widget "plusSchoolContRepBox">>/);
-		assert.match(reput, /<<widget "plusBaileyContRepComment">>/);
+		assert.doesNotMatch(reput, /plusBaileyContRepComment/);
 		const evicted = widgets.split(":: Plus Flat Evicted")[1].split(":: ")[0];
 		assert.doesNotMatch(evicted, /<<widget /);
 		assert.match(read("game/overworld-town/loc-school/hallways.twee"), /<<plusSchoolContRepRemark>>/);

@@ -413,7 +413,7 @@ Your clothes are clean again.
 	<<if $location is "prison">>
 		The medical orderly opens a cupboard, checks a list, and hands you a plain packet. "One spare. Don't come asking again for a couple of days. Change in the stalls if you have to, not on the walkway."
 	<<else>>
-		Harper, or whoever is on duty, gives you a brief look and a packet from a locked drawer. "This is not a reward. It is a practical measure. You will not be issued another immediately."
+		Whoever is on duty gives you a brief look and a packet from a locked drawer. "This is not a reward. It is a practical measure. You will not be issued another immediately."
 	<</if>>
 	<br><br>
 	You take it. There is no ceremony.

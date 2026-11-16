@@ -916,7 +916,7 @@ describe("QA compiled isolated runtime", () => {
 		}, plusNames);
 		assert.equal(info.hasRemark, true, "plusSchoolContRepRemark is not registered");
 		assert.equal(info.hasBox, true);
-		assert.equal(info.hasBailey, true);
+		assert.equal(info.hasBailey, false, "plusBaileyContRepComment should be gone");
 		assert.deepEqual(info.missing, [], "undefined plus macros: " + info.missing.join(", "));
 		assert.equal(info.schoolDay, true, JSON.stringify({ hour: info.hour, minute: info.minute }));
 		assert.equal(info.zero.ok, true, JSON.stringify(info.zero));
