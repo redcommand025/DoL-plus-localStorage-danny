@@ -1,8 +1,4 @@
 :: Canteen
-<<if getDannyLocation() is "canteen" and $dannyIntro is 1 and !$daily.dannyCanteen>>
-  <<set $daily.dannyCanteen to 1>>
-  <<include "Danny Canteen Natural">>
-<</if>>
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>><<sydneySchedule>>
 You are in the school canteen.
 <<dannyPresence "canteen">>
@@ -16,6 +12,10 @@ You are in the school canteen.
 		The room is empty.
 	<<elseif $schoolstate is "lunch">>
 		The room is packed with students chatting and eating their lunch.
+<<if getDannyLocation() is "canteen" and $dannyIntro is 1 and !$daily.dannyCanteen>>
+  <<set $daily.dannyCanteen to 1>>
+  <<include "Danny Canteen Natural">>
+<</if>>
 	<<else>>
 		The room is empty, aside from a small group of students chatting around one of the tables.
 	<</if>>

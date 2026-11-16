@@ -179,5 +179,7 @@ Afterwards Danny stays close, breathing steady.
 :: Canteen Lunch Danny
 You sit with Danny. They eat quietly and show you a photo from earlier.
 <<npcincr Danny love 2>>
+<<set $plusHunger to Math.min(($plusHunger || 0) + 40, $plusHungerMax || 100)>>
+<<set $plusThirst to Math.min(($plusThirst || 0) + 30, $plusThirstMax || 100)>>
 <br>
 <<link [[Continue|Canteen]]>><</link>>

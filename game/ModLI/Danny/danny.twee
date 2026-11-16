@@ -2,6 +2,14 @@
 <<set _loc to getDannyLocation()>>
 <<if _loc is "sleep">>
 A note on the door: "Sleeping. Please don't wake me."
+<<if C.npc.Danny.love gte 40 and Time.isWeekEnd()>>
+  <<link [[Photo walk|Danny Love Photo Walk]]>><</link>>
+  <br>
+<</if>>
+<<if V.loveInterest and V.loveInterest.primary is "Danny" and C.npc.Danny.lust gte 50 and Time.hour gte 21>>
+  <<link [[Stay the night|Danny Lust Stay Over]]>><</link>>
+  <br>
+<</if>>
 <<link [[Leave|Bedroom]]>><</link>>
 <<elseif _loc is "work">>
 A note: "At Niki's photography. Back later."
