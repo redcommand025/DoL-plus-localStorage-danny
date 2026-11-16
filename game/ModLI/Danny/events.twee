@@ -146,35 +146,17 @@ Danny shows you a shot of the field.
 :: Danny Photo Walk
 You walk with Danny. They take a few pictures, then one of you.
 <<npcincr Danny love 5>>
-<<npcincr Danny lust 2>>
 <br>
 <<link [[Back|Danny Room]]>><</link>>
 
-:: Danny Lust Stay Over
-<<if V.loveInterest and V.loveInterest.primary is "Danny" and C.npc.Danny.lust gte 50 and Time.hour gte 21>>
-  Danny looks at the clock, then at you.
-  "Do you... want to stay?"
-  <<link [[Yes|Danny Stay Over]]>><</link>>
-  <<link [[No|Danny Room]]>><</link>>
-<</if>>
-
 :: Danny Stay Over
-You stay. Danny turns the light off.
+It's late. Danny pulls a spare blanket from the cupboard and points you at the floor by the desk.
+"It's not much, but you can stay. I'll be in the bed."
 <br><br>
-In the dark they shift closer. "Is this okay?"
+You settle on the floor. Danny turns the light off and stays on their side of the room. You both sleep until morning.
+<<npcincr Danny love 2>>
 <br>
-<<link [[Yes|Danny Stay Over Sex]]>><</link>>
-<<link [[Not tonight|Danny Room]]>><<npcincr Danny love 1>><</link>>
-
-:: Danny Stay Over Sex
-You pull them closer. It's slow and quiet.
-<br><br>
-Afterwards Danny stays close, breathing steady.
-<<npcincr Danny love 6>>
-<<npcincr Danny lust 8>>
-<<set $dannyAccidentKnown to 1>>
-<br>
-<<link [[Sleep|Danny Room]]>><</link>>
+<<link [[Wake up|Danny Room]]>><</link>>
 
 :: Canteen Lunch Danny
 You sit with Danny. They eat quietly and show you a photo from earlier.
