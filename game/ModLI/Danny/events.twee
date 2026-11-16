@@ -175,3 +175,9 @@ Afterwards Danny stays close, breathing steady.
 <<set $dannyAccidentKnown to 1>>
 <br>
 <<link [[Sleep|Danny Room]]>><</link>>
+
+:: Canteen Lunch Danny
+You sit with Danny. They eat quietly and show you a photo from earlier.
+<<npcincr Danny love 2>>
+<br>
+<<link [[Continue|Canteen]]>><</link>>
