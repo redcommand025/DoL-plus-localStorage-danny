@@ -363,10 +363,15 @@ Weather.Renderer.Effects.add({
 Weather.Renderer.Effects.add({
 	name: "locationImageAnimation",
 	async init() {
+		/* Snapshot the config used for layers so async loads cannot pick up a later
+		 * Locations.get() change and combine town files with the home folder (or similar). */
+		const locationConfig = this.location;
+		const folder = locationConfig && locationConfig.folder ? locationConfig.folder : "";
+		const capturedPath = `${this.path}/` + (folder ? `${folder}/` : "");
 		const loadImage = async (key, obj) => {
 			// Make it asyncronous to wait for the image to load before animating without slowing down the main flow
 			return new Promise(resolve => {
-				const basePath = this.fullPath;
+				const basePath = capturedPath;
 				/* Keep the filename string. After a successful load this code used to
 				 * overwrite obj.image with the Image element, so a later init on a shared
 				 * object would build img/.../[object Object] and 404. */
@@ -462,10 +467,10 @@ Weather.Renderer.Effects.add({
 		};
 
 		this.animations = new Map();
-		if (this.location?.[this.key] === undefined) return;
+		if (locationConfig?.[this.key] === undefined) return;
 
 		// Need to create a deep copy in case of other effects using the same object
-		this.obj = this.location[this.key].deepCopy();
+		this.obj = locationConfig[this.key].deepCopy();
 
 		// Check if there are sub-animations
 		// In that case we want a separate animation for each of them

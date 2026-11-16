@@ -4247,6 +4247,22 @@
 <</widget>>
 
 <<widget "get_pillory_npc">>
+	<<if !$pillory or !$pillory.tenant or !$pillory.tenant.person or !$pillory.tenant.person.pronoun>>
+		<<exit>>
+	<</if>>
+	/* A leftover named-NPC slot (for example Danny after retirement) must not
+	 * ride along when this widget copies the tenant into $NPCList[0]. */
+	<<if $npcrow.includes(0)>>
+		<<set _pilloryNamed to $pillory.tenant.special.name>>
+		<<if !_pilloryNamed or ($NPCNameList and !$NPCNameList.includes(_pilloryNamed))>>
+			<<set _px to $npcrow.indexOf(0)>>
+			<<if _px gte 0>>
+				<<run $npc.splice(_px, 1)>>
+				<<run $npcnum.splice(_px, 1)>>
+				<<run $npcrow.splice(_px, 1)>>
+			<</if>>
+		<</if>>
+	<</if>>
 	<<set $NPCList[0] to clone($pillory.tenant.person)>><<person1>>
 <</widget>>
 

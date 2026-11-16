@@ -60,4 +60,52 @@ describe("plusRetireDanny save migration", () => {
 		assert.deepEqual(V.NPCNameList, ["Robin", "Poppy"]);
 		assert.equal(V.money, 10);
 	});
+
+	it("clears leftover $npc slots and remaps indices after Danny, including a pillory tenant", () => {
+		const official = ["Avery", "Bailey", "Sydney", "Riley", "Poppy"];
+		const V = {
+			NPCNameList: official.concat(["Danny", "Custom"]),
+			NPCName: official
+				.map(nam => ({ nam, title: nam }))
+				.concat([
+					{ nam: "Danny", title: "student", description: "Danny" },
+					{ nam: "Custom", title: "custom" },
+				]),
+			npc: ["Danny", "Custom"],
+			npcnum: [5, 6],
+			npcrow: [0, 1],
+			pillory: {
+				tenant: {
+					exists: 1,
+					person: { nam: "Danny", fullDescription: "Danny", pronoun: "m", description: "Danny" },
+					special: { name: "Danny", desc: "student" },
+				},
+			},
+			loveInterest: { primary: "None" },
+		};
+		assert.equal(plusRetireDanny(V), true);
+		assert.deepEqual(V.NPCNameList, official.concat(["Custom"]));
+		assert.equal(V.NPCNameList.indexOf("Custom"), 5);
+		assert.equal(V.NPCName[5].nam, "Custom");
+		assert.deepEqual(V.npc, ["Custom"]);
+		assert.deepEqual(V.npcnum, [5]);
+		assert.deepEqual(V.npcrow, [1]);
+		assert.equal(V.pillory.tenant.exists, 0);
+		assert.equal(V.pillory.tenant.special.name, "");
+	});
+
+	it("drops a stale Danny $npcnum that now points past the array end, even if he was already spliced", () => {
+		const official = ["Avery", "Bailey", "Poppy"];
+		const V = {
+			NPCNameList: official.slice(),
+			NPCName: official.map(nam => ({ nam, title: nam })),
+			npc: ["Danny"],
+			npcnum: [3],
+			npcrow: [0],
+		};
+		assert.equal(plusRetireDanny(V), false);
+		assert.deepEqual(V.npc, []);
+		assert.deepEqual(V.npcnum, []);
+		assert.deepEqual(V.npcrow, []);
+	});
 });

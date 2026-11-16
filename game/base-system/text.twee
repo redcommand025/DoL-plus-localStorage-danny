@@ -1953,11 +1953,18 @@
 		<<set $npcadult to $NPCList[_n].adult>>
 		<<set $pronoun to $NPCList[_n].pronoun>>
 		<<if $npcrow.includes(_n)>>
-			<<set $description to $NPCName[$npcnum[$npcrow.indexOf(_n)]].title>>
-			<<set $role to "normal">>
-			<<set $npc_named to 1>>
-			<<if $NPCName[$npcnum[$npcrow.indexOf(_n)]].nam is "Ivory Wraith">>
-				<<set $description to "pale figure">>
+			<<set _namedIdx to $npcnum[$npcrow.indexOf(_n)]>>
+			<<if def $NPCName[_namedIdx] and $NPCName[_namedIdx].nam>>
+				<<set $description to $NPCName[_namedIdx].title>>
+				<<set $role to "normal">>
+				<<set $npc_named to 1>>
+				<<if $NPCName[_namedIdx].nam is "Ivory Wraith">>
+					<<set $description to "pale figure">>
+				<</if>>
+			<<else>>
+				<<set $description to $NPCList[_n].description>>
+				<<set $role to $NPCList[_n].role>>
+				<<set $npc_named to 0>>
 			<</if>>
 		<<else>>
 			<<set $description to $NPCList[_n].description>>

@@ -926,4 +926,107 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.zero.passage, "Hallways");
 		assert.equal(info.three.passage, "Hallways");
 	});
+
+	it("QA-C028 [integration] Cliff Street with an occupied pillory works on a fresh game and after retiring Danny", async () => {
+		const info = await page.evaluate(() => {
+			document.getElementById("dol-password-gate")?.remove();
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " ") };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e) };
+				}
+			};
+			const errorsOf = root =>
+				Array.from((root || document).querySelectorAll(".error, .error-view, #errorbox, .macro-error"))
+					.map(el => (el.innerText || el.textContent || "").replace(/\s+/g, " ").trim())
+					.filter(Boolean);
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			if (typeof plusNeedsInit === "function") plusNeedsInit();
+			const V = SugarCube.State.variables;
+			V.intro = 0;
+			V.combat = 0;
+			V.eventskip = 1;
+			V.exposed = 0;
+			V.rng = 99;
+			if (!Array.isArray(V.NPCNameList) || V.NPCNameList.length < 30) wiki("<<npcNamed>>");
+			const officialLen = V.NPCNameList.length;
+			const playCliff = label => {
+				try {
+					SugarCube.Engine.play("Cliff Street");
+				} catch (e) {
+					return { label, ok: false, passage: SugarCube.State.passage, text: String(e && e.message ? e.message : e), errors: [String(e)] };
+				}
+				const root = document.getElementById("passages") || document.body;
+				const text = (root.innerText || "").replace(/\s+/g, " ");
+				const errors = errorsOf(root).filter(t => /does not exist|Error \(::|title|nam|trust|pillory/i.test(t));
+				const bad = /does not exist|Error \(::|Cannot read properties of undefined/i.test(text) || errors.length > 0;
+				return {
+					label,
+					ok: !bad,
+					passage: SugarCube.State.passage,
+					text: text.slice(0, 400),
+					errors: errors.slice(0, 8),
+					hasPillory: /pillory/i.test(text),
+				};
+			};
+			wiki("<<setup_pillory>>");
+			const generic = {
+				pronoun: "m",
+				description: "lanky man",
+				fullDescription: "lanky man",
+				gender: "m",
+				title: "man",
+			};
+			V.pillory.tenant.exists = 1;
+			V.pillory.tenant.person = generic;
+			V.pillory.tenant.special = { name: "", desc: "" };
+			V.pillory.tenant.endTime = Time.date.timeStamp + 6 * 60 * 60;
+			V.pillory.tenant.startTime = Time.date.timeStamp;
+			const fresh = playCliff("fresh");
+			const sydneyBefore = V.NPCNameList.indexOf("Sydney");
+			V.NPCNameList.push("Danny");
+			V.NPCName.push({ nam: "Danny", description: "Danny", title: "student", love: 10 });
+			V.npc = ["Danny"];
+			V.npcnum = [officialLen];
+			V.npcrow = [0];
+			V.loveInterest = V.loveInterest || {};
+			V.loveInterest.primary = "Danny";
+			V.pillory.tenant.exists = 1;
+			V.pillory.tenant.person = { ...generic };
+			V.pillory.tenant.special = { name: "", desc: "" };
+			V.pillory.tenant.endTime = Time.date.timeStamp + 6 * 60 * 60;
+			const retired = window.plusRetireDanny(V);
+			const after = playCliff("retired");
+			const readLoc = name => {
+				SugarCube.State.variables.location = name;
+				return setup.Locations.get();
+			};
+			const loc = { flat: readLoc("flat"), home: readLoc("home"), hotel: readLoc("hotel") };
+			return {
+				retired,
+				hasDanny: V.NPCNameList.includes("Danny"),
+				npc: V.npc.slice(),
+				npcnum: V.npcnum.slice(),
+				sydneyBefore,
+				sydneyAfter: V.NPCNameList.indexOf("Sydney"),
+				fresh,
+				after,
+				loc,
+			};
+		});
+		assert.equal(info.retired, true);
+		assert.equal(info.hasDanny, false);
+		assert.deepEqual(info.npc, []);
+		assert.equal(info.sydneyAfter, info.sydneyBefore);
+		assert.equal(info.fresh.ok, true, JSON.stringify(info.fresh));
+		assert.equal(info.after.ok, true, JSON.stringify(info.after));
+		assert.equal(info.fresh.passage, "Cliff Street");
+		assert.equal(info.after.passage, "Cliff Street");
+		assert.equal(info.loc.flat, "flats");
+		assert.equal(info.loc.home, "home");
+		assert.equal(info.loc.hotel, "town");
+	});
 });

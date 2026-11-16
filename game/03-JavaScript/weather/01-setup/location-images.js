@@ -29,15 +29,23 @@ setup.Locations = {
 	hotel: () => {
 		return "town";
 	},
+	flat: () => "flats",
 	lake: () => (["fishingForestLake", "lakefishingrock"].includes(V.bus) ? "lake-rock" : "lake"),
 	estate: () => (V.bus === "estate_cottage" ? "estate_cottage" : "estate"),
 	farm: () => (["farmroad6", "farm"].includes(V.bus) ? "farm" : "underground_farm"),
 	get() {
-		if (typeof this[V.location] === "function") {
-			return this[V.location]();
+		const vars = (typeof SugarCube !== "undefined" && SugarCube.State && SugarCube.State.variables) || V;
+		const loc = vars && vars.location;
+		if (typeof this[loc] === "function") {
+			return this[loc]();
 		}
-		if (setup.LocationImages && Object.hasOwn(setup.LocationImages, V.location)) {
-			return V.location;
+		if (setup.LocationImages && Object.hasOwn(setup.LocationImages, loc)) {
+			return loc;
+		}
+		/* Bus streets and similar inherit a location_name (often "town") from setup.locations. */
+		const inherited = setup.locations && loc && setup.locations[loc] && setup.locations[loc].location_name;
+		if (inherited && setup.LocationImages && Object.hasOwn(setup.LocationImages, inherited)) {
+			return inherited;
 		}
 		return "home";
 	},
