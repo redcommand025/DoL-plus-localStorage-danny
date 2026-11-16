@@ -265,394 +265,168 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.hooked, 0);
 	});
 
-	it("QA-C013 [integration] compiled npcincr Talk and Help with control training raise Danny love without a whitelist error", async () => {
+	it("QA-C013 [integration] plusRetireDanny drops Danny from an old save without shifting earlier NPC indices", async () => {
 		const info = await page.evaluate(() => {
+			document.getElementById("dol-password-gate")?.remove();
 			const wiki = src => {
 				const d = document.createElement("div");
 				try {
-					// eslint-disable-next-line no-undef
 					new Wikifier(d, src);
-					return { ok: true, text: d.textContent || "", html: d.innerHTML || "" };
-				} catch (e) {
-					return { ok: false, text: String(e && e.message ? e.message : e), html: d.innerHTML || "" };
-				}
-			};
-			const V = window.SugarCube.State.variables;
-			if (!Array.isArray(V.NPCNameList) || !V.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
-			if (!V.danny || typeof V.danny !== "object") V.danny = { control: 0, dependency: 0 };
-			const listed = Array.isArray(V.NPCNameList) && V.NPCNameList.includes("Danny");
-			const loveBefore = window.C && C.npc && C.npc.Danny ? C.npc.Danny.love : null;
-			const talk = wiki("<<npcincr Danny love 2>>");
-			const help = wiki("<<set $danny.control += 5>><<npcincr Danny love 3>>");
-			const combined = (talk.text || "") + (help.text || "") + (talk.html || "") + (help.html || "");
-			return {
-				listed,
-				loveBefore,
-				loveAfter: window.C && C.npc && C.npc.Danny ? C.npc.Danny.love : null,
-				control: V.danny && V.danny.control,
-				adult: window.C && C.npc && C.npc.Danny ? C.npc.Danny.adult : null,
-				teen: window.C && C.npc && C.npc.Danny ? C.npc.Danny.teen : null,
-				whitelistError: /not whitelisted/.test(combined),
-				talkOk: talk.ok,
-				helpOk: help.ok,
-				talkText: (talk.text || "").slice(0, 200),
-			};
-		});
-		assert.equal(info.listed, true);
-		assert.equal(info.whitelistError, false);
-		assert.equal(info.talkOk, true);
-		assert.equal(info.helpOk, true);
-		assert.ok(info.loveAfter >= (info.loveBefore || 0) + 5, JSON.stringify(info));
-		assert.ok((info.control || 0) >= 5, JSON.stringify(info));
-		assert.equal(info.adult, 1);
-		assert.equal(info.teen, 0);
-	});
-
-	it("QA-C014 [integration] updateNewNamedNpcs migrates a save missing Danny", async () => {
-		const info = await page.evaluate(() => {
-			const wiki = src => {
-				const d = document.createElement("div");
-				try {
-					// eslint-disable-next-line no-undef
-					new Wikifier(d, src);
-					return { ok: true, text: d.textContent || "" };
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " ") };
 				} catch (e) {
 					return { ok: false, text: String(e && e.message ? e.message : e) };
 				}
 			};
-			const V = window.SugarCube.State.variables;
-			wiki("<<if def $NPCNameList is false>><<npcNamed>><</if>>");
-			if (typeof V.npcListVersion !== "number" || V.npcListVersion < 1) V.npcListVersion = 1;
-			const idx = (V.NPCNameList || []).indexOf("Danny");
-			if (idx >= 0) {
-				V.NPCNameList.splice(idx, 1);
-				if (Array.isArray(V.NPCName)) V.NPCName.splice(idx, 1);
-			}
-			const missing = !(V.NPCNameList || []).includes("Danny");
-			const migrated = wiki("<<updateNewNamedNpcs>>");
-			const afterIdx = (V.NPCNameList || []).indexOf("Danny");
-			const rec = afterIdx >= 0 && Array.isArray(V.NPCName) ? V.NPCName[afterIdx] : null;
-			return {
-				missing,
-				ok: migrated.ok,
-				present: afterIdx >= 0,
-				title: rec && rec.title,
-				adult: rec && rec.adult,
-				teen: rec && rec.teen,
-				text: (migrated.text || "").slice(0, 200),
-			};
-		});
-		assert.equal(info.missing, true);
-		assert.equal(info.ok, true);
-		assert.equal(info.present, true);
-		assert.equal(info.title, "dependent");
-		assert.equal(info.adult, 1);
-		assert.equal(info.teen, 0);
-	});
-
-	it("QA-C015 [integration] Danny portrait srcfn uses the generic blank fallback", async () => {
-		const info = await page.evaluate(() => {
-			const M = window.Renderer && window.Renderer.CanvasModels && window.Renderer.CanvasModels.main;
-			const nnpc = M && M.layers && M.layers.nnpc;
-			const models = window.Renderer && window.Renderer.CanvasModels;
-			if (!nnpc || typeof nnpc.srcfn !== "function") {
-				return { error: "nnpc layer missing", models: models ? Object.keys(models) : [] };
-			}
-			const V = window.SugarCube.State.variables;
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			const V = SugarCube.State.variables;
+			if (!Array.isArray(V.NPCNameList) || V.NPCNameList.length < 30) wiki("<<npcNamed>>");
+			const official = V.NPCNameList.slice();
+			const sydneyBefore = V.NPCNameList.indexOf("Sydney");
+			const poppyBefore = V.NPCNameList.indexOf("Poppy");
+			const robinBefore = V.NPCNameList[0];
+			// Simulate a pre-removal save: Danny is last, love interest and vars are set.
+			V.NPCNameList.push("Danny");
+			V.NPCName.push({ nam: "Danny", description: "Danny", title: "dependent", love: 40, lust: 20, adult: 1, teen: 0 });
+			V.loveInterest = V.loveInterest || {};
+			V.loveInterest.primary = "Danny";
+			V.loveInterest.secondary = "None";
+			V.danny = { control: 5, dependency: 2 };
+			V.dannyIntro = 1;
+			V.dannyEv = { active: true, id: "hallway" };
+			V.dannyAccidentKnown = 1;
+			V.daily = V.daily || {};
+			V.daily.dannyCanteen = 1;
 			V.options = V.options || {};
-			V.options.autoNNPCDisplay = Object.assign({}, V.options.autoNNPCDisplay, { enabled: false });
-			V.options.nnpcDisplay = "Danny";
-			V.options.nnpcDisplaySlot = 1;
-			V.options.nnpcDisplayGender = "male";
-			V.options.nnpcDisplaySkin = "pale";
-			window.T = window.T || {};
-			window.SugarCube.State.temporary.optionsEnabled = false;
-			const src = nnpc.srcfn({});
-			return { src };
-		});
-		assert.equal(info.error, undefined, JSON.stringify(info));
-		assert.equal(info.src, "img/ui/nnpc/blank.png");
-	});
-
-	it("QA-C016 [integration] Danny social stats initialize and room interactions remain", async () => {
-		const info = await page.evaluate(() => {
-			const wiki = src => {
-				const d = document.createElement("div");
-				try {
-					// eslint-disable-next-line no-undef
-					new Wikifier(d, src);
-					return { ok: true, text: d.textContent || "", html: d.innerHTML || "" };
-				} catch (e) {
-					return { ok: false, text: String(e && e.message ? e.message : e), html: d.innerHTML || "" };
-				}
-			};
-			const html = document.documentElement.innerHTML;
-			const V = window.SugarCube.State.variables;
-			if (!Array.isArray(V.NPCNameList) || !V.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
-			if (!V.danny || typeof V.danny !== "object") V.danny = { control: 0, dependency: 0 };
-			wiki('<<npc "Danny">>');
-			const init = wiki("<<dannyInit>>");
-			const after = window.C && C.npc && C.npc.Danny ? C.npc.Danny : null;
-			const defaults = after ? { c: after.continence, a: after.acceptance, initFlag: after.init } : {};
-			if (after) {
-				after.continence = 99999;
-				after.acceptance = -5;
-			}
-			const clamp = wiki("<<dannyInit>>");
-			const clamped = window.C && C.npc && C.npc.Danny ? { c: C.npc.Danny.continence, a: C.npc.Danny.acceptance } : {};
-			if (after) {
-				after.continence = 3000;
-				after.acceptance = 200;
-				after.init = 1;
-			}
-			const idx = (V.NPCNameList || []).indexOf("Danny");
-			if (idx >= 0 && Array.isArray(V.NPCName) && V.NPCName[idx]) {
-				V.NPCName[idx].init = 1;
-				V.NPCName[idx].continence = 3000;
-				V.NPCName[idx].acceptance = 200;
-			}
-			const box = wiki(
-				'<<set _idx to $NPCNameList.indexOf("Danny")>><<relation-box $NPCName[_idx] `{important:true, continence:{name:"Continence", maxValue:6000, minValue:0}, acceptance:{name:"Acceptance", maxValue:1000, minValue:0}}`>>'
-			);
-			const boxText = (box.text || "") + (box.html || "");
-			const social = wiki("<<social>>");
+			V.options.nnpcDisplay = "danny";
+			const removed = window.plusRetireDanny(V);
+			const keys = Object.keys(V).filter(k => k === "danny" || /^danny/i.test(k));
+			const dailyKeys = V.daily ? Object.keys(V.daily).filter(k => /^danny/i.test(k)) : [];
 			return {
-				hasInitWidget: html.includes("dannyInit"),
-				hasTalk: html.includes("Talk") && html.includes("Danny Room"),
-				hasHelp: html.includes("Help with control training"),
-				hasOffer: html.includes("Offer dependency care"),
-				hasContinenceIcon: html.includes("img/ui/sym-continence.png"),
-				initOk: init.ok,
-				clampOk: clamp.ok,
-				initFlag: defaults.initFlag,
-				continenceDefault: defaults.c,
-				acceptanceDefault: defaults.a,
-				continenceClamped: clamped.c,
-				acceptanceClamped: clamped.a,
-				sameObject: !!(after && idx >= 0 && V.NPCName[idx] === after),
-				namedInit: idx >= 0 && V.NPCName[idx] ? V.NPCName[idx].init : null,
-				boxOk: box.ok,
-				socialHasContinence: /Continence/.test(boxText),
-				socialHasAcceptance: /Acceptance/.test(boxText),
-				socialHasDanny: /Danny/.test(boxText),
-				socialOk: box.ok,
-				socialError: box.ok ? "" : (box.text || "").slice(0, 200),
-				whitelistError: /not whitelisted/.test(boxText + (init.text || "")),
-				rendererWired: html.includes("continence") && html.includes("acceptance") && html.includes('"Danny"'),
+				removed,
+				hasPlus: typeof window.plusRetireDanny === "function",
+				hasDanny: V.NPCNameList.includes("Danny"),
+				listLen: V.NPCNameList.length,
+				nameLen: Array.isArray(V.NPCName) ? V.NPCName.length : null,
+				lastName: V.NPCNameList[V.NPCNameList.length - 1],
+				sydneyBefore,
+				sydneyAfter: V.NPCNameList.indexOf("Sydney"),
+				poppyBefore,
+				poppyAfter: V.NPCNameList.indexOf("Poppy"),
+				officialUnchanged: official.every((n, i) => V.NPCNameList[i] === n),
+				lovePrimary: V.loveInterest && V.loveInterest.primary,
+				loveSecondary: V.loveInterest && V.loveInterest.secondary,
+				leftoverKeys: keys,
+				dailyKeys,
+				display: V.options && V.options.nnpcDisplay,
+				noDannyEvents: typeof window.DannyEvents === "undefined",
+				noDannyTalk: typeof window.DannyTalk === "undefined",
+				noGetLoc: typeof window.getDannyLocation === "undefined",
 			};
 		});
-		assert.equal(info.hasInitWidget, true, JSON.stringify(info));
-		assert.equal(info.hasTalk, true, JSON.stringify(info));
-		assert.equal(info.hasHelp, true, JSON.stringify(info));
-		assert.equal(info.hasOffer, true, JSON.stringify(info));
-		assert.equal(info.hasContinenceIcon, true, JSON.stringify(info));
-		assert.equal(info.initOk, true, JSON.stringify(info));
-		assert.equal(info.clampOk, true, JSON.stringify(info));
-		assert.equal(info.continenceDefault, 3000, JSON.stringify(info));
-		assert.equal(info.acceptanceDefault, 200, JSON.stringify(info));
-		assert.equal(info.continenceClamped, 6000, JSON.stringify(info));
-		assert.equal(info.acceptanceClamped, 0, JSON.stringify(info));
-		assert.equal(info.socialOk, true, info.socialError || JSON.stringify(info));
-		assert.equal(info.whitelistError, false, JSON.stringify(info));
-		assert.equal(info.socialHasContinence, true, JSON.stringify(info));
-		assert.equal(info.socialHasAcceptance, true, JSON.stringify(info));
+		assert.equal(info.hasPlus, true, JSON.stringify(info));
+		assert.equal(info.removed, true);
+		assert.equal(info.hasDanny, false);
+		assert.equal(info.lastName, "Poppy");
+		assert.equal(info.sydneyAfter, info.sydneyBefore);
+		assert.equal(info.poppyAfter, info.poppyBefore);
+		assert.equal(info.officialUnchanged, true);
+		assert.equal(info.listLen, info.nameLen);
+		assert.equal(info.lovePrimary, "None");
+		assert.equal(info.loveSecondary, "None");
+		assert.deepEqual(info.leftoverKeys, []);
+		assert.deepEqual(info.dailyKeys, []);
+		assert.equal(info.display, undefined);
+		assert.equal(info.noDannyEvents, true);
+		assert.equal(info.noDannyTalk, true);
+		assert.equal(info.noGetLoc, true);
+		assert.ok(info.sydneyBefore >= 0);
 	});
 
-	it("QA-C017 [integration] Danny schedule works before named init and does not throw", async () => {
+	it("QA-C014 [integration] school and home locations play without Danny hooks or macro errors", async () => {
 		const info = await page.evaluate(() => {
+			document.getElementById("dol-password-gate")?.remove();
+			const errorsOf = root =>
+				Array.from((root || document).querySelectorAll(".error, .error-view, #errorbox, .macro-error"))
+					.map(el => (el.innerText || el.textContent || "").replace(/\s+/g, " ").trim())
+					.filter(Boolean);
 			const wiki = src => {
 				const d = document.createElement("div");
 				try {
 					new Wikifier(d, src);
-					return { ok: true, text: d.textContent || "" };
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " ") };
 				} catch (e) {
 					return { ok: false, text: String(e && e.message ? e.message : e) };
 				}
 			};
-			const html = document.documentElement.innerHTML;
-			const result = {
-				hasFn: typeof window.getDannyLocation === "function",
-				hasLocked: html.includes("Danny's room (locked)") || html.includes("Danny&#39;s room (locked)"),
-				hasNiki: html.includes("Niki") && html.includes("photography"),
-				hasBrokenCanteen: html.includes("School Canteen"),
-				hasInitGate: /C\.npc\.Danny\.init !== 1/.test(html),
-			};
-			try {
-				if (window.C && C.npc && C.npc.Danny) C.npc.Danny.init = 0;
-				result.locUninit = window.getDannyLocation();
-				result.callOk = true;
-			} catch (e) {
-				result.callOk = false;
-				result.callError = String(e && e.message ? e.message : e);
-			}
-			const printed = wiki("<<set _loc to getDannyLocation()>><<print _loc>>");
-			result.printOk = printed.ok && !/Error/.test(printed.text || "");
-			result.printText = (printed.text || "").trim().slice(0, 80);
-			const known = ["sleep", "room", "walk", "school", "canteen", "courtyard", "work", "unknown"];
-			result.knownLocation = known.includes(result.locUninit) || known.includes(result.printText);
-			return result;
-		});
-		assert.equal(info.hasFn, true, JSON.stringify(info));
-		assert.equal(info.hasLocked, true, JSON.stringify(info));
-		assert.equal(info.hasNiki, true, JSON.stringify(info));
-		assert.equal(info.hasBrokenCanteen, false, JSON.stringify(info));
-		assert.equal(info.hasInitGate, false, JSON.stringify(info));
-		assert.equal(info.callOk, true, JSON.stringify(info));
-		assert.equal(info.printOk, true, JSON.stringify(info));
-		assert.equal(info.knownLocation, true, JSON.stringify(info));
-		assert.notEqual(info.locUninit, "unknown", JSON.stringify(info));
-	});
-
-	it("QA-C018 [integration] timetable slots change the door and show Danny only at the matching place", async () => {
-		const info = await page.evaluate(() => {
-			const wiki = src => {
-				const d = document.createElement("div");
-				try {
-					new Wikifier(d, src);
-					return { ok: true, text: d.textContent || "", err: /Error:/.test(d.textContent || "") };
-				} catch (e) {
-					return { ok: false, text: String(e && e.message ? e.message : e), err: true };
-				}
-			};
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			const V = () => SugarCube.State.variables;
+			V().intro = 0;
+			V().combat = 0;
+			V().eventskip = 1;
+			V().exposed = 0;
+			V().tutorial = 1;
+			if (typeof plusNeedsInit === "function") plusNeedsInit();
+			if (typeof window.plusRetireDanny === "function") plusRetireDanny(V());
 			const addDay = () => {
 				const next = new DateTime(Time.date.year, Time.date.month, Time.date.day, Time.hour, Time.minute);
 				next.addDays(1);
 				Time.setDate(next);
 			};
-			const advanceTo = school => {
-				if (school) {
-					const y = Time.year || Time.date.year;
-					for (const [month, day] of [
-						[9, 15],
-						[10, 12],
-						[11, 12],
-						[2, 12],
-						[3, 12],
-						[5, 12],
-						[6, 12],
-					]) {
-						Time.setDate(new DateTime(y, month, day, Time.hour || 10, Time.minute || 0));
-						let g = 0;
-						while (!Time.schoolDay && Time.schoolTerm && g++ < 6) addDay();
-						if (Time.schoolDay) return true;
-					}
-				} else {
-					let g = 0;
-					while (Time.schoolDay && g++ < 8) addDay();
-					if (!Time.schoolDay) return true;
-					g = 0;
-					while (Time.weekDay !== 1 && Time.weekDay !== 7 && g++ < 8) addDay();
-				}
-				return !!Time.schoolDay === school;
-			};
-			const probe = (h, m) => {
-				Time.setTime(h, m);
-				const loc = getDannyLocation();
-				const door = wiki("<<include [[Danny Room Door]]>>");
-				const text = door.text || "";
-				const presence = {
-					school: wiki('<<dannyPresence "school">>').text.includes("You see Danny here."),
-					canteen: wiki('<<dannyPresence "canteen">>').text.includes("You see Danny here."),
-					courtyard: wiki('<<dannyPresence "courtyard">>').text.includes("You see Danny here."),
-					work: wiki('<<dannyPresence "work">>').text.includes("You see Danny here."),
-				};
-				const sleepNote = /Sleeping/.test(text);
-				const workNote = /Niki/.test(text);
-				const schoolNote = /At school/.test(text);
-				const knock = /Knock and enter/.test(text);
-				return {
-					h,
-					m,
-					loc,
-					schoolDay: !!Time.schoolDay,
-					doorOk: door.ok && !door.err,
-					sleepNote,
-					workNote,
-					schoolNote,
-					knock,
-					presence,
-				};
-			};
-			const result = { hasSetTime: typeof Time.setTime === "function", slots: [], errors: [] };
-			try {
-				if (!advanceTo(true)) result.errors.push("no-school-day");
-				const weekday = [
-					[6, 0, "sleep"],
-					[7, 15, "room"],
-					[8, 20, "walk"],
-					[8, 45, "school"],
-					[10, 0, "school"],
-					[12, 0, "canteen"],
-					[14, 0, "school"],
-					[15, 10, "courtyard"],
-					[15, 30, "work"],
-					[18, 0, "work"],
-					[20, 5, "room"],
-					[21, 0, "sleep"],
-				];
-				for (const [h, m, expected] of weekday) {
-					const row = probe(h, m);
-					row.expected = expected;
-					row.locOk = row.loc === expected;
-					row.doorMatches =
-						(expected === "sleep" && row.sleepNote && !row.knock) ||
-						(expected === "work" && row.workNote && !row.knock) ||
-						(["school", "walk", "canteen", "courtyard"].includes(expected) && row.schoolNote && !row.knock) ||
-						(expected === "room" && row.knock && !row.sleepNote && !row.workNote);
-					row.presenceOk =
-						row.presence.school === (expected === "school") &&
-						row.presence.canteen === (expected === "canteen") &&
-						row.presence.courtyard === (expected === "courtyard") &&
-						row.presence.work === (expected === "work");
-					result.slots.push(row);
-				}
-				if (!advanceTo(false)) result.errors.push("no-weekend");
-				const weekend = [
-					[8, 0, "room"],
-					[10, 0, "work"],
-					[16, 0, "room"],
-					[22, 0, "sleep"],
-				];
-				for (const [h, m, expected] of weekend) {
-					const row = probe(h, m);
-					row.expected = expected;
-					row.locOk = row.loc === expected;
-					row.doorMatches =
-						(expected === "sleep" && row.sleepNote && !row.knock) || (expected === "work" && row.workNote && !row.knock) || (expected === "room" && row.knock);
-					row.presenceOk =
-						row.presence.school === false && row.presence.canteen === false && row.presence.courtyard === false && row.presence.work === (expected === "work");
-					result.slots.push(row);
-				}
-			} catch (e) {
-				result.errors.push(String(e && e.message ? e.message : e));
+			const y = Time.year || Time.date.year;
+			for (const [month, day] of [
+				[9, 15],
+				[10, 12],
+				[11, 12],
+				[2, 12],
+				[3, 12],
+				[5, 12],
+				[6, 12],
+			]) {
+				Time.setDate(new DateTime(y, month, day, 10, 15));
+				let g = 0;
+				while (!Time.schoolDay && Time.schoolTerm && g++ < 6) addDay();
+				if (Time.schoolDay) break;
 			}
-			result.allLocOk = result.slots.every(s => s.locOk);
-			result.allDoorOk = result.slots.every(s => s.doorOk && s.doorMatches);
-			result.allPresenceOk = result.slots.every(s => s.presenceOk);
-			result.failed = result.slots
-				.filter(s => !s.locOk || !s.doorMatches || !s.presenceOk || !s.doorOk)
-				.map(s => ({
-					h: s.h,
-					m: s.m,
-					loc: s.loc,
-					expected: s.expected,
-					schoolDay: s.schoolDay,
-					doorOk: s.doorOk,
-					doorMatches: s.doorMatches,
-					presenceOk: s.presenceOk,
-					sleepNote: s.sleepNote,
-					workNote: s.workNote,
-					schoolNote: s.schoolNote,
-					knock: s.knock,
-					presence: s.presence,
-				}));
-			return result;
+			Time.setTime(10, 15);
+			V().location = "school";
+			const play = name => {
+				try {
+					SugarCube.Engine.play(name);
+				} catch (e) {
+					return { name, ok: false, text: String(e && e.message ? e.message : e), errors: [String(e)] };
+				}
+				const root = document.getElementById("passages") || document.body;
+				const text = (root.innerText || "").replace(/\s+/g, " ");
+				const errors = errorsOf(root);
+				const bad =
+					/does not exist|Error \(::|NPCINCR error|macro <</i.test(text) || errors.some(t => /does not exist|Error \(::|NPCINCR error|macro <</i.test(t));
+				return {
+					name,
+					ok: !bad,
+					errors: errors.slice(0, 8),
+					hasDanny: /\bDanny\b/.test(text),
+					passage: SugarCube.State.passage,
+					text: text.slice(0, 180),
+				};
+			};
+			return {
+				schoolDay: !!Time.schoolDay,
+				hallways: play("Hallways"),
+				canteen: play("Canteen"),
+				library: play("School Library"),
+				front: play("School Front Courtyard"),
+				rear: play("School Rear Courtyard"),
+				bedroom: play("Bedroom"),
+				orphanage: play("Orphanage"),
+			};
 		});
-		assert.equal(info.hasSetTime, true, JSON.stringify(info));
-		assert.deepEqual(info.errors, [], JSON.stringify(info));
-		assert.equal(info.allLocOk, true, JSON.stringify(info.failed));
-		assert.equal(info.allDoorOk, true, JSON.stringify(info.failed));
-		assert.equal(info.allPresenceOk, true, JSON.stringify(info.failed));
+		assert.equal(info.schoolDay, true, JSON.stringify(info));
+		for (const key of ["hallways", "canteen", "library", "front", "rear", "bedroom", "orphanage"]) {
+			const r = info[key];
+			assert.equal(r.ok, true, key + " " + JSON.stringify(r));
+			assert.equal(r.hasDanny, false, key + " mentioned Danny: " + r.text);
+			assert.deepEqual(r.errors, [], key + " " + JSON.stringify(r.errors));
+		}
 	});
 
 	it("QA-C019 [integration] startup raises no error dialogs and every diaper shop renders its packs without an <<icon>> error", async () => {
@@ -695,302 +469,6 @@ describe("QA compiled isolated runtime", () => {
 			assert.equal(r.packs, r.expected, loc + JSON.stringify(r));
 		}
 		assert.ok(info.shops.clothing.packs > 0, JSON.stringify(info.shops));
-	});
-
-	it("QA-C020 [integration] Danny's new room, Talk and Outings interactions run after a game start without npcincr errors", async () => {
-		const info = await page.evaluate(() => {
-			const wiki = src => {
-				const d = document.createElement("div");
-				try {
-					new Wikifier(d, src);
-					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " ") };
-				} catch (e) {
-					return { ok: false, text: String(e && e.message ? e.message : e) };
-				}
-			};
-			const bad = r => !r.ok || /Error|NPCINCR error|not whitelisted/.test(r.text);
-			wiki("<<gameStartOnly>><<variablesStart2>>");
-			const V = SugarCube.State.variables;
-			if (!Array.isArray(V.NPCNameList) || !V.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
-			V.danny = V.danny || { control: 0, dependency: 0 };
-			V.dannyAccidentKnown = 1;
-			V.promiscuity = 2;
-			const i = V.NPCNameList.indexOf("Danny");
-			const room = wiki("<<include [[Danny Room]]>>");
-			const r = V.NPCName[i];
-			r.love = 80;
-			const room2 = wiki("<<include [[Danny Room]]>>");
-			const outings = wiki("<<include [[Danny Outings]]>>");
-			const acc0 = r.acceptance;
-			const give = wiki("<<npcincr Danny acceptance 5>>");
-			const acc1 = r.acceptance;
-			const flirt = wiki("<<npcincr Danny lust 3>>");
-			const lust1 = r.lust;
-			wiki("<<npcincr Danny acceptance 5000>><<npcincr Danny lust 500>>");
-			const robin = wiki("<<npcincr Robin acceptance 5>>");
-			return {
-				roomBad: bad(room) || bad(room2),
-				outingsBad: bad(outings),
-				giveBad: bad(give),
-				flirtBad: bad(flirt),
-				roomText: room2.text.slice(0, 400),
-				dannyTalkPassage: SugarCube.Story.has("Danny Talk"),
-				outingsText: outings.text.slice(0, 200),
-				noBlankNpcLine: !/room\. looks up/.test(room.text),
-				acc0,
-				acc1,
-				lust1,
-				accMax: r.acceptance,
-				lustMax: r.lust,
-				robinRejected: /someone other than Danny/.test(robin.text),
-			};
-		});
-		assert.equal(info.roomBad, false, info.roomText);
-		assert.equal(info.dannyTalkPassage, false, "old Small talk passage still compiled");
-		assert.equal(info.outingsBad, false, info.outingsText);
-		assert.equal(info.giveBad, false, JSON.stringify(info));
-		assert.equal(info.flirtBad, false, JSON.stringify(info));
-		assert.equal(info.noBlankNpcLine, true, info.roomText);
-		for (const link of [
-			"Talk",
-			"Work on science schoolwork",
-			"Buy a new camera for them",
-			"Help with control training",
-			"Offer dependency care",
-			"Give diapers",
-			"Hug",
-			"Flirt",
-			"Leave",
-		])
-			assert.ok(info.roomText.includes(link), link + " missing: " + info.roomText);
-		assert.ok(!info.roomText.includes("Small talk"), "Small talk still offered: " + info.roomText);
-		assert.ok(info.outingsText.includes("Store for diapers") && info.outingsText.includes("Photo shoot"), info.outingsText);
-		assert.equal(info.acc1, info.acc0 + 5, JSON.stringify(info));
-		assert.equal(info.lust1 >= 3, true, JSON.stringify(info));
-		assert.equal(info.accMax, 1000, JSON.stringify(info));
-		assert.equal(info.lustMax, 100, JSON.stringify(info));
-		assert.equal(info.robinRejected, true, JSON.stringify(info));
-	});
-
-	it("QA-C021 [integration] Danny Talk walks every conversation path in the compiled game for low and high stat profiles", async () => {
-		const info = await page.evaluate(() => {
-			const SV = SugarCube.State.variables;
-			const wiki = src => {
-				const d = document.createElement("div");
-				try {
-					new Wikifier(d, src);
-					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " "), html: d.innerHTML };
-				} catch (e) {
-					return { ok: false, text: String(e && e.message ? e.message : e), html: "" };
-				}
-			};
-			wiki("<<gameStartOnly>><<variablesStart2>>");
-			if (!SV.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
-			wiki('<<npc "Danny">>');
-			const set = (name, stat, v) => {
-				const i = SV.NPCNameList.indexOf(name);
-				if (i >= 0) SV.NPCName[i][stat] = v;
-			};
-			const profiles = {
-				low: { love: 0, trust: 0, acceptance: 0, continence: 6000, known: 0, skill: 0, stress: 0, trauma: 0, control: 1000, money: 0, nnpc: 0 },
-				high: {
-					love: 100,
-					trust: 100,
-					acceptance: 1000,
-					continence: 500,
-					known: 1,
-					skill: 1000,
-					stress: 8000,
-					trauma: 4000,
-					control: 100,
-					money: 100000,
-					nnpc: 60,
-				},
-			};
-			const apply = p => {
-				set("Danny", "love", p.love);
-				set("Danny", "trust", p.trust);
-				set("Danny", "acceptance", p.acceptance);
-				set("Danny", "continence", p.continence);
-				set("Niki", "love", p.nnpc);
-				set("Robin", "love", p.nnpc);
-				SV.dannyAccidentKnown = p.known;
-				for (const k of ["science", "maths", "english", "history", "swimmingskill", "tending", "housekeeping"]) SV[k] = p.skill;
-				SV.stress = p.stress;
-				SV.trauma = p.trauma;
-				SV.control = p.control;
-				SV.money = p.money;
-			};
-			const bad = /Error|undefined|NaN|\[object|\{[nb]?(he|He|him|Him|his|His|himself|Himself)\}|NPCINCR/;
-			const result = { trees: 0, problems: [], visited: {}, terminals: 0, maxDepth: 0, gated: 0, statChanged: false, timePassed: false };
-			const trees = DannyTalk.trees();
-			result.trees = Object.keys(trees).length;
-			const t0 = Time.date.timeStamp;
-			const loveBefore = (() => {
-				apply(profiles.low);
-				return C.npc.Danny.love;
-			})();
-			for (const [pname, p] of Object.entries(profiles)) {
-				for (const id of Object.keys(trees)) {
-					const stack = ["0"];
-					while (stack.length) {
-						const key = stack.pop();
-						apply(p);
-						Time.setTime(20, 10);
-						SV.dannyTalkTree = id;
-						SV.dannyTalkNode = key;
-						const r = wiki('<<include "Danny Conversation">>');
-						result.visited[id + "/" + key] = true;
-						const depth = key === "0" ? 0 : key.split(".").length;
-						result.maxDepth = Math.max(result.maxDepth, depth);
-						if (!r.ok || bad.test(r.text)) {
-							result.problems.push({ pname, id, key, text: r.text.slice(0, 240) });
-							continue;
-						}
-						if (pname === "high" && key === "1" && C.npc.Danny.love !== p.love) result.statChanged = true;
-						const opts = DannyTalk.options(id, key);
-						const node = DannyTalk.node(id, key);
-						if (opts.length < node.o.length) result.gated++;
-						if (opts.length === 0) {
-							result.terminals++;
-							if (!/Back to Danny's room/.test(r.text)) result.problems.push({ pname, id, key, text: "terminal without back link" });
-						} else {
-							for (let i = 0; i < opts.length; i++) {
-								const label = opts[i].label.replace(/<[^>]+>/g, "");
-								if (!r.text.includes(i + 1 + ". " + label) && !r.text.includes(i + 1 + "." + label))
-									result.problems.push({ pname, id, key, text: "missing numbered option " + (i + 1) + " " + opts[i].label });
-							}
-							if (opts.length < 2) result.problems.push({ pname, id, key, text: "fewer than two options" });
-							for (const o of opts) stack.push(o.to);
-						}
-					}
-				}
-			}
-			for (const p of ["low", "high"]) apply(profiles[p]);
-			let totalNodes = 0;
-			const missed = [];
-			for (const [id, t] of Object.entries(trees))
-				for (const key of Object.keys(t.nodes)) {
-					totalNodes++;
-					if (!result.visited[id + "/" + key]) missed.push(id + "/" + key);
-				}
-			result.totalNodes = totalNodes;
-			result.visitedCount = Object.keys(result.visited).length;
-			result.missed = missed;
-			result.gateErrors = DannyTalk.gateErrors.slice();
-			result.timePassed = Time.date.timeStamp !== t0;
-			result.loveBefore = loveBefore;
-			// The room only offers Talk in Danny's room slot, and never the removed Small talk menu.
-			Time.setTime(20, 10);
-			const roomIn = getDannyLocation() === "room" ? wiki("<<include [[Danny Room]]>>").text : "";
-			Time.setTime(23, 0);
-			const roomOut = wiki("<<include [[Danny Room]]>>").text;
-			result.roomTalkInSlot = /(^|\s)Talk\s/.test(roomIn) && !roomIn.includes("Small talk");
-			result.roomTalkOutOfSlot = /no time for a proper talk/.test(roomOut) && !roomOut.includes("Small talk");
-			// Starting from the room link picks a tree and records it as recent.
-			SV.dannyTalkRecent = "corrupt";
-			const picked = [];
-			for (let i = 0; i < 12; i++) {
-				const t = DannyTalk.start();
-				picked.push(t.id);
-			}
-			result.noRecentRepeat = picked.every((id, i) => !picked.slice(Math.max(0, i - 4), i).includes(id));
-			result.recentLen = SV.dannyTalkRecent.length;
-			return result;
-		});
-		assert.equal(info.trees, 12, JSON.stringify(info));
-		assert.deepEqual(info.problems, [], JSON.stringify(info.problems.slice(0, 5)));
-		assert.deepEqual(info.missed, [], "unreached nodes: " + info.missed.slice(0, 10).join(", "));
-		assert.equal(info.visitedCount, info.totalNodes);
-		assert.ok(info.totalNodes >= 500, String(info.totalNodes));
-		assert.equal(info.maxDepth, 10);
-		assert.ok(info.gated > 0, "some options gated in the low profile");
-		assert.deepEqual(info.gateErrors, []);
-		assert.equal(info.timePassed, true);
-		assert.equal(info.roomTalkInSlot, true, "Talk shown in room slot");
-		assert.equal(info.roomTalkOutOfSlot, true, "Talk hidden outside room slot");
-		assert.equal(info.noRecentRepeat, true);
-		assert.equal(info.recentLen, 4);
-	});
-	it("QA-C022 [integration] every Danny event scene renders in the compiled game, and a location hook starts and returns", async () => {
-		const info = await page.evaluate(() => {
-			const wiki = src => {
-				const d = document.createElement("div");
-				try {
-					new Wikifier(d, src);
-					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " "), html: d.innerHTML };
-				} catch (e) {
-					return { ok: false, text: String(e && e.message ? e.message : e), html: "" };
-				}
-			};
-			const bad = r => !r.ok || /Error|NPCINCR error|not whitelisted|macro <<|bad evaluation/i.test(r.text);
-			wiki("<<gameStartOnly>><<variablesStart2>>");
-			const V = SugarCube.State.variables;
-			if (!Array.isArray(V.NPCNameList) || !V.NPCNameList.includes("Danny")) wiki("<<npcNamed>>");
-			wiki("<<dannyInit>>");
-			V.dannyIntro = 1;
-			const E = DannyEvents;
-			const problems = [];
-			let rendered = 0;
-			for (const prof of [
-				{ love: 5, continence: 300, acceptance: 100, roll: 10 },
-				{ love: 60, continence: 4000, acceptance: 600, roll: 80 },
-			]) {
-				const d = C.npc.Danny;
-				for (const id of Object.keys(E.events())) {
-					Object.assign(d, { love: prof.love, continence: prof.continence, acceptance: prof.acceptance });
-					E.begin(id, "Hallways", () => prof.roll / 100);
-					for (const key of Object.keys(E.event(id).nodes)) {
-						const r = wiki(E.text(id, key) + E.fx(id, key) + E.teaser(id));
-						rendered++;
-						if (bad(r)) problems.push(id + "/" + key + ": " + r.text.slice(0, 160));
-					}
-					E.finish();
-				}
-			}
-			Object.assign(C.npc.Danny, { love: 30, continence: 3000, acceptance: 300 });
-			const forcedBefore = C.npc.Danny.acceptance;
-			const forced = wiki(E.FX.forced);
-			const forcedAfter = C.npc.Danny.acceptance;
-			/* hook: force today's roll for the hallway event at 7:45 on a school day */
-			Time.setTime(7, 45);
-			const S = E.state();
-			delete S.done.hallway;
-			S.avoid = {};
-			S.rolls.hallway = { d: Time.days, hit: true };
-			const hook = Time.schoolDay ? wiki('<<dannyEvents "hallways">>') : { ok: true, text: "not a school day", html: "" };
-			const offered = !Time.schoolDay || /Say hello/.test(hook.text);
-			E.begin("hallway", "Hallways", () => 0.5);
-			const scene = wiki("<<include [[Danny Event]]>>");
-			const options = (scene.html.match(/<a /g) || []).length;
-			S.node = "6";
-			const end = wiki("<<include [[Danny Event]]>>");
-			return {
-				rendered,
-				problems,
-				forcedOk: forced.ok && /Forced Acceptance/.test(forced.text) && forcedAfter === Math.max(0, forcedBefore - 150),
-				flag: !!S.forcedAcceptance,
-				schoolDay: Time.schoolDay,
-				hookBad: bad(hook),
-				offered,
-				hookText: hook.text.slice(0, 200),
-				sceneBad: bad(scene),
-				options,
-				sceneText: scene.text.slice(0, 200),
-				endBad: bad(end),
-				endContinue: /Continue/.test(end.text),
-			};
-		});
-		assert.ok(info.rendered > 400, String(info.rendered));
-		assert.deepEqual(info.problems, [], info.problems.slice(0, 5).join("\n"));
-		assert.equal(info.forcedOk, true, JSON.stringify(info));
-		assert.equal(info.flag, true);
-		assert.equal(info.hookBad, false, info.hookText);
-		assert.equal(info.offered, true, info.hookText);
-		assert.equal(info.sceneBad, false, info.sceneText);
-		assert.equal(info.options, 6, info.sceneText);
-		assert.equal(info.endBad, false);
-		assert.equal(info.endContinue, true);
 	});
 
 	it("QA-C023 [integration] buying a diaper pack with a colour and pattern at the shop counter stamps the wardrobe and renders on the doll", async () => {
@@ -1271,7 +749,7 @@ describe("QA compiled isolated runtime", () => {
 		assert.ok(info.afterMidnight.pub > 0);
 	});
 
-	it("QA-C026 [integration] combat audio is present, real, and blocked in Danny scenes", async () => {
+	it("QA-C026 [integration] combat audio is present, real, and still blocked for leftover Danny scene names", async () => {
 		const info = await page.evaluate(async () => {
 			const blockedDanny = (() => {
 				const V = window.SugarCube.State.variables;

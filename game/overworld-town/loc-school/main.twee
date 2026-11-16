@@ -1,9 +1,6 @@
 :: School Front Courtyard
 <<lockerClothesAutoStore>>
 <<set $outside to 1>><<set $location to "school">><<schooleffects>><<effects>><<set $bus to "schoolfrontcourtyard">>
-<<dannyPresence "courtyard">>
-<<dannyEvents "schoolFront">>
-
 <<if !["early", "late", "earlynoschool", "latenoschool", "daynoschool"].includes($schoolstate)>>
 	<<if $schoolstate is "morning">>
 		You are in the courtyard in front of the school. Many students have already gathered and started socialising, despite school not officially beginning yet.
@@ -118,10 +115,6 @@
 <<set $eventskip to 0>>
 
 :: School Rear Courtyard
-<<if getDannyLocation() is "courtyard" and $dannyIntro is 1 and !$daily.dannyCourtyard>>
-  <<set $daily.dannyCourtyard to 1>>
-  <<include "Danny Courtyard Natural">>
-<</if>>
 <<lockerClothesAutoStore>>
 <<set $outside to 1>><<set $location to "school_rear_courtyard">><<schooleffects>><<effects>><<set $bus to "schoolrearcourtyard">>
 
@@ -147,8 +140,6 @@
 	The rear courtyard is empty.
 	<br><br>
 <</if>>
-<<dannyEvents "schoolRear">>
-
 <<schoolperiodtext>>
 <<if ["intro", "discover"].includes($weekly.schoolNightPoolParty) and Time.hour gte 21 and $passagePrev is "hallway">><<set $weekly.schoolNightPoolParty to "admission">><</if>>
 <<if $stress gte $stressmax>>

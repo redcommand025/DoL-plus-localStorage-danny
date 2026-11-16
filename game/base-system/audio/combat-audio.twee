@@ -1,6 +1,6 @@
 :: Audio Combat Widgets [widget]
 /* Combat and voice-over widgets, ported from X-Change. BGM remains in GameAudio.
- * Sounds never play in Danny-related scenes (GameCombatAudio.blocked). */
+ * Sounds never play when GameCombatAudio.blocked() is true. */
 
 <<widget "update-combat-audio">>
 	<<run GameCombatAudio.ensureDefaults()>>

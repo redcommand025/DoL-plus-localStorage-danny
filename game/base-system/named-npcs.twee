@@ -1408,7 +1408,7 @@ Zohar
 		if you're reading this, there's a decent chance that means you!
 		head over to game/base-system/widgets.twee and give this new NNPC relevant clamps before whitelisting them below.
 	-->
-	<<set _validNNPCNames to ["Avery","Bailey","Briar","Charlie","Darryl","Doren","Eden","Gwylan","Harper","Jordan","Kylar","Landry","Leighton","Mason","Morgan","River","Robin","Sam","Sirris","Whitney","Winter","Black Wolf","Niki","Quinn","Remy","Alex","Great Hawk","Wren","Sydney","Ivory Wraith","Zephyr","Poppy","Riley","Danny"]>>
+	<<set _validNNPCNames to ["Avery","Bailey","Briar","Charlie","Darryl","Doren","Eden","Gwylan","Harper","Jordan","Kylar","Landry","Leighton","Mason","Morgan","River","Robin","Sam","Sirris","Whitney","Winter","Black Wolf","Niki","Quinn","Remy","Alex","Great Hawk","Wren","Sydney","Ivory Wraith","Zephyr","Poppy","Riley"]>>
 	<<if !_validNNPCNames.includes(_nam)>>
 		<<error { message: "NNPC '" + _nam + "' is not whitelisted for use with <<npcincr>>"}>>
 	<</if>>
@@ -1456,7 +1456,7 @@ Zohar
 	<<case lust>>
 		<<set _lustwhitelist to ["Robin", "Whitney", "Eden", "Kylar", "Avery", 
 								 "Alex", "Sydney", "Gwylan", "Poppy", "Bailey", 
-								 "Leighton", "Quinn", "Ivory Wraith", "Mason", "Danny"]>>
+								 "Leighton", "Quinn", "Ivory Wraith", "Mason"]>>
 		<<if !_lustwhitelist.includes(_nam)>>
 			<<error { message: "<<npcincr>> attempted to modify lust for non-whitelisted npc " + _nam + ". Make sure to add a lust clamp in <<relationshipclamp>> before whitelisting!" }>>
 		<</if>>
@@ -1506,11 +1506,6 @@ Zohar
 		<<else>>
 			<span class="red">NPCINCR error - anger is Poppy-only</span><br><br>
 		<</if>>
-	<<case continence acceptance>>
-		<<if _nam isnot "Danny">>
-			<<error { message: "<<npcincr>> attempted to modify " + _var + " for someone other than Danny (" + _nam + ")" }>>
-		<</if>>
-		<<set $NPCName[_i][_var] to (Number($NPCName[_i][_var]) || 0) + _val>>
 	<<case rage>>
 		<<if !["Avery", "Kylar"].includes(_nam)>>
 			<<error { message: "<<npcincr>> attempted to modify rage for someone other than Avery or Kylar (" + _nam + ")" }>>

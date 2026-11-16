@@ -139,8 +139,7 @@ describe("plus-needs native source hooks", () => {
 			["game/01-config/start.twee", "plusNeedsIntroTip"],
 			["game/01-config/start.twee", "plusIncontinentStart"],
 			["game/base-system/settings.twee", "$background.incontinent"],
-			["game/ModLI/Danny/danny.twee", "getDannyLocation"],
-			["game/overworld-town/loc-school/canteen.twee", "Danny First Meeting Canteen"],
+			["game/ModLI/plus-needs/retire-danny.js", "plusRetireDanny"],
 		];
 		for (const [file, token] of expect) {
 			assert.match(read(file), new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `${file} missing ${token}`);
@@ -148,7 +147,6 @@ describe("plus-needs native source hooks", () => {
 		assert.equal([...read("game/overworld-town/loc-school/classes/english.twee").matchAll(/<<plusClassAskLinks>>/g)].length, 2);
 		assert.equal([...read("game/overworld-town/loc-school/classes/science.twee").matchAll(/<<plusClassAskLinks>>/g)].length, 1);
 		assert.equal([...read("game/01-config/start.twee").matchAll(/plusIncontinentStart/g)].length, 1);
-		assert.doesNotMatch(read("game/ModLI/Danny/danny.twee"), /set \$time to 420/);
 	});
 
 	it("keeps a single compile-flow password gate in head.html and does not log secrets", () => {

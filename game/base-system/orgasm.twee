@@ -192,7 +192,7 @@
 
 		<</if>>
 	<</if>>
-	<!-- Orgasm SFX, ported from X-Change; skipped in Danny scenes by GameCombatAudio.blocked -->
+	<!-- Orgasm SFX, ported from X-Change; skipped when GameCombatAudio.blocked() is true -->
 	<<if !_deniedOrgasm>>
 		<<orgasm-voice>>
 	<</if>>

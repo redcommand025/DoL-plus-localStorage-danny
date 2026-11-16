@@ -219,10 +219,6 @@
 	<<if $background.incontinent is true>>
 		<<set $backgroundTraits.push("incontinent")>>
 	<</if>>
-	<<if $danny is undefined>>
-		<<set $danny to { control: 0, dependency: 0 }>>
-	<</if>>
-
 	<<if $hairlength gte 900>>
 		<<set $hairlengthstage to "feet">>
 	<<elseif $hairlength gte 700>>

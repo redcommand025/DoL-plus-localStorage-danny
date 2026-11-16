@@ -1,5 +1,5 @@
 /* Combat and voice-over helpers, ported from X-Change (koztools voice routing + settings defaults).
- * GameCombatAudio.blocked() is true in Danny-related scenes; update-combat-audio stops loops there.
+ * GameCombatAudio.blocked() is a leftover guard (e.g. old Danny scenes); update-combat-audio stops loops there.
  */
 (function () {
 	"use strict";

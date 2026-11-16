@@ -774,15 +774,7 @@
 	<<if $background.incontinent is undefined>>
 		<<set $background.incontinent to false>>
 	<</if>>
-	<<if $danny is undefined or typeof $danny isnot "object">>
-		<<set $danny to { control: 0, dependency: 0 }>>
-	<</if>>
-	<<if $danny.control is undefined>>
-		<<set $danny.control to 0>>
-	<</if>>
-	<<if $danny.dependency is undefined>>
-		<<set $danny.dependency to 0>>
-	<</if>><<if $background.incontinent is undefined>>
+<<if $background.incontinent is undefined>>
 		<<set $background.incontinent to false>>
 	<</if>>
 
@@ -1620,6 +1612,7 @@ as what's needed by the imagepack? */
 	<<bikeUpdate>>
 	<<updateFools>>
 
+	<<run plusRetireDanny()>>
 	<<clamp>>
 <</widget>>
 

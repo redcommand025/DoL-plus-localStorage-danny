@@ -8,7 +8,6 @@
 
 You are in the antechamber outside the school toilets.
 <br><br>
-<<dannyEvents "toilets">>
 <<if $stress gte $stressmax>>
 	<<if isPregnancyEnding()>>
 		<<pregnancyPassout "schoolToilets">>

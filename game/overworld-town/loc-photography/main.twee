@@ -1,7 +1,5 @@
 :: Photo Entrance
 <<effects>><<set $location to "studio">>
-<<dannyPresence "work">>
-
 You approach the photography studio, a tall old building opposite the hospital. There's a short flight of steps leading up to the door. "Niki's photo studio. Models wanted."
 <br><br>
 
@@ -104,9 +102,6 @@ Niki nods. "You know where I am if you change your mind."
 
 :: Photo
 <<set $outside to 0>><<set $location to "studio">><<effects>>
-<<dannyPresence "work">>
-<<dannyEvents "studio">>
-
 <<if $photo.niki_event is undefined and C.npc.Niki.love gte 10 and $brothelintro gte 1>>
 	<<set $photo.niki_event to 1>>
 	<<npc Briar>><<person1>>

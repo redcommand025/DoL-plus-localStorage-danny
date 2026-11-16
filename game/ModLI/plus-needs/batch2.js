@@ -325,7 +325,6 @@
 		},
 	};
 	window.plusNpcPresent = function (name) {
-		if (name === "Danny") return false;
 		const fn = NPC_WHERE[name];
 		if (!fn) return false;
 		try {
@@ -335,7 +334,6 @@
 		}
 	};
 	window.plusNpcSceneAllowed = function (name, kind) {
-		if (name === "Danny") return false;
 		if (name === "Bailey" && !(typeof window.plusBaileyRelentless === "function" && window.plusBaileyRelentless())) return false;
 		if (
 			["Robin", "Sam", "Alex", "Charlie", "Whitney", "Kylar", "Sydney", "Avery", "Eden", "Niki", "Sirris", "River", "Doren", "Winter", "Mason"].includes(

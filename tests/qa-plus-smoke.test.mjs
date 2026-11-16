@@ -868,28 +868,45 @@ describe("QA plus-needs behavioral cases", () => {
 describe("QA plus-needs static integration boundaries", () => {
 	const read = rel => readFileSync(join(root, rel), "utf8");
 
-	it("QA-S001 [static] Start2 and modUpdate initialize $danny control and dependency", () => {
-		const start2 = read("game/04-Variables/variables-start2.twee");
+	it("QA-S001 [static] Danny content is removed from the source tree and location hooks", () => {
+		assert.equal(existsSync(join(root, "game/ModLI/Danny")), false);
+		assert.equal(existsSync(join(root, "tests/danny-events.test.mjs")), false);
+		for (const rel of [
+			"game/overworld-town/loc-home/main.twee",
+			"game/overworld-town/loc-home/garden.twee",
+			"game/overworld-town/loc-school/canteen.twee",
+			"game/overworld-town/loc-school/library.twee",
+			"game/overworld-town/loc-school/main.twee",
+			"game/overworld-town/loc-school/hallways.twee",
+			"game/overworld-town/loc-school/toilets.twee",
+			"game/overworld-town/loc-school/classes/science.twee",
+			"game/overworld-town/loc-photography/main.twee",
+			"game/overworld-town/loc-street/domus.twee",
+		]) {
+			assert.doesNotMatch(read(rel), /dannyPresence|dannyEvents|dannyroom_link|getDannyLocation|Danny /);
+		}
+		assert.doesNotMatch(read("game/ModLI/modLI-setting.js"), /registerModLI\("Danny"\)/);
+	});
+
+	it("QA-S002 [static] named NPC and love-interest lists no longer include Danny", () => {
+		const stat = read("game/04-Variables/variables-static.twee");
+		const list = stat.match(/setup\.NPCNameList = \[(.*?)\]/s)[1];
+		assert.doesNotMatch(list, /Danny/);
+		assert.match(list, /"Poppy"\s*$/);
+		const love = stat.match(/setup\.loveInterestNpc = \[(.*?)\]/s)[1];
+		assert.doesNotMatch(love, /Danny/);
+		assert.doesNotMatch(stat, /"Danny": \(\) => "Love"/);
+		assert.doesNotMatch(read("game/04-Variables/npcNamed.twee"), /nam : "Danny"/);
+	});
+
+	it("QA-S003 [static] old saves drop Danny through plusRetireDanny on load", () => {
 		const mod = read("game/04-Variables/variables-modUpdate.twee");
-		assert.match(start2, /\$danny to \{ control: 0, dependency: 0 \}/);
-		assert.match(mod, /\$danny\.control/);
-		assert.match(mod, /\$danny\.dependency/);
-	});
-
-	it("QA-S002 [static] Danny door uses the schedule helper instead of raw $time writes", () => {
-		const danny = read("game/ModLI/Danny/danny.twee");
-		assert.match(danny, /getDannyLocation\(\)/);
-		assert.doesNotMatch(danny, /<<set \$time to 420>>/);
-	});
-
-	it("QA-S003 [static] Canteen links the existing Danny intro and home exposes dannyroom_link", () => {
-		assert.match(read("game/overworld-town/loc-school/canteen.twee"), /Meet Danny\|Danny First Meeting Canteen/);
-		assert.match(read("game/overworld-town/loc-home/main.twee"), /dannyroom_link/);
-		assert.match(read("game/ModLI/Danny/danny.twee"), /:: Danny First Meeting Canteen/);
-	});
-
-	it("QA-S004 [static] Danny intro continue returns to Canteen", () => {
-		assert.match(read("game/ModLI/Danny/danny.twee"), /\[\[Continue\|Canteen\]\]/);
+		const start2 = read("game/04-Variables/variables-start2.twee");
+		assert.match(mod, /<<run plusRetireDanny\(\)>>/);
+		assert.doesNotMatch(mod, /\$danny\.control/);
+		assert.doesNotMatch(start2, /\$danny to \{ control: 0, dependency: 0 \}/);
+		assert.ok(existsSync(join(root, "game/ModLI/plus-needs/retire-danny.js")));
+		assert.match(read("game/ModLI/plus-needs/retire-danny.js"), /function plusRetireDanny/);
 	});
 
 	it("QA-S005 [static] class-ask widgets sit on all five lesson files", () => {
@@ -928,28 +945,15 @@ describe("QA plus-needs static integration boundaries", () => {
 		assert.match(under, /plusDiaperItems\(\)/);
 	});
 
-	it("QA-S009 [static] Danny is registered on native npcincr whitelist and relationshipclamp", () => {
+	it("QA-S009 [static] npcincr whitelist and relationshipclamp no longer mention Danny", () => {
 		const incr = read("game/base-system/named-npcs.twee");
 		const clamp = read("game/base-system/widgets.twee");
-		assert.match(incr, /_validNNPCNames to \[.*"Danny".*\]/s);
-		assert.match(clamp, /indexOf\("Danny"\)/);
-		assert.match(clamp, /\$NPCName\[_i\]\.love = Math\.clamp\(\$NPCName\[_i\]\.love, 0, 100\)/);
+		assert.doesNotMatch(incr, /"Danny"/);
+		assert.doesNotMatch(incr, /someone other than Danny/);
+		assert.doesNotMatch(clamp, /indexOf\("Danny"\)/);
 	});
 
-	it("QA-S010 [static] Danny save migration and new-game adult flags", () => {
-		const named = read("game/04-Variables/npcNamed.twee");
-		assert.match(named, /"danny": \{nam : "Danny", title: "dependent", insecurity: "weak", adult: 1, teen: 0\}/);
-		const swi = named.match(/<<set _swi to \[(.*?)\]>>/s);
-		assert.ok(swi);
-		const last = swi[1]
-			.split(",")
-			.map(s => s.trim().replace(/"/g, ""))
-			.filter(Boolean)
-			.at(-1);
-		assert.equal(last, "a");
-	});
-
-	it("QA-S011 [static] Danny portrait uses blank fallback and does not invent or reuse another NNPC folder", () => {
+	it("QA-S011 [static] no Danny portrait folder exists; leftover display still uses the blank fallback", () => {
 		const canvas = read("game/04-Variables/canvasmodel-main.js");
 		assert.match(canvas, /dannyPortraitFallback = \(\) => "img\/ui\/nnpc\/blank\.png"/);
 		assert.equal((canvas.match(/if \(active === "danny"\) return dannyPortraitFallback\(\);/g) || []).length, 3);
@@ -958,51 +962,10 @@ describe("QA plus-needs static integration boundaries", () => {
 		assert.equal(existsSync(join(root, "img/ui/nnpc/danny")), false);
 	});
 
-	it("QA-S012 [static] Danny social continence and acceptance are wired without stripping room interactions", () => {
-		const danny = read("game/ModLI/Danny/danny.twee");
+	it("QA-S012 [static] social overlay no longer lists Danny", () => {
 		const social = read("game/base-system/overlays/social.twee");
-		const widgets = read("game/base-system/widgets.twee");
-		assert.match(danny, /<<widget "dannyInit">>/);
-		assert.match(danny, /<<link \[\[Talk\|Danny Conversation\]\]>>/);
-		assert.doesNotMatch(danny, /Small talk|^:: Danny Talk/m);
-		assert.match(danny, /<<link \[\[Help with control training\|Danny Room\]\]>>/);
-		assert.match(danny, /<<link \[\[Offer dependency care\|Danny Room\]\]>>/);
-		assert.match(danny, /<<npc "Danny">>/);
-		assert.match(social, /<<dannyInit>>/);
-		assert.match(social, /"Danny"\s*:\s*\{/);
-		assert.match(social, /maxValue : 6000/);
-		assert.match(social, /maxValue : 1000/);
-		assert.match(social, /T\.importantNpcOrder = \[[^\]]*\"Danny\"\]/);
-		assert.match(widgets, /"continence", "acceptance", "harmony", "ferocity"/);
-		assert.match(widgets, /Math\.clamp\(\$NPCName\[_i\]\.continence, 0, 6000\)/);
-		assert.ok(existsSync(join(root, "img/ui/sym-continence.png")));
-		assert.ok(existsSync(join(root, "img/ui/sym-acceptance.png")));
-	});
-
-	it("QA-S013 [static] Danny schedule drives the door without an init gate or broken Canteen link", () => {
-		const danny = read("game/ModLI/Danny/danny.twee");
-		const schedule = read("game/ModLI/Danny/schedule.js");
-		assert.match(schedule, /function getDannyLocation/);
-		assert.match(schedule, /window\.getDannyLocation = getDannyLocation/);
-		assert.doesNotMatch(schedule, /C\.npc\.Danny\.init/);
-		assert.doesNotMatch(schedule, /if \(!C\.npc\.Danny/);
-		assert.match(danny, /<<set _loc to getDannyLocation\(\)>>/);
-		assert.match(danny, /At Niki's photography/);
-		assert.match(danny, /Danny's room \(locked\)/);
-		assert.match(danny, /<<npc "Danny">>/);
-		assert.match(danny, /<<link \[\[Talk\|Danny Conversation\]\]>>/);
-		assert.doesNotMatch(danny, /Small talk|^:: Danny Talk/m);
-		assert.match(danny, /<<link \[\[Continue\|Canteen\]\]>>/);
-		assert.doesNotMatch(danny, /School Canteen/);
-	});
-
-	it("QA-S016 [static] Danny presence hooks sit on the timetable locations", () => {
-		const danny = read("game/ModLI/Danny/danny.twee");
-		assert.match(danny, /<<widget "dannyPresence">>/);
-		assert.match(read("game/overworld-town/loc-school/canteen.twee"), /<<dannyPresence "canteen">>/);
-		assert.match(read("game/overworld-town/loc-school/canteen.twee"), /getDannyLocation\(\) is "canteen"/);
-		assert.match(read("game/overworld-town/loc-school/hallways.twee"), /<<dannyPresence "school">>/);
-		assert.match(read("game/overworld-town/loc-school/main.twee"), /<<dannyPresence "courtyard">>/);
-		assert.match(read("game/overworld-town/loc-photography/main.twee"), /<<dannyPresence "work">>/);
+		assert.doesNotMatch(social, /<<dannyInit>>/);
+		assert.doesNotMatch(social, /"Danny"\s*:\s*\{/);
+		assert.doesNotMatch(social, /"Danny"\]/);
 	});
 });
