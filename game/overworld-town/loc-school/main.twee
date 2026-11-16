@@ -118,7 +118,10 @@
 <<set $eventskip to 0>>
 
 :: School Rear Courtyard
-<<Danny Courtyard Natural>>
+<<if getDannyLocation() is "courtyard" and $dannyIntro is 1 and !$daily.dannyCourtyard>>
+  <<set $daily.dannyCourtyard to 1>>
+  <<include "Danny Courtyard Natural">>
+<</if>>
 <<lockerClothesAutoStore>>
 <<set $outside to 1>><<set $location to "school_rear_courtyard">><<schooleffects>><<effects>><<set $bus to "schoolrearcourtyard">>
 

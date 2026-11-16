@@ -88,16 +88,15 @@ Danny sits at the edge, eating quickly.
 <<link [[Leave|Canteen]]>><</link>>
 
 :: Danny Canteen Natural
-<<if getDannyLocation() is "canteen" and $dannyIntro is 1>>
-  <<npc "Danny">> is at the edge of the canteen with their camera.
-  <<if C.npc.Danny.love gte 25>>
-    They look up and shift so there's space.
-  <<else>>
-    They glance over, then back down.
-  <</if>>
-  <br>
-  <<link [[Sit with them|Danny Canteen Talk]]>><</link>>
+<<npc "Danny">> is at the edge of the canteen with their camera.
+<<if C.npc.Danny.love gte 25>>
+  They look up and shift so there's space.
+<<else>>
+  They glance over, then back down.
 <</if>>
+<br>
+<<link [[Sit with them|Danny Canteen Talk]]>><</link>>
+<<link [[Leave them|Canteen]]>><</link>>
 
 :: Danny Canteen Talk
 You sit. Danny shows you a photo from earlier.

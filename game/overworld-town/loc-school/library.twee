@@ -1,5 +1,8 @@
 :: School Library
-<<Danny Library Natural>>
+<<if (getDannyLocation() is "walk" or (Time.hour is 8 and Time.minute lt 45)) and $dannyIntro is 1 and !$daily.dannyLibrary>>
+  <<set $daily.dannyLibrary to 1>>
+  <<include "Danny Library Natural">>
+<</if>>
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>><<set $bus to "schoollibrary">>
 You are in the school library.
 <<if Time.schoolDay>>

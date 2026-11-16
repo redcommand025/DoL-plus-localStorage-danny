@@ -1,5 +1,8 @@
 :: Canteen
-<<Danny Canteen Natural>>
+<<if getDannyLocation() is "canteen" and $dannyIntro is 1 and !$daily.dannyCanteen>>
+  <<set $daily.dannyCanteen to 1>>
+  <<include "Danny Canteen Natural">>
+<</if>>
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>><<sydneySchedule>>
 You are in the school canteen.
 <<dannyPresence "canteen">>
