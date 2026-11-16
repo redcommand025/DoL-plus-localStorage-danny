@@ -1,4 +1,5 @@
 :: Canteen
+<<Danny Canteen Natural>>
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>><<sydneySchedule>>
 You are in the school canteen.
 <<dannyPresence "canteen">>
