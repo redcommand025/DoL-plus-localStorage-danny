@@ -78,7 +78,29 @@ You are in the landfill on Elk Street.
 	<<eventstrash>>
 <<else>>
 
-	<<investigateicon>><<link [[Search for valuables (1:00)|Trash Search]]>><<pass 60>><</link>><<crime "thievery">>
+	<<if $stress lt $stressmax>>
+		Within the surrounding hills of waste, you notice a particularly robust pile of trash.
+		<br>
+		There seems to be a clearing situated within it, insulated with what could be hair or cloth.
+		<br><br>
+		<<if $dencounter is 0 or $dencounter is undefined>>
+			You think you see movement within. Is that a striped tail?
+			<br><br>
+			<span class="lewd">Investigating may be a bad idea</span>, but you're curious nonetheless.
+			<br><br>
+		<<else>>
+			You've been here before. Or at least somewhere like it. It's a bit hard to tell, as there are piles of trash everywhere here, but you're fairly certain this one is a <span class="green">raccoon den.</span>
+			<br><br>
+			You're hesitant to go in, considering what happened the first time you entered one of these.<<if $deviancy gte 15>><br> <span class="lewd">Still, maybe things can be different this time. More enjoyable.</span><</if>>
+			<br><br>
+		<</if>>
+		<<if (($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked))>>
+			<<link [[Head inside the opening (0:03)|Trash Mammals]]>><<beastNEWinit 3 raccoon>><<pass 3>><</link>>
+		<</if>>
+		<br>
+	<</if>>
+
+	<<investigateicon>><<link [[Search for valuables (1:00)|Trash Search]]>><<pass 60>><<rng>><<if $rng lte 20>><<transform raccoon 1>><</if>><</link>><<crime "thievery">>
 	<br>
 
 	<<if $trash lte 99>>

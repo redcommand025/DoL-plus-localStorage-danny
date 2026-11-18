@@ -2447,6 +2447,14 @@ as what's needed by the imagepack? */
 
 	/* New World transformation port: init missing builds/stages and the displayed-TF dropdown. */
 	<<run PlusTransform.migrate(V)>>
+	<<run
+		const needed = ["sheep","deer","bee","wasp","dragon","raccoon","frog","snake"];
+		if (!Array.isArray(V.BeastList)) V.BeastList = [];
+		for (const t of needed) {
+			if (!V.BeastList.includes(t)) V.BeastList.push(t);
+		}
+	>>
+
 	<<run PlusTransform.fallbackPreferred(V)>>
 	<<setupTransformationPiecesObject>>
 <</widget>>

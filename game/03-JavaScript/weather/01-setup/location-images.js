@@ -4457,4 +4457,26 @@ setup.LocationImages = {
 			},
 		},
 	},
+	hive: {
+		folder: "hive",
+		base: {
+			default: {
+				condition: () => !Weather.isSnow,
+				image: "base.png",
+			},
+			snow: {
+				condition: () => Weather.isSnow,
+				image: "snow.png",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+			groundBounds: {
+				splashes: { top: 16, bottom: 0 },
+				fog: { top: 24, bottom: 0 },
+			},
+		},
+	},
 };

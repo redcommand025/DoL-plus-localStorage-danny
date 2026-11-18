@@ -97,8 +97,8 @@
 	<!-- v2.7 $BeastList is 0-7: "dog", "cat", "pig", "wolf", "dolphin", "lizard", "bear", "creature" -->
 	<!-- v2.13 "horse" added to $BeastList -->
 
-	<<set _h to [200,150,200,300,200,250,500,300,200,500,225,150,400,300,350]>> <!-- Health Max per type -->
-	<<set _t to ["dog","cat","pig","wolf","dolphin","lizard","bear","boar","creature","horse","fox","hawk","cow","spider","snake"]>> <!-- Name of each type -->
+	<<set _h to [200,150,200,300,200,250,500,300,200,500,225,150,400,300,350,300,250,300,400,500,150,200]>> <!-- Health Max per type -->
+	<<set _t to ["dog","cat","pig","wolf","dolphin","lizard","bear","boar","creature","horse","fox","hawk","cow","spider","snake","sheep","deer","bee","wasp","dragon","raccoon","frog"]>> <!-- Name of each type -->
 	<<set _d to [
 		["large", "furry", "strong", "muscular", "heavily-built", "short-haired", "long-haired", "broad-chested", "well-groomed", "sleek"],
 		["sleek", "small", "agile", "soft-furred", "flexible", "short-haired", "long-haired", "thin", "slender", "delicate"],
@@ -114,11 +114,18 @@
 		["sleek", "sharp-eyed", "broad-winged", "strong", "smooth-feathered", "fast", "streamlined", "sharp-beaked", "sharp-taloned", "powerful"],
 		["large", "broad", "thick-bodied", "sturdy", "solid", "short-haired", "heavy", "strong", "tough-skinned", "muscular"],
 		["small", "slimy", "eight-legged", "hairy", "dark", "creepy", "thin-legged", "fast-moving", "venomous", "skittering"],
-		["scaly"]
+		["scaly"],
+		["fluffy", "woolly", "soft", "round", "gentle", "thick-coated", "docile", "warm", "cloud-like", "plump"],
+		["skittish", "slender", "long-legged", "quick", "alert", "graceful", "swift", "wide-eyed", "lean", "light-footed"],
+		["sleek", "striped", "buzzing", "small", "quick", "fuzzy", "golden", "busy", "darting", "winged"],
+		["sleek", "striped", "buzzing", "fierce", "quick", "sharp", "darting", "winged", "angry", "thin"],
+		["scaly", "huge", "winged", "powerful", "long-bodied", "sharp-toothed", "heavy", "imposing", "hot-breathed", "ancient"],
+		["sly", "masked", "clever", "small", "nimble", "ring-tailed", "curious", "dexterous", "scruffy", "sharp-eyed"],
+		["slimy", "slick", "small", "damp", "quick", "wide-mouthed", "smooth", "leap-legged", "mottled", "bulging-eyed"]
 	]>> <!-- Descriptor of each type -->
-	<<set _pd to ["knotted penis","spiked penis","penis","knotted penis","strange penis","penis","penis","penis","penis","equine cock","knotted penis","avian cock","bovine cock","arachnid penis","serpent penis"]>> <!-- Descriptor of Penises -->
+	<<set _pd to ["knotted penis","spiked penis","penis","knotted penis","strange penis","penis","penis","penis","penis","equine cock","knotted penis","avian cock","bovine cock","arachnid penis","serpent penis","penis","cock","cock","cock","penis","penis","penis"]>> <!-- Descriptor of Penises -->
 	/% <<set _cla to [1,1,1,1,0,1,1,1]>> %/
-	<<set _ps to [2,2,2,3,2,2,3,3,2,5,2,2,4,2,2]>> <!-- Size of penises -->
+	<<set _ps to [2,2,2,3,2,2,3,3,2,5,2,2,4,2,2,3,4,2,3,5,2,3]>> <!-- Size of penises -->
 
 	<<set _i to $BeastList.indexOf(_type)>>
 	<<set $NPCList[_n].healthmax to _h[_i]>>
@@ -176,6 +183,12 @@
 		<<set $NPCList[_n].claws to "talons">> <!-- Hawks have talons -->
 	<<elseif $NPCList[_n].type is "pig" or $NPCList[_n].type is "boar">>
 		<<set $NPCList[_n].claws to "hooves">> <!-- Pigs and boars have hooves -->
+	<<elseif $NPCList[_n].type is "sheep" or $NPCList[_n].type is "deer">>
+		<<set $NPCList[_n].claws to "hooves">>
+	<<elseif $NPCList[_n].type is "bee" or $NPCList[_n].type is "wasp">>
+		<<set $NPCList[_n].claws to "claws">>
+	<<elseif $NPCList[_n].type is "frog">>
+		<<set $NPCList[_n].claws to "flippers">>
 	<</if>>
 
 	<!-- Monster generation code -->
@@ -220,7 +233,7 @@
 		<<set $NPCList[_n].lefthand to 0>>
 		<<set $NPCList[_n].righthand to 0>>
 		<!-- female monster people mammals have an accessible chest and might be able to lactate. -->
-		<<if $NPCList[_n].pronoun is "f" and ["catgirl", "doggirl", "wolfgirl", "beargirl", "foxgirl", "cowgirl", "harpy"].includes($NPCList[_n].type)>>
+		<<if $NPCList[_n].pronoun is "f" and ["catgirl", "doggirl", "wolfgirl", "beargirl", "foxgirl", "cowgirl", "harpy", "deergirl", "sheepgirl", "raccoongirl", "dolphingirl"].includes($NPCList[_n].type)>>
 			<<set $NPCList[_n].chest to 0>>
 			<<if ["beargirl", "cowgirl"].includes($NPCList[_n].type)>> <!-- Bigger monsters = Bigger booba -->
 				<<set $_breastMin to [0,0,0,0,2,2,2,2,2,5,5,5,5,5,5,5,8,8,9,10,12]>>

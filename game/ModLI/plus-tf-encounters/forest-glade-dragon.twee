@@ -1,0 +1,69 @@
+:: Fae Dragon Molestation
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+
+	<<beastCombatInit>><<set $enemytrust -= 40>><<set $enemyanger += 40>>
+	<br><br>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+
+<br>
+<<beast $enemyno>>
+<br><br>
+<<stateman>>
+<br><br>
+<<actionsman>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<span id="next"><<link [[Next|Fae Dragon Molestation Finish]]>><</link>></span><<nexttext>>
+<<elseif $enemyhealth lte 0>>
+	<span id="next"><<link [[Next|Fae Dragon Molestation Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Fae Dragon Molestation]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Fae Dragon Molestation Finish
+
+<<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+
+	<<beastejaculation>>
+
+	Satisfied, the <<beasttype>> returns to its abode.
+	<<if $monster is 1>>
+		"Next time I might take you with me, squishy," <<bhe>> coos.
+	<</if>>
+	<br><br>
+
+	<<tearful>> you continue on your way.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Forest]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+
+	You scare the mighty <<beasttype>>. <<bHe>> flees deeper into the forest.
+	<<if $monster is 1>>
+		"Not so tiny! Not so squishy!" <<bhe>> yells as <<bhe>> runs.
+	<</if>>
+	<br><br>
+
+	<<tearful>> you continue on your way.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Forest]]>><<set $eventskip to 1>><</link>>
+	<br>
+<</if>>
+

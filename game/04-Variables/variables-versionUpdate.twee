@@ -4051,7 +4051,7 @@
 	<<npcPregnancyUpdater>>
 
 	<!-- v0.3.6.2: cow update - ToDo: Move to variables-static -->
-	<<set $BeastList to ["dog","cat","pig","wolf","dolphin","lizard","bear","boar","creature","horse","fox","hawk","cow","spider", "snake"]>>
+	<<set $BeastList to ["dog","cat","pig","wolf","dolphin","lizard","bear","boar","creature","horse","fox","hawk","cow","spider","snake","sheep","deer","bee","wasp","dragon","raccoon","frog"]>>
 
 	<!-- Will navigate to V.makeup.eyelenses and attempt to turn that into the proper object this time. Needs configing if it can be moved to `variablesVersionUpdate2`-->
 	<<run restructureEyeColourVariable()>>

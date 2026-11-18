@@ -1,0 +1,267 @@
+:: Trash Mammals
+
+<<set $location to "landfill">>
+
+<<set $outside to 0>>
+
+<<effects>>
+
+<<if $dencounter is 0>>
+
+	You carefully enter the clearing, curious about the movement you just saw. Once you're fully inside, a smell not dissimilar to a wet dog assaults your faculties. Suddenly, a chittering sound echoes in the area. The sound is replicated soon after, followed by another. The source of the cacophony becomes apparent as you are approached by a <<beasttype>>. Others approach you from the dark recesses of the den. They slowly surround you, blocking any hope of escape.
+	<br><br>
+	<<if $monster is 1>>
+		"...Our den. Not yours," the one in front of you states. <<bHe>> makes a motion towards <<bhis>> companions. They begin to close in. "You can leave, but..." 
+		<br><br>
+		<<bHe>> suddenly pounces on you, knocking you down. "We take something first. Fair trade for entering." <<bHe>> grasps your body. "No struggle. Will be quick. Maybe you... like."
+		<br><br>
+	<</if>>
+
+
+	<<link [[Next|Raccoons Rape]]>><<set $molestationstart to 1>><<set $dencounter to 1>><</link>><br>
+
+<<else>>
+
+	You carefully enter the clearing, wary of the denizens within. Once you're fully inside, the smell from last time invades your nostrils. Suddenly, a familiar chittering sound echoes in the area. The sound is replicated soon after, followed by another. The source of the cacophony becomes apparent as you are approached by a <<beasttype>>. Others approach you from the dark recesses of the den. They slowly surround you, blocking any hope of escape. <<bHis>> nose twitches, then <<bhis>> tail begins to wag feverishly. <<bHis>> eyes seem to sparkle with recognition and <<bhe>> bounds over to you, companions following.
+	<br><br>
+	<<if $monster is 1>>
+		"...You again. You know this our home, but you still come," the one in front of you states. "This time, you want it." <<bHis>> companions approach you, not even waiting for the leader's command.
+		<br><br>
+		<<bHe>> suddenly pounces on you, knocking you down. "Well... we think you want it. You get it, either way." <<bHe>> grasps your body. "Easy way. Hard way. No matter. Still have fun. How you want it?"
+		<br><br>
+	<</if>>
+
+	<<if $deviancy gte 35>>
+	<<link [[Submit|Raccoons Love]]>><<set $sexstart to 1>><</link>><<deviant2>>
+	<br>
+	<</if>>
+	<<link [[Resist|Raccoons Rape]]>><<set $molestationstart to 1>><</link>>
+	<br>
+
+<</if>>
+
+
+:: Raccoons Love
+
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<beastCombatInit>>
+	<<beastTrainGenerate>>
+	<span class='lewd'>"Everyone, just... let's not get too wild right away," You say. "Alright?"</span>
+	<br><br>
+	<<if $monster is 1>>
+		The lead <<beasttype>> acknowledges your request. "No worry. We all enjoy this. You make good choice."
+	<<else>>
+		The lead <<beasttype>> licks you, as if sensing your trepidation.
+	<</if>>
+	<<set $NPCList[0].stance to "top">>
+	<<if $raccoon gte 4>>
+		<<deviancy1>>
+	<<else>>
+		<<deviancy4>>
+	<</if>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<beast $enemyno>>
+<<stateman>>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Raccoons Love Ejaculation]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Raccoons Love]]>><</link>></span><<nexttext>>
+<</if>>
+
+
+
+:: Raccoons Love Ejaculation
+
+<<effects>>
+<<beastejaculation>>
+
+
+<<if $combatTrain.length gt 0>>
+	Satisfied, the <<beasttype>> leaves you be. Another takes its place.
+	<<combatTrainAdvance>>
+	<br><br>
+	<<link [[Next|Raccoons Love]]>><</link>>
+<<else>>
+	Satisfied, the <<beasttype>> leaves you be.
+	<<combatTrainAdvance>>
+	<br><br>
+	<<link [[Next|Raccoons Love Finish]]>><</link>>
+<</if>>
+
+
+:: Raccoons Love Finish
+
+
+<<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+
+	<<beastejaculation>>
+
+	The <<beasttype>> lays on top of you for a moment before sliding off. The leader nuzzles you as <<bhe>> does so.
+	<br><br>
+	<<if $monster is 1>>
+		"Was easy, yes? You just rest. We take care of everything." The leader gestures towards <<bhis>> companions. They return to the side of the one in charge.
+		<br><br>
+		"Still... too tired for more. Friends too, probably. Come back later. We have more fun." The <<beastsplural>> leave you. Presumably, to rest within the corners of the den.
+		<br><br>
+	<</if>>
+
+	You slowly get up and brush yourself off. You give a curt nod to the group before departing.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+<<elseif $enemyhealth lte 0>>
+
+	In your struggle, you manage to accidently get a clean hit on the <<beasttype>>.
+	<br> 
+	You press your advantage and shrug of the others while they're still surprised. 
+	<br><br>
+	<<if $monster is 1>>
+		"Urgh! What...?" The <<beasttype>> yells as <<bhe>> and <<bhis>> companions are thrown off by your unexpected violence.
+		<br><br>
+		"You... change mind?" The leader questions as <<bhe>> nurses a bruise. "N...Now we do this hard wa-"
+		<br><br>
+		Your sudden movement catches <<bhim>> off-guard.
+		<br><br>
+	<</if>>
+
+	<<tearful>> you dart out of the den entrance before the <<beasttypes>> have a chance to fully recover.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+<<else>>
+
+
+	The <<beasttype>> lays on top of you for a moment before sliding off.
+	<br><br>
+	<<if $monster is 1>>
+		"Was easy, yes? You just rest. We take care of everything." The leader gestures towards <<bhis>> companions. They return to the side of the one in charge.
+		<br><br>
+		"Still... too tired for more. Friends too, probably. Come back later. We have more fun." The <<beastsplural>> leave you. Presumably, to rest within the corners of the den.
+		<br><br>
+	<</if>>
+
+	You slowly get up and brush yourself off. You give a curt nod to the group before departing.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+<</if>>
+
+<<link [[Next|Trash]]>><<endevent>><<set $eventskip to 0>><</link>>
+<br>
+
+:: Raccoons Rape
+
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<beastCombatInit>>
+	<<beastTrainGenerate>>
+<</if>>
+<<effects>>
+<<effectsman>>
+<<alarmstate 1>>
+<br>
+<<beast $enemyno>>
+<br><br>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<span id="next"><<link [[Next->Raccoons Rape Ejaculation]]>><</link>></span><<nexttext>>
+<<elseif $enemyhealth lte 0>>
+	<span id="next"><<link [[Next->Raccoons Rape Escape]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next->Raccoons Rape]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Raccoons Rape Ejaculation
+
+<<effects>>
+<<beastejaculation>>
+
+
+<<if $combatTrain.length gt 0>>
+	Satisfied, the <<beasttype>> leaves you be. Another takes its place.
+	<<combatTrainAdvance>>
+	<br><br>
+	<<link [[Next|Raccoons Rape]]>><</link>>
+<<else>>
+	Satisfied, the <<beasttype>> leaves you be.
+	<<combatTrainAdvance>>
+	<br><br>
+	<<link [[Next|Raccoons Rape End]]>><</link>>
+<</if>>
+
+:: Raccoons Rape Escape
+
+<<effects>>
+<<beastwound>>
+<<if $combatTrain.length gt 0>>
+	The <<beasttype>> recoils in pain and fear, but another takes its place.
+	<<combatTrainAdvance>>
+	<br><br>
+	<<link [[Next|Raccoons Rape]]>><</link>>
+<<else>>
+	The <<beasttype>> recoils in pain and fear.
+	<<combatTrainAdvance>>
+	<br><br>
+	<<link [[Next|Raccoons Rape End]]>><</link>>
+<</if>>
+
+:: Raccoons Rape End
+
+<<effects>>
+<<if $enemywounded is 1 and $enemyejaculated is 0>>
+	The <<beasttype>> whimpers and flees into the darkness.
+<<elseif $enemywounded is 0 and $enemyejaculated is 1>>
+	The <<beasttype>> leaves you lying on the ground.
+	<br><br>
+	<<if $monster is 1>>
+		"Was easy, yes? You just rest. We take care of everything." The leader gestures towards <<bhis>> companions. They return to the side of the one in charge. "Maybe you come back again." 
+		<br><br>
+		<<bHis>> companions make a chittering noise oddly reminiscent of snickering. The leader maintains <<bhis>> composure, but you still sense an air of conceit emanating from <<bhim>>. "Now go. Unless you want more."
+		<br><br>
+	<</if>>
+<<elseif $enemywounded gte 2 and $enemyejaculated is 0>>
+	Feeling that you're more trouble than you're worth, the <<beastsplural>> flee into the darkness.
+<<elseif $enemywounded is 0 and $enemyejaculated gte 2>>
+	The <<beastsplural>> leave you spent and shivering on the ground.
+	<br><br>
+	<<if $monster is 1>>
+		"Was easy, yes? You just rest. We take care of everything." The leader gestures towards <<bhis>> companions. They return to the side of the one in charge. "You probably not come back... but, would not mind if you do." 
+		<br><br>
+		<<bHis>> companions make a chittering noise oddly reminiscent of snickering. The leader maintains <<bhis>> composure, but you still sense an air of conceit emanating from <<bhim>>. "Now go. Unless you want more."
+		<br><br>
+	<</if>>
+<<elseif $enemywounded gte 1 and $enemyejaculated gte 1>>
+	The <<beastsplural>> leave you spent and shivering on the ground. One is slowed by a limp.
+<</if>>
+<br><br>
+<<tearful>> you rise to your feet and flee the den as fast as you can.
+<br><br>
+<<clotheson>>
+<<endcombat>>
+
+
+<<link [[Next|Trash]]>><<endevent>><<set $eventskip to 0>><</link>>

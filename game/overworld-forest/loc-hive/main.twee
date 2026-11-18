@@ -1,0 +1,1295 @@
+:: Hive Entrance 
+
+<<set $outside to 1>><<set $location to "forest">><<effects>>
+
+<<if $foresthunt gte 1 and $edenforesthunt is 1>>
+	<<set $rng to random(1, 60)>>
+	<<if $rng lte 20>>
+	<span class="red">You are being hunted. You see shotgun shells lying on the ground.</span>
+	<br><br>
+	<<elseif $rng lte 40>>
+	<span class="red">You are being hunted. You see boot prints on the ground.</span>
+	<br><br>
+	<<else>>
+	<span class="red"> You are being hunted. You hear a gun firing from afar.</span>
+	<br><br>
+	<</if>>
+<<elseif $foresthunt gte 1 and $blackwolfhunt is 1>>
+	<<set $rng to random(1, 60)>>
+	<<if $rng lte 20>>
+	<span class="red">You are being hunted. You see wolf fur tangled in the trees.</span>
+	<br><br>
+	<<elseif $rng lte 40>>
+	<span class="red">You are being hunted. You see wolf prints on the ground.</span>
+	<br><br>
+	<<else>>
+	<span class="red">You are being hunted. You hear a growl in the distance.</span>
+	<br><br>
+	<</if>>
+<</if>>
+
+<<if $arousal gte 10000>>
+	<<orgasmforest>>
+<</if>>
+
+<<if $stress gte 10000>>
+	<<passoutforest>>
+<<elseif $foresthunt gte 10>>
+	<<foresthunt>>
+<<else>>
+	<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
+	Standing before you is an enormous wax hive, guarded by two strong-looking wasps. 
+	<br><br>
+
+	<<if Time.hour lte 9>>
+		<<if $bjob is "Worker">>
+			You also see a group of pollen gatherers gathering for today's harvest.
+			<br><br>
+		<<elseif $bjob is "Hunter">>
+			You also see a group of hunters gathering for today's hunt.
+			<br><br>
+		<</if>>
+	<</if>>
+
+	<<if Time.dayState isnot "night" and !random(3)>>
+		<<link [[Observe|Hive Observe]]>><</link>>
+		<br>
+	<</if>>
+	<<hiveentranceicon>><<link [[Approach (0:02)|Hive Approach]]>><<pass 2>><</link>>
+	<br>
+	<<if Time.hour lte 10 and Time.hour gte 6>>
+		<<if $bjob is "Worker">>
+			<<link [[Work|Hive Pollen Collection]]>><</link>>
+			<br>
+		<<elseif $bjob is "Hunter">>
+			<<link [[Hunt|Hive Animal Hunting]]>><</link>>
+			<br>
+		<</if>>
+	<</if>>
+	<<if V.transformationParts.dragon.wings is "default">>
+		<<dragonwingsicon>><<link [[Fly back to the forest (0:10)|Forest]]>><<pass 10>><</link>><br>
+	<</if>>
+	<<link [[Forest (0:20)|Forest]]>><<pass 20>><</link>>
+	<br>
+
+<</if>>
+
+
+:: Hive Approach 
+<<effects>><<set $hivestage to 0>>
+<<if $stress gte 10000 and $hivemember is 1>>
+	<<passouthive>>
+<<elseif $stress gte 10000 and $hivemember is 0>>
+	<<passoutforest>>
+<<else>>
+	<<if $hivemember is 1>>
+		The guards recognize you and don't block your way. 
+		<br><br>
+
+		<<hiveentranceicon>><<link [[Enter Hive|Hive Corridor]]>><</link>>
+		<br>
+		<<getouticon>><<link [[Leave|Hive Entrance]]>><</link>>
+		<br>
+	<<elseif $bee gte 6>>
+		"Stop there bee." they sniff you and think for a moment. "You don't smell like another hive. Are you wild?"
+		<br><br>
+		<<link [[Say you're wild|Hive Entrance Accepted]]>><</link>>
+		<br>
+		<<link [[Say you're a member of another hive|Hive Entrance Rejected]]>><</link>>
+		<br>
+	<<else>>
+		<<if ($monsterchance gte random(1, 100) and ($hallucinations gte 1 or $monsterhallucinations is "f")) or ($bestialitydisable is "t")>>
+			<<beastNEWinit 2 wasp>>
+			"Stand back human, not welcome inside" They buzz menacingly. 
+		<<else>>
+			The wasps buzz angrily at you, chasing you away from the hive. 
+		<</if>>
+		<br><br>
+
+		<<link [[Next|Hive Entrance]]>><</link>>
+		<br>
+	<</if>>
+<</if>>
+
+:: Hive Corridor 
+<<set $location to "hive">><<set $outside to 0>><<effects>><<set $hivestage to 1>><<set $bus to "hive">>
+<<if $foresthunt gte 1>>
+	<span class="lblue">You're safe in the hive. Whatever was hunting you will have given up.</span>
+	<br><br>
+	<<set $foresthunt to 0>>
+<</if>>
+<<if $stress gte 10000>>
+	<<passouthive>>
+<<elseif $NPCName[$NPCNameList.indexOf("Taylor")].love gte $npclovehigh and $TaylorFreed is 0>>
+    <<goto "Throne Vouch 1">>
+<<else>>
+	<<if Time.dayState is "dawn">>
+		<<if random(1)>>
+			<<beastNEWinit 5 bee>>
+		<<else>>
+			<<beastNEWinit 5 wasp>>
+		<</if>>
+		The corridors are busy with commotion as the <<beastsplural>> hurry to their jobs.
+	<<elseif Time.dayState is "day">>
+		The corridors are silent with almost all hive members at their jobs.
+	<<elseif Time.dayState is "dusk">>
+		<<if random(1)>>
+			<<beastNEWinit 5 bee>>
+		<<else>>
+			<<beastNEWinit 5 wasp>>
+		<</if>>
+		The corridors are a bit more active since most <<beastsplural>> have finished their work and are winding down for the night.
+	<<elseif Time.dayState is "night">>
+		The corridors are dead silent. All other hive members are either asleep or staying respectfully quiet.
+	<<else>>
+		You are in the corridor of the hive. 
+	<</if>>
+	<br><br>
+
+	<<if $TaylorSeen is 0 and $TaylorMissing is 0>>
+		While you're walking down the corridors you see a guard walking a young human to the cells.
+		<br><br>
+		<<set $TaylorSeen to 1>><<set $TaylorMissing to 1>>
+	<</if>>
+
+	<<link [[Barracks|Hive Barracks]]>><<endevent>><</link>>
+	<br>
+	<<hivecellicon>><<link [[Cells|Hive Cell Outside]]>><<endevent>><</link>>
+	<br>
+	<<link [[Throne Room|Hive Throne Room]]>><<endevent>><</link>>
+	<br>
+	<<getouticon>><<link [[Leave Hive|Hive Approach]]>><<endevent>><</link>>
+	<br>
+<</if>>
+
+
+:: Hive Barracks 
+<<set $outside to 0>><<set $location to "hive">><<effects>><<set $hivestage to 2>>
+<<roomoptions>>
+
+You're in a large open room. The walls are lined with small hexagonal holes made for sleeping. 
+<<if Time.dayState is "dusk">>
+	The room is bustling with bees getting ready to sleep for whatever tomorrow brings.
+<</if>>
+<br><br>
+
+<<if $unbind is 1>>
+	<<set $unbind to 0>>
+	You rub your bindings against your desk. It takes some effort, but eventually the material yields, freeing your limbs.
+	<br><br>
+<</if>>
+<<if $stress gte 10000>>
+	<<passouthive>>
+<<else>>
+	<<if $leftarm is "bound" or $rightarm is "bound" or $feetuse is "bound">>
+		<<link [[Undo your bindings (0:10)|Hive Barracks]]>><<set $unbind to 1>><<pass 10>><<unbind>><</link>>
+		<br><br>
+	<</if>>
+    <<link [[Enter Your Pod|Hive Pod]]>><</link>>
+	<br>
+	<<if Time.dayState is "dusk">>
+		<<link [[Relax (0:30)|Hive Barracks Relax]]>><<pass 30>><<endevent>><</link>>
+		<br><br>
+	<</if>>
+    <<link [[Corridor|Hive Corridor]]>><<endevent>><</link>>
+    <br><br>
+    <<link [[Settings|Hive Settings]]>><<endevent>><</link>>
+    <br>
+    <<attitudesControlCheck>>
+    <<if $attitudesControl.showGoldLink is true>>
+	    <span class="goldLink"><<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>>  </span><span class="red">!!</span>
+    <<else>>
+	    <<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>>
+    <</if>>
+<</if>>
+
+
+:: Hive Settings [exitCheckBypass]
+<<set $settingsExitPassage to "Hive Barracks">>
+<<settings>>
+
+
+:: Hive Barracks Relax 
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+<<cleareventpool>>
+
+<<addinlineevent>>
+	<<if random(1)>>
+		<<beastNEWinit 5 bee>>
+	<<else>>
+		<<beastNEWinit 5 wasp>>
+	<</if>>
+	You relax with the <<beastsplural>> settling down for the day. You have a great time chatting and feel a bit less stressed. <<lstress>><<stress -5>>
+<</addinlineevent>>
+<<addinlineevent>>
+	<<if random(1)>>
+		<<beastNEWinit 5 bee>>
+	<<else>>
+		<<beastNEWinit 5 wasp>>
+	<</if>>
+	You sit with some <<beastsplural>> and have a chat. They offer you some honey and you happily partake. <<ltiredness>><<pain -5>> <<tiredness -5>>
+<</addinlineevent>>
+<<addinlineevent>>
+	<<if random(1)>>
+		<<beastNEWinit 5 bee>>
+	<<else>>
+		<<beastNEWinit 5 wasp>>
+	<</if>>
+	You attempt a conversation with the <<beastsplural>> but can't begin to wrap your head around whatever they're talking about. You leave a bit confused.
+<</addinlineevent>>
+<<addinlineevent>>
+	<<if random(1)>>
+		<<beastNEWinit 5 bee>>
+	<<else>>
+		<<beastNEWinit 5 wasp>>
+	<</if>>
+	You try to talk to a group of <<beastsplural>> but they seem dead tired and are too exhausted to want to speak to you.
+<</addinlineevent>>
+
+<<runeventpool>>
+<br><br>
+
+<<link [[Next|Hive Barracks]]>><<endevent>><</link>>
+
+
+:: Hive Pod 
+<<effects>>
+
+You squeeze into the pod, feeling the waxy walls against your skin. 
+<br><br>
+
+<<generateSleepLinks "Hive Barracks Sleep">>
+
+<<link [[Climb out of pod|Hive Barracks]]>><<endevent>><</link>>
+<br><br>
+
+
+:: Hive Barracks Sleep 
+<<set $hiveslept to 1>>
+<<set _autosavehere to true>>
+<<sleepeffects>><<sleep>><<effects>>
+
+<<if $nightmares gte 1 and $controlled is 0>>
+	You dream you are being hunted by something dark and terrible.
+<<else>>
+	<<if $specialClothesEffects.bimboTotal gte random(100,1000) or $arousal gte 9000>>
+		Your sleep is plagued by dirty dreams.
+		<<arousal `$specialClothesEffects.bimboTotal / 10 * $sleepHoursTotal`>>
+		<<arousal `100 * $sleepHoursTotal`>>
+		<<if $arousal gte $arousalmax>>
+			They push you over the edge.
+			<<orgasm>><<set _orgasm to true>>
+		<<else>>
+			<br><br>
+		<</if>>
+	<<else>>
+		You sleep soundly.
+	<</if>>
+<</if>>
+<br><br>
+
+<<link [[Get out of pod|Hive Barracks]]>><</link>>
+
+
+:: Hive Throne Room 
+<<set $outside to 0>><<set $location to "hive">><<effects>><<set $hivestage to 4>>
+<<if $stress gte 10000>>
+	<<passouthive>>
+<<else>>
+	You try the door but seem to recall it being locked.
+	<br><br>
+
+	<<link [[Corridor|Hive Corridor]]>><<endevent>><</link>>
+<</if>>
+
+:: Hive Cell Outside
+<<set $outside to 0>><<set $location to "hive">><<effects>><<set $hivestage to 3>>
+<<if $stress gte 10000>>
+	<<passouthive>>
+<<else>>
+	<<if ($TaylorArrested is 1 or $TaylorMissing is 1) and $TaylorFreed is 0>>
+		<<npc Taylor>><<person1>>
+		A row of cells line the back wall of the hive. One cell is occupied by a human prisoner.
+	<<else>>
+		A row of cells line the back wall of the hive. At the moment all of the cells are empty although there are still guards stationed here nonetheless. 
+	<</if>>
+	<br><br>
+
+	<<link [[Corridor|Hive Corridor]]>><<endevent>><</link>>
+	<br>
+	<<if false>>
+		<<link [[Talk to prisoner (0:30)|Hive Taylor Introduction]]>><<npcincr Taylor love 1>><<pass 30>><</link>><<glove>>
+	<<elseif false>>
+		<<link [[Talk to Taylor (0:30)|Hive Taylor Hangout]]>><<npcincr Taylor love 1>><<pass 30>><</link>><<glove>>
+	<</if>>
+<</if>>
+
+:: Hive Cell
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+You see yourself in a damp wax honeycomb shaped cell. The bars are sturdier than you thought but something feels off about the back wall.
+<br><br>
+
+<<link [[Wait (1:00)|Hive Cell Wait]]>><<pass 60>><</link>>
+<br>
+<<link [[Sleep|Hive Cell Sleep 1]]>><</link>>
+<br>
+<<if $hivecelltear gte 13>>
+	<<link [[Escape through the hole|Hive Cell Hole]]>><</link>>
+	<br>
+<<elseif $hivecelltear gte 12 and $physiquesize lte 12000>>
+	<<link [[Escape through the hole|Hive Cell Hole]]>><</link>><<small_text>>
+	<br>
+<<elseif $hivecelltear gte 11 and $physiquesize lte 10000>>
+	<<link [[Escape through the hole|Hive Cell Hole]]>><</link>><<small_text>>
+	<br>
+<<elseif $hivecelltear gte 10 and $physiquesize lte 6000>>
+	<<link [[Escape through the hole|Hive Cell Hole]]>><</link>><<small_text>>
+	<br>
+<<elseif $hivecelltear gte 1>>
+	<<link [[Tear at the cell wall (1:00)|Hive Cell Wall Tear]]>><<pass 60>><<set $hivecelltear += 1>><</link>>
+	<br>
+<<else>>
+	<<link [[Examine the cell wall|Hive Cell Wall Examine]]>><<set $hivecelltear to 1>><</link>>
+	<br>
+<</if>>
+
+
+:: Hive Cell Wall Examine
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+You investigate the back wall and notice that the wax is starting to flake apart. Given enough effort you could probably rip it open.
+<br><br>
+
+<<link [[Tear at the cell wall (1:00)|Hive Cell Wall Tear]]>><<pass 60>><<set $hivecelltear += 1>><</link>>
+<br>
+<<link [[Next|Hive Cell]]>><</link>>
+
+
+:: Hive Cell Wall Tear
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+You feel a small breeze coming through as you 
+<<if $hivewalltear lte 9 and $hivewalltear gte 6>>
+
+<<else>>
+You 
+<</if>>
+
+start tearing at the wall
+
+<<if $hivewalltear gte 13>>
+	, until the hole is big enough to squeese through. 
+<<elseif $hivewalltear gte 12 and $physiquesize lte 12000>>
+	, until the hole is big enough to squeese through. 
+<<elseif $hivewalltear gte 11 and $physiquesize lte 10000>>
+	, until the hole is big enough to squeese through. 
+<<elseif $hivewalltear gte 10 and $physiquesize lte 6000>>
+	, until the hole is big enough to squeese through. 
+<<elseif $hivewalltear gte 9>>
+	. The hole is getting big, almost enough to fit through. 
+<<elseif $hivewalltear gte 6>>
+	. A small hole has been punched through. 
+<<elseif $hivewalltear gte 4>>
+	. You've pulled a small chunk out. 
+<<else>>
+	. It looks a bit flakey. 
+<</if>>
+<br><br>
+
+<<if $hivewalltear gte 13>>
+	<<link [[Squeeze through|Hive Cell Hole]]>><</link>>
+	<br>
+	<<link [[Leave it for now|Hive Cell]]>><</link>>
+	<br>
+<<elseif $hivewalltear gte 12 and $physiquesize lte 12000>>
+	<<link [[Squeeze through|Hive Cell Hole]]>><</link>>
+	<br>
+	<<link [[Leave it for now|Hive Cell]]>><</link>>
+	<br>
+<<elseif $hivewalltear gte 11 and $physiquesize lte 10000>>
+	<<link [[Squeeze through|Hive Cell Hole]]>><</link>>
+	<br>
+	<<link [[Leave it for now|Hive Cell]]>><</link>>
+	<br>
+<<elseif $hivewalltear gte 10 and $physiquesize lte 6000>>
+	<<link [[Squeeze through|Hive Cell Hole]]>><</link>>
+	<br>
+	<<link [[Leave it for now|Hive Cell]]>><</link>>
+	<br>
+<<else>>
+<<link [[Next|Hive Cell]]>><</link>>
+<br>
+<</if>>
+
+
+:: Hive Cell Hole
+<<set $outside to 1>><<set $location to "forest">><<effects>>
+
+You squeeze through the hole and manage to make it into the forest outside of the hive. 
+<br><br>
+
+<<set $beeprisoner to 0>>
+
+<<link [[Next|Forest]]>><<endevent>><</link>>
+
+
+:: Hive Cell Sleep 1
+<<effects>>
+
+You curl up on the ground of your cell, trying to find some semblance of comfort. 
+<br><br>
+
+<<generateSleepLinks "Hive Cell Sleep 2">>
+
+<<link [[Get up|Hive Cell]]>><<endevent>><</link>>
+
+
+:: Hive Cell Sleep 2 
+<<set _autosavehere to true>>
+<<sleepeffects>><<sleep>><<effects>>
+
+<<if $nightmares gte 1 and $controlled is 0>>
+	You dream you are being hunted by something dark and terrible.
+<<else>>
+	<<if $specialClothesEffects.bimboTotal gte random(100,1000) or $arousal gte 9000>>
+		Your sleep is plagued by dirty dreams.
+		<<arousal `$specialClothesEffects.bimboTotal / 10 * $sleepHoursTotal`>>
+		<<arousal `100 * $sleepHoursTotal`>>
+		<<if $arousal gte $arousalmax>>
+			They push you over the edge.
+			<<orgasm>><<set _orgasm to true>>
+		<<else>>
+			<br><br>
+		<</if>>
+	<<else>>
+		You sleep soundly.
+	<</if>>
+<</if>>
+
+<<sleepeffects>>
+<br><br>
+
+<<link [[Get up|Hive Cell]]>><</link>>
+
+
+:: Hive Cell Wait
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+<<cleareventpool>>
+
+<<addinlineevent "hivecell_nothing">>
+	<<if $bee gte 6>>
+		"So you finally finished." A group of guards approach your cell. The queens wish to have an audience with you.
+		<br><br>
+
+		<<link [[Next|Throne Job Assignment]]>><</link>>
+	<<else>>
+		You wait in your cell as time passes. 
+		<br><br>
+
+		<<link [[Next|Hive Cell]]>><<endevent>><</link>>
+	<</if>>
+<</addinlineevent>>
+
+<<addinlineevent "hivecell_offerhoney" 0.33>>
+	<<beastNEWinit 1 bee>>
+	A <<beasttype>> walking by stops and turns to you. "It's really awful the hunters treat you like this. Would you like some honey to make you feel better?"
+	<br><br>
+
+	<<link [[Accept|Cell Honey Accept]]>><</link>>
+	<br>
+	<<link [[Refuse|Cell Honey Refuse]]>><</link>>
+<</addinlineevent>>
+
+<<addinlineevent "hivecell_offersex"0.33>>
+	<<beastNEWinit 1 bee>>
+	A <<beasttype>> saunters towards you. "I'm sorry for what the hunters did to you. If you'd like I can try to make you feel better with my body."
+	<br><br>
+
+	<<link [[Accept|Cell Sex Accept]]>><</link>>
+	<br>
+	<<link [[Refuse|Cell Sex Refuse]]>><</link>>
+<</addinlineevent>>
+
+<<runeventpool>>
+
+
+:: Cell Honey Accept
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+"Here just don't tell anybody okay." <<bhe>> hurriedly leaves. You look at the small semi liquid yellow ball in your hand. You put it to your mouth and it tastes sweet and you perk up. <<pain -5>><<tiredness -5>><<transform bee 2>>
+<br><br>
+
+<<link [[Next|Hive Cell]]>><<endevent>><</link>>
+
+
+:: Cell Honey Refuse
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+"I guess if you say so." <<bHe>> shrugs and wanders off.
+<br><br>
+
+<<link [[Next|Hive Cell]]>><<endevent>><</link>>
+
+
+:: Cell Sex Accept
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+"Really? Great. Let me just." <<bHe>> struggles with the door for a moment before getting it open. "I'll enjoy this."
+<br><br>
+
+<<link [[Next|Cell Bee Sex]]>><<transform bee 2>><<set $sexstart to 1>><</link>>
+
+
+:: Cell Sex Refuse
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+"I guess if you say so." <<bHe>> shrugs and wanders off.
+<br><br>
+
+<<link [[Next|Hive Cell]]>><<endevent>><</link>>
+
+
+:: Cell Bee Sex
+<<effects>>
+
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+
+	<<beastCombatInit>>
+	<<set $enemytrust += 100>>
+<</if>>
+<<effects>>
+<<effectsman>><<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+<<if $finish is 1>>
+	<span id="next"><<link [[Next|Cell Bee Sex Finish]]>><</link>></span><<nexttext>>
+<<elseif $enemyhealth lte 0>>
+	<span id="next"><<link [[Next|Cell Bee Sex Finish]]>><</link>></span><<nexttext>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<span id="next"><<link [[Next|Cell Bee Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Cell Bee Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+
+:: Cell Bee Sex Finish 
+
+<<set $outside to 0>><<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+
+	"Thanks for the good time." <<bHe>> says closing you back in the cell. "Maybe we can do this again."
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Hive Cell]]>><<endevent>><</link>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	<<bHe>> lies unconscious on the floor. You hurriedly make your way out of the cell and run down a long corridor before bursting out the front door. 
+	<br><br>
+
+	The guards are caught off guard and you manage to run back into the forest.
+	<br><br>
+
+	<<set $beeprisoner to 0>>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Forest]]>><<endevent>><<set $eventskip to 1>><</link>>
+	<br>
+<<else>>
+	"What the hell? You crazy? No wonder you're in this cell." <<bHe>> spits on the floor and walks away.
+	<br><br>
+
+	<<tearful>> you get back up.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Hive Cell]]>><<endevent>><</link>>
+	<br>
+<</if>>
+
+
+:: Throne Job Assignment
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+
+You walk down a long hexagonal corridor followed by two guards. Eventually you stop at a large gate, the guard fiddles with his keys before slotting one in the door and turning it. 
+<br><br>
+
+You hear a click as the guard puts their weight on the gate slowly pushing it open. The room is huge, lined with luxuries, and at the center are two large thrones. 
+<br><br>
+
+One the left is a large woman, her tail is much longer than most other wasps and bees you've seen. She appears gentle having an elegance about her that you find yourself enthralled in. 
+<br><br>
+
+On the other hand the other woman looks tough and rugged. She has large muscles and could probably beat most people you know in unarmed combat. 
+<br><br>
+
+You approach the two and you feel a very heavy sensation, their presence feels like the force of gravity is weighing harsher upon you.
+<br><br>
+
+<<if $beeprisoner is 1>>
+	"Well this is curious." The wasp queen says sitting forward. "In all my years of ruling I've never seen a human transform into a bee. In any case, that doesn't excuse you for interfering with my hunters. Since you were human it's clear you're unaffiliated with another hive so you will work off your crimes." 
+	<br><br>
+
+	She thinks for a moment. "We could always use more hunters although you could choose to be a pollen collector if you so desired."
+	<br><br>
+
+<<else>>
+	"Oh welcome." The bee queen says cheerfully. You're a bit taken aback. Her overwhelming presence conflicts with her kind and cheerful personality. 
+	<br><br>
+
+	"I hope the guards didn't give you too bad of a time getting in. It's all worth it for security you know. Anyway enough rambling, welcome to our hive. Since you're new let's set you up with a job, for now we could always use more pollen gatherers but I suppose you could be a hunter if you like."
+	<br><br>
+
+<</if>>
+
+<<link [[Choose to be a hunter|Throne Hunter Job]]>><</link>>
+<br>
+<<link [[Choose to be a pollinator|Throne Worker Job]]>><</link>>
+
+
+:: Throne Hunter Job
+<<set $outside to 0>><<set $location to "hive">><<effects>><<set $bjob to "Hunter">>
+
+<<if $beeprisoner is 1>>
+	"Great when or if you ever pay off your crimes we might have something else for you. The hunters meet at the front of the hive every morning. Now guards." 
+	<br><br>
+
+	She claps her hands. "Escort <<pher>> out of the throne room." The two guards grab you and pull you out of the room. 
+	<br><br>
+
+<<else>>
+	"Ah I see" she says "Hunters meet at the front entrance every morning. That's all you may leave."
+	<br><br>
+
+<</if>>
+
+<<set $hivemember to 1>>
+
+You're left outside the throne room.
+<br><br>
+
+<<link [[Next|Hive Corridor]]>><<endevent>><</link>>
+
+:: Throne Worker Job
+<<set $outside to 0>><<set $location to "hive">><<effects>><<set $bjob to "Worker">>
+
+<<if $beeprisoner is 1>>
+	"Great when or if you ever pay off your crimes we might have something else for you. The pollen collectors meet at the front of the hive every morning. Now guards." 
+	<br><br>
+
+	She claps her hands. "Escort <<phim>> out of the throne room." The two guards grab you and pull you out of the room. 
+	<br><br>
+
+<<else>>
+	"Wonderful" she says delightedly "Pollen gatherers meet at the front entrance every morning. Glad to have you. That's all you may leave."
+	<br><br>
+
+<</if>>
+
+<<set $hivemember to 1>>
+
+You're left outside the throne room.
+<br><br>
+
+<<link [[Next|Hive Corridor]]>><<endevent>><</link>>
+
+:: Hive Pollen Collection
+<<set $outside to 1>><<set $location to "forest">><<effects>>
+<<beastNEWinit 5 bee>>
+You meet with a small group of fellow <<beastsplural>> and leave to start collecting pollen for the hive.
+<br><br>
+
+<<cleareventpool>>
+<<addinlineevent "hive_pollen_collection_1">>
+	You follow the <<beastsplural>> to a large open clearing in the woods full of bright, colorful, and beautiful flowers. You and the other <<beastsplural>> get to work collecting pollen. You collect a large quantity and return back to the hive early. 
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><<pass 180>><</link>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_2">>
+	<<beastNEWinit 5 bee>>
+	You follow the <<beastsplural>> to a large open clearing in the woods full of bright, colorful, and beautiful flowers. The other <<beastsplural>> start gathering but you hear an odd noise.<<endevent>><<beastNEWinit 1 wolf>> You look around and spot a large <<beasttype>> bound from the trees towards you.
+	<br><br>
+
+	<<link [[Prostrate self|Hive Pollen Collection 2 Allow]]>><<set $sexstart to 1>><</link>><<deviant2>>
+	<br>
+
+	<<link [[Resist|Hive Pollen Collection 2 Resist]]>><<set $molestationstart to 1>><</link>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_3">>
+	You find a large flower overflowing with pollen. It's more than enough to wrap up your collection for the day. You gather as much as you can and return to the Hive.
+	<br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><<pass 60>><</link>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_4" 0.2>>
+	<<beastNEWinit 2 bee>>
+	While leaving you're stopped by one of the guards. <<bHe>> tells you something has come up and one of the cleaners has slipped and injured <<bhimself 2>> and needs someone to take <<bhis 2>> place for the day. 
+	<br>
+
+	<<link [[Agree|Hive Pollen Collection Cleaner Agree]]>><</link>>
+	<br>
+
+	<<link [[Refuse|Hive Pollen Collection Refuse]]>><</link>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_5" 0.2>>
+	<<beastNEWinit 2 bee>>
+	While leaving you're stopped by one of the guards. <<bHe>> tells you something has come up and one of the nurses has been injured and needs someone to take <<bhis 2>> place for the day. 
+	<br>
+
+	<<link [[Agree|Hive Pollen Collection Nurse Agree]]>><</link>>
+	<br>
+
+	<<link [[Refuse|Hive Pollen Collection Refuse]]>><</link>>
+<</addinlineevent>>
+<<runeventpool>>
+
+:: Hive Pollen Collection 2 Allow
+<<set $outside to 1>><<set $location to "forest">><<effects>>
+
+You drop to the ground and adopt a mating posture.
+<<deviancy2>>
+
+The <<beasttype>> paces towards you and sniffs.
+<<if $monster is 1>>
+	"Curious. Good smell."
+<</if>>
+<<bHe>> takes advantage of your position and mounts you.
+<br><br>
+
+<<link [[Next|Hive Pollen Collection 2 Sex]]>><<set $sexstart to 1>><</link>>
+
+:: Hive Pollen Collection 2 Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<beastCombatInit>>
+
+	<<set $NPCList[0].stance to "top">><<set $enemytrust -= 20>><<deviancy2>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<br>
+<<beast $enemyno>>
+<br><br>
+
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if $finish is 1>>
+	<span id="next"><<link [[Next|Hive Pollen Collection 2 Sex Finish]]>><</link>></span><<nexttext>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<span id="next"><<link [[Next|Hive Pollen Collection 2 Sex Finish]]>><</link>></span><<nexttext>>
+<<elseif $enemyhealth lte 0>>
+	<span id="next"><<link [[Next|Hive Pollen Collection 2 Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Hive Pollen Collection 2 Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Hive Pollen Collection 2 Sex Finish
+<<set $outside to 1>><<set $location to "forest">><<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+
+	The <<beasttype>> hurriedly runs away leaving you exhausted.
+	<<if $monster is 1>>
+		"Tasty."
+	<</if>>
+	<<wolfpacktrust>>
+	<br><br>
+
+	After you gather yourself you finish up collecting pollen. Because of the setback, you're late returning to the hive.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Hive Entrance]]>><<set $eventskip to 1>><<pass 360>><</link>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	The <<beasttype>> yips and runs away.
+	<<if $monster is 1>>
+		"Too strong!"
+	<</if>>
+	<br><br>
+
+	<<tearful>> you gather yourself and continue to gather pollen and return to the Hive earlier than expected.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Hive Entrance]]>><<set $eventskip to 1>><<pass 180>><</link>>
+	<br>
+<<else>>
+	The <<beasttype>> turns away from you and slinks between the trees.
+	<br><br>
+
+	You gather yourself and continue the job.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Hive Entrance]]>><<set $eventskip to 1>><<pass 180>><</link>>
+	<br>
+<</if>>
+
+:: Hive Pollen Collection 2 Resist
+<<if $molestationstart is 1>>
+<<set $molestationstart to 0>>
+<<controlloss>>
+<<violence 1>>
+<<neutral 1>>
+<<molested>>
+	<<beastCombatInit>>
+	
+<<set $enemytrust -= 40>>
+<</if>>
+<<effects>>
+<<effectsman>>
+<br>
+<<beast $enemyno>>
+<br><br>
+
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<span id="next"><<link [[Next|Hive Pollen Collection 2 Resist Finish]]>><</link>></span><<nexttext>>
+<<elseif $enemyhealth lte 0>>
+	<span id="next"><<link [[Next|Hive Pollen Collection 2 Resist Finish]]>><</link>></span><<nexttext>>
+<<elseif $rescue is 1 and $alarm is 1>>
+	<span id="next"><<link [[Next|Hive Pollen Collection 2 Resist Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Hive Pollen Collection 2 Resist]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Hive Pollen Collection 2 Resist Finish
+<<set $outside to 1>><<set $location to "forest">><<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+
+	<<tearful>> you gather yourself and continue your job. Because of the setback, you're late returning to the hive.
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Hive Entrance]]>><<set $eventskip to 1>><</link>><<pass 360>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	The <<beasttype>> yips and runs away.
+	<br><br>
+
+	<<tearful>> you gather yourself and continue to gather pollen and return to the Hive earlier than expected.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Hive Entrance]]>><<set $eventskip to 1>><</link>><<pass 180>>
+	<br>
+<</if>>
+
+:: Hive Pollen Collection Cleaner Agree
+<<set $outside to 0>><<set $location to "hive">><<effects>>
+"Sure I'd be happy to help." You agree. "Great come this way." <<bHe>> beckons you deeper into the Hive and into the barracks. "Your job is to make sure these pods are clean for the hunters and gatherers upon their return." <<bHe>> turns his back and leaves the room leaving you and the other cleaners alone. You look around to them to see them start licking the pods clean.
+<br><br>
+
+<<link [[Start Licking|Hive Pollen Collection Licking End]]>><<endevent>><</link>><<promiscuous3>>
+<br>
+<<link [[Find a small soft piece of wax as a sponge|Hive Pollen Collection Wax End]]>><<endevent>><</link>>
+
+:: Hive Pollen Collection Licking End
+You start licking the pods with the other cleaners, before long you can tell the pods are noticeably cleaner than they were prior. You and the other cleaners finish up your work for the day and relax together for the rest of the day. <<lstress>><<stress -3>>
+<br><br>
+
+<<link [[Next|Hive Barracks]]>><<pass 360>><</link>>
+
+:: Hive Pollen Collection Wax End
+You start scrubbing down the pods with the wax. It's noticeably less clean than the other cleaners work making you have to do double and sometimes triple over. By the time you finish it's already time to leave.
+<br><br>
+
+<<link [[Next|Hive Barracks]]>><<pass 360>><</link>>
+
+:: Hive Pollen Collection Cleaner Refuse
+"I'm sorry I'm much too busy collecting pollen today." You assert before continuing to your group.
+<br><br>
+
+<<link [[Next|Hive Pollen Collection Refuse]]>><</link>>
+
+:: Hive Pollen Collection Refuse
+<<cleareventpool>>
+<<addinlineevent "hive_pollen_collection_1">>
+	<<beastNEWinit 5 bee>>
+	You follow the <<beastsplural>> to a large open clearing in the woods full of bright, colorful, and beautiful flowers. You and the other <<beastsplural>> get to work collecting pollen. You collect a large quantity and return back to the hive early. 
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><<pass 180>><</link>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_2">>
+	<<beastNEWinit 5 bee>>
+	You follow the <<beastsplural>> to a large open clearing in the woods full of bright, colorful, and beautiful flowers. The other <<beastsplural>> start gathering but you hear an odd noise.<<endevent>><<beastNEWinit 1 wolf>> You look around and spot a large <<beasttype>> bound from the trees towards you.
+	<br><br>
+
+	<<link [[Prostrate self|Hive Pollen Collection 2 Allow]]>><<set $sexstart to 1>><</link>><<deviant2>>
+	<br>
+
+	<<link [[Resist|Hive Pollen Collection 2 Resist]]>><<set $molestationstart to 1>><</link>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_3">>
+	You find a large flower overflowing with pollen. It's more than enough to wrap up your collection for the day. You gather as much as you can and return to the Hive.
+	<br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><<pass 60>><</link>>
+<</addinlineevent>>
+<<runeventpool>>
+
+:: Hive Pollen Collection Nurse Agree
+"Sure I'd be happy to help." You agree. "Great come this way." <<bHe>> beckons you deeper into the Hive and into a room you never noticed before. The room is full of eggs and young children. "This is the brood nest where our eggs are stored and the babies grow into strong workers or drones." <<bHe>> informs you. "Your job is to make sure the children are fed, cared for, and cleaned." <<bHe>> makes <<bhis>> way to the exit and leaves you with the children and other nurses.
+<br><br>
+<<endevent>>
+<<cleareventpool>>
+<<addinlineevent "hive_pollen_collection_nurse_1">>
+	You sit with a group of children and begin to care for them. You brush your fingers through their hair making sure they're clean and healthy. Their warm smiles remind you of a time when things were better.<<lstress>><<ltrauma>><<stress -3>><<trauma -3>>
+	<br><br>
+
+	<<link [[Next|Hive Corridor]]>><</link>><<pass 360>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_nurse_2">>
+	<<beastNEWinit 1 bee>>
+	A small <<beasttype>> runs over and hugs your leg. <<bHe>> whines about being hungry, so you grab a small bundle of honey and give it to <<bhim>>. <<bHe>> sits on your lap and gingerly eats the honey, before running off to play with the other kids. <<lstress>><<stress -3>>
+	<br><br>
+
+	<<link [[Next|Hive Corridor]]>><</link>><<endevent>><<pass 360>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_nurse_3">>
+	As you're supervising the children, you see one of the older kids bullying one of the younger ones.
+	<br><br>
+
+	<<link [[Intervene|Hive Pollen Collection Bully Do Nothing]]>><</link>>
+	<br>
+	<<link [[Do nothing|Hive Pollen Collection Bully Do Nothing]]>><</link>>
+<</addinlineevent>>
+<<addinlineevent "hive_pollen_collection_nurse_4">>
+	A group of children come over and beg you to play with them.
+	<br><br>
+
+	<<link [[Play|Hive Pollen Collection Children Play]]>><</link>>
+	<br>
+	<<link [[Refuse|Hive Pollen Collection Children Refuse]]>><</link>>
+<</addinlineevent>>
+<<runeventpool>>
+
+:: Hive Pollen Collection Bully Intervene
+<<beastNEWinit 2 bee>>
+You break the two apart and sternly tell the older <<beasttype 2>> to knock it off or you'll have to get the guards involved. The older <<beasttype 2>> grumbles and walks away. You feel good stopping the fight and helping the smaller <<beasttype>>.<<ltrauma>><<trauma -3>>
+<br><br>
+
+<<link [[Next|Hive Corridor]]>><</link>><<endevent>><<pass 360>>
+
+:: Hive Pollen Collection Bully Do Nothing
+<<beastNEWinit 1 bee>>
+You do nothing and let the bullying continue. The younger <<beasttype>> gets shoved to the ground as the older laughs and walks away. Afterwards you help the smaller <<beasttype>> up but <<bhe>> looks upset you didn't help.
+<br><br>
+
+<<link [[Next|Hive Corridor]]>><</link>><<endevent>><<pass 360>>
+
+:: Hive Pollen Collection Children Play
+You agree to play with the children and they pull you over to their play area. "So what game do you want to play?" You ask them. They argue for a moment before settling for a game much like tag. They want you to go first.
+<br><br>
+
+<<link [[Win the game|Hive Pollen Collection Children Win]]>><</link>><<athleticsdifficulty 250 700>>
+<br>
+<<link [[Lose on purpose|Hive Pollen Collection Children Lose]]>><</link>>
+
+:: Hive Pollen Collection Children Win
+<<if $athleticsSuccess>>
+	You easily are able to tag someone and avoid being it for the entire game. The kids look a bit upset about how good you are. They continue talking to you until you have to leave. <<lstress>><<gtiredness>><<stress -3>><<tiredness +3>>
+<<else>>
+	You try to tag someone but you're too out of shape and run out of breath easily. You end up being it for most of the game and feel very embarrassed that you lost to some children. They continue talking to you until you have to leave. <<gtiredness>><<tiredness +3>>
+<</if>>
+<br><br>
+
+<<link [[Next|Hive Corridor]]>><</link>><<pass 360>>
+
+:: Hive Pollen Collection Children Lose
+You purposely lose the game and are it for most of the game. The kids look proud and that makes you quite happy. They continue talking to you until you have to leave. <<lstress>><<stress -3>>
+<br><br>
+
+<<link [[Next|Hive Corridor]]>><</link>><<pass 360>>
+
+:: Hive Pollen Collection Children Refuse
+You turn down the kids' offer to play. They look quite sad before walking away. You continue to sit until your time is up.
+<br><br>
+
+<<link [[Next|Hive Corridor]]>><</link>><<pass 360>>
+
+:: Hive Animal Hunting
+<<beastNEWinit 5 bee>>
+You meet with a small group of fellow <<beastsplural>> and leave towards the lake to start hunting.
+<br><br>
+
+<<cleareventpool>>
+<<addinlineevent "hive_animal_hunting_1">>
+	You follow the <<beastsplural>> to the shore of the forest lake and wait. You hear a crack and turn as a wild boar wanders into view. It sniffs the surroundings cautiously before proceeding forward. Your team slowly surrounds the boar before jumping out at it. Within seconds it falls limp. You and your team pick up the boar and carry it back to the hive.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 180>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_2">>
+	You follow the <<beastsplural>> to the shore of the forest lake and wait. You stake out the location for a few hours but nothing shows up. You return to the hive your head hung in defeat.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 540>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_3">>
+	You follow the <<beastsplural>> to the shore of the forest lake and wait. You hear a roar as a bear thuds between the trees towards the water. Your group looks at each other nervously before falling back to the hive empty handed.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 360>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_4">>
+	You follow the <<beastsplural>> to a small clearing in the woods full of small holes in the ground. You're handed a small rough net and told to throw the net as soon as a rabbit gets close enough to you. You lie in the grass and wait for a rabbit to approach. One inches closer so you wait before you wind up and throw.
+	<br><br>
+
+	<<link [[Next|Hive Animal Hunting Rabbit]]>><<endevent>><</link>><<physiquedifficulty 4000 14000>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_5">>
+	You follow the <<beastsplural>> to a large willow tree. They tell you to start stripping bark for use for new nets. You spend the day stripping bark and throwing it inside a basket before returning to the hive.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 360>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_6" 0.2>>
+	While leaving you're stopped by one of the guards. <<bHe>> tells you something has come up and one of the guards was injured in a recent attack and needs someone to take <<bhis>> place for the day. 
+	<br><br>
+
+	<<link [[Agree|Hive Animal Hunting Guard Agree]]>><</link>>
+	<br>
+	<<link [[Refuse|Hive Animal Hunting Refuse]]>><<endevent>><</link>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_7" 0.2>>
+	While leaving you're stopped by one of the guards. <<bHe>> tells you something has come up and one of the architects was hurt during construction and needs someone to take <<bhis>> place for the day. 
+	<br><br>
+
+	<<link [[Agree|Hive Animal Hunting Architect Agree]]>><</link>>
+	<br>
+	<<link [[Refuse|Hive Animal Hunting Refuse]]>><</link>>
+<</addinlineevent>>
+<<runeventpool>>
+
+:: Hive Animal Hunting Rabbit
+<<if $physiqueSuccess>>
+	The net flies over the rabbit trapping it. You run forward and spear it. It falls limp as you pick it up and throw it into a basket. You continue catching a few more until you return to the hive.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><</link>><<pass 180>>
+<<else>>
+	The net flies and misses. You retrieve the net and try a few more times only catching a few. You return to the hive not having caught much.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><</link>><<pass 360>>
+<</if>>
+
+:: Hive Animal Hunting Guard Agree
+"Sure I'd be happy to help." You agree. "Great." <<bHe>> says leading you into a small room. "Put on one of these." <<bHe>> says handing you a set of thick wax armor. You get dressed and follow <<bhim>> back to the front gate. <<bHe>> leaves you there with another guard to watch the entrance to the hive and to stop potential intruders.
+<br><br>
+
+<<cleareventpool>>
+<<addinlineevent "hive_animal_hunting_guard_1">>
+	You stand guarding the entrance for the day but nobody besides the hives gatherers and hunters try to enter. You finish up the day and trade positions with the night guards.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 540>>
+<</addinlineevent>>
+<<if false>> /* Plus has no Taylor NPC; skip the New World cameo. */
+	<<addinlineevent "hive_animal_hunting_guard_2">>
+		<<npc Taylor>><<person1>>
+		You start guarding the entrance but something seems off. You wait a bit but you can still feel something off. You sense a presence.
+		<br><br>
+
+		<<link [[Try to find the presence|Hive Animal Hunting Find Observer]]>><</link>>
+		<br>
+		<<link [[Don't leave your post|Hive Animal Hunting Give Up]]>><</link>>
+	<</addinlineevent>>
+<</if>>
+<<runeventpool>>
+
+:: Hive Animal Hunting Find Observer
+You follow the presence to the tree line and gaze in. You hear the rustle of something or someone running.
+<br><br>
+
+<<if $TaylorChase is 0>>
+	<<link [[Chase the thing|Hive Animal Hunting Chase Observer 1]]>><</link>><<athleticsdifficulty 500 1000>><<gtiredness>>
+<<elseif $TaylorChase is 1 and $TaylorArrested is 0 and $TaylorMissing is 0>>
+	<<link [[Chase the thing|Hive Animal Hunting Chase Observer 2]]>><</link>><<gtiredness>>
+<</if>>
+<br>
+<<link [[Go back to your post|Hive Animal Hunting Give Up]]>><<endevent>><</link>>
+
+:: Hive Animal Hunting Chase Observer 1
+<<tiredness +3>>
+<<if $athleticsSuccess>>
+	<<set $TaylorChase to 1>>
+	You chase the presence through the forest before tackling them to the ground. It's a younger <<personsimple>> who looks to be around your age. <<he>> looks frightened as <<he>> struggles uselessly. "Please let me go" <<he>> pleads "I don't mean you any harm."
+	<br><br>
+
+	<<if C.npc.Taylor.gender is "m">>
+		<<link [[Let him go|Hive Animal Hunting Free]]>><</link>>
+		<br>
+		<<link [[Arrest him|Hive Animal Hunting Arrest]]>><<set $TaylorArrested to 1>><</link>>
+	<<else>>
+		<<link [[Let her go|Hive Animal Hunting Free]]>><</link>>
+		<br>
+		<<link [[Arrest her|Hive Animal Hunting Arrest]]>><<set $TaylorArrested to 1>><</link>>
+	<</if>>
+<<else>>
+	You try to chase but end up losing the presence. You return to your post and wait until the end of the day and trade with the night guards.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><</link>><<endevent>><<pass 540>>
+<</if>>
+
+:: Hive Animal Hunting Free
+You release your grip and allow <<him>> to get up. "Thank you so much" <<he>> says shaking your hand before running away. You return to your post and wait until night when you switch with the night guards.<<glove>><<npcincr Taylor love 1>>
+<br><br>
+
+<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 540>>
+
+:: Hive Animal Hunting Arrest
+You grab <<him>> and haul <<him>> back to the hive. You pull <<him>> inside and throw <<him>> into one of the cells. You leave <<him>> there and return to your post. You wait until night upon where the night guards take over your post.<<llove>><<npcincr Taylor love -1>>
+<br><br>
+
+<<link [[Next|Hive Entrance]]>><</link>><<endevent>><<pass 540>>
+
+:: Hive Animal Hunting Chase Observer 2
+<<tiredness +3>>
+You chase the presence through the forest before tackling them to the ground. It's the same <<personsimple>> as last time. <<he>> looks shocked as <<he>> looks at you. "It's you again" <<he>> notices "Please let me go again I really mean no harm."
+<br><br>
+
+<<if C.npc.Taylor.gender is "m">>
+	<<link [[Let him go|Hive Animal Hunting Free]]>><</link>>
+	<br>
+	<<link [[Arrest him|Hive Animal Hunting Arrest]]>><<set $TaylorArrested to 1>><</link>>
+<<else>>
+	<<link [[Let her go|Hive Animal Hunting Free]]>><</link>>
+	<br>
+	<<link [[Arrest her|Hive Animal Hunting Arrest]]>><<set $TaylorArrested to 1>><</link>>
+<</if>>
+
+:: Hive Animal Hunting Give Up
+You decide not to chase the presence and continue to wait until your shift is up before switching with the night guards.
+<br><br>
+
+<<link [[Next|Hive Entrance]]>><</link>><<endevent>><<pass 540>>
+
+:: Hive Animal Hunting Refuse
+"I'm sorry I'm much too busy hunting today." You assert before continuing to your group.
+<br><br>
+
+<<cleareventpool>>
+<<addinlineevent "hive_animal_hunting_1">>
+	You follow the <<beastsplural>> to the shore of the forest lake and wait. You hear a crack and turn as a wild boar wanders into view. It sniffs the surroundings cautiously before proceeding forward. Your team slowly surrounds the boar before jumping out at it. Within seconds it falls limp. You and your team pick up the boar and carry it back to the hive.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 180>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_2">>
+	You follow the <<beastsplural>> to the shore of the forest lake and wait. You stake out the location for a few hours but nothing shows up. You return to the hive your head hung in defeat.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 540>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_3">>
+	You follow the <<beastsplural>> to the shore of the forest lake and wait. You hear a roar as a bear thuds between the trees towards the water. Your group looks at each other nervously before falling back to the hive empty handed.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 360>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_4">>
+	You follow the <<beastsplural>> to a small clearing in the woods full of small holes in the ground. You're handed a small rough net and told to throw the net as soon as a rabbit gets close enough to you. You lie in the grass and wait for a rabbit to approach. One inches closer so you wait before you wind up and throw.
+	<br><br>
+
+	<<link [[Next|Hive Animal Hunting Rabbit]]>><<endevent>><</link>><<physiquedifficulty 4000 14000>>
+<</addinlineevent>>
+<<addinlineevent "hive_animal_hunting_5">>
+	You follow the <<beastsplural>> to a large willow tree. They tell you to start stripping bark for use for new nets. You spend the day stripping bark and throwing it inside a basket before returning to the hive.
+	<br><br>
+
+	<<link [[Next|Hive Entrance]]>><<endevent>><</link>><<pass 360>>
+<</addinlineevent>>
+<<runeventpool>>
+
+:: Hive Animal Hunting Architect Agree
+"Sure I'd be happy to help." You agree. "Great come this way." <<bHe>> beckons you deeper into the Hive and into the barracks. "So your job is to build some new pods for when the young ones develop enough." <<bHe>> informs you. "Just use these wax panels. They've already been cut into the proper sizes so just stick them together in the right shape to form the pod." <<bHe>> turns <<bhis>> back and leaves.
+<br><br>
+
+<<link [[Start construction|Hive Animal Hunting Construction]]>><</link>>
+
+:: Hive Animal Hunting Construction
+<<if $mathsSuccess>>
+	You start sliding the wax plates into place. It's quite easy and you finish your job rather quickly.
+	<br><br>
+
+	<<link [[Next|Hive Barracks]]>><<endevent>><</link>><<pass 180>>
+<<else>>
+	You start sticking the wax plates together but you can't quite figure out the proper way to slot them together. You continue struggling until evening. The other <<beasttype>> watch you and start to laugh watching you fail repeatedly. Eventually you manage to get the pod built.<<gstress>><<stress +3>>
+	<br><br>
+
+	<<link [[Next|Hive Barracks]]>><<endevent>><</link>><<pass 540>>
+<</if>>
+
+:: Throne Vouch 1
+<<npc Taylor>><<person1>>
+A guard approaches you and stops you "The queens wish to speak to you. I shall escort you to the throne room." You follow the guard as he slots one of his keys in the door and turns it, unlocking the door and opening it.
+<br><br>
+You are once again walked in front of the queens. They're just as intimidating as before as you kneel before them. The wasp queen stares at you before saying "So I've heard you've grown quite close to our dear guest. <<bhe>> was found hiding outside the hive watching us and documenting his findings. What do you think was his purpose of taking those notes?"
+<br><br>
+
+<<if C.npc.Taylor.gender is "m">>
+	<<link [[Vouch for his good intentions|Throne Vouch 2]]>><</link>>
+	<br>
+<<else>>
+	<<link [[Vouch for her good intentions|Throne Vouch 2]]>><</link>>
+	<br>
+<</if>>
+
+:: Throne Vouch 2
+<<set $TaylorFreed to 1>>
+You vouch for Taylor's good intentions and that <<he>> didn't mean anything bad and was just curious. She thinks for a moment "If we let <<him>> out and <<he>> ever returns <<he>> will not be given another chance. Since you two are close you should be the one to let <<him>> out." She says tossing you the cell key. "That was all, find your way out." You make your way out and back to the cells.
+<br><br>
+You find Taylor and <<he>> greets you. "You're back, welcome. Wait what's that?" <<he>> asks. You tell <<him>> you managed to convince the queens to release <<him>> if <<he>> never came near the hive again. "Oh that's easy, after this experience I wouldn't have even if I could. Listen I live on Danube Street, maybe pay me a visit sometime." <<he>> says as <<he>> steps out of the cell and you guide <<him>> to the entrance watching <<him>> leave. <<gglove>> <<npcincr Taylor love 5>>
+<br><br>
+<<link [[Next|Hive Entrance]]>><<endevent>><</link>>
+
+:: Hive Entrance Accepted
+You inform the guards that you are in fact a wild bee. They ponder for a moment before stepping to the side. "The queens may be the ones to judge. Make your way to the throne room."
+<br><br>
+
+<<link [[Next|Throne Job Assignment]]>><</link>>
+
+:: Hive Entrance Rejected
+"Then you better get out before I have to make you." They buzz menacingly.
+<br><br>
+
+<<link [[Next|Hive Entrance]]>><</link>>

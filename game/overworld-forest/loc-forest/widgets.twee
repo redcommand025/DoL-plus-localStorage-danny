@@ -346,6 +346,7 @@
 		<</if>>
 		<<addevent "forestwolf" 0.33>>
 		<<addevent "forestbear" 0.15>>
+		<<addevent "forestraccoon" 0.15>>
 		<<addevent "forestrock" 0.25>>
 		<<addinlineevent "forest_clothingdamage">>
 			You squeeze through a thicket.
@@ -417,6 +418,9 @@
 			<<addevent "forestsnake" 0.33>>
 		<</if>>
 		<<addevent "forestbear">>
+		<<addevent "forestraccoon">>
+		<<addevent "forestdragon" 0.05>>
+		<<addevent "forestgladedragon" 0.03>>
 		<<if $settings.tentaclesEnabled and $settings.voreEnabled and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
 			<<addinlineevent "deepforest_slimecontrol">>
 				You walk through a dense thicket. The air is thick with pollen, but you don't see any flowers. You begin to feel lightheaded, and steady yourself against a trunk. A white haze lingers in the air.

@@ -2,17 +2,35 @@
 <<widget "eventstrash">>
 <<cleareventpool>>
 <<addinlineevent "trash_1" 1>>
-	<<generate1>><<person1>>"Stop right there," a voice shouts behind you. "This is private property. What the fuck do you think you're doing?"
-	<br><br>
+	<<if $rng gte 91>>
+		<<beastNEWinit 1 raccoon>>
+		You hear a chittering behind you. A <<beasttype>> steps out from behind a pile, teeth bared.
+		<br><br>
+		<<if (($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked))>>
+			<!-- Modified for Beast People -->
+			<<link [[Next|Trash Beast]]>><<set $molestationstart to 1>><</link>>
+			<br>
+		<<else>>
+			You run. You manage to escape, though not unscathed.
+			<<beastescape>>
+			<br><br>
 
-	<<link [[Explain|Trash Explain]]>><</link>><<englishdifficulty 1 1000>>
-	<br>
-	<<if hasSexStat("promiscuity", 2)>>
-		<<link [[Seduce|Trash Seduce]]>><</link>><<promiscuous2>>
+			<<link [[Next|Trash]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<br>
+		<</if>>
+	<<else>>
+		<<generate1>><<person1>>"Stop right there," a voice shouts behind you. "This is private property. What the fuck do you think you're doing?"
+		<br><br>
+
+		<<link [[Explain|Trash Explain]]>><</link>><<englishdifficulty 1 1000>>
+		<br>
+		<<if hasSexStat("promiscuity", 2)>>
+			<<link [[Seduce|Trash Seduce]]>><</link>><<promiscuous2>>
+			<br>
+		<</if>>
+		<<link [[Run|Trash Run]]>><</link>><<athleticsdifficulty 1 1000>>
 		<br>
 	<</if>>
-	<<link [[Run|Trash Run]]>><</link>><<athleticsdifficulty 1 1000>>
-	<br>
 <</addinlineevent>>
 <<addinlineevent "trash_2" 1>>
 	It only lasts a moment, but you think you feel the ground tremble.

@@ -1,0 +1,71 @@
+:: Widgets Plus TF Encounters [widget]
+
+<<widget "sheepicon">>
+	<<tficon "sheep">>
+<</widget>>
+
+<<widget "dragonwingsicon">>
+	<<tficon "dragon">>
+<</widget>>
+
+<<widget "forestraccoon">>
+	A pair of eyes stare out from a hollowed out tree burrow.
+	<<gstress>><<stress 6>>
+	<br><br>
+	<<beastNEWinit 1 raccoon>>
+	<<if $deviancy gte 35 and ($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked)>>
+		<br>
+		<<link [[Adopt mating posture|Forest Raccoon]]>><</link>><<deviant3>>
+		<br>
+	<</if>>
+	<<link [[Continue|Forest]]>><<endevent>><<if $foresthunt gte 1>><<set $foresthunt += 1>><</if>><<set $eventskip to 1>><</link>>
+	<br>
+<</widget>>
+
+<<widget "forestdragon">>
+	You spot large unnatural footprints in the dirt.
+	<br><br>
+	<<beastNEWinit 1 dragon>>
+	<<if $foresthunt gte 1>>
+		You feel whatever's hunting you draw closer.
+		<br><br>
+	<</if>>
+
+	<<link [[Take a detour (0:30)|Forest]]>><<endevent>><<pass 30>><<if $foresthunt gte 1>><<set $foresthunt += 2>><</if>><<set $eventskip to 1>><</link>>
+	<br>
+	<<if random(1, 2) is 2 and ($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked)>>
+		<<link [[Ignore them|Forest Dragon Molestation]]>><<set $molestationstart to 1>><</link>>
+		<br>
+	<<else>>
+		<<link [[Ignore them|Forest]]>><<endevent>><<set $eventskip to 1>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "forestgladedragon">>
+	The trees thin into a strange, quiet clearing. The air feels older than the rest of the forest.
+	<br><br>
+	<<beastNEWinit 1 dragon>>
+	A <<beasttype>> uncoils from the far side, watching you.
+	<br><br>
+	<<if ($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked)>>
+		<<link [[Stay still|Fae Dragon Molestation]]>><<set $molestationstart to 1>><</link>>
+		<br>
+	<</if>>
+	<<link [[Back away (0:10)|Forest]]>><<endevent>><<pass 10>><<set $eventskip to 1>><</link>>
+	<br>
+<</widget>>
+
+<<widget "moordragon">>
+	You spot large unnatural footprints pressed into the peat.
+	<br><br>
+	<<beastNEWinit 1 dragon>>
+	<<link [[Take a detour (0:30)|Moor Dragons Detour]]>><<endevent>><<pass 30>><<set $eventskip to 1>><</link>>
+	<br>
+	<<if ($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked)>>
+		<<link [[Follow them|Moor Dragons Continue]]>><</link>>
+		<br>
+	<</if>>
+	<<link [[Ignore them|Moor]]>><<endevent>><<set $eventskip to 1>><</link>>
+	<br>
+<</widget>>

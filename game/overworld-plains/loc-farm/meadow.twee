@@ -59,6 +59,10 @@ You are in a meadow ringed by tall trees. Long grass caresses your legs. A solit
 		<<link [[Ignore|Meadow]]>><</link>>
 	<</if>>
 <<else>>
+	<<if random(1, 100) lte 30>>
+		<<sheepicon>><<relaxicon>><<link [[Watch the sheep (0:30)|Meadow Sheep Watch]]>><<pass 30>><<stress -6>><</link>><<lstress>>
+		<br>
+	<</if>>
 	<<relaxicon>><<link [[Relax (0:15)|Meadow Relax]]>><<stress -6>><<tiredness -2>><</link>><<lstress>><<ltiredness>>
 	<br>
 	<<if $worn.upper.exposed gte 1 and $worn.upper.name isnot "plant top" and !$worn.under_upper.type.includes("torso_covering") and !pcAreArmsBound("both")>>
@@ -204,6 +208,21 @@ You search for plants long and sturdy enough to build an improvised garment. You
 	<<else>>
 		<<link [[Next|Meadow]]>><</link>>
 		<br>
+	<</if>>
+<<elseif $rng gte 60 and (($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked))>>
+	<<transform sheep 1>>
+	<<beastNEWinit 1 sheep>>
+	You feel a slight nudge awaken you from your moment of rest. <<ltiredness>><<tiredness -6>>
+	<br><br>
+	A soft and woolly <<beasttype>> has laid down atop you while you slept. Its warmth feels nice, radiating a soothing feeling through you. <<lstress>><<stress -50>>
+	<<if $monster is 1>>
+		"Oh, sorry. Did I wake you? You looked cold, so I came closer." <<bHe>> nuzzles against you, <<bhis>> warmth so soothing you feel your body relax further. <<bHe>> holds you close and whispers "I want to mate with you."
+	<</if>>
+	<br><br>
+	<<link [[Resist|Meadow Sheep Resist]]>><</link>><<willpowerdifficulty 1 400>>
+	<br>
+	<<if $deviancy gte 35>>
+		<<link [[Allow|Meadow Sheep Sex]]>><<set $sexstart to 1>><</link>><<deviant3>>
 	<</if>>
 <<else>>
 	The world seems a little lighter.

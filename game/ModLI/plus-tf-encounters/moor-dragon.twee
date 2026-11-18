@@ -1,0 +1,211 @@
+:: Moor Dragons Detour
+<<effects>>
+
+You turn and walk down an alternate path. This one isn't quite so scary.
+<br><br>
+
+<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Moor Dragons Continue
+<<effects>>
+<<rng>>
+You continue your journey.
+
+<<if $rng gte 100>>
+	<<beastNEWinit 3 dragon>>
+	It's just a feeling, after all.
+	<br><br>
+	You hear the stomping of feet behind you. You turn, and face a pair of red eyes. You hear more feet. You're surrounded.
+	<br><br>
+	<<if $monster is 1>>
+		A <<beasttype 0>> tackles you, <span class="purple">pinning you to the ground.</span> "I'm glad you're here," <<bhe 0>> says. "Such a boring day." <<bHe 0>> leaps away instead of pressing the attack. You rise to your feet, and get pinned by <<bhis 0>> friend.
+		<br>
+	<<else>>
+		A large dragon tackles you, <span class="purple">pinning you to the ground.</span> It growls at you a moment, but then backs away. You rise to your feet, only to be tackled by a second dragon.
+		<br>
+	<</if>>
+	<<link [[Fight|Moor Dragons Rape]]>><<set $phase to 0>><<set $molestationstart to 1>><</link>>
+	<br>
+	<<link [[Submit|Moor Dragons Rape]]>><<set $phase to 1>><<set $molestationstart to 1>><</link>>
+	<br>
+<<elseif $rng gte 95>>
+	<<beastNEWinit 1 dragon>>
+	It's just a feeling, after all.
+	<br><br>
+	You hear the stomping of feet behind you. You turn, and face a pair of red eyes.
+	<br><br>
+	<<if $monster is 1>>
+		A <<beasttype>> tackles you, <span class="purple">pinning you to the ground.</span> "I'm glad you're here," <<bhe>> says. "Such a boring day."
+		<br>
+	<<else>>
+		A large dragon tackles you, <span class="purple">pinning you to the ground.</span>
+		<br>
+	<</if>>
+	<<link [[Fight|Moor Dragon Rape]]>><<set $phase to 0>><<set $molestationstart to 1>><</link>>
+	<br>
+	<<link [[Submit|Moor Dragon Rape]]>><<set $phase to 1>><<set $molestationstart to 1>><</link>>
+	<br>
+<<else>>
+	It's just a feeling, after all, and you soon leave it behind.
+	<br><br>
+
+	<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+	<br>
+<</if>>
+
+:: Moor Dragons Rape
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<beastCombatInit>>
+
+	<<beastTrainGenerate>>
+	<<if $phase is 1>>
+		<<if $NPCList[0].penis isnot "none">>
+			You remain on your knees as the <<beasttype 0>> mounts you.
+			<<set $position to "doggy">><<set $NPCList[0].stance to "top">>
+		<<else>>
+			The <<beasttype 0>> flips you onto your back, and mounts you.
+			<<set $position to "missionary">><<set $NPCList[0].stance to "top">>
+		<</if>>
+	<<else>>
+		You kick the <<beasttype 0>> away from you. <<bHe 0>> hisses.
+		<<set $enemyanger += 30>><<set $enemyhealth -= 100>>
+	<</if>>
+<</if>>
+<<effects>>
+<<effectsman>>
+<br>
+<<beast $enemyno>>
+<br><br>
+<<stateman>>
+<br><br>
+<<actionsman>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<span id="next"><<link [[Next|Moor Dragons Rape End]]>><</link>></span><<nexttext>>
+<<elseif $enemyhealth lte 0>>
+	<span id="next"><<link [[Next|Moor Dragons Rape End]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Moor Dragons Rape]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Moor Dragons Rape End
+<<effects>>
+<<if $enemyhealth lte 0>>
+	<<beastwound>>
+	<<if $combatTrain.length gt 0>>
+		The <<beasttype>> recoils in pain and fear, but another is eager for a go.
+		<<combatTrainAdvance>>
+		<br><br>
+		<<link [[Next|Moor Dragons Rape]]>><<set $finish to 1>><</link>>
+	<<else>>
+		The <<beasttype>> recoils in pain and fear.
+		<br><br>
+		<<tearful>> you struggle to your feet.
+		<br><br>
+		<<clotheson>>
+		<<endcombat>>
+		<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+		<br>
+	<</if>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+	<<if $combatTrain.length gt 0>>
+		Satisfied, the <<beasttype>> moves and another takes its turn.
+		<<combatTrainAdvance>>
+		<br><br>
+		<<link [[Next|Moor Dragons Rape]]>><<set $finish to 1>><</link>>
+	<<else>>
+		Satisfied, the <<beasttype>> moves away from you.
+		<br><br>
+		<<tearful>> you struggle to your feet.
+		<br><br>
+		<<clotheson>>
+		<<endcombat>>
+		<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	<<tearful>> you struggle to your feet.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+	<br>
+<</if>>
+
+:: Moor Dragon Rape
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<beastCombatInit>>
+
+	<<beastTrainGenerate>>
+	<<if $phase is 1>>
+		<<if $NPCList[0].penis isnot "none">>
+			You remain on your knees as the <<beasttype>> mounts you.
+			<<set $position to "doggy">><<set $NPCList[0].stance to "top">>
+		<<else>>
+			The <<beasttype>> flips you onto your back, and mounts you.
+			<<set $position to "missionary">><<set $NPCList[0].stance to "top">>
+		<</if>>
+	<<else>>
+		You kick the <<beasttype>> away from you. <<bHe>> hisses.
+		<<set $enemyanger += 30>><<set $enemyhealth -= 100>>
+	<</if>>
+<</if>>
+<<effects>>
+<<effectsman>>
+<br>
+<<beast $enemyno>>
+<br><br>
+<<stateman>>
+<br><br>
+<<actionsman>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<span id="next"><<link [[Next|Moor Dragon Rape End]]>><</link>></span><<nexttext>>
+<<elseif $enemyhealth lte 0>>
+	<span id="next"><<link [[Next|Moor Dragon Rape End]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Moor Dragon Rape]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Moor Dragon Rape End
+<<effects>>
+<<if $enemyhealth lte 0>>
+	<<beastwound>>
+	The <<beasttype>> recoils in pain and fear.
+	<br><br>
+	<<tearful>> you struggle to your feet.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+	Satisfied, the <<beasttype>> moves away from you.
+	<br><br>
+	<<tearful>> you struggle to your feet.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<else>>
+	<<tearful>> you struggle to your feet.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+	<br>
+<</if>>
+
+

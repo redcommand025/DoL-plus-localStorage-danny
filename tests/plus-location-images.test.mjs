@@ -79,7 +79,23 @@ describe("location images resolve to real files", () => {
 
 	it("resolves every Plus location to a config whose layer files exist", () => {
 		const { setup, V } = loadLocations();
-		const plusLocations = ["flat", "flats", "home", "town", "hotel", "hospital", "school", "dance_studio", "cafe", "beach", "spa", "forest", "farm", "cliff"];
+		const plusLocations = [
+			"flat",
+			"flats",
+			"home",
+			"town",
+			"hotel",
+			"hospital",
+			"school",
+			"dance_studio",
+			"cafe",
+			"beach",
+			"spa",
+			"forest",
+			"farm",
+			"cliff",
+			"hive",
+		];
 		const missing = [];
 		for (const loc of plusLocations) {
 			V.location = loc;

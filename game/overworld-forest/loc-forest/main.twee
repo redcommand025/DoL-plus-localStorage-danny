@@ -275,7 +275,13 @@
 
 	<<if $eventskip is 0>>
 		<<rng>>
-		<<if $rng gte 81 or ($forest_search is true and $rng gte 61)>>
+		<<if $hive_intro isnot 1 and $rng gte 50>>
+			<<set $hive_intro to 1>>
+			Hidden among the trees you find a huge wax hive. You can see movement within and two strong looking wasps guard the entrance.
+			<br><br>
+			<<link [[Approach (0:20)|Hive Approach]]>><<pass 20>><<set $eventskip to 1>><</link>>
+			<br>
+		<<elseif $rng gte 81 or ($forest_search is true and $rng gte 61)>>
 			<<eventforestitem>>
 		<<elseif dangerEvent($forestmod)>>
 			<<eventforestdeep>>
@@ -325,6 +331,10 @@
 			<<else>>
 				<<foresticon "river">><<link [[Follow the brook (0:20)|Forest Brook]]>><<pass 20>><</link>>
 			<</if>>
+			<br>
+		<</if>>
+		<<if $hive_intro is 1>>
+			<<bighiveicon>><<link [[Hive (0:20)|Hive Entrance]]>><<pass 20>><</link>>
 			<br>
 		<</if>>
 		<br>

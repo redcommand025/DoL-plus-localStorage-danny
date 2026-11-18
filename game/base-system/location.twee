@@ -177,6 +177,7 @@
 		setup.addlocation( "asylum"                   ).parent("forest").location().inside().build();
 		setup.addlocation( "asylum_yard"              ).parent("asylum").outside().tanning(0.5).build();
 		setup.addlocation( "cabin"                    ).parent("forest").location().inside().build();
+		setup.addlocation( "hive"                     ).parent("forest").location().inside().build();
 		setup.addlocation( "lake"                     ).parent("forest").location().tanning(1.0).build();
 		setup.addlocation( "lake_ruin"                ).parent("lake").location().inside().build();
 		setup.addlocation( "lake_office"              ).parent("lake").location("lake_office").inside().build();

@@ -2,7 +2,7 @@
 <<widget "beastimgdoggy">>
 	<<set _na to $active_enemy>>
 	<<set _npc to $NPCList[_na]>>
-	<<set _type to $NPCList[_na].type>>
+	<<set _type to PlusBeastArt.spriteType($NPCList[_na].type)>>
 	<<set _state to _args[0] || "idle">>
 	<<set _frames to _args[1] || 4>>
 	<<set _animClass to "anim-" + _state + "-" + _frames + "f" + (_state isnot "idle" ? "-" + _animspeed : "")>>
@@ -530,7 +530,7 @@
 <<widget "beastimggenitals">>
 	<<set _na to $active_enemy>>
 	<<set $_npc to $NPCList[_na]>>
-	<<set $_type to $_npc.type>>
+	<<set $_type to PlusBeastArt.spriteType($_npc.type)>>
 
 	<<set _filters to Skin.cssColorFilter()>>
 	<<set _img to setup.tanImg.doggy[($options.tanImgEnabled ? "t" : "f")]>>
@@ -914,7 +914,7 @@
 
 <<widget "beastimggenitalsmissionary">>
 	<<set $_npc to $NPCList[_na]>>
-	<<set $_type to $_npc.type>>
+	<<set $_type to PlusBeastArt.spriteType($_npc.type)>>
 
 	<<if $NPCList[_na].penis is "anusentrance" and $NPCList[_na].type isnot "horse" and $NPCList[_na].type isnot "centaur">>
 		<<if ["dogboy", "doggirl", "wolfboy", "wolfgirl", "foxboy", "foxgirl"].includes($NPCList[_na].type)>>

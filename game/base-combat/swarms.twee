@@ -602,6 +602,18 @@
 		<</if>>
 		<<if $arousal gte $arousalmax and $orgasmdown lte 0>>
 			<<orgasm>>
+			<<if $swarm.type is "fish">>
+				<<transform fish 1>>
+			<</if>>
+			<<if $swarm.type is "eels">>
+				<<transform fish 1>>
+			<</if>>
+			<<if $swarm.type is "snakes">>
+				<<transform lizard 1>>
+			<</if>>
+			<<if $swarm.type is "spiders">>
+				<<transform spider 1>>
+			<</if>>
 		<</if>>
 	</div>
 <</widget>>

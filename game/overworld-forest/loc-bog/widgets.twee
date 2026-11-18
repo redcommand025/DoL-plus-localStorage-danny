@@ -48,6 +48,19 @@
 				<br>
 			<</if>>
 		<</addinlineevent>>
+		<<addinlineevent "bog_frog">>
+			<<beastNEWinit 1 frog>>
+			An acrid smell harasses your nose as you carefully step around a pool of sludge. The water ripples as a long, slimy tongue wraps around you and pulls you into the water.
+			<br><br>
+
+			<<if (($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked))>>
+				<<link [[Next|Bog Frog]]>><<set $molestationstart to 1>><</link>>
+			<<else>>
+				You struggle free, but not unscathed. <<beastescape>>
+				<br><br>
+				<<link [[Next|Bog]]>><<endevent>><<set $bogwater to 0>><<set $eventskip to 1>><</link>>
+			<</if>>
+		<</addinlineevent>>
 		<<addinlineevent "bog_water_tentacles">>
 			<<if $settings.tentaclesEnabled and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
 				Something grabs your ankle from under the water. Vines slither down from trees and across the surface.
@@ -122,6 +135,19 @@
 				<br>
 			<</if>>
 		<</addinlineevent>>
+		<<addinlineevent "bog_frog" 0.33>>
+			<<beastNEWinit 1 frog>>
+			An ominous splash comes from the water beside the walkway. The water ripples as a long, slimy tongue wraps around you and pulls you into the water.
+			<br><br>
+
+			<<if (($monster is 1 or $settings.bestialityEnabled) and not ($NPCList[0] and $NPCList[0].lewdBlocked))>>
+				<<link [[Next|Bog Frog]]>><<set $molestationstart to 1>><</link>>
+			<<else>>
+				You struggle free, but not unscathed. <<beastescape>>
+				<br><br>
+				<<link [[Next|Bog]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<</if>>
+		<</addinlineevent>>
 		<<addinlineevent "bog_noise">>
 			As you walk, you hear a light splashing some distance behind you. You try to look, but there's nothing. You walk into a tangle of hanging vines in your distraction and panic for a brief moment. <<stress 12>><<ggstress>>
 			<br><br>
@@ -184,7 +210,7 @@
 			A frog sits on a lilypad in front of you. It eyes you curiously before croaking.
 			<br><br>
 
-			<<link [[Next|Bog]]>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Bog]]>><<transform frog 1>><<set $eventskip to 1>><</link>>
 			<br>
 		<</addinlineevent>>
 	<<else>>
