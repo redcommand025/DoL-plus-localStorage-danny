@@ -2,6 +2,9 @@
 /* eslint-disable eqeqeq */
 DefineMacro("modelprepare-player-body", function () {
 	T.disabled = ["disabled", "hidden"];
+	if (typeof PlusTransform !== "undefined" && typeof PlusTransform.ensureParts === "function") {
+		PlusTransform.ensureParts(V);
+	}
 	T.modeloptions.skin_type = Skin.color.natural;
 	T.modeloptions.skin_tone = Skin.color.tan;
 

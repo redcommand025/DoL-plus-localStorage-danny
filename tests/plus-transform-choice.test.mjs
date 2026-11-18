@@ -120,4 +120,32 @@ describe("PlusTransform choice and migration", () => {
 		assert.equal(PlusTransform.hasPhysicalTransform(vars({ waterdragon: 2 })), true);
 		assert.equal(PlusTransform.hasPhysicalTransform(vars()), false);
 	});
+
+	it("fills bee, sheep and deer parts on a pre-port save without overwriting existing ones", () => {
+		const state = PlusTransform.migrate({
+			transformationParts: {
+				wolf: { ears: "default", tail: "disabled" },
+				fox: { ears: "disabled", tail: "disabled", cheeks: "disabled" },
+			},
+		});
+		assert.deepEqual(state.transformationParts.bee, { ears: "disabled", tail: "disabled", wings: "disabled" });
+		assert.deepEqual(state.transformationParts.sheep, { ears: "disabled", tail: "disabled", horns: "disabled" });
+		assert.deepEqual(state.transformationParts.deer, { ears: "disabled", tail: "disabled", horns: "disabled" });
+		assert.equal(state.transformationParts.wolf.ears, "default");
+		assert.equal(state.transformationParts.wolf.cheeks, "disabled");
+		assert.equal(state.transformationParts.lizard.horns, "disabled");
+	});
+
+	it("does not reset an already visible bee or sheep part during migration", () => {
+		const state = PlusTransform.migrate({
+			transformationParts: {
+				bee: { ears: "default", tail: "disabled" },
+				sheep: { horns: "default" },
+			},
+		});
+		assert.equal(state.transformationParts.bee.ears, "default");
+		assert.equal(state.transformationParts.bee.wings, "disabled");
+		assert.equal(state.transformationParts.sheep.horns, "default");
+		assert.equal(state.transformationParts.sheep.ears, "disabled");
+	});
 });

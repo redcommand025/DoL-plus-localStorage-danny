@@ -166,6 +166,66 @@
 		TFWaterDragonBuffs: 0,
 	};
 
+	const defaultTransformationParts = {
+		traits: {
+			fangs: "disabled",
+			sharpEyes: "disabled",
+			dragonEyes: "disabled",
+			mateForLife: "disabled",
+			chase: "disabled",
+			flaunting: "disabled",
+			preyAnimal: "disabled",
+			strongFeet: "disabled",
+			predatoryAnimal: "disabled",
+			tempTolerance: "disabled",
+			aquatic: "disabled",
+			wdgrace: "disabled",
+			incognito: "disabled",
+			aquatail: "disabled",
+			lungs: "disabled",
+			vigorous: "disabled",
+			webbedfeet: "disabled",
+			strongnose: "disabled",
+			longtongue: "disabled",
+			kicks: "disabled",
+			activeTF: "disabled",
+			activeTFOverride: false,
+		},
+		angel: { halo: "disabled", wings: "disabled" },
+		fallenAngel: { halo: "disabled", wings: "disabled" },
+		demon: { horns: "disabled", wings: "disabled", tail: "disabled" },
+		cat: { ears: "disabled", tail: "disabled", heterochromia: "disabled" },
+		cow: { horns: "disabled", ears: "disabled", tail: "disabled" },
+		wolf: { ears: "disabled", tail: "disabled", pubes: "disabled", pits: "disabled", cheeks: "disabled" },
+		bird: { tail: "disabled", wings: "disabled", eyes: "disabled", malar: "disabled", plumage: "disabled", pubes: "disabled" },
+		fox: { ears: "disabled", tail: "disabled", cheeks: "disabled" },
+		bee: { ears: "disabled", tail: "disabled", wings: "disabled" },
+		sheep: { ears: "disabled", tail: "disabled", horns: "disabled" },
+		deer: { ears: "disabled", tail: "disabled", horns: "disabled" },
+		bear: { plumage: "disabled", pubes: "disabled", ears: "disabled", tail: "disabled" },
+		dragon: { tail: "disabled", wings: "disabled", eyes: "disabled", horns: "disabled", claws: "disabled", whisker: "disabled", fangs: "disabled" },
+		lizard: { horns: "disabled", tail: "disabled", eyes: "disabled" },
+		dolphin: { tail: "disabled" },
+		dog: { ears: "disabled", tail: "disabled" },
+		ghost: { eyes: "disabled", hitodama: "disabled", mist: "disabled", stream: "disabled", flame: "disabled" },
+		slime: { bubble: "disabled", stream: "disabled", core: "disabled" },
+		mushroom: { cap: "disabled", eyes: "disabled", spores: "disabled", mushrooms: "disabled" },
+		raccoon: { mask: "disabled", ears: "disabled", tail: "disabled" },
+		fish: { fins: "disabled", tail: "disabled" },
+		horse: { ears: "disabled", tail: "disabled" },
+		frog: { eyes: "disabled", cheeks: "disabled" },
+		spider: { eyes: "disabled", tail: "disabled" },
+		pig: { ears: "disabled", tail: "disabled" },
+		bunny: { ears: "disabled", tail: "disabled" },
+		okami: { ears: "disabled", tail: "disabled", wings: "disabled", misc: "disabled" },
+		seraphim: { wings: "disabled", plumage: "disabled", eyes: "disabled" },
+		kitsune: { ears: "disabled", tail: "disabled", cheeks: "disabled", misc: "disabled" },
+		waterdragon: { horns: "disabled", ears: "disabled", tail: "disabled" },
+		goblin: { ears: "disabled" },
+		eldritch: { skin: "disabled", tentacle: "disabled", eyes: "disabled", mist: "disabled" },
+		fae: { wings: "disabled", fairies: "disabled" },
+	};
+
 	const physicalStageVars = [
 		"wolfgirl",
 		"cat",
@@ -241,6 +301,25 @@
 		return map;
 	}
 
+	function ensureParts(vars) {
+		const state = vars || {};
+		if (state.transformationParts == null || typeof state.transformationParts !== "object") {
+			state.transformationParts = {};
+		}
+		const parts = state.transformationParts;
+		Object.keys(defaultTransformationParts).forEach(group => {
+			const defaults = defaultTransformationParts[group];
+			if (parts[group] == null || typeof parts[group] !== "object") {
+				parts[group] = Object.assign({}, defaults);
+				return;
+			}
+			Object.keys(defaults).forEach(key => {
+				if (parts[group][key] == null) parts[group][key] = defaults[key];
+			});
+		});
+		return state;
+	}
+
 	function migrate(vars) {
 		const state = vars || {};
 		if (state.transformPreferred == null || state.transformPreferred === "") {
@@ -250,7 +329,7 @@
 			if (state[name] == null) state[name] = defaultBuildsAndStages[name];
 		});
 		if (state.permanentTransform == null) state.permanentTransform = 0;
-		return state;
+		return ensureParts(state);
 	}
 
 	function fallbackPreferred(vars) {
@@ -461,10 +540,12 @@
 		physicalStageVars,
 		historyVars,
 		defaultBuildsAndStages,
+		defaultTransformationParts,
 		label,
 		isQualified,
 		qualifiedKeys,
 		listboxMap,
+		ensureParts,
 		migrate,
 		fallbackPreferred,
 		resolve,

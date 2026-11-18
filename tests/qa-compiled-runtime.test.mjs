@@ -1029,4 +1029,154 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.loc.home, "home");
 		assert.equal(info.loc.hotel, "town");
 	});
+
+	it("QA-C032 [integration] Hallways to School Library with images on does not throw a missing-canvas style error, including on a pre-port save", async () => {
+		const pageErrors = [];
+		const onDialog = async d => {
+			pageErrors.push("DIALOG: " + String(d.message()).slice(0, 240));
+			await d.dismiss();
+		};
+		const onPageError = e => pageErrors.push(String(e && e.message ? e.message : e).slice(0, 240));
+		page.on("dialog", onDialog);
+		page.on("pageerror", onPageError);
+		const info = await page.evaluate(() => {
+			const caught = [];
+			const onErr = ev => caught.push((ev && ev.message) || String(ev));
+			window.addEventListener("error", onErr);
+			const prevOnError = window.onerror;
+			window.onerror = function (msg, src, line, col, err) {
+				caught.push(String(msg));
+				return false;
+			};
+			document.getElementById("dol-password-gate")?.remove();
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " ").slice(0, 200) };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e) };
+				}
+			};
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			const V = SugarCube.State.variables;
+			V.intro = 0;
+			V.combat = 0;
+			V.eventskip = 1;
+			V.exposed = 0;
+			V.tutorial = 1;
+			V.options = V.options || {};
+			V.options.images = 1;
+			if (typeof plusNeedsInit === "function") plusNeedsInit();
+			if (typeof window.plusRetireDanny === "function") plusRetireDanny(V);
+			const addDay = () => {
+				const next = new DateTime(Time.date.year, Time.date.month, Time.date.day, Time.hour, Time.minute);
+				next.addDays(1);
+				Time.setDate(next);
+			};
+			const y = Time.year || Time.date.year;
+			for (const [month, day] of [
+				[9, 15],
+				[10, 12],
+				[11, 12],
+				[2, 12],
+				[3, 12],
+				[5, 12],
+				[6, 12],
+			]) {
+				Time.setDate(new DateTime(y, month, day, 10, 15));
+				let g = 0;
+				while (!Time.schoolDay && Time.schoolTerm && g++ < 6) addDay();
+				if (Time.schoolDay) break;
+			}
+			Time.setTime(10, 15);
+			V.location = "school";
+			if (V.transformationParts) {
+				delete V.transformationParts.bee;
+				delete V.transformationParts.sheep;
+				delete V.transformationParts.deer;
+			}
+			const play = name => {
+				try {
+					SugarCube.Engine.play(name);
+					return null;
+				} catch (e) {
+					const msg = String(e && e.message ? e.message : e);
+					caught.push("Engine.play " + name + ": " + msg);
+					return msg;
+				}
+			};
+			const snap = label => {
+				const cur = SugarCube.State.variables;
+				return {
+					label,
+					passage: SugarCube.State.passage,
+					hasCanvas: !!document.querySelector("canvas.mainCanvas"),
+					bee: !!(cur.transformationParts && cur.transformationParts.bee),
+					styleError: caught.some(t => /reading 'style'/i.test(t)),
+				};
+			};
+			const hallwaysErr = play("Hallways");
+			const afterHallways = snap("after Hallways");
+			const root = document.getElementById("passages") || document.body;
+			const libLink = [...root.querySelectorAll("a")].find(a => /librar/i.test(a.textContent || ""));
+			if (libLink) {
+				try {
+					libLink.click();
+				} catch (e) {
+					caught.push("click: " + String(e && e.message ? e.message : e));
+				}
+			}
+			const afterLibrary = snap("after Library click");
+			V.location = "forest";
+			V.hive_intro = 1;
+			const visits = {};
+			for (const name of ["Settings", "Forest", "Hive Entrance", "Meadow", "Trash", "Bog"]) {
+				const err = play(name);
+				visits[name] = {
+					passage: SugarCube.State.passage,
+					err,
+					hasCanvas: !!document.querySelector("canvas.mainCanvas"),
+					styleError: err ? /reading 'style'/i.test(err) : false,
+				};
+			}
+			const chars = wiki("<<characteristics>>");
+			const options = wiki("<<optionsgeneral>>");
+			window.onerror = prevOnError;
+			window.removeEventListener("error", onErr);
+			return {
+				hallwaysErr,
+				afterHallways,
+				clickedLibrary: !!libLink,
+				libraryLink: libLink ? libLink.textContent.trim() : null,
+				afterLibrary,
+				visits,
+				charsOk: chars.ok && !/reading 'style'|Error \(::/i.test(chars.text),
+				optionsOk: options.ok && !/reading 'style'|Error \(::/i.test(options.text),
+				caught,
+				styleErrors: caught.filter(t => /reading 'style'/i.test(t)),
+			};
+		});
+		page.off("dialog", onDialog);
+		page.off("pageerror", onPageError);
+		assert.equal(info.hallwaysErr, null, JSON.stringify(info));
+		assert.equal(info.afterHallways.hasCanvas, true, JSON.stringify(info.afterHallways));
+		assert.equal(info.afterHallways.bee, true, "migration should restore bee parts before the sidebar renders");
+		assert.equal(info.clickedLibrary, true, JSON.stringify(info));
+		assert.equal(info.afterLibrary.passage, "School Library", JSON.stringify(info.afterLibrary));
+		assert.equal(info.afterLibrary.hasCanvas, true, JSON.stringify(info.afterLibrary));
+		assert.deepEqual(info.styleErrors, [], JSON.stringify(info.caught));
+		assert.equal(info.afterLibrary.styleError, false, JSON.stringify(info));
+		for (const name of ["Settings", "Forest", "Hive Entrance", "Meadow", "Trash", "Bog"]) {
+			assert.equal(info.visits[name].styleError, false, name + " " + JSON.stringify(info.visits[name]));
+			assert.equal(info.visits[name].err, null, name + " " + JSON.stringify(info.visits[name]));
+		}
+		assert.equal(info.charsOk, true, JSON.stringify(info));
+		assert.equal(info.optionsOk, true, JSON.stringify(info));
+		assert.deepEqual(
+			pageErrors.filter(t => /reading 'style'|An error has occurred/i.test(t)),
+			[],
+			JSON.stringify(pageErrors)
+		);
+	});
 });

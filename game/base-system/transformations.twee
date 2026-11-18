@@ -335,6 +335,15 @@
 	<<if V.transformationParts.fox is undefined>>
 		<<set V.transformationParts.fox to {ears:"disabled", tail:"disabled", cheeks:"disabled"}>>
 	<</if>>
+	<<if $transformationParts.bee is undefined>>
+		<<set $transformationParts.bee to {ears:"disabled", tail:"disabled", wings:"disabled"}>>
+	<</if>>
+	<<if $transformationParts.sheep is undefined>>
+		<<set $transformationParts.sheep to {ears:"disabled", tail:"disabled", horns:"disabled"}>>
+	<</if>>
+	<<if $transformationParts.deer is undefined>>
+		<<set $transformationParts.deer to {ears:"disabled", tail:"disabled", horns:"disabled"}>>
+	<</if>>
 	<<if V.transformationParts.traits is undefined>>
 		<<set V.transformationParts.traits to {fangs:"disabled", sharpEyes:"disabled", mateForLife:"disabled", chase:"disabled", flaunting:"disabled"}>>
 		<<if $transformationParts.dragon is undefined>>
@@ -465,6 +474,7 @@
 		acc[key] = Object.assign({}, _defaultChimeraConfig[key], $chimera[key] || {});
 		return acc;
 	}, {})>>
+	<<run PlusTransform.ensureParts(V)>>
 <</widget>>
 
 <<widget "transform">>/*First arg is transformation, second is the intensity of change.*/
