@@ -2444,6 +2444,11 @@ as what's needed by the imagepack? */
 	<<if $transformationParts.traits.activeTFOverride is undefined>>
 		<<set $transformationParts.traits.activeTFOverride to false>>
 	<</if>>
+
+	/* New World transformation port: init missing builds/stages and the displayed-TF dropdown. */
+	<<run PlusTransform.migrate(V)>>
+	<<run PlusTransform.fallbackPreferred(V)>>
+	<<setupTransformationPiecesObject>>
 <</widget>>
 
 <<widget "updateFools">>

@@ -1812,6 +1812,501 @@ function effects() {
 					element("span", "Your bunny tail has disappeared.", "gold");
 					break;
 				// Clothes
+				case "raccoonUp1":
+					element("span", "You feel more mischievous than usual.", "gold");
+					break;
+				case "raccoonUp2":
+					element(
+						"span",
+						"A clarity suddenly overtakes you as darkness seems to encircle your eyes. You notice things you didn't before. Things you yearn to have all to yourself.",
+						"gold"
+					);
+					break;
+				case "raccoonUp3":
+					element("span", "Your ears tingle.", "gold");
+					break;
+				case "raccoonUp4":
+					element(
+						"span",
+						"Your ears itch. You reach up to scratch them, and find them much bigger than you expected. You've grown a pair of raccoon ears.",
+						"gold"
+					);
+					break;
+				case "raccoonUp5":
+					element("span", "Your lower back tingles.", "gold");
+					break;
+				case "raccoonUp6":
+					element(
+						"span",
+						"Your bottom feels heavier than usual. You reach behind you and feel your new raccoon tail. A surge of kleptomania nearly overtakes you.",
+						"gold"
+					);
+					break;
+				case "raccoonDown0":
+					element("span", "Your usual inhibitions return.", "gold");
+					break;
+				case "raccoonDown1":
+					element("span", "Your facial markings disappear and your visual acuity returns to how it once was.", "gold");
+					break;
+				case "raccoonDown2":
+					element("span", "Your ears no longer tingle.", "gold");
+					break;
+				case "raccoonDown3":
+					element("span", "Your raccoon ears have disappeared.", "gold");
+					break;
+				case "raccoonDown4":
+					element("span", "Your lower back has stopped tingling.", "gold");
+					break;
+				case "raccoonDown5":
+					element("span", "Your balance feels different. Your raccoon tail has disappeared.", "gold");
+					break;
+				case "beeUp1":
+					element("span", "Your ears tingle.", "gold");
+					break;
+				case "beeUp2":
+					element(
+						"span",
+						"Your ears itch. You reach up to scratch them, and find them much bigger than you expected. You've grown a pair of bee antenna.",
+						"gold"
+					);
+					break;
+				case "beeUp3":
+					element("span", "Your lower back itches.", "gold");
+					break;
+				case "beeUp4":
+					element("span", "Your bottom feels heavier. You reach behind you, and grasp a stinger.", "gold");
+					break;
+				case "beeUp5":
+					element("span", "Your back itches.", "gold");
+					break;
+				case "beeUp6":
+					element("span", "You feel lighter. Wings caress your face.", "gold");
+					break;
+				case "beeDown0":
+					element("span", "Your ears no longer tingle.", "gold");
+					break;
+				case "beeDown1":
+					element("span", "Your bee antenna have disappeared.", "gold");
+					break;
+				case "beeDown2":
+					element("span", "The itching in your lower back has stopped.", "gold");
+					break;
+				case "beeDown3":
+					element("span", "Your stinger has disappeared.", "gold");
+					break;
+				case "beeDown4":
+					element("span", "The itching in your back has stopped.", "gold");
+					break;
+				case "beeDown5":
+					element("span", "You feel heavier. Your wings have disappeared.", "gold");
+					break;
+				case "sheepUp1":
+					element("span", "You have a strange urge to munch grass.", "gold");
+					break;
+				case "sheepUp2":
+					element("span", "Your scalp itches. You reach up, and find that a pair of horns have sprouted.", "gold");
+					break;
+				case "sheepUp3":
+					element("span", "Your ears tingle.", "gold");
+					break;
+				case "sheepUp4":
+					element(
+						"span",
+						"Your ears itch. You reach up to scratch them, and find them much bigger than you expected. You've grown a pair of sheep ears.",
+						"gold"
+					);
+					break;
+				case "sheepUp5":
+					element("span", "Your lower back tingles.", "gold");
+					break;
+				case "sheepUp6":
+					element("span", "Your bottom feels heavier than usual. You reach behind you and feel your new sheep tail. You suppress the urge to baa.", "gold");
+					break;
+				case "sheepDown0":
+					element("span", "Grass no longer looks so tasty.", "gold");
+					break;
+				case "sheepDown1":
+					element("span", "Your horns have disappeared.", "gold");
+					break;
+				case "sheepDown2":
+					element("span", "Your ears no longer tingle.", "gold");
+					break;
+				case "sheepDown3":
+					element("span", "Your sheep ears have disappeared.", "gold");
+					break;
+				case "sheepDown4":
+					element("span", "Your lower back has stopped tingling.", "gold");
+					break;
+				case "sheepDown5":
+					element("span", "Your balance feels different. Your sheep tail has disappeared.", "gold");
+					break;
+				case "deerUp1":
+					element("span", "You have a strange urge to munch grass.", "gold");
+					break;
+				case "deerUp2":
+					element("span", "Your scalp itches. You reach up, and find that a pair of antlers have sprouted.", "gold");
+					break;
+				case "deerUp3":
+					element("span", "Your ears tingle.", "gold");
+					break;
+				case "deerUp4":
+					element(
+						"span",
+						"Your ears itch. You reach up to scratch them, and find them much bigger than you expected. You've grown a pair of deer ears.",
+						"gold"
+					);
+					break;
+				case "deerUp5":
+					element("span", "Your lower back tingles.", "gold");
+					break;
+				case "deerUp6":
+					element(
+						"span",
+						"Your bottom feels heavier than usual. You reach behind you and feel your new deer tail. Your legs inexplicably feel more powerful.",
+						"gold"
+					);
+					break;
+				case "deerDown0":
+					element("span", "Grass no longer looks so tasty.", "gold");
+					break;
+				case "deerDown1":
+					element("span", "Your antlers have disappeared.", "gold");
+					break;
+				case "deerDown2":
+					element("span", "Your ears no longer tingle.", "gold");
+					break;
+				case "deerDown3":
+					element("span", "Your deer ears have disappeared.", "gold");
+					break;
+				case "deerDown4":
+					element("span", "Your lower back has stopped tingling.", "gold");
+					break;
+				case "deerDown5":
+					element("span", "Your balance feels different. Your deer tail has disappeared. Your legs also seem to atrophy, somewhat.", "gold");
+					break;
+				case "dragonUp1":
+					element("span", "Your eyes have turned a strange red and yellow. Your vision has improved.", "gold");
+					break;
+				case "dragonUp2":
+					element("span", "Your mouth hurts for a moment. You lick your teeth and find sharp new fangs.", "gold");
+					break;
+				case "dragonUp3":
+					element("span", "Your head aches for a moment, and horns appear.", "gold");
+					break;
+				case "dragonUp4":
+					element("span", "Your bottom feels strange. You reach behind you, and find a tail covered in rough scales.", "gold");
+					break;
+				case "dragonUp5":
+					element("span", "Your back itches.", "gold");
+					break;
+				case "dragonUp6":
+					element(
+						"span",
+						"You feel stronger and lighter than ever before. A strange power fills you as large leathery scaled wings extend from your back.",
+						"gold"
+					);
+					break;
+				case "dragonDown0":
+					element("span", "Your vision has worsened significantly.", "gold");
+					break;
+				case "dragonDown1":
+					element("span", "Your fangs have completely disappeared.", "gold");
+					break;
+				case "dragonDown2":
+					element("span", "Your horns have disappeared.", "gold");
+					break;
+				case "dragonDown3":
+					element("span", "Your tail is gone.", "gold");
+					break;
+				case "dragonDown4":
+					element("span", "Your lower back has stopped tingling.", "gold");
+					break;
+				case "dragonDown5":
+					element("span", "You feel as weak as you once were. Your scaley wings have disappeared.", "gold");
+					break;
+				case "lizardUp1":
+					element("span", "Your eyes have turned a strange red and yellow. Your vision has improved.", "gold");
+					break;
+				case "lizardUp2":
+					element("span", "Your teeth ache for a moment, and fangs appear.", "gold");
+					break;
+				case "lizardUp3":
+					element("span", "Your bottom feels strange. You reach behind you, and find a tail covered in rough scales.", "gold");
+					element("span", "You feel as though you can hold your breath for longer than before.", "blue");
+					break;
+				case "lizardDown0":
+					element("span", "Your vision has worsened significantly.", "gold");
+					break;
+				case "lizardDown1":
+					element("span", "Your fangs have completely disappeared.", "gold");
+					break;
+				case "lizardDown2":
+					element("span", "Your tail has disappeared.", "gold");
+					element("span", "Your lung capacity has returned to normal.", "blue");
+					break;
+				case "dolphinUp1":
+					element("span", "You feel as though you can hold your breath for longer than before.", "blue");
+					break;
+				case "dolphinUp2":
+					element("span", "Your bottom feels strange. You reach behind you, and find a slick lubricated tail.", "gold");
+					break;
+				case "dolphinUp3":
+					element("span", "Your feel more confident at swimming.", "gold");
+					break;
+				case "dolphinDown0":
+					element("span", "Your lung capacity has returned to normal.", "blue");
+					break;
+				case "dolphinDown1":
+					element("span", "Your tail has disappeared.", "gold");
+					break;
+				case "dolphinDown2":
+					element("span", "Your feel less confident at swimming.", "gold");
+					break;
+				case "dogUp1":
+					element("span", "You have a strange toothache.", "gold");
+					break;
+				case "dogUp2":
+					element("span", "Your mouth feels different. You explore your mouth and wince as your tongue presses against your new fangs.", "gold");
+					break;
+				case "dogUp3":
+					element("span", `Your scalp itches.`, "gold");
+					break;
+				case "dogUp4":
+					element("span", "You feel something on your head. You reach up and tug, but it hurts. You have a new pair of dog ears.", "gold");
+					break;
+				case "dogUp5":
+					element("span", "Your lower back itches.", "gold");
+					break;
+				case "dogUp6":
+					element("span", "Your bottom feels heavier than usual. You reach behind you and feel your new dog tail.", "gold");
+					break;
+				case "dogDown0":
+					element("span", "Your toothache has stopped.", "gold");
+					break;
+				case "dogDown1":
+					element("span", "Your fangs have turned into regular teeth.", "gold");
+					break;
+				case "dogDown2":
+					element("span", `Your scalp itches.`, "gold");
+					break;
+				case "dogDown3":
+					element("span", `Your dog ears have disappeared.`, "gold");
+					break;
+				case "dogDown4":
+					element("span", "Your lower back has stopped itching.", "gold");
+					break;
+				case "dogDown5":
+					element("span", "Your balance feels different. Your dog tail has disappeared.", "gold");
+					break;
+				case "fishUp1":
+					element("span", "Strange ridges appear on your neck.", "gold");
+					break;
+				case "fishUp2":
+					element(
+						"span",
+						"The ridges on your neck open up. You find yourself able to breathe as naturally through them as you can through your nose. You now have fish gills!",
+						"gold"
+					);
+					break;
+				case "fishUp3":
+					element("span", `The skin around your ears stiffens. Scales grow on and around the area.`, "gold");
+					break;
+				case "fishUp4":
+					element(
+						"span",
+						"Your hardened ears begin to warp. The pinnae along each ear elongate into multiple spines. A membrane forms between each spine. Your ears retain their original purpose, but have morphed into fins.",
+						"gold"
+					);
+					break;
+				case "fishUp5":
+					element("span", "Your lower back itches. The skin becomes hard and scaly.", "gold");
+					break;
+				case "fishUp6":
+					element(
+						"span",
+						"An appendage extends from the scaled area along your back. The protrusion seems to have a caudal fin on the end. You have grown a fish tail. The remainder of your skin takes on the scaly qualities of your tail and ears.",
+						"gold"
+					);
+					break;
+				case "fishDown0":
+					element("span", "The ridges along your neck disappear.", "gold");
+					break;
+				case "fishDown1":
+					element("span", "The gills along your neck close up. Only barely-visible ridges remain.", "gold");
+					break;
+				case "fishDown2":
+					element("span", `The scales flake off of your ears and the skin softens back to normal.`, "gold");
+					break;
+				case "fishDown3":
+					element(
+						"span",
+						`The webbed membrane along your fins atrophies. The pinnae retract back into their original humanoid shape. Your fins are gone.`,
+						"gold"
+					);
+					break;
+				case "fishDown4":
+					element("span", "Your lower back has stopped itching. The scales have fallen off and the skin regains it's normal texture.", "gold");
+					break;
+				case "fishDown5":
+					element(
+						"span",
+						"Your balance feels different. Your scaly fish tail has been reabsorbed into your body. The scales lining your body fall off and your skin returns to normal.",
+						"gold"
+					);
+					break;
+				case "horseUp1":
+					element("span", "You feel especially alert.", "gold");
+					break;
+				case "horseUp2":
+					element("span", "You're brimming with energy. Physical tasks seem far less daunting and exhausting.", "gold");
+					break;
+				case "horseUp3":
+					element("span", `Your scalp itches.`, "gold");
+					break;
+				case "horseUp4":
+					element("span", "You feel something on your head. You reach up and tug, but it hurts. You have a new pair of horse ears.", "gold");
+					break;
+				case "horseUp5":
+					element("span", "Your lower back itches.", "gold");
+					break;
+				case "horseUp6":
+					element("span", "Your bottom feels heavier than usual. You reach behind you and feel your new voluminous horse tail.", "gold");
+					break;
+				case "horseDown0":
+					element("span", "You feel less aware.", "gold");
+					break;
+				case "horseDown1":
+					element("span", "You feel lethargic. As if your physical capabilities have returned to how they originally were.", "gold");
+					break;
+				case "horseDown2":
+					element("span", `Your scalp no longer itches.`, "gold");
+					break;
+				case "horseDown3":
+					element("span", `Your horse ears have disappeared.`, "gold");
+					break;
+				case "horseDown4":
+					element("span", "Your lower back has stopped itching.", "gold");
+					break;
+				case "horseDown5":
+					element("span", "Your balance feels different. Your horse tail has disappeared.", "gold");
+					break;
+				case "spiderUp1":
+					element("span", "You have a strange toothache.", "gold");
+					break;
+				case "spiderUp2":
+					element("span", "Your mouth feels different. You explore your mouth and wince as your tongue presses against your new fangs.", "gold");
+					break;
+				case "spiderUp3":
+					element("span", `Your eyes itch. So do your temples, for that matter.`, "gold");
+					break;
+				case "spiderUp4":
+					element(
+						"span",
+						"Your vision scatters. You feel disoriented and start seeing double. Triple. Quadruple. The sensation fades. Your eyesight stabilizes and becomes more clear than before. You have developed multiple pairs of spider eyes.",
+						"gold"
+					);
+					break;
+				case "spiderUp5":
+					element("span", "Your lower back itches.", "gold");
+					break;
+				case "spiderUp6":
+					element("span", "Your bottom feels heavier than usual. You reach behind you and feel a new spider abdomen.", "gold");
+					break;
+				case "spiderDown0":
+					element("span", "Your toothache has stopped.", "gold");
+					break;
+				case "spiderDown1":
+					element("span", "Your fangs have turned into regular teeth.", "gold");
+					break;
+				case "spiderDown2":
+					element("span", `Your face no longer itches.`, "gold");
+					break;
+				case "spiderDown3":
+					element("span", `Your extra eyes have been reabsorbed. Your vision returns to it's original state.`, "gold");
+					break;
+				case "spiderDown4":
+					element("span", "Your lower back has stopped itching.", "gold");
+					break;
+				case "spiderDown5":
+					element("span", "Your balance feels different. Your spidery abdomen has disappeared.", "gold");
+					break;
+				case "pigUp1":
+					element("span", "Your nasal passages feel unusually clear.", "gold");
+					break;
+				case "pigUp2":
+					element("span", "Your nose feels hypersensitive to various plants. Perhaps you can use it to better your harvesting capabilities.", "gold");
+					break;
+				case "pigUp3":
+					element("span", `Your scalp itches.`, "gold");
+					break;
+				case "pigUp4":
+					element("span", "You feel something on your head. You reach up and tug, but it hurts. You have a new pair of pig ears.", "gold");
+					break;
+				case "pigUp5":
+					element("span", "Your lower back itches.", "gold");
+					break;
+				case "pigUp6":
+					element("span", "Your bottom feels heavier than usual. You reach behind you and feel your new pig tail.", "gold");
+					break;
+				case "pigDown0":
+					element("span", "Your olfactory abilities have lessened.", "gold");
+					break;
+				case "pigDown1":
+					element("span", "Your nose loses it's sensitivity to plant matter.", "gold");
+					break;
+				case "pigDown2":
+					element("span", `Your scalp no longer itches.`, "gold");
+					break;
+				case "pigDown3":
+					element("span", `Your pig ears have disappeared.`, "gold");
+					break;
+				case "pigDown4":
+					element("span", "Your lower back has stopped itching.", "gold");
+					break;
+				case "pigDown5":
+					element("span", "Your balance feels different. Your pig tail has disappeared.", "gold");
+					break;
+				case "frogUp1":
+					element("span", "Your body feels strange all over.", "gold");
+					break;
+				case "frogUp2":
+					element(
+						"span",
+						"A massive change overtakes you. Your feet and tongue elongate. The former becomes webbed, the latter sensitive. Your legs seems oddly powerful and you feel you're able to breathe easier.",
+						"gold"
+					);
+					break;
+				case "frogUp3":
+					element("span", `Your eyes seem to shift a bit.`, "gold");
+					break;
+				case "frogUp4":
+					element("span", "The eye changes are far more obvious now. In fact they look more like a frog's than a human's eyes.", "gold");
+					break;
+				case "frogUp5":
+					element("span", "There's a strange discoloration on your cheeks.", "gold");
+					break;
+				case "frogUp6":
+					element("span", "The discoloration on your cheeks becomes more intense. It oddly looks like a frog's now.", "gold");
+					break;
+				case "frogDown0":
+					element("span", "Your body seems to shift - becoming more like it was originally.", "gold");
+					break;
+				case "frogDown1":
+					element("span", "Your body warps. You lose your froggy traits and regain your original human features.", "gold");
+					break;
+				case "frogDown2":
+					element("span", `The strange feeling in your eyes ceases.`, "gold");
+					break;
+				case "frogDown3":
+					element("span", `Your frog eyes shift back into something more human.`, "gold");
+					break;
+				case "frogDown4":
+					element("span", "The cheek discoloration fades.", "gold");
+					break;
+				case "frogDown5":
+					element("span", "Your cheeks return entirely to their original state.", "gold");
+					break;
+
 				case "bimboMessage1":
 					element(
 						"span",

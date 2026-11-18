@@ -563,6 +563,7 @@
 					<<set $foxCrimeProgress += $_crimemod>>
 					<<set $_foxCrimeRequired = Math.floor(25 * (1 + $foxbuild))>>
 					<<if $foxCrimeProgress gte $_foxCrimeRequired>>
+						<<transform raccoon 1>>
 						<<transform fox 1>>
 						<<set $effectsmessage to true>>
 						<<set $foxCrimeMessage to true>>

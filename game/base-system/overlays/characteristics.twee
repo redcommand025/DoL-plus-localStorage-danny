@@ -29,7 +29,7 @@
 		an okami
 
 	<!-- Animal TFs -->
-	<<elseif (($wolfgirl gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "wolf") or (($cat gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "cat") or (($cow gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "cow") or (($harpy gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "bird") or (($fox gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "fox") or (($bunny gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "bunny") or ($bear gte 6 or ($transformationParts.bear.tail isnot "hidden" and $transformationParts.bear.tail isnot "disabled")) or (($waterdragon gte 7 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "waterdragon")>>
+	<<elseif (($wolfgirl gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "wolf") or (($cat gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "cat") or (($cow gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "cow") or (($harpy gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "bird") or (($fox gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "fox") or (($bunny gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "bunny") or ($bear gte 6 or ($transformationParts.bear.tail isnot "hidden" and $transformationParts.bear.tail isnot "disabled")) or (($waterdragon gte 7 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "waterdragon") or ($bee gte 6) or ($sheep gte 6) or ($deer gte 6) or ($dragon gte 6) or ($lizard gte 6) or ($dolphin gte 6) or ($dog gte 6) or ($fish gte 6) or ($raccoon gte 6) or ($horse gte 6) or ($spider gte 6) or ($frog gte 6) or ($pig gte 6)>>
 		<<if (($angel gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "angel")>>
 			an angelic
 		<<elseif ($fallenangel gte 2 or ($transformationParts.fallenAngel.wings isnot "hidden" and $transformationParts.fallenAngel.wings isnot "disabled"))>>
@@ -71,6 +71,33 @@
 			<</if>>
 		<<elseif (($fox gte 6 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "fox")>>
 			fox
+
+		<<elseif $bee gte 6>>
+			bee
+		<<elseif $sheep gte 6>>
+			sheep
+		<<elseif $deer gte 6>>
+			deer
+		<<elseif $dragon gte 6>>
+			dragon
+		<<elseif $lizard gte 6>>
+			lizard
+		<<elseif $dolphin gte 6>>
+			dolphin
+		<<elseif $dog gte 6>>
+			dog
+		<<elseif $fish gte 6>>
+			fish
+		<<elseif $raccoon gte 6>>
+			raccoon
+		<<elseif $horse gte 6>>
+			horse
+		<<elseif $spider gte 6>>
+			spider
+		<<elseif $frog gte 6>>
+			frog
+		<<elseif $pig gte 6>>
+			pig
 		<<elseif (($waterdragon gte 7 and $transformationParts.traits.activeTF is "disabled") or $transformationParts.traits.activeTF is "waterdragon")>>
 			water dragon
 		<</if>>
@@ -91,6 +118,8 @@
 	<</if>>
 	<<pcGender>>.
 	<br><br>
+	<<plusTransformChoiceBox>>
+	<br>
 
 	<<switch $bodysize>>
 		<<case -1>>You are miniature compared to others.

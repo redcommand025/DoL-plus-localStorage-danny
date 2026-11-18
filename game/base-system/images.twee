@@ -759,6 +759,38 @@
 		<<case "bunny">>
 		    <<set $_hairIcon = 'tf-bunny.png'>>
 			<<set $_frontIcon = 'tf-bun-acc.png'>>
+
+		<<case "bee">>
+			<<set $_hairIcon = 'tf-bee.png'>>
+		<<case "sheep">>
+			<<set $_hairIcon = 'tf-sheep.png'>>
+			<<set $_frontIcon = 'tf-sheep-acc.png'>>
+		<<case "deer">>
+			<<set $_hairIcon = 'tf-deer.png'>>
+			<<set $_frontIcon = 'tf-deer-acc.png'>>
+		<<case "dragon">>
+			<<set $_baseIcon = 'tf-dragon.png'>>
+		<<case "lizard">>
+			<<set $_hairIcon = 'tf-lizard.png'>>
+			<<set $_frontIcon = 'tf-lizard-acc.png'>>
+		<<case "dolphin">>
+			<<set $_baseIcon = 'tf-dolphin.png'>>
+		<<case "dog">>
+			<<set $_hairIcon = 'tf-dog.png'>>
+			<<set $_frontIcon = 'tf-dog-acc.png'>>
+		<<case "fish">>
+			<<set $_baseIcon = 'tf-fish.png'>>
+		<<case "raccoon">>
+			<<set $_hairIcon = 'tf-raccoon.png'>>
+			<<set $_frontIcon = 'tf-raccoon-acc.png'>>
+		<<case "horse">>
+			<<set $_baseIcon = 'tf-horse.png'>>
+		<<case "spider">>
+			<<set $_baseIcon = 'tf-spider.png'>>
+		<<case "frog">>
+			<<set $_baseIcon = 'tf-frog.png'>>
+		<<case "pig">>
+			<<set $_baseIcon = 'tf-pig.png'>>
 	<</switch>>
 	<<if $_baseIcon>>
 		<<icon $_baseIcon>>

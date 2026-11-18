@@ -245,12 +245,15 @@ Tulips grow in great patches near the riverbank.
 		<<else>>
 			<<if Time.dayState is "night">>
 				<<if $exposed gte 2 and hasSexStat("exhibitionism", 3)>>
+					<<runicon>><<link [[Go for a run (0:30)|Park Run Exposed]]>><<if $rng gt 90>><<transform horse 1>><</if>><<athletics 4>><<set $phase to 0>><<tiredness 3>><<stress -3>><<slimeEventEnd "running">><</link>><<exhibitionist3>><<gtiredness>><<gathletics>><<lstress>>
 					<<runicon>><<link [[Go for a run (0:30)|Park Run Exposed]]>><<athletics 8>><<physique 2>><<set $phase to 0>><<tiredness 3>><<stress -3>><<slimeEventEnd "running">><</link>><<exhibitionist3>><<gtiredness>><<gathletics>><<lstress>>
 					<br>
 				<<elseif $exposed is 1>>
+					<<runicon>><<link [[Go for a run (0:30)|Park Run Exposed]]>><<if $rng gt 90>><<transform horse 1>><</if>><<athletics 4>><<set $phase to 1>><<tiredness 3>><<stress -3>><<slimeEventEnd "running">><</link>><<exhibitionist1>><<gtiredness>><<gathletics>><<lstress>>
 					<<runicon>><<link [[Go for a run (0:30)|Park Run Exposed]]>><<athletics 6>><<physique 1>><<set $phase to 1>><<tiredness 3>><<stress -3>><<slimeEventEnd "running">><</link>><<exhibitionist1>><<gtiredness>><<gathletics>><<lstress>>
 					<br>
 				<<elseif $exposed is 0>>
+					<<runicon>><<link [[Go for a run (0:30)|Park Run]]>><<if $rng gt 90>><<transform horse 1>><</if>><<athletics 4>><<pass 30>><<tiredness 3>><<stress -3>><<slimeEventEnd "running">><</link>><<gtiredness>><<gathletics>><<lstress>>
 					<<runicon>><<link [[Go for a run (0:30)|Park Run]]>><<athletics 4>><<pass 30>><<tiredness 3>><<stress -3>><<slimeEventEnd "running">><</link>><<gtiredness>><<gathletics>><<lstress>>
 					<br>
 				<</if>>

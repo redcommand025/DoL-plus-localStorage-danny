@@ -411,6 +411,52 @@ DefineMacro("modelprepare-player-body", function () {
 	T.modeloptions.kitsune_cheeks_type = V.transformationParts.kitsune.cheeks;
 	T.modeloptions.kitsune_misc_type = V.transformationParts.kitsune.misc;
 
+	T.modeloptions.bee_ears_type = V.transformationParts.bee.ears;
+	T.modeloptions.bee_tail_type = V.transformationParts.bee.tail;
+	T.modeloptions.bee_wings_type = V.transformationParts.bee.wings;
+
+	T.modeloptions.sheep_horns_type = V.transformationParts.sheep.horns;
+	T.modeloptions.sheep_ears_type = V.transformationParts.sheep.ears;
+	T.modeloptions.sheep_tail_type = V.transformationParts.sheep.tail;
+
+	T.modeloptions.deer_horns_type = V.transformationParts.deer.horns;
+	T.modeloptions.deer_ears_type = V.transformationParts.deer.ears;
+	T.modeloptions.deer_tail_type = V.transformationParts.deer.tail;
+
+	T.modeloptions.dragon_horns_type = V.transformationParts.dragon.horns;
+	T.modeloptions.dragon_eyes_type = V.transformationParts.dragon.eyes;
+	T.modeloptions.dragon_wings_type = V.transformationParts.dragon.wings;
+	T.modeloptions.dragon_tail_type = V.transformationParts.dragon.tail;
+	T.modeloptions.dragon_whisker_type = V.transformationParts.dragon.whisker;
+
+	T.modeloptions.lizard_eyes_type = V.transformationParts.lizard.eyes;
+	T.modeloptions.lizard_tail_type = V.transformationParts.lizard.tail;
+	T.modeloptions.lizard_horns_type = V.transformationParts.lizard.horns;
+
+	T.modeloptions.dolphin_tail_type = V.transformationParts.dolphin.tail;
+
+	T.modeloptions.dog_ears_type = V.transformationParts.dog.ears;
+	T.modeloptions.dog_tail_type = V.transformationParts.dog.tail;
+
+	T.modeloptions.raccoon_ears_type = V.transformationParts.raccoon.ears;
+	T.modeloptions.raccoon_mask_type = V.transformationParts.raccoon.mask;
+	T.modeloptions.raccoon_tail_type = V.transformationParts.raccoon.tail;
+
+	T.modeloptions.fish_fins_type = V.transformationParts.fish.fins;
+	T.modeloptions.fish_tail_type = V.transformationParts.fish.tail;
+
+	T.modeloptions.horse_ears_type = V.transformationParts.horse.ears;
+	T.modeloptions.horse_tail_type = V.transformationParts.horse.tail;
+
+	T.modeloptions.spider_eyes_type = V.transformationParts.spider.eyes;
+	T.modeloptions.spider_tail_type = V.transformationParts.spider.tail;
+
+	T.modeloptions.frog_eyes_type = V.transformationParts.frog.eyes;
+	T.modeloptions.frog_cheeks_type = V.transformationParts.frog.cheeks;
+
+	T.modeloptions.pig_ears_type = V.transformationParts.pig.ears;
+	T.modeloptions.pig_tail_type = V.transformationParts.pig.tail;
+
 	/*
 
 		██████╗ ███████╗ ██████╗ ██████╗ ██████╗  █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗

@@ -418,6 +418,49 @@
 	<<set $bunnybuild to 0>>
 	<<set $bunny to 0>>
 
+	/* New World / Plus animal transformations */
+	<<set $permanentTransform to 0>>
+	<<set $transformPreferred to "automatic">>
+	<<set $sheepbuild to 0>>
+	<<set $sheep to 0>>
+	<<set $sheeptf to 0>>
+	<<set $beebuild to 0>>
+	<<set $bee to 0>>
+	<<set $beetf to 0>>
+	<<set $deerbuild to 0>>
+	<<set $deer to 0>>
+	<<set $deertf to 0>>
+	<<set $dragonbuild to 0>>
+	<<set $dragon to 0>>
+	<<set $dragontf to 0>>
+	<<set $lizardbuild to 0>>
+	<<set $lizard to 0>>
+	<<set $lizardtf to 0>>
+	<<set $dolphinbuild to 0>>
+	<<set $dolphin to 0>>
+	<<set $dolphintf to 0>>
+	<<set $dogbuild to 0>>
+	<<set $dog to 0>>
+	<<set $dogtf to 0>>
+	<<set $raccoonbuild to 0>>
+	<<set $raccoon to 0>>
+	<<set $raccoontf to 0>>
+	<<set $fishbuild to 0>>
+	<<set $fish to 0>>
+	<<set $fishtf to 0>>
+	<<set $horsebuild to 0>>
+	<<set $horse to 0>>
+	<<set $horsetf to 0>>
+	<<set $pigbuild to 0>>
+	<<set $pig to 0>>
+	<<set $pigtf to 0>>
+	<<set $spiderbuild to 0>>
+	<<set $spider to 0>>
+	<<set $spidertf to 0>>
+	<<set $frogbuild to 0>>
+	<<set $frog to 0>>
+	<<set $frogtf to 0>>
+
 	<<set $seductionskill to 0>>
 	<<set $oralskill to 0>>
 	<<set $vaginalskill to 0>>

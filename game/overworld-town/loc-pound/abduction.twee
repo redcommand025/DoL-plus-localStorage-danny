@@ -464,6 +464,7 @@ Sated, the more dominant <<pound_text>> laze around the yard, while others hunt 
 		<br><br>
 
 		<<if hasSexStat("deviancy", 4) and $submissive gte 1900>>
+			<<link [[Submit willingly|Pound Food Event Slime Submit willingly]]>><<transform dog 1>><<corruption 3>><<pain -8>><<stress -12>><<trauma -24>><<sub 2>><</link>><<deviant4>><<ggcorruption>><<llpain>><<llltrauma>><<llstress>>
 			<<link [[Submit willingly|Pound Food Event Slime Submit willingly]]>><<corruption 3>><<pain -8>><<stress -12>><<trauma -24>><<sub 2>><</link>><<deviant4>><<ggcorruption>><<llpain>><<llltrauma>><<llstress>>
 			<br>
 		<</if>>

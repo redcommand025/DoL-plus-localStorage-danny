@@ -2508,9 +2508,25 @@
 	<<set _npcisNamedFoxTransform to ["Gwylan","Poppy"].includes($NPCList[_jj].fullDescription)>>
 	<<set _npcisFoxType to ["fox","foxboy","foxgirl"].includes($NPCList[_jj].type) and _npcisNamedFoxTransform isnot true>>
 	<<set _npcisBearType to ["bear", "bearboy", "beargirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisBeeType to ["bee","beeboy","beegirl","wasp","waspboy","waspgirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisPigType to ["pig","pigboy","piggirl","boar","boarboy","boargirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisDolphinType to ["dolphin","dolphinboy","dolphingirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisLizardType to ["lizard","lizardboy","lizardgirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisHorseType to ["horse","centaur"].includes($NPCList[_jj].type)>>
+	<<set _npcisCowType to ["cow","bull"].includes($NPCList[_jj].type)>>
+	<<set _npcisBirdType to ["hawk","harpy"].includes($NPCList[_jj].type)>>
+	<<set _npcisCatType to ["cat","catboy","catgirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisSpiderType to ["spider","spiderboy","spidergirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisSheepType to ["sheep","sheepboy","sheepgirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisDeerType to ["deer","deerboy","deergirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisDragonType to ["dragon","dragonboy","dragongirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisRaccoonType to ["raccoon","raccoonboy","raccoongirl"].includes($NPCList[_jj].type)>>
+	<<set _npcisFrogType to ["frog","frogboy","froggirl"].includes($NPCList[_jj].type)>>
 	<<set _legLocked to $leglocktarget is $active_enemy>>
 	<<set _legLockedKnot to _legLocked ? 0.5 : 1>>
 	<<set _pregnancyBoost to 0>>
+
+	<<plusBeastEjaculationTransforms>>
 
 	<!-- Male BEAST -->
 	<<if $NPCList[_jj].penis is "thighs">>

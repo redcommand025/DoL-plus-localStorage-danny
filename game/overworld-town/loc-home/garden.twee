@@ -266,6 +266,7 @@ You are in the garden behind the orphanage.
 
 	<<if !Weather.isOvercast and Time.dayState is "day">>
 		<<set _tanning to Skin.getTanningFactor()>>
+		<<baskicon>><<link [[Bask in the sun (0:10)|Bask]]>><<pass 10>><<rng>><<if $rng lte 10>><<transform lizard 1>><</if>><<set $stress -= 5>><</link>><<lstress>><<tanningGainOutput _tanning.result 10>>
 		<<baskicon>><<link [[Bask in the sun (0:10)|Bask]]>><<pass 10>><<set $stress -= 5>><</link>><<lstress>><<tanningGainOutput _tanning.result 10>>
 		<br>
 	<</if>>

@@ -1,5 +1,6 @@
 :: Tanning
 <<location "beach">>
+<<rng>><<if $rng lte 20>><<transform lizard 1>><</if>>
 
 <<if Time.season is "summer">>
 	<<switch random(1, 3)>>

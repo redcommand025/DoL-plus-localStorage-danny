@@ -2047,6 +2047,10 @@
 		</div>
 
 		<div class="settingsToggleItem">
+			<<plusTransformChoiceBox>>
+		</div>
+
+		<div class="settingsToggleItem">
 			<label>
 				<<checkbox "$settings.breastFeedingEnabled" false true autocheck>> Enable lactation
 			</label>

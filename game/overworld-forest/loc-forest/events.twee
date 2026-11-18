@@ -1578,6 +1578,7 @@ You give <<him>> a slow twirl while walking towards <<him>>, making sure <<he>> 
 <</if>>
 
 :: Forest Deer
+<<location "forest">><<effects>><<transform deer 1>>
 <<location "forest">><<effects>>
 
 <<if $rng gte 51>>
