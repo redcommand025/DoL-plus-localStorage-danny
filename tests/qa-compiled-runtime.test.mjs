@@ -1179,4 +1179,135 @@ describe("QA compiled isolated runtime", () => {
 			JSON.stringify(pageErrors)
 		);
 	});
+
+	it("QA-C033 [integration] another sip at the school fountain adds a minute and thirst, and Leave returns to the hallways", async () => {
+		const info = await page.evaluate(() => {
+			const caught = [];
+			document.getElementById("dol-password-gate")?.remove();
+			const wiki = src => {
+				const d = document.createElement("div");
+				try {
+					new Wikifier(d, src);
+					return { ok: true, text: (d.textContent || "").replace(/\s+/g, " ").slice(0, 200) };
+				} catch (e) {
+					return { ok: false, text: String(e && e.message ? e.message : e) };
+				}
+			};
+			wiki("<<gameStartOnly>><<variablesStart2>>");
+			const V = SugarCube.State.variables;
+			V.intro = 0;
+			V.combat = 0;
+			V.eventskip = 1;
+			V.exposed = 0;
+			V.tutorial = 1;
+			V.options = V.options || {};
+			V.options.images = 1;
+			if (typeof plusNeedsInit === "function") plusNeedsInit();
+			if (typeof window.plusRetireDanny === "function") plusRetireDanny(V);
+			const addDay = () => {
+				const next = new DateTime(Time.date.year, Time.date.month, Time.date.day, Time.hour, Time.minute);
+				next.addDays(1);
+				Time.setDate(next);
+			};
+			const y = Time.year || Time.date.year;
+			for (const [month, day] of [
+				[9, 15],
+				[10, 12],
+				[11, 12],
+				[2, 12],
+				[3, 12],
+				[5, 12],
+				[6, 12],
+			]) {
+				Time.setDate(new DateTime(y, month, day, 10, 15));
+				let g = 0;
+				while (!Time.schoolDay && Time.schoolTerm && g++ < 6) addDay();
+				if (Time.schoolDay) break;
+			}
+			Time.setTime(10, 15);
+			V.location = "school";
+			V.plusThirst = 800;
+			V.plusBladder = 2000;
+			V.plusDrinkSpot = "fountain";
+			V.plusDrinkReturn = "Hallways";
+			V.plusDrinkAgain = 0;
+			const play = name => {
+				try {
+					SugarCube.Engine.play(name);
+					return null;
+				} catch (e) {
+					const msg = String(e && e.message ? e.message : e);
+					caught.push("Engine.play " + name + ": " + msg);
+					return msg;
+				}
+			};
+			const passageLinks = () => {
+				const root = document.getElementById("passages") || document.body;
+				return [...root.querySelectorAll("a")].map(a => (a.textContent || "").replace(/\s+/g, " ").trim()).filter(Boolean);
+			};
+			const snapNeeds = () => {
+				const cur = SugarCube.State.variables;
+				return {
+					passage: SugarCube.State.passage,
+					links: passageLinks(),
+					thirst: cur.plusThirst,
+					bladder: cur.plusBladder,
+					hour: Time.hour,
+					minute: Time.minute,
+					stamp: Time.date && Time.date.timeStamp,
+				};
+			};
+			const firstErr = play("Plus Needs Drink");
+			const afterFirst = snapNeeds();
+			const sipLink = [...(document.getElementById("passages") || document.body).querySelectorAll("a")].find(a =>
+				/Take another sip \(0:01\)/i.test(a.textContent || "")
+			);
+			if (sipLink) {
+				try {
+					sipLink.click();
+				} catch (e) {
+					caught.push("sip click: " + String(e && e.message ? e.message : e));
+				}
+			}
+			const afterSip = snapNeeds();
+			const leaveLink = [...(document.getElementById("passages") || document.body).querySelectorAll("a")].find(a =>
+				/^(Leave)$/i.test((a.textContent || "").replace(/\s+/g, " ").trim())
+			);
+			if (leaveLink) {
+				try {
+					leaveLink.click();
+				} catch (e) {
+					caught.push("leave click: " + String(e && e.message ? e.message : e));
+				}
+			}
+			const afterLeave = {
+				passage: SugarCube.State.passage,
+				clickedLeave: !!leaveLink,
+			};
+			return { firstErr, afterFirst, clickedSip: !!sipLink, afterSip, afterLeave, caught };
+		});
+		assert.equal(info.firstErr, null, JSON.stringify(info));
+		assert.equal(info.afterFirst.passage, "Plus Needs Drink", JSON.stringify(info.afterFirst));
+		assert.ok(
+			info.afterFirst.links.some(t => /Take another sip \(0:01\)/.test(t)),
+			JSON.stringify(info.afterFirst.links)
+		);
+		assert.ok(info.afterFirst.links.includes("Leave") || info.afterFirst.links.some(t => /^Leave$/.test(t)), JSON.stringify(info.afterFirst.links));
+		assert.equal(info.clickedSip, true, JSON.stringify(info));
+		assert.equal(info.afterSip.passage, "Plus Needs Drink", JSON.stringify(info.afterSip));
+		assert.ok(info.afterSip.thirst > info.afterFirst.thirst, JSON.stringify({ first: info.afterFirst.thirst, sip: info.afterSip.thirst }));
+		assert.ok(info.afterSip.bladder < info.afterFirst.bladder, JSON.stringify({ first: info.afterFirst.bladder, sip: info.afterSip.bladder }));
+		const firstMin = info.afterFirst.hour * 60 + info.afterFirst.minute;
+		const sipMin = info.afterSip.hour * 60 + info.afterSip.minute;
+		let delta = sipMin - firstMin;
+		if (delta < 0) delta += 24 * 60;
+		assert.equal(delta, 1, JSON.stringify({ first: info.afterFirst, sip: info.afterSip }));
+		assert.ok(
+			info.afterSip.links.some(t => /Take another sip \(0:01\)/.test(t)),
+			JSON.stringify(info.afterSip.links)
+		);
+		assert.equal(info.afterLeave.clickedLeave, true, JSON.stringify(info.afterLeave));
+		assert.equal(info.afterLeave.passage, "Hallways", JSON.stringify(info));
+		assert.deepEqual(info.caught, [], JSON.stringify(info.caught));
+	});
 });

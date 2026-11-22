@@ -371,8 +371,19 @@ You cup your hands under the tap and drink some cold water.
 <</widget>>
 
 :: Plus Needs Drink [plusneeds]
-<<effects>><<pass 2>>
+<<effects>>
 <<set _pnSpot to $plusDrinkSpot>>
+<<set _pnFountain to (_pnSpot isnot "stream" and _pnSpot isnot "lake" and _pnSpot isnot "cooler" and _pnSpot isnot "cafe" and _pnSpot isnot "shower")>>
+<<set _pnSip to 0>>
+<<if _pnFountain and $plusDrinkAgain>>
+	<<set _pnSip to 1>>
+<</if>>
+<<set $plusDrinkAgain to 0>>
+<<if _pnSip>>
+	<<pass 1>>
+<<else>>
+	<<pass 2>>
+<</if>>
 <<if _pnSpot is "stream">>
 	You kneel by the stream, cup your hands in the cold, clear water and drink.
 	<<run plusNeedsConsume(0, 450, "drink", plusNeedsML["stream"])>>
@@ -388,13 +399,22 @@ You cup your hands under the tap and drink some cold water.
 <<elseif _pnSpot is "shower">>
 	You find the tap by the beach showers and drink some fresh water.
 	<<run plusNeedsConsume(0, 400, "drink", plusNeedsML["fountain"])>>
+<<elseif _pnSip>>
+	You lean over the drinking fountain and take another sip of cool water.
+	<<run plusNeedsConsume(0, 400, "drink", plusNeedsML["fountain"])>>
 <<else>>
 	You lean over the drinking fountain and take a long drink of cool water.
 	<<run plusNeedsConsume(0, 400, "drink", plusNeedsML["fountain"])>>
 <</if>>
 You feel refreshed.
 <br><br>
-<<getouticon>><<link [[Finish|$plusDrinkReturn]]>><<set $eventskip to 1>><</link>>
+<<if _pnFountain>>
+	<<plusDrinkIcon "fountain">><<link [[Take another sip (0:01)|Plus Needs Drink]]>><<set $plusDrinkAgain to 1>><</link>>
+	<br>
+	<<getouticon>><<link [[Leave|$plusDrinkReturn]]>><<set $eventskip to 1>><<set $plusDrinkAgain to 0>><</link>>
+<<else>>
+	<<getouticon>><<link [[Finish|$plusDrinkReturn]]>><<set $eventskip to 1>><</link>>
+<</if>>
 
 :: Plus Needs Outdoor Toilet [plusneeds]
 <<effects>><<pass 3>>
