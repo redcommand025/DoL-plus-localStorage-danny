@@ -106,7 +106,7 @@ describe("QA plus-needs behavioral cases", () => {
 		assert.equal(State.variables.plusBowels, 2000 - 30);
 	});
 
-	it("QA-B002 [behavioral] 180-minute long rest uses sleep rates", () => {
+	it("QA-B002 [behavioral] 180-minute long rest uses long-pass rates", () => {
 		const { window, State } = loadNeeds();
 		withRandom(0.5, () => window.plusNeedsTick(180));
 		assert.equal(State.variables.plusHunger, 2000 - 72);

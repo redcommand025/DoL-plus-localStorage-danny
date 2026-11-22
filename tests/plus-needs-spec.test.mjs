@@ -134,7 +134,7 @@ describe("plus-needs published spec", () => {
 		assert.equal(drink.plusNeedsStats.mlTotal, 500);
 	});
 
-	it("QA-N004 [spec] skips of 3 hours or more use sleep rates; 179 minutes stay awake", () => {
+	it("QA-N004 [spec] skips of 3 hours or more use long-pass rates; 179 minutes stay awake", () => {
 		const awake = loadNeeds();
 		withRandom(0.5, () => awake.window.plusNeedsTick(179));
 		assert.equal(awake.State.variables.plusHunger, 2000 - 1.6 * 179);
@@ -161,13 +161,22 @@ describe("plus-needs published spec", () => {
 		assert.equal(fromBelow.State.variables.plusBedwet, undefined);
 	});
 
-	it("QA-N006 [spec] bedwetting on long rest is separate and only at continence 0–2", () => {
-		const high = loadNeeds({ variables: { plusContinence: 5, plusBladder: 500 } });
-		withRandom(0, () => high.window.plusNeedsTick(480));
-		assert.equal(high.State.variables.plusBedwet, undefined);
-		const low = loadNeeds({ variables: { plusContinence: 1, plusBladder: 800 } });
-		withRandom(0, () => low.window.plusNeedsTick(480));
-		assert.equal(low.State.variables.plusBedwet, 1);
+	it("QA-N006 [spec] 3+ hour skips never bedwet; night accidents only happen during actual sleep", () => {
+		const skip = loadNeeds({ variables: { plusContinence: 0, plusBladder: 200 } });
+		withRandom(0, () => skip.window.plusNeedsTick(480));
+		assert.equal(skip.State.variables.plusBedwet, undefined);
+		assert.equal(skip.State.variables.plusAccident, undefined);
+		assert.equal(skip.State.variables.plusBladder, 400);
+		assert.equal(skip.State.variables.plusSleepAccident, undefined);
+		assert.equal(skip.State.variables.plusSleepWake, undefined);
+		const asleep = loadNeeds({ variables: { plusContinence: 0, plusBladder: 10, plusBowels: 2000 } });
+		asleep.window.plusNeedsBeginSleep();
+		withRandom(0.5, () => asleep.window.plusNeedsTick(60));
+		const result = asleep.window.plusSleepResolveAfterPass();
+		assert.equal(result.accident, true);
+		assert.equal(asleep.State.variables.plusAccident, "plusBladder");
+		assert.equal(asleep.State.variables.plusSleepAccident.sleptThrough, true);
+		assert.equal(asleep.State.variables.plusSleepWake, undefined);
 	});
 
 	it("QA-N007 [spec] empty hunger and thirst apply stacked hourly stress, pain, and fatigue", () => {

@@ -21,7 +21,14 @@ window.plusNowTs = function () {
 		plusBladder: 3.6, // ~216/h awake, plus drinks fill it further
 		plusBowels: 0.5, // ~30/h awake, plus meals fill it further
 	};
-	const SLEEP_RATE = { plusHunger: 0.25, plusThirst: 0.25, plusBladder: 0.5, plusBowels: 0.5 }; // bodily needs slow down during long rests
+	/* Actual sleep (beds and other sleep widgets): slower than a generic long skip. */
+	const SLEEP_RATE = { plusHunger: 0.125, plusThirst: 0.125, plusBladder: 0.25, plusBowels: 0.25 };
+	/* 3+ hour skips (hospital, passing out, etc.) keep the original long-rest slowdown. */
+	const LONG_PASS_RATE = { plusHunger: 0.25, plusThirst: 0.25, plusBladder: 0.5, plusBowels: 0.5 };
+	const SLEEP_ACCIDENT_CHANCE = [1, 0.6, 0.3]; // continence 0 / 1 / 2
+	window.plusNeedsSleepRate = SLEEP_RATE;
+	window.plusNeedsLongPassRate = LONG_PASS_RATE;
+	window.plusSleepAccidentChance = SLEEP_ACCIDENT_CHANCE;
 	const TICK_NOISE = 0.25; // +-25% randomness per tick
 	const DRIFT_STEP = 0.03;
 	const DRIFT_MIN = 0.8;
@@ -33,8 +40,8 @@ window.plusNowTs = function () {
 	const EMPTY_PAIN_PER_HOUR = { plusHunger: 20, plusThirst: 26 }; // added each hour; clamped by the game's normal painClamp (0-200)
 	// A single long time skip (sleep, passing out, hospital) never causes an accident on its own.
 	const LONG_PASS = 180;
-	// During a long rest bladder/bowels stop at the sidebar's "You should find a toilet soon" tier (400-999),
-	// so you never wake up at "You really need a toilet now!" (<400) from sleep alone.
+	// Non-sleep long skips (hospital, passing out) still stop bladder/bowels at the "find a toilet soon" floor.
+	// Actual sleep no longer uses this cap, so a night accident or wake can happen.
 	const LONG_PASS_FLOOR = 400;
 
 	function init() {
@@ -200,13 +207,17 @@ window.plusNowTs = function () {
 		try {
 			if (typeof window.plusFlatOnTick === "function") window.plusFlatOnTick();
 		} catch (e) {}
-		const longPass = Math.max(minutes, window.plusNeedsPassTotal || 0) >= LONG_PASS;
+		const sleeping = !!window.plusNeedsSleeping;
+		const longPass = sleeping || Math.max(minutes, window.plusNeedsPassTotal || 0) >= LONG_PASS;
+		const rateTable = sleeping ? SLEEP_RATE : longPass ? LONG_PASS_RATE : null;
 
 		const loss = {};
 		for (const k of Object.keys(RATE)) {
 			const d = Math.clamp(V.plusNeedsDrift[k] + (Math.random() * 2 - 1) * DRIFT_STEP * Math.sqrt(minutes / 60), DRIFT_MIN, DRIFT_MAX);
 			V.plusNeedsDrift[k] = d;
-			loss[k] = RATE[k] * minutes * (longPass ? SLEEP_RATE[k] : 1) * d * jitter(TICK_NOISE);
+			const mul = rateTable ? rateTable[k] : 1;
+			const noise = sleeping && (k === "plusBladder" || k === "plusBowels") ? 1 : jitter(TICK_NOISE);
+			loss[k] = RATE[k] * minutes * mul * d * noise;
 		}
 		try {
 			if (typeof window.plusNeedsWeatherApply === "function") window.plusNeedsWeatherApply(loss, minutes, longPass);
@@ -270,39 +281,10 @@ window.plusNowTs = function () {
 		for (const k of ["plusBladder", "plusBowels"]) {
 			const start = V[k];
 			let v = start - loss[k];
-			// Long skips never drop (or leave you) below the "find a toilet soon" floor.
-			if (longPass && v < LONG_PASS_FLOOR) v = LONG_PASS_FLOOR;
+			// Non-sleep long skips never drop below the "find a toilet soon" floor.
+			if (longPass && !sleeping && v < LONG_PASS_FLOOR) v = LONG_PASS_FLOOR;
 			v = clamp(v);
 			V[k] = v;
-			// Night protection: a long rest (sleep) at low continence can cause bed-wetting if no diaper is worn.
-			// A worn diaper prevents a wet bed (it absorbs instead). Never from short time skips.
-			if (longPass && k === "plusBladder" && minutes >= LONG_PASS && lvl <= 2) {
-				const hours = minutes / 60;
-				let risk = [0.88, 0.48, 0.18][lvl] * Math.min(1, hours / 8);
-				if (start < 1000) risk = Math.min(0.98, risk + 0.25);
-				if (Math.random() < risk) {
-					if (window.plusDiaperWorn && window.plusDiaperWorn()) {
-						try {
-							window.plusDiaperAbsorb("plusBladder");
-						} catch (e) {}
-						S.accWet++;
-						V[k] = MAX;
-						G[k] = 0;
-						V.plusNightProtect = 1;
-					} else {
-						accident(k);
-						V.plusBedwet = 1;
-						S.bedwets++;
-						if (Number.isFinite(V.upperwet)) V.upperwet = Math.max(V.upperwet, 80);
-						if (Number.isFinite(V.lowerwet)) V.lowerwet = Math.max(V.lowerwet, 140);
-						if (Number.isFinite(V.underlowerwet)) V.underlowerwet = Math.max(V.underlowerwet, 200);
-						try {
-							if (window.plusClothesDirt) window.plusClothesDirt(80);
-						} catch (e) {}
-					}
-					continue;
-				}
-			}
 			if (inToilet) {
 				if (V[k] <= 0) V[k] = 1; // already on the toilet: no accident, the visit empties it
 				continue;
@@ -326,7 +308,12 @@ window.plusNowTs = function () {
 				}
 			}
 			if (V[k] <= 0) {
-				// Sleep/long skips never cause a waking accident; bedwetting is handled above.
+				// Actual sleep: leave the bar at 0 so plusSleepResolveAfterPass can wake or apply an accident.
+				if (sleeping) {
+					V[k] = 0;
+					continue;
+				}
+				// Non-sleep long skips still never cause an accident on their own.
 				if (longPass) {
 					V[k] = LONG_PASS_FLOOR;
 					continue;
@@ -362,6 +349,110 @@ window.plusNowTs = function () {
 			G[k] = 0;
 			if (V.plusHoldNote) V.plusHoldNote[k] = 0;
 		}
+	};
+
+	window.plusNeedsBeginSleep = function () {
+		window.plusNeedsSleeping = true;
+		if (State.variables) delete State.variables.plusSleepWake;
+	};
+	window.plusNeedsEndSleep = function () {
+		window.plusNeedsSleeping = false;
+	};
+	window.plusSleepMinutesUntilEvent = function (maxMinutes = 60) {
+		const V = State.variables;
+		if (!V) return maxMinutes;
+		init();
+		let soonest = Infinity;
+		for (const k of ["plusBladder", "plusBowels"]) {
+			const start = Number(V[k]);
+			if (!Number.isFinite(start)) continue;
+			if (start <= 0) return 0;
+			let rate = RATE[k] * SLEEP_RATE[k] * (V.plusNeedsDrift && Number.isFinite(V.plusNeedsDrift[k]) ? V.plusNeedsDrift[k] : 1);
+			if (k === "plusBladder" && (V.plusDiureticMin || 0) > 0) rate *= V.plusDiureticMul || 1;
+			if (!(rate > 0)) continue;
+			const t = start / rate;
+			if (t < soonest) soonest = t;
+		}
+		if (!Number.isFinite(soonest) || soonest > maxMinutes) return maxMinutes;
+		return Math.max(1, Math.ceil(soonest));
+	};
+	window.plusSleepAccidentChanceFor = function (lvl) {
+		if (lvl <= 0) return SLEEP_ACCIDENT_CHANCE[0];
+		if (lvl === 1) return SLEEP_ACCIDENT_CHANCE[1];
+		if (lvl === 2) return SLEEP_ACCIDENT_CHANCE[2];
+		return 0;
+	};
+	window.plusSleepApplyAccident = function (kind) {
+		const V = State.variables;
+		if (!V || !kind) return;
+		init();
+		const S = stats();
+		const G = V.plusGrace || (V.plusGrace = { plusBladder: 0, plusBowels: 0 });
+		const apply = k => {
+			const prev = V.plusAccident;
+			if (prev !== k && prev !== "both") {
+				if (k === "plusBladder") S.accWet++;
+				else S.accSoiled++;
+				if (prev) S.accBoth++;
+				V.plusAccident = prev ? "both" : k;
+				const before = prev ? CONT_ACC_XP[prev] : 0;
+				window.plusContinenceXP(CONT_ACC_XP[V.plusAccident] - before);
+			}
+			V[k] = MAX;
+			G[k] = 0;
+			if (V.plusHoldNote) V.plusHoldNote[k] = 0;
+		};
+		if (kind === "both") {
+			apply("plusBladder");
+			apply("plusBowels");
+		} else apply(kind);
+		V.plusSleepAccident = { which: V.plusAccident || kind, sleptThrough: window.plusContinenceLevel() <= 0 };
+		S.bedwets = (S.bedwets || 0) + 1;
+	};
+	window.plusSleepResolveAfterPass = function () {
+		const V = State.variables;
+		if (!V) return null;
+		if (V.plusSleepWake) return V.plusSleepWake;
+		init();
+		const kinds = ["plusBladder", "plusBowels"].filter(k => Number(V[k]) <= 0);
+		if (!kinds.length) return null;
+		const kind = kinds.length === 2 ? "both" : kinds[0];
+		const lvl = window.plusContinenceLevel();
+		const chance = window.plusSleepAccidentChanceFor(lvl);
+		if (chance >= 1 || (chance > 0 && Math.random() < chance)) {
+			window.plusSleepApplyAccident(kind);
+			return { accident: true, kind, level: lvl };
+		}
+		V.plusSleepWake = { kind, level: lvl };
+		return V.plusSleepWake;
+	};
+	window.plusSleepToiletInfo = function () {
+		const V = State.variables || {};
+		const loc = V.location || "";
+		const bed = V.plusSleepBed || "";
+		if (loc === "home" || /^(Bedroom|Orphanage|Robin Sleep)/.test(bed)) {
+			return { type: "bathroom", passage: "Bathroom", label: "Go to the bathroom (0:01)", pass: 1 };
+		}
+		if (loc === "flat" || loc === "flats" || /Plus Flat/.test(bed)) {
+			return { type: "bathroom", passage: "Plus Flat Bathroom", label: "Go to the bathroom (0:01)", pass: 1 };
+		}
+		if (loc === "avery_mansion") {
+			return { type: "bathroom", passage: "Mansion Bathroom", label: "Go to the bathroom (0:01)", pass: 1 };
+		}
+		const outdoor = {
+			forest: "forest",
+			forest_shop: "forest",
+			cabin: "forest",
+			wolf_cave: "wolfcave",
+			island: "coast",
+			tower: "moor",
+			alex_cottage: "farm",
+			farm: "farm",
+			livestock: "farm",
+			moor: "moor",
+		};
+		if (outdoor[loc]) return { type: "outdoor", spot: outdoor[loc], label: "Relieve yourself nearby (0:03)" };
+		return { type: "toilet", passage: "Plus Needs Toilet", label: "Use the toilet (0:03)", pass: 0 };
 	};
 
 	/* ---- Continence: level 0-6 (start 3), XP -600..+600 per level. ----
@@ -468,13 +559,16 @@ window.plusNowTs = function () {
 			}
 			delete V.plusHoldShow;
 		}
-		if (V.plusBedwet) {
-			html += (html ? " " : "") + `<span class="red">You wet the bed in your sleep. Your pyjamas and the sheets are soaked.</span>`;
-			delete V.plusBedwet;
-		} else if (V.plusNightProtect) {
-			html += (html ? " " : "") + `<span class="lblue">You leaked in your sleep, but your diaper kept the bed dry.</span>`;
-			delete V.plusNightProtect;
+		// Legacy flags from before night wake/accident rules. New sleep accidents use <<plusNeedsAccident>>.
+		if ((V.plusBedwet || V.plusNightProtect) && !V.plusAccident && !V.plusSleepAccident) {
+			if (V.plusBedwet) {
+				html += (html ? " " : "") + `<span class="red">You wet the bed in your sleep. Your pyjamas and the sheets are soaked.</span>`;
+			} else {
+				html += (html ? " " : "") + `<span class="lblue">You leaked in your sleep, but your diaper kept the bed dry.</span>`;
+			}
 		}
+		delete V.plusBedwet;
+		delete V.plusNightProtect;
 		if (V.plusDiaperAcceptanceNote) {
 			html +=
 				(html ? " " : "") +

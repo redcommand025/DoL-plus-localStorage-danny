@@ -6,6 +6,11 @@
 		<<earSlimeFocusChoice>>
 	<</if>>
 	<<sleephour>>
+	<<if $plusSleepWake and !_args[0]>>
+		<<sleep_clamp>>
+		<<goto "Plus Needs Sleep Wake">>
+		<<exitAll>>
+	<</if>>
 	<<if _wakeEvent and !_args[0]>>
 		<<sleep_clamp>>
 		<<switch _wakeEvent>>
@@ -23,6 +28,8 @@
 	<</if>>
 
 	<<set $sleepHoursTotal to 0>>
+	<<if typeof plusNeedsBeginSleep is "function">><<run plusNeedsBeginSleep()>><</if>>
+	<<if typeof plusSleepResolveAfterPass is "function">><<run plusSleepResolveAfterPass()>><</if>>
 	<<set $_bonusFatigueLoss to 10>>
 	<<set _poppy_interrupt to false>>
 
@@ -79,6 +86,9 @@
 	<!-- sleephour repeats this until you have slept for the selected number of hours -->
 	<!-- if you select "just sleep", then you wake up when tiredness hits 0, or after 10 hours. -->
 	<<for $sleephour gte 1 or $sleephour lte -1>>
+		<<if $plusSleepWake>>
+			<<break>>
+		<</if>>
 		<<set $sleephour -= 1>>
 		<<if $avery_mansion and $bus is "avery_bedroom">>
 			<<avery_mansion>>
@@ -349,11 +359,28 @@
 			<<break>>
 		<</if>>
 
+		<<if $plusSleepWake>>
+			<<break>>
+		<</if>>
+
 		<!-- Called before the $tiredness math so the "pass" clamps are called before the PC's $tiredness is reduced. -->
+		<<set _plusSleepChunk to (typeof plusSleepMinutesUntilEvent is "function" ? plusSleepMinutesUntilEvent(60) : 60)>>
 		<<if $location is "tower">>
-			<<bird_pass 60>>
+			<<if _plusSleepChunk gt 0 and _plusSleepChunk lt 60>>
+				<<bird_pass _plusSleepChunk>>
+			<<elseif _plusSleepChunk gt 0>>
+				<<bird_pass 60>>
+			<</if>>
 		<<else>>
-			<<pass 1 hour>>
+			<<if _plusSleepChunk gt 0 and _plusSleepChunk lt 60>>
+				<<pass _plusSleepChunk>>
+			<<elseif _plusSleepChunk gt 0>>
+				<<pass 1 hour>>
+			<</if>>
+		<</if>>
+		<<if typeof plusSleepResolveAfterPass is "function">><<run plusSleepResolveAfterPass()>><</if>>
+		<<if $plusSleepWake>>
+			<<break>>
 		<</if>>
 
 		<!-- fatigue is lowered by 200 for every hour slept and another 50 more if the player has no trauma. -->
@@ -416,6 +443,7 @@
 
 		<<sleep_clamp>>/*Prevents bugged out values affecting events in anyway, -2000 fatigue and -360 stress arnt helpful*/
 	<</for>>
+	<<if typeof plusNeedsEndSleep is "function">><<run plusNeedsEndSleep()>><</if>>
 <</widget>>
 
 <<widget "sleepeffects">>

@@ -1634,6 +1634,10 @@ Remy calls for help, and two farmhands rush to <<his>> side. "If you're going to
 <<effects>>
 
 <<livestock_sleep>>
+<<if $plusSleepWake>>
+	<<goto "Plus Needs Sleep Wake">>
+	<<exit>>
+<</if>>
 <<if $livestock.lock.strength lte 0>><<set _lockBroken to true>><</if>> /* Has to be run here before farm_var_set for the Remy wake event */
 <<farm_var_set>>
 <<if $phase is 0>>

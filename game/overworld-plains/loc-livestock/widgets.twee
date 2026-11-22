@@ -10,8 +10,22 @@
 	<<else>>
 		<<set _livestock_sleep to (6 - Time.hour)>>
 	<</if>>
+	<<if typeof plusNeedsBeginSleep is "function">><<run plusNeedsBeginSleep()>><</if>>
+	<<if typeof plusSleepResolveAfterPass is "function">><<run plusSleepResolveAfterPass()>><</if>>
 	<<for _l to 0; _l lt _livestock_sleep; _l++>>
-		<<pass 60>>
+		<<if $plusSleepWake>>
+			<<break>>
+		<</if>>
+		<<set _plusSleepChunk to (typeof plusSleepMinutesUntilEvent is "function" ? plusSleepMinutesUntilEvent(60) : 60)>>
+		<<if _plusSleepChunk gt 0 and _plusSleepChunk lt 60>>
+			<<pass _plusSleepChunk>>
+		<<elseif _plusSleepChunk gt 0>>
+			<<pass 60>>
+		<</if>>
+		<<if typeof plusSleepResolveAfterPass is "function">><<run plusSleepResolveAfterPass()>><</if>>
+		<<if $plusSleepWake>>
+			<<break>>
+		<</if>>
 		<<set $sleepStat++>>
 		<<set $tiredness -= 200>>
 		<<if !($sleeptrouble is 1 and $controlled is 0 and !$hypnosis_traits.slumber)>>
@@ -22,6 +36,7 @@
 			<<set $tiredness -= _traumaToSleep>>
 		<</if>>
 	<</for>>
+	<<if typeof plusNeedsEndSleep is "function">><<run plusNeedsEndSleep()>><</if>>
 <</widget>>
 
 <<widget "livestock_init">>

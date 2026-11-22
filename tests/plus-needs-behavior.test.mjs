@@ -78,28 +78,27 @@ describe("plus-needs behavioral matrix", () => {
 		assert.equal(Array.from(window.plusContinenceNames).join(","), "Leaky,Weak,Unreliable,Normal,Strong,Iron,Steel");
 	});
 
-	it("bedwets on a long rest at low continence without a diaper, but a diaper absorbs instead", () => {
+	it("a 3+ hour skip does not bedwet; an actual sleep accident at low continence is resolved after the tick", () => {
 		const orig = Math.random;
 		Math.random = () => 0;
 		try {
-			const bare = loadNeeds();
-			bare.State.variables.plusContinence = 1;
-			bare.State.variables.plusBladder = 800;
-			bare.window.plusNeedsTick(480);
-			assert.equal(bare.State.variables.plusBedwet, 1);
-			assert.equal(bare.State.variables.plusNeedsStats.bedwets, 1);
+			const skip = loadNeeds();
+			skip.State.variables.plusContinence = 1;
+			skip.State.variables.plusBladder = 800;
+			skip.window.plusNeedsTick(480);
+			assert.equal(skip.State.variables.plusBedwet, undefined);
+			assert.equal(skip.State.variables.plusAccident, undefined);
+			assert.equal(skip.State.variables.plusBladder, 400);
 
-			const protectedRun = loadNeeds();
-			protectedRun.setup.clothes.under_lower = protectedRun.window.plusDiaperItems();
-			const pull = protectedRun.window.plusDiaperItems().find(i => i.name === "pull-up (Medium)");
-			protectedRun.window.plusDiaperInit(pull);
-			protectedRun.State.variables.worn.under_lower = pull;
-			protectedRun.State.variables.plusContinence = 1;
-			protectedRun.State.variables.plusBladder = 800;
-			protectedRun.window.plusNeedsTick(480);
-			assert.notEqual(protectedRun.State.variables.plusBedwet, 1);
-			assert.equal(protectedRun.State.variables.plusNightProtect, 1);
-			assert.ok(pull.plusMl > 0);
+			const asleep = loadNeeds();
+			asleep.State.variables.plusContinence = 1;
+			asleep.State.variables.plusBladder = 10;
+			asleep.window.plusNeedsBeginSleep();
+			asleep.window.plusNeedsTick(60);
+			const result = asleep.window.plusSleepResolveAfterPass();
+			assert.equal(result.accident, true);
+			assert.equal(asleep.State.variables.plusAccident, "plusBladder");
+			assert.equal(asleep.State.variables.plusNeedsStats.bedwets, 1);
 		} finally {
 			Math.random = orig;
 		}

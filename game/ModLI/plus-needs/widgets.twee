@@ -128,20 +128,26 @@
 	/* plusDiaperAbsorb returns the part that leaks: "" (all absorbed), "plusBladder", "plusBowels" or "both". */
 	<<set _pnLeak to (_pnDiaper ? plusDiaperAbsorb(_pnWhich) : _pnWhich)>>
 	<<set _pnAbsorbed to (_pnDiaper and _pnLeak is "")>>
+	<<set _pnSleepAcc to $plusSleepAccident>>
+	<<set _pnSleptThrough to (_pnSleepAcc and $plusSleepAccident.sleptThrough)>>
 	<<if _pnAbsorbed>>
 	<span class="purple">
-		You couldn't hold it any longer and didn't make it to a toilet in time. <<if _pnWhich is "plusBladder">>You wet yourself, but your _pnDiaper.name absorbs it.<<elseif _pnWhich is "plusBowels">>You soil yourself, but your _pnDiaper.name holds it.<<else>>You have an accident at both ends, but your _pnDiaper.name takes it all.<</if>>
+		<<if _pnSleepAcc>>You leaked in your sleep, but your _pnDiaper.name kept the bed dry. <<if _pnSleptThrough>>You didn't wake. <</if>>
+		<<else>>You couldn't hold it any longer and didn't make it to a toilet in time. <<if _pnWhich is "plusBladder">>You wet yourself, but your _pnDiaper.name absorbs it.<<elseif _pnWhich is "plusBowels">>You soil yourself, but your _pnDiaper.name holds it.<<else>>You have an accident at both ends, but your _pnDiaper.name takes it all.<</if>>
+		<</if>>
 		Nothing shows through your clothes.<<if plusDiaperPeeFull(_pnDiaper) and plusDiaperPoopFull(_pnDiaper)>> It feels completely full now.<<elseif plusDiaperPeeFull(_pnDiaper)>> It feels soaked through now. It won't hold any more pee.<<elseif plusDiaperPoopFull(_pnDiaper)>> It feels heavy and full now. It won't hold any more mess.<</if>>
 	</span>
 	<br>Your cheeks warm a little<<if plusDiaperDef(_pnDiaper).cloth>>, and the cloth will need washing<<else>>, and you should change it soon<</if>>.
 	<<run plusDiaperExposure()>>
 	<<if plusDiaperStressApplies("use")>><<stress 6>><<gstress>><</if>><<set $hygiene to Math.clamp($hygiene + 200, 0, 2000)>>
-	<<set _pnSeen to plusAccidentSpotRoll(false, 0.5)>>
+	<<if _pnSleepAcc>><<set _pnSeen to 0>><<else>><<set _pnSeen to plusAccidentSpotRoll(false, 0.5)>><</if>>
 	<<else>>
 	<<if _pnDiaper>><span class="red">Your _pnDiaper.name <<if _pnLeak is "plusBladder">>can't hold any more pee<<elseif _pnLeak is "plusBowels">>can't hold any more mess<<else>>can't hold any more<</if>>. It leaks<<if _pnLeak isnot _pnWhich or _plusLeakFrac lt 0.999>>, though it holds <<if _plusLeakFrac lt 0.5>>most of it<<else>>some of it<</if>><</if>>.</span><br><<set _pnWhich to _pnLeak>><</if>>
 	<<set _pnFrac to (_pnDiaper ? _plusLeakFrac : 1)>><<set _pnPeeFrac to (_pnDiaper ? _plusLeakPee : 1)>><<set _pnPoopFrac to (_pnDiaper ? _plusLeakPoop : 1)>>
 	<span class="pink">
-	<<if _pnFloor>>
+	<<if _pnSleepAcc>>
+		You had an accident in your sleep. <<if _pnWhich is "plusBladder">>You wet yourself.<<elseif _pnWhich is "plusBowels">>You soiled yourself.<<else>>You had an accident at both ends.<</if>><<if !_pnDiaper>> Your clothes and the bedding are wet.<</if>><<if _pnSleptThrough>> You didn't even wake.<</if>>
+	<<elseif _pnFloor>>
 		You couldn't hold it any longer and didn't make it to a toilet in time. With nothing on to catch it,
 		<<if _pnWhich is "plusBladder">>a puddle spreads across the _pnGround at your feet.
 		<<elseif _pnWhich is "plusBowels">>you leave a mess on the _pnGround beneath you.
@@ -173,9 +179,9 @@
 	Your face burns with embarrassment<<if _pnULwet or _pnLwet>>, and your clothes will need a good wash<<elseif _pnFloor>>, and you hurry away from the _pnGround before anyone can connect it to you<</if>>.
 	<<if _pnDiaper>><<run plusDiaperExposure()>><</if>>
 	<<stress 12>><<gstress>><<set $hygiene to Math.clamp($hygiene + 400, 0, 2000)>>
-	<<set _pnSeen to plusAccidentSpotRoll(_pnFloor)>>
+	<<if _pnSleepAcc>><<set _pnSeen to 0>><<else>><<set _pnSeen to plusAccidentSpotRoll(_pnFloor)>><</if>>
 	<</if>>
-	<<if _args[1] isnot "silent" and _pnSeen gt 0>>
+	<<if _args[1] isnot "silent" and not _pnSleepAcc and _pnSeen gt 0>>
 		<<run plusContRepOnAccident(_pnSeen, { floor: !!_pnFloor, which: _pnWhich, absorbed: !!_pnAbsorbed })>>
 		<br><span class="red">
 		<<if _pnSeen is 2>>
@@ -202,10 +208,11 @@
 			</span>
 		<</if>>
 	<</if>>
-	<<if _args[1] isnot "silent">>
+	<<if _args[1] isnot "silent" and not _pnSleepAcc>>
 		<<plusWeatherAccidentFlavour>>
 		<<plusNpcAccidentHook>>
 	<</if>>
+	<<if _pnSleepAcc>><<unset $plusSleepAccident>><</if>>
 <</widget>>
 
 :: Plus Needs Toilet [plusneeds]
@@ -1289,4 +1296,25 @@ The landlord has had enough of unpaid rent. The locks are changed, and you are t
 You carry what you can back to the orphanage. Your old bedroom is waiting, and Bailey's weekly payments will start again.
 <br><br>
 <<link [[Return to your old bedroom|Bedroom]]>><</link>>
+<br>
+
+
+:: Plus Needs Sleep Wake [plusneeds]
+<<effects>>
+<<set _pnW to $plusSleepWake>>
+<<set _pnToilet to plusSleepToiletInfo()>>
+<<set _pnBed to ($plusSleepBed or "Bedroom")>>
+You wake suddenly, needing the toilet. <<if _pnW.kind is "both">>Your bladder and bowels won't wait.<<elseif _pnW.kind is "plusBladder">>Your bladder won't wait.<<else>>Your bowels won't wait.<</if>>
+<br><br>
+<<if _pnToilet.type is "bathroom">>
+	<<bathroomicon>><<link `_pnToilet.label` `_pnToilet.passage`>><<if _pnToilet.pass>><<pass 1>><</if>><<unset $plusSleepWake>><</link>>
+	<br>
+<<elseif _pnToilet.type is "outdoor">>
+	<<if _pnToilet.spot is "park" or _pnToilet.spot is "beach" or _pnToilet.spot is "farm" or _pnToilet.spot is "estate">><<icon "bush.png">><<elseif _pnToilet.spot is "coast">><<icon "lake.png">><<elseif _pnToilet.spot is "moor">><<mooricon>><<else>><<foresticon>><</if>><<link `_pnToilet.label` "Plus Needs Outdoor Toilet">><<set $plusOutdoorSpot to _pnToilet.spot>><<set $plusToiletReturn to _pnBed>><<unset $plusSleepWake>><</link>>
+	<br>
+<<else>>
+	<<bathroomicon "toilet">><<link `_pnToilet.label` "Plus Needs Toilet">><<set $plusToiletReturn to _pnBed>><<unset $plusSleepWake>><</link>>
+	<br>
+<</if>>
+<<bedicon>><<link "Go back to bed" _pnBed>><<unset $plusSleepWake>><</link>>
 <br>

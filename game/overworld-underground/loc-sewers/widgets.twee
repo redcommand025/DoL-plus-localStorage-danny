@@ -239,6 +239,8 @@
 :: Widgets Sewers [widget]
 
 <<widget "sewerssleep">>
+	<<if typeof plusNeedsBeginSleep is "function">><<run plusNeedsBeginSleep()>><</if>>
+	<<if typeof plusSleepResolveAfterPass is "function">><<run plusSleepResolveAfterPass()>><</if>>
 	<<sewerssleephour>>
 	<<sewerssleephour>>
 	<<sewerssleephour>>
@@ -247,13 +249,22 @@
 	<<sewerssleephour>>
 	<<sewerssleephour>>
 	<<sewerssleephour>>
+	<<if typeof plusNeedsEndSleep is "function">><<run plusNeedsEndSleep()>><</if>>
 <</widget>>
 
 <<widget "sewerssleephour">>
-	<<if Time.hour lte 7>>
-		<<pass 60>>
-		<<tiredness -12>>
-		<<set $sleepStat++>>
+	<<if !$plusSleepWake and Time.hour lte 7>>
+		<<set _plusSleepChunk to (typeof plusSleepMinutesUntilEvent is "function" ? plusSleepMinutesUntilEvent(60) : 60)>>
+		<<if _plusSleepChunk gt 0 and _plusSleepChunk lt 60>>
+			<<pass _plusSleepChunk>>
+		<<elseif _plusSleepChunk gt 0>>
+			<<pass 60>>
+		<</if>>
+		<<if typeof plusSleepResolveAfterPass is "function">><<run plusSleepResolveAfterPass()>><</if>>
+		<<if !$plusSleepWake>>
+			<<tiredness -12>>
+			<<set $sleepStat++>>
+		<</if>>
 	<</if>>
 <</widget>>
 

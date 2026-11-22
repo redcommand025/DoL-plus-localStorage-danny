@@ -207,6 +207,8 @@
 
 <<widget "generateSleepLinks">>
 	<<set _sleep_passage to _args[0]>>
+	<<set $plusSleepBed to $passage>>
+	<<set $plusSleepDest to _sleep_passage>>
 	<<set _maxHours to ($sleeptrouble is 1 and $controlled is 0 and !$hypnosis_traits.slumber) ? 10 : 8>>
 	<<for _i = _maxHours; _i > 0; _i-->>
 		<<if _i is 1>>
