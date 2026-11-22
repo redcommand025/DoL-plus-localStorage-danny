@@ -408,19 +408,19 @@ describe("QA plus-needs behavioral cases", () => {
 		State.variables.plusContRepDayGain = 0;
 		window.plusContRepOnAccident(1, { which: "plusBladder", floor: false, absorbed: false, busy: false, school: false, night: false });
 		assert.ok(floorAmt > State.variables.plusContRep);
-		assert.equal(floorAmt, 40);
+		assert.equal(floorAmt, 20);
 	});
 
 	it("QA-B039 [behavioral] school and busy multipliers stack on witnessed accident reputation", () => {
 		const { window, State } = loadNeeds();
 		window.plusContRepOnAccident(1, { which: "plusBladder", floor: false, busy: true, school: true, night: false });
-		assert.equal(State.variables.plusContRep, Math.round(Math.round(20 * 1.5) * 1.5));
+		assert.equal(State.variables.plusContRep, Math.round(Math.round(10 * 1.5) * 1.5));
 	});
 
 	it("QA-B040 [behavioral] night halves witnessed accident reputation", () => {
 		const { window, State } = loadNeeds();
 		window.plusContRepOnAccident(1, { which: "plusBladder", floor: false, busy: false, school: false, night: true });
-		assert.equal(State.variables.plusContRep, Math.round(20 * 0.5));
+		assert.equal(State.variables.plusContRep, Math.round(10 * 0.5));
 	});
 
 	it("QA-B041 [behavioral] reputation is clamped at 1000 Notorious", () => {

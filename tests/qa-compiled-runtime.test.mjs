@@ -725,15 +725,30 @@ describe("QA compiled isolated runtime", () => {
 			};
 			V.plusContRepDecayDay = today - 1;
 			window.plusContRepDecay();
+			const afterMidnight = {
+				raw: V.plusContRep,
+				pub: window.plusContRepPublicValue(),
+				school: window.plusSchoolContRep(),
+				pending: V.plusContRepSchoolPending,
+				credit: V.plusContRepSchoolCredit,
+				message: V.school_continence_message,
+				label: window.plusContRepLabel(),
+			};
+			for (let i = 0; i < 2; i++) {
+				window.plusContRepOnAccident(1, { school: true, which: "plusBladder", clothed: true });
+				V.plusContRepDecayDay = window.plusDayKey() - 1;
+				window.plusContRepDecay();
+			}
 			return {
 				afterSeen,
-				afterMidnight: {
-					raw: V.plusContRep,
-					pub: window.plusContRepPublicValue(),
+				afterMidnight,
+				afterThreeDays: {
 					school: window.plusSchoolContRep(),
 					pending: V.plusContRepSchoolPending,
+					credit: V.plusContRepSchoolCredit,
 					message: V.school_continence_message,
-					label: window.plusContRepLabel(),
+					pub: window.plusContRepPublicValue(),
+					raw: V.plusContRep,
 				},
 			};
 		});
@@ -742,11 +757,14 @@ describe("QA compiled isolated runtime", () => {
 		assert.equal(info.afterSeen.pub, 0);
 		assert.equal(info.afterSeen.school, 0);
 		assert.equal(info.afterSeen.pending, 1);
-		assert.equal(info.afterMidnight.school, 1);
+		assert.equal(info.afterMidnight.school, 0);
 		assert.equal(info.afterMidnight.pending, 0);
-		assert.equal(info.afterMidnight.message, 1);
-		assert.equal(info.afterMidnight.pub, info.afterMidnight.raw);
+		assert.equal(info.afterMidnight.credit, 1);
 		assert.ok(info.afterMidnight.pub > 0);
+		assert.ok(info.afterMidnight.pub <= info.afterMidnight.raw);
+		assert.equal(info.afterThreeDays.school, 1);
+		assert.equal(info.afterThreeDays.pending, 0);
+		assert.equal(info.afterThreeDays.message, 1);
 	});
 
 	it("QA-C026 [integration] combat audio is present, real, and still blocked for leftover Danny scene names", async () => {

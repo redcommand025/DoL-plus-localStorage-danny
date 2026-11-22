@@ -1718,19 +1718,21 @@ window.plusNowTs = function () {
 		{ min: 1000, name: "Notorious", color: "red", restroom: -0.22, work: 0.74 },
 	];
 	const CONTREP_GAIN = {
-		absorbed: { plusBladder: 8, plusBowels: 10, both: 14 },
-		clothed: { plusBladder: 20, plusBowels: 28, both: 36 },
-		floor: { plusBladder: 40, plusBowels: 50, both: 60 },
-		seen: 4,
-		wet: 3,
-		dirty: 4,
-		outdoor: 12,
+		absorbed: { plusBladder: 4, plusBowels: 5, both: 7 },
+		clothed: { plusBladder: 10, plusBowels: 14, both: 18 },
+		floor: { plusBladder: 20, plusBowels: 25, both: 30 },
+		seen: 2,
+		wet: 2,
+		dirty: 2,
+		outdoor: 6,
 		busyMul: 1.5,
 		schoolMul: 1.5,
 		nightMul: 0.5,
 		seenBusyMul: 1.25,
 	};
-	const CONTREP_DECAY = { afterGain: 4, clean: 12, cleanStep: 4, max: 28 };
+	const CONTREP_DECAY = { afterGain: 6, clean: 16, cleanStep: 6, max: 36, fameBonus: 6 };
+	const CONTREP_PUBLIC_CATCHUP = 1 / 3;
+	const CONTREP_SCHOOL = { creditNeeded: 3, fadePerLevel: 8, fadeFame: 8, fadeGuarantee: 4 };
 	const CONTREP_REMARK_CHANCE = [0, 0, 0, 0.08, 0.15, 0.25, 0.4];
 	const CONTREP_REMARK_CD = 60 * 60;
 	const CONTREP_REMARK_STRESS = 8;
@@ -1760,17 +1762,33 @@ window.plusNowTs = function () {
 	window.plusContRepStates = CONTREP_STATES;
 	window.plusContRepGains = CONTREP_GAIN;
 	window.plusContRepDecayInfo = CONTREP_DECAY;
+	window.plusContRepPublicCatchup = CONTREP_PUBLIC_CATCHUP;
+	window.plusContRepSchoolInfo = CONTREP_SCHOOL;
+	window.plusContRepCatchupPublic = function (from, to) {
+		const a = Number(from) || 0;
+		const b = Number(to) || 0;
+		const gap = b - a;
+		if (gap === 0) return a;
+		if (gap < 0) return b;
+		const step = Math.max(1, Math.round(gap * CONTREP_PUBLIC_CATCHUP));
+		return Math.min(b, a + step);
+	};
 	window.plusContRepInit = function () {
 		const V = State.variables;
 		if (!V) return;
 		if (!Number.isFinite(V.plusContRep)) V.plusContRep = 0;
 		if (!Number.isFinite(V.plusContRepPublic)) V.plusContRepPublic = 0;
+		V.plusContRep = Math.clamp(V.plusContRep, 0, 1000);
+		V.plusContRepPublic = Math.clamp(V.plusContRepPublic, 0, 1000);
 		if (!Number.isFinite(V.plusContRepCleanDays)) V.plusContRepCleanDays = 0;
 		if (V.plusContRepDayGain !== 0 && V.plusContRepDayGain !== 1) V.plusContRepDayGain = 0;
 		if (!Number.isFinite(V.plusContRepDecayDay)) V.plusContRepDecayDay = window.plusDayKey();
 		if (!V.schoolrep || typeof V.schoolrep !== "object") V.schoolrep = { crossdress: 0, herm: 0, continence: 0 };
 		if (!Number.isFinite(V.schoolrep.continence)) V.schoolrep.continence = 0;
+		V.schoolrep.continence = Math.clamp(V.schoolrep.continence, 0, 5);
 		if (!Number.isFinite(V.plusContRepSchoolPending)) V.plusContRepSchoolPending = 0;
+		if (!Number.isFinite(V.plusContRepSchoolCredit)) V.plusContRepSchoolCredit = 0;
+		if (!Number.isFinite(V.plusContRepSchoolCleanDays)) V.plusContRepSchoolCleanDays = 0;
 	};
 	window.plusContRepInfo = function () {
 		window.plusContRepInit();
@@ -1875,7 +1893,7 @@ window.plusNowTs = function () {
 		if (hadGain) return CONTREP_DECAY.afterGain;
 		const extra = Math.max(0, (cleanDays || 1) - 1);
 		let amt = CONTREP_DECAY.clean + extra * CONTREP_DECAY.cleanStep;
-		if (window.plusFameGood() >= 400) amt += 4;
+		if (window.plusFameGood() >= 400) amt += CONTREP_DECAY.fameBonus;
 		return Math.min(CONTREP_DECAY.max, amt);
 	};
 	window.plusContRepApplySchoolMidnight = function () {
@@ -1883,17 +1901,24 @@ window.plusNowTs = function () {
 		const V = State.variables;
 		if (!V.schoolrep) V.schoolrep = { continence: 0 };
 		if (V.plusContRepSchoolPending) {
+			V.plusContRepSchoolCleanDays = 0;
+			V.plusContRepSchoolCredit = (V.plusContRepSchoolCredit || 0) + V.plusContRepSchoolPending;
+			V.plusContRepSchoolPending = 0;
 			const before = V.schoolrep.continence || 0;
-			V.schoolrep.continence = Math.min(5, before + V.plusContRepSchoolPending);
+			while ((V.plusContRepSchoolCredit || 0) >= CONTREP_SCHOOL.creditNeeded && (V.schoolrep.continence || 0) < 5) {
+				V.plusContRepSchoolCredit -= CONTREP_SCHOOL.creditNeeded;
+				V.schoolrep.continence = (V.schoolrep.continence || 0) + 1;
+			}
 			if (V.schoolrep.continence !== before) {
 				V.school_continence_message = V.schoolrep.continence;
 				V.effectsmessage = 1;
 			}
-			V.plusContRepSchoolPending = 0;
 		} else if ((V.schoolrep.continence || 0) > 0 && !V.plusContRepSchoolIncident) {
-			const chance = (V.schoolrep.continence || 0) * 3 + (window.plusFameGood() >= 400 ? 5 : 0);
-			if (Math.random() * 100 < chance) {
+			V.plusContRepSchoolCleanDays = (V.plusContRepSchoolCleanDays || 0) + 1;
+			const chance = (V.schoolrep.continence || 0) * CONTREP_SCHOOL.fadePerLevel + (window.plusFameGood() >= 400 ? CONTREP_SCHOOL.fadeFame : 0);
+			if (Math.random() * 100 < chance || V.plusContRepSchoolCleanDays >= CONTREP_SCHOOL.fadeGuarantee) {
 				V.schoolrep.continence = Math.max(0, (V.schoolrep.continence || 0) - 1);
+				V.plusContRepSchoolCleanDays = 0;
 			}
 		}
 		V.plusContRepSchoolIncident = 0;
@@ -1916,7 +1941,9 @@ window.plusNowTs = function () {
 			total += (V.plusContRep || 0) - next;
 			V.plusContRep = next;
 			window.plusContRepApplySchoolMidnight();
-			V.plusContRepPublic = V.plusContRep;
+			// Already-circulating rumours fade with the private score; new rumours only catch up by a third each day.
+			const pub = Math.clamp((V.plusContRepPublic || 0) - amt, 0, 1000);
+			V.plusContRepPublic = window.plusContRepCatchupPublic(pub, V.plusContRep);
 		}
 		V.plusContRepDecayDay = day;
 		return total;

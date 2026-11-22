@@ -67,11 +67,21 @@ describe("continence reputation: school rumours and labels", () => {
 
 		Time.days += 1;
 		window.plusContRepDecay();
+		assert.equal(window.plusSchoolContRep(), 0, "school rumours need three incident days to take root");
+		assert.equal(State.variables.plusContRepSchoolPending, 0);
+		assert.equal(State.variables.plusContRepSchoolCredit, 1);
+		assert.ok(window.plusContRepPublicValue() > 0);
+		assert.ok(window.plusContRepPublicValue() <= State.variables.plusContRep);
+
+		for (let i = 0; i < 2; i++) {
+			window.plusContRepOnAccident(1, { school: true, which: "plusBladder", clothed: true, busy: false, night: false });
+			Time.days += 1;
+			window.plusContRepDecay();
+		}
 		assert.equal(window.plusSchoolContRep(), 1);
 		assert.equal(State.variables.school_continence_message, 1);
 		assert.equal(State.variables.plusContRepSchoolPending, 0);
-		assert.equal(window.plusContRepPublicValue(), State.variables.plusContRep);
-		assert.ok(window.plusContRepPublicValue() > 0);
+		assert.equal(State.variables.plusContRepSchoolCredit, 0);
 	});
 
 	it("has no Bailey continence remarks or Relentless Bailey setting", () => {
@@ -97,7 +107,8 @@ describe("continence reputation: school rumours and labels", () => {
 		// plusFameGood is already 400 here, so bump fame down for the control
 		State.variables.fame.good = 0;
 		const raw = window.plusContRepDecayAmt(1, false);
-		assert.equal(without, Math.min(28, raw + 4));
+		const decay = window.plusContRepDecayInfo;
+		assert.equal(without, Math.min(decay.max, raw + decay.fameBonus));
 	});
 
 	it("uses the public meter for restroom and work modifiers until midnight", () => {
