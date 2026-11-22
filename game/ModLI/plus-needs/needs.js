@@ -1328,25 +1328,99 @@ window.plusNowTs = function () {
 		for (const s of ["lower", "over_lower"]) if (realItem(W[s]) && !isSkirt(W[s])) return false;
 		return true;
 	};
+	const SCHOOL_ACC_SPOT = { base: 0.5, hall: 0.75, class: 1, library: 0.4, diaperDiv: 2, concealedDiv: 4, uncomfortableMul: 3 };
+	const LIBRARY_FINE = { amount: 1000, catchChance: 0.5, detention: 3 };
+	window.plusSchoolAccidentSpot = SCHOOL_ACC_SPOT;
+	window.plusLibraryFineAmount = LIBRARY_FINE.amount;
+	window.plusLibraryFineCatchChance = LIBRARY_FINE.catchChance;
+	window.plusLibraryFineDetention = LIBRARY_FINE.detention;
+	/* Hallways, classrooms (including lessons, exams and detention), and the school library.
+	 * Other school spots (canteen, courtyards, toilets, infirmary, pool) use the general school base. */
+	window.plusSchoolAccidentSpotKind = function (title = State.passage) {
+		const t = String(title || "");
+		if (/Library/i.test(t)) return "library";
+		if (/Classroom/i.test(t) || /^(Science|Maths|English|History|Housekeeping)\b/.test(t) || /\bExam\b/.test(t) || /Detention/i.test(t)) return "class";
+		if (/Hallways/i.test(t)) return "hall";
+		return "other";
+	};
+	window.plusSchoolAccidentSpotBase = function (title = State.passage) {
+		const kind = window.plusSchoolAccidentSpotKind(title);
+		if (kind === "hall") return SCHOOL_ACC_SPOT.hall;
+		if (kind === "class") return SCHOOL_ACC_SPOT.class;
+		if (kind === "library") return SCHOOL_ACC_SPOT.library;
+		return SCHOOL_ACC_SPOT.base;
+	};
+	/* Existing Plus attitude: $uncomfortable.diaperUse (defaults on). This is the setting for
+	 * being uncomfortable wetting or messing in front of others. Unchecking it turns the x3 off.
+	 * Diaper acceptance and exhibitionism do not change the catch chance on their own. */
+	window.plusAccidentUncomfortable = function () {
+		if (typeof window.plusDiaperInitInsecurity === "function") window.plusDiaperInitInsecurity();
+		const u = State.variables && State.variables.uncomfortable;
+		return !u || u.diaperUse !== false;
+	};
+	window.plusSchoolAccidentSpotChance = function (title = State.passage, opts = {}) {
+		let p = window.plusSchoolAccidentSpotBase(title);
+		const worn = opts.worn != null ? !!opts.worn : !!(window.plusDiaperWorn && window.plusDiaperWorn());
+		const visible = opts.visible != null ? !!opts.visible : !!(window.plusDiaperVisible && window.plusDiaperVisible());
+		if (worn) p /= visible ? SCHOOL_ACC_SPOT.diaperDiv : SCHOOL_ACC_SPOT.concealedDiv;
+		const uncomfortable = opts.uncomfortable != null ? !!opts.uncomfortable : window.plusAccidentUncomfortable();
+		if (uncomfortable) p *= SCHOOL_ACC_SPOT.uncomfortableMul;
+		return Math.min(1, p);
+	};
 	window.plusAccidentSpotChance = function (floor, title = State.passage) {
-		if (window.plusIsSchool(title)) return 1;
+		if (window.plusIsSchool(title)) return window.plusSchoolAccidentSpotChance(title);
 		if (!window.plusIsPublic(title)) return 0;
 		let p = floor ? ACC_SPOT.floor : ACC_SPOT.clothed;
 		if (busy(title)) p *= ACC_SPOT.busyMul;
 		if (night()) p *= 0.5;
 		return Math.min(ACC_SPOT.cap, p);
 	};
+	function applyLibraryFine(canPay) {
+		const V = State.variables;
+		const amount = LIBRARY_FINE.amount;
+		const detentionAmt = LIBRARY_FINE.detention;
+		if (canPay) {
+			if (typeof money === "function") money(-amount, "plusLibraryFine");
+			else V.money = (V.money || 0) - amount;
+			return { caught: true, paid: true, amount, detention: 0 };
+		}
+		/* Match <<detention N>>: +N*10 detention and +N*4 delinquency, capped at 1000. */
+		V.detention = (V.detention || 0) + detentionAmt * 10;
+		V.delinquency = Math.clamp((V.delinquency || 0) + detentionAmt * 4, 0, 1000);
+		return { caught: true, paid: false, amount, detention: detentionAmt };
+	}
+	/* When an accident is noticed in the library, half of those cases are caught by the (unnamed) librarian. */
+	window.plusLibraryAccidentFineRoll = function (opts = {}) {
+		const V = State.variables || {};
+		const amount = LIBRARY_FINE.amount;
+		const force = opts.caught;
+		const rng = opts.random != null ? opts.random : Math.random();
+		const caught = force === true || (force !== false && rng < LIBRARY_FINE.catchChance);
+		if (!caught) return { caught: false, paid: false, amount, detention: 0 };
+		return applyLibraryFine((V.money || 0) >= amount);
+	};
 	/* 0 = unseen, 1 = seen in public, 2 = seen at school. Counts the stat and applies school effects. */
 	window.plusAccidentSpotRoll = function (floor, mul = 1) {
 		const S = stats();
 		if (floor) S.accFloor++;
-		const c = window.plusAccidentSpotChance(floor) * mul * (!floor && window.plusDiaperVisible && window.plusDiaperVisible() ? window.plusVisibleMul : 1);
-		if (!(c >= 1 || Math.random() < c)) return 0;
+		const title = State.passage;
+		const school = window.plusIsSchool(title);
+		let c = window.plusAccidentSpotChance(floor, title);
+		if (!school) c *= mul * (!floor && window.plusDiaperVisible && window.plusDiaperVisible() ? window.plusVisibleMul : 1);
+		if (!(c >= 1 || Math.random() < c)) {
+			if (State.temporary) State.temporary.plusLibraryFine = null;
+			return 0;
+		}
 		S.accSpotted++;
-		if (window.plusIsSchool()) {
+		if (school) {
 			window.plusSchoolBullyBump();
+			if (window.plusSchoolAccidentSpotKind(title) === "library") {
+				const fine = window.plusLibraryAccidentFineRoll();
+				if (State.temporary) State.temporary.plusLibraryFine = fine;
+			} else if (State.temporary) State.temporary.plusLibraryFine = null;
 			return 2;
 		}
+		if (State.temporary) State.temporary.plusLibraryFine = null;
 		return 1;
 	};
 	window.plusSchoolBullyBump = function () {

@@ -192,6 +192,15 @@
 			<<if _pnFloor>><<stress 15>><<else>><<stress 10>><</if>><<gstress>>
 		<</if>>
 		<<if _pnSeen is 2>><<status -5>><<lcool>><</if>>
+		<<if _plusLibraryFine and _plusLibraryFine.caught>>
+			<br><span class="red">
+			<<if _plusLibraryFine.paid>>
+				The librarian comes over and keeps their voice low. "There will be a cleaning charge for that," they say. You pay <<printmoney _plusLibraryFine.amount>>, face burning, and they send you to tidy yourself up.
+			<<else>>
+				The librarian comes over and keeps their voice low. "There will be a cleaning charge for that," they say. You haven't got the money, so they note you down for detention instead.
+			<</if>>
+			</span>
+		<</if>>
 	<</if>>
 	<<if _args[1] isnot "silent">>
 		<<plusWeatherAccidentFlavour>>
