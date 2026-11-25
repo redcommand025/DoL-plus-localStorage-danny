@@ -61,4 +61,23 @@ describe("combat audio port", () => {
 		assert.match(read("game/base-system/orgasm.twee"), /orgasm-voice/);
 		assert.match(read("game/base-combat/ejaculation/ejaculation.twee"), /npc-orgasm-voice/);
 	});
+	it("guards sex-sound so a missing portalPanties object cannot crash the audio widgets", () => {
+		const twee = read("game/base-system/audio/combat-audio.twee");
+		const sexSound = twee.split('<<widget "sex-sound">>')[1].split("<</widget>>")[0];
+		assert.doesNotMatch(sexSound, /<<if \$portalPanties\.state/);
+		assert.match(sexSound, /<<if \$portalPanties and \$portalPanties\.state and \(\$portalPanties\.state\.vagina or \$portalPanties\.state\.anus\)>>/);
+		const updateCombat = twee.split('<<widget "update-combat-audio">>')[1].split("<</widget>>")[0];
+		assert.match(updateCombat, /\$portalPanties and \$portalPanties\.state and \$portalPanties\.state\.vagina/);
+		assert.match(updateCombat, /\$portalPanties and \$portalPanties\.state and \$portalPanties\.state\.mouth/);
+
+		const safe = p => !!(p && p.state && (p.state.vagina || p.state.anus));
+		const unsafe = p => !!(p.state.vagina || p.state.anus);
+		assert.throws(() => unsafe(undefined), /undefined/);
+		assert.throws(() => unsafe({}), /undefined/);
+		assert.equal(safe(undefined), false);
+		assert.equal(safe({}), false);
+		assert.equal(safe({ state: {} }), false);
+		assert.equal(safe({ state: { vagina: { timer: 12 } } }), true);
+		assert.equal(safe({ state: { anus: { timer: 8 } } }), true);
+	});
 });
