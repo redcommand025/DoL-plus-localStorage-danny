@@ -114,62 +114,6 @@
 	/* WearProp passages that re-show the same cup/plate and must not refill again. */
 	window.plusNeedsPropSkipPassages = ["Cafe Coffee Flash", "Cafe Coffee Finish"];
 
-	/* ---- Work restroom breaks ---- */
-	const WORK_JOBS = {
-		office: { strict: 0.45, speaker: "your supervisor", place: "the office" },
-		farm: { strict: 0.2, speaker: "Alex", place: "the farm" },
-		docks: { strict: 0.4, speaker: "the foreman", place: "the docks" },
-		cafe: { strict: 0.25, speaker: "Sam", place: "the cafe" },
-		dance: { strict: 0.35, speaker: "Charlie", place: "the dance studio" },
-	};
-	window.plusWorkBreakJobs = WORK_JOBS;
-	window.plusWorkBreakChance = function (job, opts) {
-		opts = opts || {};
-		const spec = WORK_JOBS[job] || WORK_JOBS.office;
-		const st = V() || {};
-		let p = 1 - spec.strict;
-		const bladder = Number(st.plusBladder);
-		const bowels = Number(st.plusBowels);
-		const urgent = (Number.isFinite(bladder) && bladder <= 300) || (Number.isFinite(bowels) && bowels <= 300);
-		const desperate = (Number.isFinite(bladder) && bladder <= 0) || (Number.isFinite(bowels) && bowels <= 0);
-		if (urgent) p += 0.15;
-		if (desperate) p += 0.1;
-		if (opts.visible || (typeof window.plusDiaperVisible === "function" && window.plusDiaperVisible())) p -= 0.08;
-		const smell = typeof window.plusSmellChance === "function" ? window.plusSmellChance() : 0;
-		if (opts.smell || smell >= 0.16) p -= 0.08;
-		const rep = typeof window.plusContRepPublicValue === "function" ? window.plusContRepPublicValue() : Number(st.plusContRepPublic) || 0;
-		if (rep >= 600) p -= 0.15;
-		else if (rep >= 400) p -= 0.1;
-		return clamp(Math.round(p * 1000) / 1000, 0.15, 0.95);
-	};
-	window.plusWorkBreakResolve = function (job, force) {
-		const spec = WORK_JOBS[job] || WORK_JOBS.office;
-		const st = V();
-		const visible = typeof window.plusDiaperVisible === "function" && window.plusDiaperVisible();
-		const smell = typeof window.plusSmellChance === "function" && window.plusSmellChance() >= 0.16;
-		const bladder = Number(st && st.plusBladder);
-		const bowels = Number(st && st.plusBowels);
-		const urgent = (Number.isFinite(bladder) && bladder <= 300) || (Number.isFinite(bowels) && bowels <= 300);
-		const chance = window.plusWorkBreakChance(job, { visible, smell });
-		const accepted = force === true ? true : force === false ? false : Math.random() < chance;
-		const out = {
-			job,
-			speaker: spec.speaker,
-			place: spec.place,
-			accepted,
-			visible,
-			smell,
-			urgent,
-			chance,
-		};
-		if (st) {
-			st.plusWorkBreakLast = out;
-			st.plusWorkBreakNext = nowTs() + 45 * 60;
-			st.plusWorkBreakJob = job;
-		}
-		return out;
-	};
-
 	/* ---- Infirmary (player only; matter-of-fact, non-sexual) ---- */
 	window.plusAccidentRemember = function (which) {
 		const st = V();

@@ -299,10 +299,9 @@ They mention the hospital's bladder exercises, and that the clinic sells the sam
 
 :: Plus Continence Clinic Supplies [plusneeds]
 <<effects>>
-A metal cabinet against the wall holds the same packs you can buy at the pharmacy, at the same prices. The nurse unlocks it when you ask and lets you choose without comment.
+The clinic no longer keeps packs in the cabinet. The nurse directs you to the Continence Store in the foyer, which sells the same packs at the same prices.
 <br><br>
-<<plusDiaperShop "pharmacy">>
-<br>
+<<plusContinenceStoreLink>>
 <<getouticon>><<link [[Back to the clinic|Plus Continence Clinic]]>><</link>>
 <br>
 

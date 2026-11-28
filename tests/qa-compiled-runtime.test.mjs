@@ -126,7 +126,7 @@ describe("QA compiled isolated runtime", () => {
 				"plusDiaperShop",
 				"plusNeedsAccident",
 				"plusFlatNotices",
-				"plusWorkBreakLink",
+				"plusContinenceStoreLink",
 				"plusInfirmaryNurseLink",
 				"plusCustodyWashLink",
 				"plusKitchenSnack",

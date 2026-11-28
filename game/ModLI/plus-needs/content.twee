@@ -1,12 +1,5 @@
 :: Widgets Plus Content Batch [widget plusneeds]
-/* Location toilets, job breaks, infirmary, flat home, and custody. No new continence-reputation world hooks. */
-
-<<widget "plusWorkBreakLink">>
-	<<if _args[0]>>
-		<<bathroomicon "toilet">><<link [[Ask to use the restroom (0:01)|Plus Needs Work Break]]>><<set $plusWorkBreakJob to _args[0]>><<set $plusWorkBreakReturn to $passage>><</link>>
-		<br>
-	<</if>>
-<</widget>>
+/* Location toilets, infirmary, flat home, and custody. No new continence-reputation world hooks. */
 
 <<widget "plusInfirmaryNurseLink">>
 	<<schoolicon "infirmary">><<link [[Speak to the nurse|Plus Infirmary Nurse]]>><<set $plusInfirmaryReturn to $passage>><</link>>
@@ -29,93 +22,6 @@
 	/* Extended wrapper; the base widget is updated in widgets.twee. Kept so tests can mention it. */
 	<<plusOutdoorToiletLink _args[0]>>
 <</widget>>
-
-
-:: Plus Needs Work Break [plusneeds]
-<<effects>>
-<<run plusWorkBreakResolve($plusWorkBreakJob)>>
-<<set _wb to $plusWorkBreakLast>>
-<<if _wb.accepted>>
-	<<pass 8>>
-	<<if _wb.urgent>>
-		You explain, as evenly as you can, that you cannot wait until the end of the shift.
-		<<if $plusWorkBreakJob is "farm">>
-			Alex glances at the animals, then at you, and nods toward the shed. "Go on. Be quick. I'll keep an eye on things."
-		<<elseif $plusWorkBreakJob is "cafe">>
-			Sam looks you over and sighs. "Fine. Use the staff toilet. Don't leave me with a full section."
-		<<elseif $plusWorkBreakJob is "dance">>
-			Charlie waves you off toward the changing room. "Go. I don't want anyone dancing in discomfort. Be back before the next number."
-		<<elseif $plusWorkBreakJob is "docks">>
-			The foreman clicks <<his>> tongue, then jerks a thumb at the dock office. "Five minutes. If you're longer, I'll come looking."
-		<<else>>
-			Your supervisor studies your face, then points down the hall. "Be quick. I want you back at your desk before anyone notices."
-		<</if>>
-	<<elseif _wb.commented or _wb.visible or _wb.smell>>
-		<<if _wb.visible>>They notice the outline under your clothes, hesitate, then decide not to make a scene. <</if>>
-		<<if _wb.smell>>They wrinkle their nose, then clearly decide it is not worth a lecture in front of everyone. <</if>>
-		"All right. Don't be long."
-		<<if _wb.visible>><<run plusDiaperExposure()>><<if plusDiaperStressApplies("seen")>><<stress 4>><<gstress>><</if>><</if>>
-	<<else>>
-		<<print either(
-			"They barely look up. \"Go on. Don't take all day.\"",
-			"They nod. \"Restroom's where it always is. Come straight back.\"",
-			"They check the time, then shrug. \"Fine. Be quick about it.\""
-		)>>
-	<</if>>
-	<br><br>
-	You thank them and hurry off. The restroom is ordinary and, for a few minutes, private. You use the toilet, wash your hands, and feel much more comfortable.
-	<<run plusNeedsToilet("both")>><<plusDiaperToiletNote>>
-	<br><br>
-	<<plusDiaperChangeLink>>
-	<<getouticon>><<link [[Return to work|$plusWorkBreakReturn]]>><<set $eventskip to 1>><</link>>
-<<else>>
-	<<pass 1>>
-	<<if _wb.visible and _wb.smell>>
-		Their eyes drop, and they wrinkle their nose. "Not now. Wait until your break, like everyone else."
-	<<elseif _wb.visible>>
-		They glance at the outline under your clothes and shake their head. "You'll have to wait. We're short-handed."
-	<<elseif _wb.urgent>>
-		<<print either(
-			"They look unconvinced. \"You'll manage. Break is later.\"",
-			"They shake their head. \"I need you here. Hold on until you're scheduled to stop.\"",
-			"\"Not now,\" they say, already turning back to the work. \"You'll have to wait.\""
-		)>>
-	<<else>>
-		<<print either(
-			"They shake their head without looking up. \"Later.\"",
-			"\"We're busy. Wait for your break.\"",
-			"They wave you back to your place. \"Not now.\""
-		)>>
-	<</if>>
-	<<if _wb.visible and plusDiaperStressApplies("seen")>><<run plusDiaperExposure()>><<stress 4>><<gstress>><</if>>
-	<br><br>
-	You can go back and wait, or try to slip away without permission.
-	<br><br>
-	<<getouticon>><<link [[Go back to work|$plusWorkBreakReturn]]>><<set $eventskip to 1>><</link>>
-	<br>
-	<<icon "plusneeds/find-place.png">><<link [[Slip away anyway (0:04)|Plus Needs Work Break Sneak]]>><</link>>
-	<br>
-<</if>>
-
-
-:: Plus Needs Work Break Sneak [plusneeds]
-<<effects>><<pass 4>>
-<<set _sneak to (random(1, 100) lte 40)>>
-<<if _sneak>>
-	You duck out of sight and find a quiet corner. You barely have time to finish before you hear someone coming. You straighten your clothes and walk back as if nothing happened.
-	<br><br>
-	<span class="red">Your cheeks burn.</span> You hope they did not see enough to be sure.
-	<<stress 6>><<gstress>>
-	<<run plusNeedsSpotted()>>
-	<<if typeof plusContRepOnOutdoor is "function">><<run plusContRepOnOutdoor($plusWorkBreakReturn)>><</if>>
-<<else>>
-	You slip away, find a quiet corner, and relieve yourself without being seen. You return to work as casually as you can.
-	You feel much more comfortable, if a little guilty.
-<</if>>
-<<run plusNeedsToilet("both")>><<plusDiaperToiletNote>>
-<br><br>
-<<plusDiaperChangeLink>>
-<<getouticon>><<link [[Return to work|$plusWorkBreakReturn]]>><<set $eventskip to 1>><</link>>
 
 
 :: Plus Infirmary Nurse [plusneeds]

@@ -1190,7 +1190,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 				<br>
 			<</if>>
 		<</if>>
-		<<plusToiletLink>><<plusOutdoorToiletLink "farm">><<plusWorkBreakLink "farm">>
+		<<plusToiletLink>><<plusOutdoorToiletLink "farm">>
 		<<farmicon>><<link [[Leave|Farmland]]>><</link>>
 		<br>
 		<<if numberOfEarSlime() and $daily.slimeFarmNaked is undefined>>

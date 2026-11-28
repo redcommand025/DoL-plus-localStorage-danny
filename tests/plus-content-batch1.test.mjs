@@ -213,21 +213,29 @@ describe("plus content batch 1: cafe, pub, and skips", () => {
 });
 
 describe("plus content batch 1: work, infirmary, flat, custody, outdoor", () => {
-	it("resolves job restroom breaks with job-specific chances", () => {
-		const { window, State } = load();
+	it("removes employer restroom breaks and keeps the classroom teacher ask", () => {
+		const { window } = load();
 		window.plusNeedsInit();
-		assert.ok(window.plusWorkBreakJobs.office);
-		assert.ok(window.plusWorkBreakJobs.farm.strict < window.plusWorkBreakJobs.office.strict);
-		State.variables.plusBladder = 2000;
-		const calm = window.plusWorkBreakChance("office");
-		State.variables.plusBladder = 0;
-		const desperate = window.plusWorkBreakChance("office");
-		assert.ok(desperate > calm);
-		const forced = window.plusWorkBreakResolve("farm", true);
-		assert.equal(forced.accepted, true);
-		assert.equal(forced.speaker, "Alex");
-		const refused = window.plusWorkBreakResolve("docks", false);
-		assert.equal(refused.accepted, false);
+		assert.equal(window.plusWorkBreakJobs, undefined);
+		assert.equal(typeof window.plusWorkBreakChance, "undefined");
+		assert.equal(typeof window.plusWorkBreakResolve, "undefined");
+		assert.equal(typeof window.plusClassAsk, "function");
+		assert.equal(typeof window.plusClassTeacher, "function");
+		assert.doesNotMatch(read("game/ModLI/plus-needs/content.twee"), /plusWorkBreakLink|Plus Needs Work Break/);
+		assert.doesNotMatch(read("game/ModLI/plus-needs/content.js"), /plusWorkBreak/);
+		assert.match(read("game/ModLI/plus-needs/widgets.twee"), /<<widget "plusClassAskLinks">>/);
+		for (const file of [
+			"game/overworld-town/loc-office/agency.twee",
+			"game/overworld-town/loc-office/main.twee",
+			"game/overworld-town/loc-docks/main.twee",
+			"game/overworld-town/loc-docks/widgets.twee",
+			"game/overworld-town/loc-dance-studio/job.twee",
+			"game/overworld-town/loc-dance-studio/main.twee",
+			"game/overworld-town/loc-cafe/main.twee",
+			"game/overworld-plains/loc-farm/work.twee",
+		]) {
+			assert.doesNotMatch(read(file), /plusWorkBreakLink/, file);
+		}
 	});
 
 	it("remembers accidents and can issue one infirmary spare a day", () => {
@@ -280,20 +288,20 @@ describe("plus content batch 1: source hooks", () => {
 			["game/overworld-town/loc-museum/main.twee", "plusToiletLink"],
 			["game/overworld-town/loc-spa/main.twee", "plusToiletLink"],
 			["game/overworld-town/loc-office/main.twee", "plusToiletLink"],
-			["game/overworld-town/loc-office/agency.twee", 'plusWorkBreakLink "office"'],
+			["game/overworld-town/loc-office/agency.twee", "plusToiletLink"],
 			["game/overworld-town/loc-temple/main.twee", "plusToiletLink"],
 			["game/overworld-town/loc-temple/quarters.twee", "plusToiletLink"],
 			["game/overworld-town/loc-town-hall/main.twee", "plusToiletLink"],
 			["game/overworld-town/loc-mma-gym/main.twee", "plusToiletLink"],
 			["game/overworld-town/loc-bus-station/main.twee", "plusToiletLink"],
-			["game/overworld-town/loc-docks/main.twee", 'plusWorkBreakLink "docks"'],
+			["game/overworld-town/loc-docks/main.twee", "plusToiletLink"],
 			["game/overworld-town/loc-docks/widgets.twee", "plusToiletLink"],
 			["game/overworld-town/loc-dance-studio/main.twee", "plusToiletLink"],
-			["game/overworld-town/loc-dance-studio/job.twee", 'plusWorkBreakLink "dance"'],
-			["game/overworld-town/loc-cafe/main.twee", 'plusWorkBreakLink "cafe"'],
+			["game/overworld-town/loc-dance-studio/job.twee", "Dance Job Refuse"],
+			["game/overworld-town/loc-cafe/main.twee", "plusToiletLink"],
 			["game/overworld-plains/loc-farm/main.twee", "plusToiletLink"],
 			["game/overworld-plains/loc-farm/main.twee", 'plusOutdoorToiletLink "farm"'],
-			["game/overworld-plains/loc-farm/work.twee", 'plusWorkBreakLink "farm"'],
+			["game/overworld-plains/loc-farm/work.twee", "plusToiletLink"],
 			["game/overworld-plains/loc-farm/fields.twee", 'plusOutdoorToiletLink "farm"'],
 			["game/overworld-plains/loc-farm/cottage.twee", "plusToiletLink"],
 			["game/overworld-forest/loc-cabin/widgets.twee", "plusToiletLink"],
@@ -311,7 +319,6 @@ describe("plus content batch 1: source hooks", () => {
 			["game/ModLI/plus-needs/widgets.twee", "Plus Flat Desk"],
 			["game/ModLI/plus-needs/widgets.twee", "Plus Flat Hallway"],
 			["game/ModLI/plus-needs/content.twee", "Plus Infirmary Nurse"],
-			["game/ModLI/plus-needs/content.twee", "Plus Needs Work Break"],
 			["game/ModLI/plus-needs/needs.js", "plusNeedsWeatherApply"],
 		];
 		for (const [file, token] of expect) {

@@ -175,11 +175,13 @@ describe("plus content batch 2: hospital clinic", () => {
 		assert.ok(f.delta > 0);
 	});
 
-	it("is linked from the foyer and sells pharmacy-priced supplies", () => {
+	it("is linked from the foyer and sends players to the Continence Store for packs", () => {
 		assert.match(read("game/overworld-town/loc-hospital/main.twee"), /plusContinenceClinicLink/);
+		assert.match(read("game/overworld-town/loc-hospital/main.twee"), /plusContinenceStoreLink/);
 		const twee = read("game/ModLI/plus-needs/batch2.twee");
 		assert.match(twee, /:: Plus Continence Clinic/);
-		assert.match(twee, /plusDiaperShop "pharmacy"/);
+		assert.doesNotMatch(twee, /plusDiaperShop "pharmacy"/);
+		assert.match(twee, /plusContinenceStoreLink/);
 		assert.match(twee, /Plus Continence Clinic Followup/);
 	});
 });

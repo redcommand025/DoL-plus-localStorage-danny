@@ -691,12 +691,19 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 	<br>
 <</widget>>
 
+<<widget "plusContinenceStoreLink">>
+	<<icon "plusneeds/diaper-change.png">><<link [[Continence Store|Plus Continence Store]]>><<set $plusBuyReturn to $passage>><</link>>
+	<br>
+<</widget>>
+
 <<widget "plusDiaperShop">>
 	<<set _plusShopLoc to (_args[0] or "clothing")>>
 	<<if _plusShopLoc is "adult" and not plusDiaperAdultShopOpen()>>
 	<<else>>
 	<div class="plus-diaper-shop">
-		<<if _plusShopLoc is "adult">>
+		<<if _plusShopLoc is "store">>
+			<span class="gold">Continence Store</span> — packs of disposable diapers and pull-ups, cheaper than buying them one at a time (20% off a pack of 5, 30% off a pack of 10). Large is the standard size; bigger capacities are stocked once the adult shop on Elk Street is open.
+		<<elseif _plusShopLoc is "adult">>
 			<span class="gold">Larger continence supplies</span> — high-capacity packs sold here once the shop is open (20% off a pack of 5, 30% off a pack of 10).
 		<<else>>
 			<span class="gold">Continence supplies</span> — packs of disposable diapers and pull-ups, cheaper than buying them one at a time (20% off a pack of 5, 30% off a pack of 10). Large is the standard size; bigger capacities are stocked at the adult shop on Elk Street once it opens.
@@ -863,6 +870,14 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 <br><br>
 <<getouticon>><<link [[Continue|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
 
+:: Plus Continence Store [plusneeds]
+<<effects>>
+A small counter of continence supplies, with packs cheaper than buying one at a time.
+<br><br>
+<<plusDiaperShop "store">>
+<br>
+<<getouticon>><<link [[Back|$plusBuyReturn]]>><<set $eventskip to 1>><</link>>
+
 :: Widgets Plus Needs Attitudes [widget plusneeds]
 <<widget "plusDiaperInsecurity">>
 	<<run plusDiaperInitInsecurity()>>
@@ -1002,15 +1017,8 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 <</widget>>
 
 <<widget "plusSchoolContRepRemark">>
-	<<if plusSchoolContRep() lte 0 or $combat is 1 or $intro>><<exit>><</if>>
-	<<if !["early", "late", "earlynoschool", "latenoschool", "daynoschool"].includes($schoolstate)>>
-		<<set _scr to plusSchoolContRep()>>
-		<<set _now to plusNowTs()>>
-		<<if $plusSchoolContRepRemarkNext and _now lt $plusSchoolContRepRemarkNext>><<exit>><</if>>
-		<<set _ch to [0, 0.08, 0.12, 0.2, 0.3, 0.4][_scr]>>
-		<<if $fame.good gte 400>><<set _ch to _ch * 0.7>><</if>>
-		<<if random(0, 99) gte _ch * 100>><<exit>><</if>>
-		<<set $plusSchoolContRepRemarkNext to _now + 3600>>
+	<<if !plusSchoolContRepRemarkCheck()>><<exit>><</if>>
+	<<set _scr to plusSchoolContRep()>>
 		<br>
 		<span class="purple">
 		<<switch _scr>>
@@ -1029,7 +1037,6 @@ You take off your used _pnName, wrap it up and drop it in the bin. You feel clea
 		<<run plusContRepRemarkStress()>>
 		<<if plusContRepRemarkStress() gt 0>><<stress `plusContRepRemarkStress()`>><<gstress>><</if>>
 		<br>
-	<</if>>
 <</widget>>
 
 :: Widgets Plus Flat [widget plusneeds]

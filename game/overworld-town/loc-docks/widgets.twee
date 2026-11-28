@@ -142,7 +142,7 @@
 	<</if>>
 	<br><br>
 
-	<<plusToiletLink>><<plusWorkBreakLink "docks">>
+	<<plusToiletLink>>
 	<<if Time.hour lte 15>>
 		<<docksicon>><<link [[Leave early|Docks Leave]]>><<storeon "docks">><</link>>
 	<<else>>

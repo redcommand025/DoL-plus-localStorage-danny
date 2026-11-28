@@ -40,7 +40,7 @@ You are in the dance studio. Here you can pay for lessons to improve your dancin
 				<span class="blue">Charlie will have another job for you next week.</span>
 				<br>
 			<<else>>
-				<<plusWorkBreakLink "dance">><<socialiseicon "ask">><<link [[Ask for work|Dance Job Ask]]>><</link>>
+				<<socialiseicon "ask">><<link [[Ask for work|Dance Job Ask]]>><</link>>
 				<br>
 			<</if>>
 		<</if>>

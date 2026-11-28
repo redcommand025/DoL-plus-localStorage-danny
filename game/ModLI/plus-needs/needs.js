@@ -1733,9 +1733,30 @@ window.plusNowTs = function () {
 	const CONTREP_DECAY = { afterGain: 6, clean: 16, cleanStep: 6, max: 36, fameBonus: 6 };
 	const CONTREP_PUBLIC_CATCHUP = 1 / 3;
 	const CONTREP_SCHOOL = { creditNeeded: 3, fadePerLevel: 8, fadeFame: 8, fadeGuarantee: 4 };
-	const CONTREP_REMARK_CHANCE = [0, 0, 0, 0.08, 0.15, 0.25, 0.4];
-	const CONTREP_REMARK_CD = 60 * 60;
+	const CONTREP_REMARK_CHANCE = [0, 0, 0, 0.02, 0.04, 0.06, 0.1];
+	const CONTREP_REMARK_CD = 3 * 60 * 60; // 3 hours of game time
 	const CONTREP_REMARK_STRESS = 8;
+	const SCHOOL_REMARK_CHANCE = [0, 0.02, 0.03, 0.05, 0.08, 0.12];
+	const SCHOOL_REMARK_CD = 3 * 60 * 60;
+	/* Town rumour flavour only in busy public/social places. School uses its own hallway widget. */
+	const CONTREP_REMARK_PUBLIC_LOC = [
+		"town",
+		"park",
+		"beach",
+		"promenade",
+		"market",
+		"pub",
+		"cafe",
+		"arcade",
+		"museum",
+		"shopping_centre",
+		"alley",
+		"docks",
+		"pool",
+		"mer_pier",
+	];
+	const CONTREP_REMARK_BLOCK_PASS =
+		/Bath|Toilet|Shower|Changing|Locker|Bedroom|Wardrobe|\bBed\b|Sleep|Options|Settings|Journal|Cheats|Feats|Traits|Characteristics|^Social$|Saves|Menu|Pharmacy|Boutique|Hairdress|Tattoo Shop|Clothing Shop|Adult Shop|Customise|Mannequin|Rape|Molest|Orgasm|Sex|Breastfeed|Seduce|Grope|Combat|Struggle|Encounter|Swarm|Penetrat|Ejaculat|Naked|Undress|Masturbat|Handjob|Blowjob|\bFuck|Lesson|Class|Detention|Library|Infirmary|Roof|Office|Job\b|Dance Job|Chef |Plus Needs|Overlay|Caption|Sidebar/;
 	const CONTREP_REMARKS = {
 		3: [
 			"Someone gives you a second look, as if they're trying to remember why they recognise you.",
@@ -1764,6 +1785,13 @@ window.plusNowTs = function () {
 	window.plusContRepDecayInfo = CONTREP_DECAY;
 	window.plusContRepPublicCatchup = CONTREP_PUBLIC_CATCHUP;
 	window.plusContRepSchoolInfo = CONTREP_SCHOOL;
+	window.plusContRepRemarkInfo = {
+		chance: CONTREP_REMARK_CHANCE,
+		cooldown: CONTREP_REMARK_CD,
+		publicLoc: CONTREP_REMARK_PUBLIC_LOC,
+		schoolChance: SCHOOL_REMARK_CHANCE,
+		schoolCooldown: SCHOOL_REMARK_CD,
+	};
 	window.plusContRepCatchupPublic = function (from, to) {
 		const a = Number(from) || 0;
 		const b = Number(to) || 0;
@@ -1962,13 +1990,45 @@ window.plusNowTs = function () {
 		if (c && window.plusFameGood() >= 400) c *= 0.7;
 		return c;
 	};
+	window.plusContRepRemarkAllowed = function (title) {
+		const V = State.variables;
+		if (!V || V.combat === 1 || V.intro || V.masturbating === 1) return false;
+		// School hall rumours are handled by plusSchoolContRepRemark, not these town lines.
+		if (V.location === "school") return false;
+		if (!CONTREP_REMARK_PUBLIC_LOC.includes(V.location)) return false;
+		const t = title || State.passage || "";
+		if (!t || CONTREP_REMARK_BLOCK_PASS.test(t)) return false;
+		return true;
+	};
+	window.plusSchoolContRepRemarkChance = function () {
+		const scr = window.plusSchoolContRep ? window.plusSchoolContRep() : 0;
+		let c = SCHOOL_REMARK_CHANCE[scr] || 0;
+		if (c && window.plusFameGood() >= 400) c *= 0.7;
+		return c;
+	};
+	window.plusSchoolContRepRemarkCheck = function (force) {
+		const V = State.variables;
+		if (!V || V.combat === 1 || V.intro) return false;
+		if ((window.plusSchoolContRep ? window.plusSchoolContRep() : 0) <= 0) return false;
+		if (
+			!force &&
+			["early", "late", "earlynoschool", "latenoschool", "daynoschool"].includes(V.schoolstate)
+		) {
+			return false;
+		}
+		const now = window.plusNowTs();
+		if (!force && Number.isFinite(V.plusSchoolContRepRemarkNext) && now < V.plusSchoolContRepRemarkNext) return false;
+		if (!force && Math.random() >= window.plusSchoolContRepRemarkChance()) return false;
+		V.plusSchoolContRepRemarkNext = now + SCHOOL_REMARK_CD;
+		return true;
+	};
 	window.plusContRepRemarkCheck = function (title, force) {
 		const V = State.variables;
-		if (!V || V.combat === 1 || V.intro) return "";
+		if (!V || V.combat === 1 || V.intro || V.masturbating === 1) return "";
 		const info = window.plusContRepPublicInfo();
 		const lines = CONTREP_REMARKS[info.index];
 		if (!lines || !lines.length) return "";
-		if (!force && !window.plusIsPublic(title || State.passage)) return "";
+		if (!force && !window.plusContRepRemarkAllowed(title || State.passage)) return "";
 		const now = window.plusNowTs();
 		if (!force && Number.isFinite(V.plusContRepRemarkNext) && now < V.plusContRepRemarkNext) return "";
 		if (!force && Math.random() >= window.plusContRepRemarkChance()) return "";
@@ -2511,8 +2571,8 @@ window.plusNowTs = function () {
 		if (V.plusSupplyWarnDay === d) return "";
 		V.plusSupplyWarnDay = d;
 		const hint = window.plusDiaperAdultShopOpen()
-			? " You can pick up more at the clothing shop, the pharmacy, or larger sizes at the adult shop on Elk Street."
-			: " You can pick up more at the clothing shop or the pharmacy.";
+			? " You can pick up more at the Continence Store in the hospital or the adult shop on Elk Street."
+			: " You can pick up more at the Continence Store in the hospital.";
 		return (n <= 0 ? "You're out of clean spare diapers." : `You're running low on clean spare diapers (${n} left).`) + hint;
 	};
 	window.plusDiaperItemShop = function (name) {
@@ -2549,6 +2609,11 @@ window.plusNowTs = function () {
 		["plastic-backed diaper (Hyper)", 5, "adult"],
 	];
 	window.plusDiaperPackList = function (location) {
+		if (location === "store") {
+			return PACKS.filter(p => p[2] === "clothing" || (p[2] === "adult" && window.plusDiaperAdultShopOpen()))
+				.map(([name, count]) => window.plusDiaperPackPrice(name, count))
+				.filter(Boolean);
+		}
 		const loc = location === "pharmacy" ? "clothing" : location || "clothing";
 		if (loc === "adult" && !window.plusDiaperAdultShopOpen()) return [];
 		return PACKS.filter(p => p[2] === loc)

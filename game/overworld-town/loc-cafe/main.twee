@@ -188,7 +188,7 @@ You are in the Ocean Breeze Cafe.
 			<<if pcAreArmsBound("both")>>
 				<span class="red">Both of your arms are bound</span>, so you are unable to work as a chef.
 			<<else>>
-				<<plusWorkBreakLink "cafe">><<skinicon "chef">><<link [[Work as a chef (1:00)|Chef Work]]>><</link>>
+				<<skinicon "chef">><<link [[Work as a chef (1:00)|Chef Work]]>><</link>>
 			<</if>>
 			<br>
 		<</if>>
@@ -199,7 +199,7 @@ You are in the Ocean Breeze Cafe.
 		<<if pcAreArmsBound("both")>>
 			<span class="red">Both of your arms are bound</span>, so you are unable to work as a <<pwaitress>>.
 		<<else>>
-			<<plusWorkBreakLink "cafe">><<skinicon "waiter">><<link [[`Work as a <<pwaitress>> (1:00)`|Ocean Breeze Work]]>><<set $tablesservedstat += random(10,30)>><</link>>
+			<<skinicon "waiter">><<link [[`Work as a <<pwaitress>> (1:00)`|Ocean Breeze Work]]>><<set $tablesservedstat += random(10,30)>><</link>>
 		<</if>>
 		<br>
 	<</if>>

@@ -105,12 +105,13 @@ describe("plus-needs native source hooks", () => {
 			read("game/overworld-town/skul-shops/main.twee");
 		assert.doesNotMatch(game, /plusCanteenLunch/);
 		assert.doesNotMatch(game, /plusDiaperShop/);
-		assert.match(read("game/overworld-town/loc-shop/clothing.twee"), /<<plusDiaperShop "clothing">>/);
-		assert.equal([...read("game/overworld-town/loc-shop/clothing.twee").matchAll(/plusDiaperShop/g)].length, 1);
-		assert.match(read("game/overworld-town/loc-hospital/pharmacy.twee"), /<<plusDiaperShop "pharmacy">>/);
-		assert.equal([...read("game/overworld-town/loc-hospital/pharmacy.twee").matchAll(/plusDiaperShop/g)].length, 1);
-		assert.match(read("game/overworld-town/loc-adultshop/adultshop.twee"), /<<plusDiaperShop "adult">>/);
-		assert.equal([...read("game/overworld-town/loc-adultshop/adultshop.twee").matchAll(/<<plusDiaperShop/g)].length, 1);
+		assert.doesNotMatch(read("game/overworld-town/loc-shop/clothing.twee"), /plusDiaperShop|plusContinenceStoreLink/);
+		assert.doesNotMatch(read("game/overworld-town/loc-hospital/pharmacy.twee"), /plusDiaperShop|plusContinenceStoreLink/);
+		assert.doesNotMatch(read("game/overworld-town/loc-adultshop/adultshop.twee"), /plusDiaperShop/);
+		assert.match(read("game/overworld-town/loc-adultshop/adultshop.twee"), /plusContinenceStoreLink/);
+		assert.match(read("game/overworld-town/loc-hospital/main.twee"), /plusContinenceStoreLink/);
+		assert.match(read("game/ModLI/plus-needs/widgets.twee"), /:: Plus Continence Store/);
+		assert.match(read("game/ModLI/plus-needs/widgets.twee"), /<<plusDiaperShop "store">>/);
 	});
 
 	it("wires location, overlay, caption, and creation hooks without doubling class-ask", () => {

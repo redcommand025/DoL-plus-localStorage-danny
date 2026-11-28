@@ -34,7 +34,7 @@
 		<<officeafterhours>>
 	<</if>>
 	<br><br>
-	<<plusToiletLink>><<plusWorkBreakLink "office">>
+	<<plusToiletLink>>
 	<<if $avery_fate is "ascended">>
 		<<elkicon>><<link [[Go outside|Elk Street]]>><</link>>
 		<br>

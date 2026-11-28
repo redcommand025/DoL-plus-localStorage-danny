@@ -281,8 +281,9 @@ The adult shop is closed. A sign reads: "Opening hours: <<ampm 16 00>> - <<ampm 
 		<br>
 	<</if>>
 	<<icon "adult-clothing.png">><<link [[Browse clothing (0:01)|Adult Shop Store]]>><<pass 1>><</link>>
+	<br>
+	<<plusContinenceStoreLink>>
 	<<if $adultshopstate isnot "closed" or $debug is 1>>
-		<br>
 		<<sextoysicon "strap-on">><<link [[Browse toys (0:01)|Adult Shop Menu]]>><<pass 1>><</link>>
 	<</if>>
 	<br><br>
@@ -291,7 +292,6 @@ The adult shop is closed. A sign reads: "Opening hours: <<ampm 16 00>> - <<ampm 
 <</if>>
 
 :: Adult Shop Store
-<<plusDiaperShop "adult">>
 /*<<exiticon>><<link [[Exit (0:01)|Adult Shop]]>><<pass 1>><</link>>*/
 <div id="clothingShop-div" class="main-shop-div">
 	<<adultShop-main>>

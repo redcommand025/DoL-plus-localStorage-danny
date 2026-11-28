@@ -88,7 +88,7 @@ You are on the docks.
 <</if>>
 
 <br>
-<<plusToiletLink>><<plusWorkBreakLink "docks">><<mericon>><<link [[Leave|Mer Street]]>><</link>>
+<<plusToiletLink>><<mericon>><<link [[Leave|Mer Street]]>><</link>>
 <br>
 
 <<if $debug is 1>>
